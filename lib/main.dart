@@ -3,10 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:speedring/core/dependency/dependency_injection.dart';
 
 import 'utils/app_colors/app_colors.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -25,7 +26,6 @@ void main() async{
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         defaultTransition: Transition.fadeIn,
         transitionDuration: const Duration(milliseconds: 200),
+        initialBinding: DependencyInjection(),
         initialRoute: AppRoutes.splashScreen,
         navigatorKey: Get.key,
         getPages: AppRoutes.routes,
@@ -54,4 +55,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

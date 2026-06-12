@@ -19,8 +19,9 @@ class CustomText extends StatelessWidget {
     required this.text,
     this.overflow = TextOverflow.ellipsis,
     this.decoration,
-
-    // this.decoration = TextDecoration.none,
+    this.height,
+    this.letterSpacing,
+    this.fontFamily,
   });
 
   final double left;
@@ -36,20 +37,31 @@ class CustomText extends StatelessWidget {
   final TextOverflow overflow;
   final TextDecoration? decoration;
 
+  final double? height;
+  final double? letterSpacing;
+  final String? fontFamily;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(left: left, right: right, top: top, bottom: bottom),
+      padding: EdgeInsets.only(
+        left: left,
+        right: right,
+        top: top,
+        bottom: bottom,
+      ),
       child: Text(
         textAlign: textAlign,
         text,
         maxLines: maxLines,
         overflow: overflow,
-        style: GoogleFonts.manrope(
-          fontSize: fontSize.w,
+        style: GoogleFonts.getFont(
+          fontFamily ?? 'Barlow Condensed',
+          fontSize: fontSize.sp,
           fontWeight: fontWeight,
           color: color,
+          height: height,
+          letterSpacing: letterSpacing,
           decoration: decoration,
           decorationColor: AppColors.primary,
           decorationThickness: 2,

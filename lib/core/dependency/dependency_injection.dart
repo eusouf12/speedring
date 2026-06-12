@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+
+import '../../view/sereen/OnboardingScreen/widget/on_bording_controller.dart';
 class DependencyInjection extends Bindings {
   @override
   void dependencies() {
@@ -9,11 +11,7 @@ class DependencyInjection extends Bindings {
     // Get.lazyPut(() => SocialController(), fenix: true);
     // Get.lazyPut(() => HomeController(), fenix: true);
     // ///========================== Event Part Controller ==================
-    // Get.lazyPut(() => EventService(), fenix: true);
-    // Get.lazyPut(() => EventController(), fenix: true);
-    //
-    // ///========================== DM Part Controller ==================
-    // Get.lazyPut(() => DmSocialController(), fenix: true);
+    Get.lazyPut(() => OnboardingController(), fenix: true);
     
   }
 }

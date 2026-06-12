@@ -19,7 +19,7 @@ class AppRoutes {
     
 
     ///============== User part ==================
-    GetPage(name: onboardingScreen, page: () => const OnboardingScreen()),
+    GetPage(name: onboardingScreen, page: () =>  OnboardingScreen()),
    
   ];
 }
