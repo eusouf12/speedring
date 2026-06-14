@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-
+import 'package:speedring/view/sereen/AuthScreen/controller/auth_controller.dart';
 import '../../view/sereen/OnboardingScreen/widget/on_bording_controller.dart';
 class DependencyInjection extends Bindings {
   @override
@@ -12,6 +12,7 @@ class DependencyInjection extends Bindings {
     // Get.lazyPut(() => HomeController(), fenix: true);
     // ///========================== Event Part Controller ==================
     Get.lazyPut(() => OnboardingController(), fenix: true);
+    Get.lazyPut(() => AuthController(), fenix: true);
     
   }
 }

@@ -20,39 +20,21 @@ class CustomOnboardingCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 12,
-          sigmaY: 12,
-        ),
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(.35),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: Colors.white.withOpacity(.08),
-            ),
+            border: Border.all(color: Colors.white.withOpacity(.08)),
           ),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 18,
-                    height: 18,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffF5C400),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      icon,
-                      size: 10,
-                      color: Colors.black,
-                    ),
-                  ),
+                  Icon(icon, size: 15, color: Colors.yellow),
 
                   const SizedBox(width: 8),
 

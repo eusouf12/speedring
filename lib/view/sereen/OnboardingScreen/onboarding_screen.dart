@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
+import '../../../core/app_routes/app_routes.dart';
 import 'widget/customonboardingCard.dart';
 import 'widget/on_bording_controller.dart';
 
@@ -46,22 +47,26 @@ class OnboardingScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 30),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      CustomText(
-                        text: "WELCOME TO",
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      CustomText(
-                        text: " SPEEDRING",
-                        color: Color(0xffF5C400),
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ],
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        CustomText(
+                          text: "WELCOME TO",
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        CustomText(
+                          text: " SPEEDRING",
+                          color: Color(0xffF5C400),
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ],
+                    ),
                   ),
 
                   const SizedBox(height: 20),
@@ -108,21 +113,21 @@ class OnboardingScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: CustomOnboardingCard(
                             icon: Icons.directions_car,
-                            label: "Vehicle Vault",
-                            title: "Vehicle Vault",
+                            label: "GARAGE",
+                            title: "Vehicles",
                             description:
-                                "Manage vehicles, service history and maintenance records.",
+                                "Manage your collection and service history in one digital vault",
                           ),
                         ),
 
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: CustomOnboardingCard(
-                            icon: Icons.groups,
-                            label: "Community",
-                            title: "Connect",
+                            icon: Icons.location_on,
+                            label: "SPOTTING",
+                            title: "World Wide",
                             description:
-                                "Discover riders, clubs and motorsport events.",
+                                "Discover and share exotic car sightings fromacross the globe",
                           ),
                         ),
                       ],
@@ -189,11 +194,16 @@ class OnboardingScreen extends StatelessWidget {
 
                   const SizedBox(height: 18),
 
-                  const CustomText(
-                    text: "I ALREADY HAVE AN ACCOUNT",
-                    color: Colors.white70,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(AppRoutes.loginScreen);
+                    },
+                    child: const CustomText(
+                      text: "I ALREADY HAVE AN ACCOUNT",
+                      color: Colors.white70,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
 
                   const SizedBox(height: 10),

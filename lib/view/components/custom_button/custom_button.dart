@@ -14,13 +14,13 @@ class CustomButton extends StatelessWidget {
     this.title = '',
     this.marginVertical = 0,
     this.marginHorizontal = 0,
-    this.fillColor = AppColors.yellow1,
-    this.textColor = AppColors.primary,
+    this.fillColor = const Color(0xffF5C400),
+    this.textColor = AppColors.black,
     this.isBorder = false,
     this.fontSize,
     this.borderWidth,
     this.borderRadius,
-    this.borderColor = AppColors.primary,
+    this.borderColor = const Color(0xffF5C400),
     this.showSocialButton = false,
     this.imageSrc,
     this.fontWeight,
@@ -97,7 +97,7 @@ class CustomButton extends StatelessWidget {
                     )
                   else if (!isImageRight && icon != null)
                     Padding(
-                      padding: const EdgeInsets.only(right: 0.0),
+                      padding: const EdgeInsets.only(right: 10.0),
                       child: icon,
                     ),
 
