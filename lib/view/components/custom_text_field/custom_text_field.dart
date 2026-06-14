@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
-
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
@@ -13,7 +12,7 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
-    this.cursorColor = Colors.black,
+    this.cursorColor = Colors.white,
     this.inputTextStyle,
     this.textAlignVertical = TextAlignVertical.center,
     this.textAlign = TextAlign.start,
@@ -90,7 +89,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction,
       cursorColor: widget.cursorColor,
-      style: widget.inputTextStyle ?? GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.w400, color: AppColors.black),
+      style:
+          widget.inputTextStyle ??
+          GoogleFonts.manrope(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            color: AppColors.white,
+          ),
       onChanged: widget.onChanged,
       maxLines: widget.maxLines,
       obscureText: widget.isPassword ? obscureText : false,
@@ -101,7 +106,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
         isDense: widget.isDens,
         errorMaxLines: 2,
         hintText: widget.hintText,
-        hintStyle: widget.hintStyle ?? GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.white),
+        hintStyle:
+            widget.hintStyle ??
+            GoogleFonts.manrope(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: AppColors.grey,
+            ),
         fillColor: widget.fillColor,
         filled: true,
         prefixIcon: widget.prefixIcon,
@@ -110,7 +121,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 onTap: toggle,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Icon(obscureText ? Icons.visibility_off : Icons.visibility, color: AppColors.grey_1,),
+                  child: Icon(
+                    obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: AppColors.grey_1,
+                  ),
 
                   /*SvgPicture.asset(
                     obscureText ? AppIcons.eyeOff : AppIcons.eye,
@@ -129,7 +143,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.fieldBorderRadius),
-          borderSide: BorderSide(color: AppColors.primary1, width: 1),
+          borderSide: BorderSide(color: AppColors.yellow, width: 1),
           gapPadding: 0,
         ),
         enabledBorder: OutlineInputBorder(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_images/app_images.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
@@ -224,7 +225,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          // TODO: navigate to register
+                          Get.toNamed(AppRoutes.signupScreen);
                         },
                         child: CustomText(
                           text: 'Sign Up',
