@@ -175,7 +175,9 @@ class OnboardingScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(18),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.codeRequest);
+                      },
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

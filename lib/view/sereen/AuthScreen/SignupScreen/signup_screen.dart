@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_images/app_images.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
@@ -328,7 +329,7 @@ class SignupScreen extends StatelessWidget {
                         fontSize: 14,
                       ),
                       GestureDetector(
-                        onTap: () => Get.back(),
+                        onTap: () => Get.toNamed(AppRoutes.loginScreen),
                         child: CustomText(
                           text: 'Login',
                           color: const Color(0xffF5C400),

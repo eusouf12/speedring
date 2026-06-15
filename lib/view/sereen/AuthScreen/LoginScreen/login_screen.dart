@@ -16,8 +16,6 @@ class LoginScreen extends StatelessWidget {
 
   final controller = Get.find<AuthController>();
 
-
-
   @override
   Widget build(BuildContext context) {
     return CustomGradient(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_images/app_images.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
