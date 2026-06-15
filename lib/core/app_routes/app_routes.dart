@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import '../../view/sereen/OnboardingScreen/age_verify_screen.dart';
 import '../../view/sereen/OnboardingScreen/code_request.dart';
+import '../../view/sereen/SetupProfile/preview.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen2.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen3.dart';
+import '../../view/sereen/SetupProfile/setup_profile_screen4.dart' show SetupProfileScreen4;
 import '../../view/sereen/SplashScreen/splashScreen.dart';
 import '../../view/sereen/OnboardingScreen/onboarding_screen.dart';
 import '../../view/sereen/AuthScreen/LoginScreen/login_screen.dart';
@@ -12,6 +14,7 @@ import '../../view/sereen/AuthScreen/SignupScreen/signup_screen.dart';
 import '../../view/sereen/AuthScreen/ForgotPasswordScreen/forgot_password_screen.dart';
 import '../../view/sereen/AuthScreen/VerifyOtpScreen/verify_otp_screen.dart';
 import '../../view/sereen/AuthScreen/ResetPasswordScreen/reset_password_screen.dart';
+import '../../view/sereen/UserScreen/Home/user_home_screen.dart';
 
 class AppRoutes {
   ///===========================Authentication==========================
@@ -29,7 +32,8 @@ class AppRoutes {
   static const String setupProfileScreen2 = "/SetupProfileScreen2";
   static const String setupProfileScreen3 = "/SetupProfileScreen3";
   static const String setupProfileScreen4 = "/SetupProfileScreen4";
-  static const String preview = "/Preview";
+  static const String preview = "/GaragePreparationScreen";
+  static const String userHomeScreen = "/UserHomeScreen";
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -42,13 +46,15 @@ class AppRoutes {
     GetPage(name: setupProfileScreen1, page: () => const SetupProfileScreen1()),
     GetPage(name: setupProfileScreen2, page: () => const SetupProfileScreen2()),
     GetPage(name: setupProfileScreen3, page: () => const SetupProfileScreen3()),
+     GetPage(name: setupProfileScreen4, page: () => const SetupProfileScreen4()),
     GetPage(name: choosePlanScreen, page: () => const ChoosePlanScreen()),
     GetPage(name: loginScreen, page: () => LoginScreen()),
     GetPage(name: signupScreen, page: () => SignupScreen()),
     GetPage(name: forgotPasswordScreen, page: () => ForgotPasswordScreen()),
     GetPage(name: verifyOtpScreen, page: () => VerifyOtpScreen()),
     GetPage(name: resetPasswordScreen, page: () => ResetPasswordScreen()),
-    GetPage(name: preview, page: () => Preview()),
+    GetPage(name: preview, page: () => GaragePreparationScreen()),
+    GetPage(name: userHomeScreen, page: () => UserHomeScreen()),
     
   ];
 }

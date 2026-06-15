@@ -6,27 +6,18 @@ import '../../components/custom_gradient/custom_gradient.dart';
 import '../../../utils/app_images/app_images.dart';
 import '../../components/custom_image/custom_image.dart';
 
-class GaragePreparationScreen extends StatefulWidget {
+class GaragePreparationScreen extends StatelessWidget {
   const GaragePreparationScreen({super.key});
 
-  @override
-  State<GaragePreparationScreen> createState() => _GaragePreparationScreenState();
-}
-
-class _GaragePreparationScreenState extends State<GaragePreparationScreen> {
   static const Color _cardBg = Color(0xff141414);
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     // 3 second por layout automate vabe next onboarding layer (Step 4) e redirect hobe
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offAllNamed(AppRoutes.setupProfileScreen4);
+      Get.offAllNamed(AppRoutes.userHomeScreen);
     });
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
