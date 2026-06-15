@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../custom_image/custom_image.dart';
 import '../../../utils/app_images/app_images.dart';
 
@@ -26,17 +25,8 @@ class CustomAppBarSpeedring extends StatelessWidget
       toolbarHeight: preferredSize.height,
       title: Row(
         children: [
-          /// Back button
-          if (showBackButton)
-            GestureDetector(
-              onTap: onBackTap ?? () => Get.back(),
-              child: const Icon(
-                Icons.arrow_back_ios_new,
-                color: Colors.white,
-                size: 20,
-              ),
-            ),
-
+       
+          BackButton(),
           const Spacer(),
 
           /// Center logo

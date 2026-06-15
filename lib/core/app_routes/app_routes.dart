@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
 import '../../view/sereen/OnboardingScreen/age_verify_screen.dart';
 import '../../view/sereen/OnboardingScreen/code_request.dart';
+import '../../view/sereen/SetupProfile/setup_profile_screen.dart';
+import '../../view/sereen/SetupProfile/setup_profile_screen2.dart';
+import '../../view/sereen/SetupProfile/setup_profile_screen3.dart';
 import '../../view/sereen/SplashScreen/splashScreen.dart';
 import '../../view/sereen/OnboardingScreen/onboarding_screen.dart';
 import '../../view/sereen/AuthScreen/LoginScreen/login_screen.dart';
@@ -22,6 +25,11 @@ class AppRoutes {
   static const String resetPasswordScreen = "/ResetPasswordScreen";
   static const String codeRequest = "/CodeRequest";
   static const String ageVerifyScreen = "/AgeVerifyScreen";
+  static const String setupProfileScreen1 = "/SetupProfileScreen1";
+  static const String setupProfileScreen2 = "/SetupProfileScreen2";
+  static const String setupProfileScreen3 = "/SetupProfileScreen3";
+  static const String setupProfileScreen4 = "/SetupProfileScreen4";
+  static const String preview = "/Preview";
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -31,11 +39,16 @@ class AppRoutes {
     GetPage(name: onboardingScreen, page: () => OnboardingScreen()),
     GetPage(name: codeRequest, page: () => const CodeRequest()),
     GetPage(name: ageVerifyScreen, page: () => const AgeVerifyScreen()),
+    GetPage(name: setupProfileScreen1, page: () => const SetupProfileScreen1()),
+    GetPage(name: setupProfileScreen2, page: () => const SetupProfileScreen2()),
+    GetPage(name: setupProfileScreen3, page: () => const SetupProfileScreen3()),
     GetPage(name: choosePlanScreen, page: () => const ChoosePlanScreen()),
     GetPage(name: loginScreen, page: () => LoginScreen()),
     GetPage(name: signupScreen, page: () => SignupScreen()),
     GetPage(name: forgotPasswordScreen, page: () => ForgotPasswordScreen()),
     GetPage(name: verifyOtpScreen, page: () => VerifyOtpScreen()),
     GetPage(name: resetPasswordScreen, page: () => ResetPasswordScreen()),
+    GetPage(name: preview, page: () => Preview()),
+    
   ];
 }
