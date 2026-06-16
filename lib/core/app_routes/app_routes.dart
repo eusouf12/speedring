@@ -23,6 +23,9 @@ import '../../view/sereen/UserScreen/Home/HomeScreen/event_detail_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/access_granted_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/create_club_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/edit_club_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/discover/discover_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/discover/add_spot_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/discover/add_video_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/create_post_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/club_post_screen.dart';
 
@@ -55,6 +58,9 @@ class AppRoutes {
   static const String accessGrantedScreen = "/AccessGrantedScreen";
   static const String createClubScreen = "/CreateClubScreen";
   static const String editClubScreen = "/EditClubScreen";
+  static const String discoverScreen = "/DiscoverScreen";
+  static const String addSpotScreen = "/AddSpotScreen";
+  static const String addVideoScreen = "/AddVideoScreen";
   static const String clubDetailsScreen = "/ClubDetailsScreen";
   static const String createPostScreen = "/CreatePostScreen";
   static const String clubPostScreen = "/ClubPostScreen";
@@ -94,6 +100,9 @@ class AppRoutes {
     GetPage(name: accessGrantedScreen, page: () => const AccessGrantedScreen()),
     GetPage(name: createClubScreen, page: () => const CreateClubScreen()),
     GetPage(name: editClubScreen, page: () => const EditClubScreen()),
+    GetPage(name: discoverScreen, page: () => const DiscoverScreen()),
+    GetPage(name: addSpotScreen, page: () => const AddSpotScreen()),
+    GetPage(name: addVideoScreen, page: () => const AddVideoScreen()),
     GetPage(name: clubDetailsScreen, page: () => const ClubDetailsScreen()),
     GetPage(name: createPostScreen, page: () => CreatePostScreen()),
     GetPage(name: clubPostScreen, page: () => const ClubPostScreen()),

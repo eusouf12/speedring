@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import '../../../core/app_routes/app_routes.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 class CustomNavBar extends StatefulWidget {
@@ -149,8 +151,11 @@ class _CustomNavBarState extends State<CustomNavBar> {
       setState(() {
         bottomNavIndex = index;
       });
-      // Handle page switching route calls here if wired with GetX
-      // e.g., if (index == 0) Get.offAllNamed(AppRoutes.userHomeScreen);
+      if (index == 0) {
+        Get.offAllNamed(AppRoutes.userHomeScreen);
+      } else if (index == 1) {
+        Get.offAllNamed(AppRoutes.discoverScreen);
+      }
     }
   }
 }
