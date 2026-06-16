@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../../../../core/app_routes/app_routes.dart';
 import '../../../../../utils/app_images/app_images.dart';
 import '../../../../components/custom_appbar_user/custom_appbar_user.dart';
+import 'comment_screen.dart' show showCommentSheet;
 import 'story_view_screen.dart';
 import 'create_story_screen.dart';
 import 'post_detail_screen.dart';
+import 'create_post_screen.dart';
 import '../widget/story_item.dart';
 import '../widget/add_post_button.dart';
 import '../widget/post_card.dart';
+
+import '../NotificationScreen/notification_screen.dart';
+import '../MessageScreen/message_screen.dart';
 
 class UserHomeScreen extends StatelessWidget {
   const UserHomeScreen({super.key});
@@ -47,7 +54,15 @@ class UserHomeScreen extends StatelessWidget {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: const CustomAppBarUser(showSearchIcon: true),
+        appBar: CustomAppBarUser(
+          showSearchIcon: true,
+          onNotificationTap: () {
+            Get.toNamed(AppRoutes.notificationScreen);
+          },
+          onMailTap: () {
+            Get.toNamed(AppRoutes.messageScreen);
+          },
+        ),
         body: Column(
           children: [
             const SizedBox(height: 10),
@@ -122,7 +137,12 @@ class UserHomeScreen extends StatelessWidget {
                 children: [
                   AddPostButton(
                     label: "ADD POST",
-                    onTap: () {},
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const CreatePostScreen(),
+                      ),
+                    ),
                   ),
 
                   const SizedBox(height: 20),
@@ -139,7 +159,7 @@ class UserHomeScreen extends StatelessWidget {
                       ),
                     ),
                     onLike: () {},
-                    onComment: () {},
+                    onComment: () => showCommentSheet(context),
                     onShare: () {},
                     onMore: () {},
                   ),
@@ -158,7 +178,7 @@ class UserHomeScreen extends StatelessWidget {
                       ),
                     ),
                     onLike: () {},
-                    onComment: () {},
+                    onComment: () => showCommentSheet(context),
                     onShare: () {},
                     onMore: () {},
                   ),

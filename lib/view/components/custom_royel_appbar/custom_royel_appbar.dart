@@ -30,28 +30,31 @@ class CustomRoyelAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        toolbarHeight: 80,
-        elevation: 0,
-        foregroundColor: Colors.transparent,
-        centerTitle: centerTitleEnable,
-        scrolledUnderElevation: 0,
-        actions: [
-          IconButton(
-              onPressed: () {
-                rightOnTap!();
-              },
-              icon: rightIcon == null
-                  ? SizedBox()
-                  : CustomImage(
-                imageSrc: rightIcon!,
-                height: 24,
-                width: 24,
-                imageColor: AppColors.black,
-              )),
-        ],
-        backgroundColor: Colors.transparent,
-        leading: leftIcon == true ? BackButton(color: leftIconColor ?? Colors.black,) : SizedBox.shrink(),
-        leadingWidth: leftIcon == true ? kToolbarHeight : 0,
+      toolbarHeight: 80,
+      elevation: 0,
+      foregroundColor: Colors.transparent,
+      centerTitle: centerTitleEnable,
+      scrolledUnderElevation: 0,
+      actions: [
+        IconButton(
+          onPressed: () {
+            rightOnTap!();
+          },
+          icon: rightIcon == null
+              ? SizedBox()
+              : CustomImage(
+                  imageSrc: rightIcon!,
+                  height: 24,
+                  width: 24,
+                  imageColor: AppColors.black,
+                ),
+        ),
+      ],
+      backgroundColor: Colors.transparent,
+      leading: leftIcon == true
+          ? BackButton(color: leftIconColor ?? Colors.white)
+          : SizedBox.shrink(),
+      leadingWidth: leftIcon == true ? kToolbarHeight : 0,
 
       title: Align(
         alignment: centerTitleEnable == true
@@ -61,7 +64,7 @@ class CustomRoyelAppbar extends StatelessWidget implements PreferredSizeWidget {
           text: titleName ?? "",
           fontSize: 20.w,
           fontWeight: FontWeight.w600,
-          color: color ?? AppColors.black,
+          color: color ?? AppColors.yellow,
         ),
       ),
     );

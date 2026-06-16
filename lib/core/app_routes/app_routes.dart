@@ -15,6 +15,9 @@ import '../../view/sereen/AuthScreen/ForgotPasswordScreen/forgot_password_screen
 import '../../view/sereen/AuthScreen/VerifyOtpScreen/verify_otp_screen.dart';
 import '../../view/sereen/AuthScreen/ResetPasswordScreen/reset_password_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/user_home_screen.dart';
+import '../../view/sereen/UserScreen/Home/NotificationScreen/notification_screen.dart';
+import '../../view/sereen/UserScreen/Home/MessageScreen/message_screen.dart';
+import '../../view/sereen/UserScreen/Home/MessageScreen/inbox_screen.dart';
 
 class AppRoutes {
   ///===========================Authentication==========================
@@ -34,6 +37,9 @@ class AppRoutes {
   static const String setupProfileScreen4 = "/SetupProfileScreen4";
   static const String preview = "/GaragePreparationScreen";
   static const String userHomeScreen = "/UserHomeScreen";
+  static const String notificationScreen = "/NotificationScreen";
+  static const String messageScreen = "/MessageScreen";
+  static const String inboxScreen = "/InboxScreen";
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -55,6 +61,12 @@ class AppRoutes {
     GetPage(name: resetPasswordScreen, page: () => ResetPasswordScreen()),
     GetPage(name: preview, page: () => GaragePreparationScreen()),
     GetPage(name: userHomeScreen, page: () => UserHomeScreen()),
-    
+    GetPage(name: notificationScreen, page: () => const NotificationScreen()),
+    GetPage(name: messageScreen, page: () => const MessageScreen()),
+    GetPage(name: inboxScreen, page: () => InboxScreen(
+      userName: Get.arguments?["userName"] ?? "Driver",
+      avatarUrl: Get.arguments?["avatarUrl"] ?? "https://picsum.photos/100/100",
+      isOnline: Get.arguments?["isOnline"] ?? false,
+    )),
   ];
 }

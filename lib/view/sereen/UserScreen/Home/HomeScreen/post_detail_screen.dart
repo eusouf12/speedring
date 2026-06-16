@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'comment_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PostDetailScreen — Static data, no constructor params
@@ -18,8 +19,7 @@ class PostDetailScreen extends StatelessWidget {
   ];
   static const String _caption =
       "Pushing the limits at Spa. The aero balance feels incredible through Eau Rouge. #Speedring #F1 #Motorsport #Spa";
-  static const String _location = "Spa-Francorchamps";
-  static const String _carSpec = "2024 F1 Technical Specification";
+
   static const String _likeCount = "12.4k";
   static const String _commentCount = "482";
   static const bool _isVerified = true;
@@ -72,7 +72,6 @@ class PostDetailScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 /// ── Image Carousel ───────────────────────────────────
                 const _ImageCarousel(imageUrls: _imageUrls),
 
@@ -83,7 +82,6 @@ class PostDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       /// ── User info row ──────────────────────────────
                       Row(
                         children: [
@@ -162,21 +160,21 @@ class PostDetailScreen extends StatelessWidget {
                       const SizedBox(height: 14),
 
                       /// ── Location + Spec pills ────────────────────
-                      const Row(
-                        children: [
-                          _InfoPill(
-                            icon: Icons.location_on_outlined,
-                            label: _location,
-                          ),
-                          SizedBox(width: 12),
-                          _InfoPill(
-                            icon: Icons.directions_car_outlined,
-                            label: _carSpec,
-                          ),
-                        ],
-                      ),
+                      // const Row(
+                      //   children: [
+                      //     _InfoPill(
+                      //       icon: Icons.location_on_outlined,
+                      //       label: _location,
+                      //     ),
+                      //     SizedBox(width: 12),
+                      //     _InfoPill(
+                      //       icon: Icons.directions_car_outlined,
+                      //       label: _carSpec,
+                      //     ),
+                      //   ],
+                      // ),
 
-                      const SizedBox(height: 16),
+                      // const SizedBox(height: 16),
 
                       /// ── Engagement row ───────────────────────────
                       Row(
@@ -186,7 +184,7 @@ class PostDetailScreen extends StatelessWidget {
                           const SizedBox(width: 20),
 
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () => showCommentSheet(context),
                             child: const Row(
                               children: [
                                 Icon(
@@ -266,11 +264,7 @@ class _ProfileData {
   final String team;
   final String? imageUrl;
 
-  const _ProfileData({
-    required this.name,
-    required this.team,
-    this.imageUrl,
-  });
+  const _ProfileData({required this.name, required this.team, this.imageUrl});
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -421,42 +415,6 @@ class _CaptionText extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _InfoPill — location / car spec row
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _InfoPill extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _InfoPill({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: Colors.white38, size: 14),
-          const SizedBox(width: 4),
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white60,
-                fontSize: 11,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-
 class _SimilarProfileCard extends StatefulWidget {
   final _ProfileData profile;
 
@@ -490,10 +448,7 @@ class _SimilarProfileCardState extends State<_SimilarProfileCard> {
             ),
             child: ClipOval(
               child: widget.profile.imageUrl != null
-                  ? Image.network(
-                      widget.profile.imageUrl!,
-                      fit: BoxFit.cover,
-                    )
+                  ? Image.network(widget.profile.imageUrl!, fit: BoxFit.cover)
                   : const Icon(Icons.person, color: Colors.white),
             ),
           ),

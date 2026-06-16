@@ -6,8 +6,8 @@ import 'package:speedring/core/app_routes/app_routes.dart';
 class AuthController extends GetxController {
   // ── Login ────────────────────────────────────────────────────────────────
   final formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final emailController = TextEditingController(text: "test@speedring.com");
+  final passwordController = TextEditingController(text: "Test@1234");
 
   final RxBool isPasswordVisible = false.obs;
   final RxBool isLoading = false.obs;

@@ -250,40 +250,6 @@ class _StoryViewScreenState extends State<StoryViewScreen>
   }
 }
 
-
-class _TelemetryRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _TelemetryRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white38,
-            fontSize: 9,
-            letterSpacing: 1,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 /// ── Pulsing yellow dot ────────────────────────────────────────────────────────
 
 class _PulsingDot extends StatefulWidget {
