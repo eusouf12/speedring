@@ -14,7 +14,7 @@ import '../../view/sereen/AuthScreen/SignupScreen/signup_screen.dart';
 import '../../view/sereen/AuthScreen/ForgotPasswordScreen/forgot_password_screen.dart';
 import '../../view/sereen/AuthScreen/VerifyOtpScreen/verify_otp_screen.dart';
 import '../../view/sereen/AuthScreen/ResetPasswordScreen/reset_password_screen.dart';
-import '../../view/sereen/UserScreen/Home/user_home_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/user_home_screen.dart';
 
 class AppRoutes {
   ///===========================Authentication==========================
