@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
-import 'inbox_screen.dart';
+import 'package:get/get.dart';
+
+import '../../../../../core/app_routes/app_routes.dart';
 
 class MessageScreen extends StatelessWidget {
   const MessageScreen({super.key});
@@ -116,15 +118,13 @@ class MessageScreen extends StatelessWidget {
                 return ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => InboxScreen(
-                          userName: chat["name"],
-                          avatarUrl: chat["avatarUrl"],
-                          isOnline: chat["isOnline"],
-                        ),
-                      ),
+                    Get.toNamed(
+                      AppRoutes.inboxScreen,
+                      arguments: {
+                        "userName": chat["name"],
+                        "avatarUrl": chat["avatarUrl"],
+                        "isOnline": chat["isOnline"],
+                      },
                     );
                   },
                   leading: Stack(

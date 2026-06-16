@@ -13,8 +13,7 @@ import '../widget/story_item.dart';
 import '../widget/add_post_button.dart';
 import '../widget/post_card.dart';
 
-import '../NotificationScreen/notification_screen.dart';
-import '../MessageScreen/message_screen.dart';
+import '../../../../components/custom_nav_bar/navbar.dart';
 
 class UserHomeScreen extends StatelessWidget {
   const UserHomeScreen({super.key});
@@ -189,6 +188,7 @@ class UserHomeScreen extends StatelessWidget {
             ),
           ],
         ),
+        bottomNavigationBar: const CustomNavBar(currentIndex: 0),
       ),
     );
   }

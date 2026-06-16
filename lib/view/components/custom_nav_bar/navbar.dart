@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import '../../../core/app_routes/app_routes.dart';
 import '../../../utils/app_colors/app_colors.dart';
-import '../../../utils/app_icons/app_icons.dart';
 
 class CustomNavBar extends StatefulWidget {
   final int currentIndex;
@@ -25,61 +22,89 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // margin: EdgeInsets.only(left: 0.w, right: 0.w, bottom: 10.h),
-      height: 75.h,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(40.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 15,
-            spreadRadius: 2,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+    return SizedBox(
+      height: 90.h,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          // Inner cyan top gradient glow
+          /// ── Dark Navigation Bar Background ─────────────────────────────
           Positioned(
-            top: 0,
+            bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              height: 35.h,
+              height: 70.h,
               decoration: BoxDecoration(
+                color: const Color(0xff0D0D0D),
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40.r),
-                  topRight: Radius.circular(40.r),
+                  topLeft: Radius.circular(30.r),
+                  topRight: Radius.circular(30.r),
                 ),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppColors.navbarColor,
-                    AppColors.white,
+                border: const Border(
+                  top: BorderSide(color: Colors.white10, width: 1),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(child: _buildNormalNavItem(0, "HOME", Icons.home_outlined)),
+                    Expanded(child: _buildNormalNavItem(1, "DISCOVER", Icons.explore_outlined)),
+                    const Expanded(child: SizedBox.shrink()), // Space for the center Track item
+                    Expanded(child: _buildNormalNavItem(3, "MARKET", Icons.shopping_cart_outlined)),
+                    Expanded(child: _buildNormalNavItem(4, "PROFILE", Icons.person_outline)),
                   ],
                 ),
               ),
             ),
           ),
 
-          // Row of buttons
-          Positioned.fill(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildNavItem(0, "HOME", Icons.home),
-                  _buildNavItem(1, "BOOKINGS", Icons.calendar_today_rounded),
-                  _buildNavItem(2, "MESSAGES", Icons.chat_bubble),
-                  _buildNavItem(3, "SOCIAL", null, isImage: true),
-                  _buildNavItem(4, "ACCOUNT", Icons.person),
-                ],
+          /// ── Floating Center TRACK Button ───────────────────────────────
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: GestureDetector(
+                onTap: () => onTap(2),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 58.w,
+                      height: 58.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.yellow,
+                        borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.yellow.withOpacity(0.3),
+                            blurRadius: 15,
+                            spreadRadius: 2,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.speed,
+                        color: Colors.black,
+                        size: 30,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "TRACK",
+                      style: TextStyle(
+                        color: AppColors.yellow,
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -88,94 +113,44 @@ class _CustomNavBarState extends State<CustomNavBar> {
     );
   }
 
-  Widget _buildNavItem(
-    int index,
-    String label,
-    IconData? icon, {
-    bool isImage = false,
-  }) {
-    bool isSelected = index == bottomNavIndex;
+  Widget _buildNormalNavItem(int index, String label, IconData icon) {
+    final bool isSelected = index == bottomNavIndex;
+    final Color itemColor = isSelected ? AppColors.yellow : const Color(0xffD1C5AB);
 
     return GestureDetector(
       onTap: () => onTap(index),
-      child: Container(
-        width: 62.w,
-        height: 62.w,
-        decoration: BoxDecoration(
-          color: isSelected ? null : const Color(0xFF161616),
-          gradient: isSelected
-              ? const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppColors.navbarColor1,
-                    AppColors.navbarColor2,
-                  ],
-                )
-              : null,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.4),
-              blurRadius: 10,
-              spreadRadius: 1,
-              offset: const Offset(0, 5),
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 22.sp,
+            color: itemColor,
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 8.5.sp,
+              fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
+              color: itemColor,
+              letterSpacing: 0.3,
             ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (isImage)
-              Transform.translate(
-                offset: const Offset(0, 2),
-                child: Image.asset(
-                  AppIcons.newLogo, 
-                  height: 36.h, 
-                  width: 50.w,
-                  fit: BoxFit.contain,
-                ),
-              )
-            else
-              Icon(
-                icon,
-                size: 24.sp,
-                color: Colors.white,
-              ),
-
-            isImage ? const SizedBox.shrink() : SizedBox(height: 3.h),
-
-            Transform.translate(
-              offset: Offset(0, isImage ? -4.h : 0),
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 8.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  letterSpacing: 0.3,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   void onTap(int index) {
     if (index != bottomNavIndex) {
-      if (index == 0) {
-       // Get.offAllNamed(AppRoutes.homeScreen);
-      } else if (index == 1) {
-       // Get.offAllNamed(AppRoutes.bookingScreen);
-      } else if (index == 2) {
-        // Get.offAllNamed(AppRoutes.messagesScreen);
-      } else if (index == 3) {
-        // Get.offAllNamed(AppRoutes.socialScreen);
-      } else if (index == 4) {
-       // Get.offAllNamed(AppRoutes.userProfileScreen);
-      }
+      setState(() {
+        bottomNavIndex = index;
+      });
+      // Handle page switching route calls here if wired with GetX
+      // e.g., if (index == 0) Get.offAllNamed(AppRoutes.userHomeScreen);
     }
   }
 }
