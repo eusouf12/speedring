@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import '../../../../utils/app_colors/app_colors.dart';
+import '../../../components/custom_text/custom_text.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -12,247 +15,369 @@ class NotificationScreen extends StatelessWidget {
         backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.menu, color: AppColors.yellow),
+          onPressed: () {},
         ),
-        title: const Text(
-          "NOTIFICATIONS",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.5,
+        title: Image.network(
+          "https://picsum.photos/seed/speedringlogo/130/40",
+          height: 30.h,
+          width: 100.w,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) => const Text(
+            "SPEEDRING",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.0,
+            ),
           ),
         ),
         centerTitle: true,
         actions: [
           IconButton(
+            icon: const Icon(Icons.notifications, color: AppColors.yellow),
             onPressed: () {},
-            icon: const Icon(Icons.done_all, color: AppColors.yellow, size: 20),
-            tooltip: "Mark all as read",
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        children: const [
-          _SectionHeader(title: "TODAY"),
-          _NotificationItem(
-            icon: Icons.speed,
-            iconColor: AppColors.yellow,
-            title: "Lap Time Beaten",
-            description: "Your best lap time of 61:28.442 at Silverstone was beaten by @speedmaster (61:27.108).",
-            time: "2h ago",
-            isUnread: true,
-          ),
-          _NotificationItem(
-            icon: Icons.favorite,
-            iconColor: Colors.redAccent,
-            title: "New Like",
-            description: "@alex_racer and 4 others liked your spot post: Ferrari SF90 Stradale.",
-            time: "4h ago",
-            isUnread: true,
-          ),
-          _NotificationItem(
-            icon: Icons.comment,
-            iconColor: Colors.blueAccent,
-            title: "New Comment",
-            description: "@track_king commented: 'What tyre pressure did you run on the hot lap?'",
-            time: "6h ago",
-            isUnread: false,
-          ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Screen Title & Clear All
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "NOTIFICATIONS",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    CustomText(
+                      text: "SYSTEM FEED",
+                      color: Colors.white38,
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () {},
+                  child: Row(
+                    children: [
+                      const Icon(Icons.close, color: Colors.white60, size: 14),
+                      SizedBox(width: 4.w),
+                      CustomText(
+                        text: "CLEAR ALL",
+                        color: Colors.white60,
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 24.h),
 
-          _SectionHeader(title: "YESTERDAY"),
-          _NotificationItem(
-            icon: Icons.flag,
-            iconColor: Colors.orangeAccent,
-            title: "Track Hazard Cleared",
-            description: "Yellow flag cleared at Silverstone Circuit (Grand Prix Loop). Surface condition is now DRY.",
-            time: "1d ago",
-            isUnread: false,
-          ),
-          _NotificationItem(
-            icon: Icons.group_add,
-            iconColor: Colors.greenAccent,
-            title: "Club Invitation",
-            description: "@Scuderia Club invited you to join their private weekend track run.",
-            time: "1d ago",
-            isUnread: false,
-            hasAction: true,
-            actionLabel: "VIEW INVITE",
-          ),
+            /// NEW Section
+            _buildSectionDivider("NEW"),
+            SizedBox(height: 12.h),
 
-          _SectionHeader(title: "THIS WEEK"),
-          _NotificationItem(
-            icon: Icons.workspace_premium,
-            iconColor: AppColors.yellow,
-            title: "Account Verified",
-            description: "Congratulations! Your driver profile has been successfully verified. You now have the verified badge.",
-            time: "4d ago",
-            isUnread: false,
-          ),
-          _NotificationItem(
-            icon: Icons.work,
-            iconColor: Colors.purpleAccent,
-            title: "Business Update",
-            description: "Apex Tuning updated their pricing catalog for Precision Suspension Services.",
-            time: "6d ago",
-            isUnread: false,
-          ),
-        ],
+            /// Notification 1: Track
+            _buildNotificationCard(
+              avatarWidget: _buildIconBox(Icons.speed, AppColors.yellow),
+              category: "TRACK",
+              categoryColor: AppColors.yellow,
+              time: "02:14 PM",
+              title: "SPA-FRANCORCHAMPS: SESSION LIVE",
+              content: "The circuit is now green for public lapping. Track temperature is 24°C. Grip levels optimal.",
+              isUnread: true,
+              actionButton: _buildActionButton(
+                label: "View",
+                onTap: () {},
+                isSolid: true,
+              ),
+            ),
+            SizedBox(height: 12.h),
+
+            /// Notification 2: Social
+            _buildNotificationCard(
+              avatarWidget: Container(
+                width: 36.w,
+                height: 36.w,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              category: "SOCIAL",
+              categoryColor: Colors.white60,
+              time: "11:45 AM",
+              contentWidget: RichText(
+                text: TextSpan(
+                  style: TextStyle(color: Colors.white70, fontSize: 12.sp, height: 1.45),
+                  children: [
+                    const TextSpan(
+                      text: "@max_verstappen_33 ",
+                      style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+                    ),
+                    const TextSpan(text: "mentioned you:\n"),
+                    TextSpan(
+                      text: "\"Great line through Eau Rouge!\"",
+                      style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white.withOpacity(0.9)),
+                    ),
+                  ],
+                ),
+              ),
+              isUnread: false,
+              actionButton: _buildActionButton(
+                label: "View",
+                onTap: () {},
+                isSolid: false,
+              ),
+            ),
+            SizedBox(height: 12.h),
+
+            /// Notification 3: Market
+            _buildNotificationCard(
+              avatarWidget: _buildIconBox(Icons.shopping_cart_outlined, AppColors.yellow),
+              category: "MARKET",
+              categoryColor: AppColors.yellow,
+              time: "09:12 AM",
+              title: "NEW LEAD: 2024 PORSCHE 911 GT3 RS",
+              content: "A verified buyer has sent an inquiry regarding your listing. Buyer Rating: 4.9/5.0.",
+              isUnread: true,
+              actionButton: _buildActionButton(
+                label: "VIEW LEAD",
+                onTap: () {},
+                isSolid: true,
+              ),
+            ),
+            SizedBox(height: 24.h),
+
+            /// EARLIER Section
+            _buildSectionDivider("EARLIER"),
+            SizedBox(height: 12.h),
+
+            /// Notification 4: Track (Earlier)
+            _buildNotificationCard(
+              avatarWidget: _buildIconBox(Icons.timer_outlined, AppColors.yellow),
+              category: "TRACK",
+              categoryColor: Colors.white60,
+              time: "YESTERDAY",
+              title: "NEW RECORD: SECTOR 2 PB",
+              content: "You've set a new personal best in Sector 2 at Silverstone.",
+              isUnread: false,
+              extraWidget: Container(
+                margin: EdgeInsets.only(top: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomText(
+                      text: "LAP TIME: ",
+                      color: Colors.white38,
+                      fontSize: 8.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    const CustomText(
+                      text: "32.441s",
+                      color: AppColors.yellow,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 20.h),
+          ],
+        ),
       ),
     );
   }
-}
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  const _SectionHeader({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 10, left: 4),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white38,
-          fontSize: 10,
+  Widget _buildSectionDivider(String title) {
+    return Row(
+      children: [
+        CustomText(
+          text: title,
+          color: AppColors.yellow,
+          fontSize: 9.sp,
           fontWeight: FontWeight.w900,
-          letterSpacing: 1.2,
+          letterSpacing: 1.0,
         ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: Container(
+            height: 1,
+            color: Colors.white.withOpacity(0.08),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIconBox(IconData icon, Color color) {
+    return Container(
+      width: 36.w,
+      height: 36.w,
+      decoration: BoxDecoration(
+        color: const Color(0xff181818),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
+      ),
+      child: Center(
+        child: Icon(icon, color: color, size: 18),
       ),
     );
   }
-}
 
-class _NotificationItem extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String description;
-  final String time;
-  final bool isUnread;
-  final bool hasAction;
-  final String? actionLabel;
-
-  const _NotificationItem({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.description,
-    required this.time,
-    required this.isUnread,
-    this.hasAction = false,
-    this.actionLabel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildNotificationCard({
+    required Widget avatarWidget,
+    required String category,
+    required Color categoryColor,
+    required String time,
+    String? title,
+    String? content,
+    Widget? contentWidget,
+    required bool isUnread,
+    Widget? actionButton,
+    Widget? extraWidget,
+  }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isUnread ? const Color(0xff151515) : const Color(0xff0d0d0d),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isUnread ? AppColors.yellow.withOpacity(0.15) : Colors.white10,
-          width: 1,
-        ),
+        color: const Color(0xff111111),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: isUnread ? Colors.white24 : Colors.white10),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Status / Unread indicator dot
-          if (isUnread)
-            Container(
-              margin: const EdgeInsets.only(top: 6, right: 8),
-              width: 6,
-              height: 6,
-              decoration: const BoxDecoration(
-                color: AppColors.yellow,
-                shape: BoxShape.circle,
-              ),
-            )
-          else
-            const SizedBox(width: 14),
-
-          /// Icon Container
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              icon,
-              color: iconColor,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 14),
-
-          /// Content
+          avatarWidget,
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// Category and Time
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                      ),
+                    Row(
+                      children: [
+                        if (isUnread) ...[
+                          Container(
+                            width: 6.w,
+                            height: 6.w,
+                            decoration: const BoxDecoration(
+                              color: AppColors.yellow,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          SizedBox(width: 6.w),
+                        ],
+                        CustomText(
+                          text: category,
+                          color: categoryColor,
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.0,
+                        ),
+                      ],
                     ),
-                    Text(
-                      time,
-                      style: const TextStyle(
-                        color: Colors.white38,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    CustomText(
+                      text: time,
+                      color: Colors.white38,
+                      fontSize: 9.sp,
+                      fontWeight: FontWeight.bold,
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  description,
-                  style: const TextStyle(
+                SizedBox(height: 6.h),
+
+                /// Title
+                if (title != null) ...[
+                  CustomText(
+                    text: title,
+                    color: Colors.white,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w900,
+                  ),
+                  SizedBox(height: 4.h),
+                ],
+
+                /// Content Body
+                if (contentWidget != null)
+                  contentWidget
+                else if (content != null)
+                  CustomText(
+                    text: content,
                     color: Colors.white70,
-                    fontSize: 11,
-                    height: 1.45,
+                    fontSize: 11.5.sp,
+                    height: 1.4,
                   ),
-                ),
-                if (hasAction && actionLabel != null) ...[
-                  const SizedBox(height: 12),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: AppColors.yellow,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        actionLabel!,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
+
+                /// Extra Widget (e.g. LAP TIME badge)
+                if (extraWidget != null) extraWidget,
+
+                /// Action Button
+                if (actionButton != null) ...[
+                  SizedBox(height: 12.h),
+                  actionButton,
+                ],
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required String label,
+    required VoidCallback onTap,
+    required bool isSolid,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 34.h,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: isSolid ? AppColors.yellow : Colors.transparent,
+          borderRadius: BorderRadius.circular(6.r),
+          border: isSolid ? null : Border.all(color: AppColors.yellow.withOpacity(0.4)),
+        ),
+        child: Center(
+          child: CustomText(
+            text: label,
+            color: isSolid ? Colors.black : AppColors.yellow,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.5,
+          ),
+        ),
       ),
     );
   }

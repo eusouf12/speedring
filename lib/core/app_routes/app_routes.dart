@@ -39,6 +39,20 @@ import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/club_post_screen.dart
 import '../../view/sereen/UserScreen/discover/add_spot_screen.dart';
 import '../../view/sereen/UserScreen/discover/add_video_screen.dart';
 import '../../view/sereen/UserScreen/discover/discover_screen.dart';
+import '../../view/sereen/UserScreen/MarketPlace/marketplace_feed_screen.dart';
+import '../../view/sereen/UserScreen/MarketPlace/item_detail_screen.dart';
+import '../../view/sereen/UserScreen/MarketPlace/select_category_screen.dart';
+import '../../view/sereen/UserScreen/MarketPlace/create_vehicle_listing_screen.dart';
+import '../../view/sereen/UserScreen/MarketPlace/create_motorcycle_listing_screen.dart';
+import '../../view/sereen/UserScreen/Profile/profile_screen.dart';
+import '../../view/sereen/UserScreen/Profile/add_vehicle_screen.dart';
+import '../../view/sereen/UserScreen/Profile/edit_profile_screen.dart';
+import '../../view/sereen/UserScreen/Profile/user_parameters_screen.dart';
+import '../../view/sereen/UserScreen/MarketPlace/my_listings_screen.dart';
+import '../../view/sereen/UserScreen/Profile/edit_vehicle_screen.dart';
+
+
+
 
 
 
@@ -86,6 +100,19 @@ class AppRoutes {
   static const String clubDetailsScreen = "/ClubDetailsScreen";
   static const String createPostScreen = "/CreatePostScreen";
   static const String clubPostScreen = "/ClubPostScreen";
+  static const String marketplaceFeedScreen = "/MarketplaceFeedScreen";
+  static const String itemDetailScreen = "/ItemDetailScreen";
+  static const String selectCategoryScreen = "/SelectCategoryScreen";
+  static const String createVehicleListingScreen = "/CreateVehicleListingScreen";
+  static const String createMotorcycleListingScreen = "/CreateMotorcycleListingScreen";
+  static const String profileScreen = "/ProfileScreen";
+  static const String addVehicleScreen = "/AddVehicleScreen";
+  static const String editProfileScreen = "/EditProfileScreen";
+  static const String userParametersScreen = "/UserParametersScreen";
+  static const String myListingsScreen = "/MyListingsScreen";
+  static const String editVehicleScreen = "/EditVehicleScreen";
+
+
 
 
 
@@ -139,6 +166,17 @@ class AppRoutes {
     GetPage(name: clubDetailsScreen, page: () => const ClubDetailsScreen()),
     GetPage(name: createPostScreen, page: () => CreatePostScreen()),
     GetPage(name: clubPostScreen, page: () => const ClubPostScreen()),
-
+    GetPage(name: marketplaceFeedScreen, page: () => const MarketplaceListingFeedScreen()),
+    GetPage(name: itemDetailScreen, page: () => const ItemDetailScreen()),
+    GetPage(name: selectCategoryScreen, page: () => const SelectCategoryScreen()),
+    GetPage(name: createVehicleListingScreen, page: () => const CreateVehicleListingScreen()),
+    GetPage(name: createMotorcycleListingScreen, page: () => const CreateMotorcycleListingScreen()),
+    GetPage(name: profileScreen, page: () => const ProfileScreen()),
+    GetPage(name: addVehicleScreen, page: () => const AddVehicleScreen()),
+    GetPage(name: editProfileScreen, page: () => const EditProfileScreen()),
+    GetPage(name: userParametersScreen, page: () => const UserParametersScreen()),
+    GetPage(name: myListingsScreen, page: () => const MyListingsScreen()),
+    GetPage(name: editVehicleScreen, page: () => const EditVehicleScreen()),
   ];
+
 }
