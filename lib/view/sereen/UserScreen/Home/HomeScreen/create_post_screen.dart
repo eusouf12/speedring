@@ -4,7 +4,7 @@ import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appba
 import 'session_post_screen.dart';
 import 'spot_post_screen.dart';
 import 'track_update_screen.dart';
-import 'club_post_screen.dart';
+import 'clubs/club_post_screen.dart';
 import 'business_post_screen.dart';
 
 class CreatePostScreen extends StatefulWidget {

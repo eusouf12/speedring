@@ -14,10 +14,21 @@ import '../../view/sereen/AuthScreen/SignupScreen/signup_screen.dart';
 import '../../view/sereen/AuthScreen/ForgotPasswordScreen/forgot_password_screen.dart';
 import '../../view/sereen/AuthScreen/VerifyOtpScreen/verify_otp_screen.dart';
 import '../../view/sereen/AuthScreen/ResetPasswordScreen/reset_password_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/club_details_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/user_home_screen.dart';
 import '../../view/sereen/UserScreen/Home/NotificationScreen/notification_screen.dart';
 import '../../view/sereen/UserScreen/Home/MessageScreen/message_screen.dart';
 import '../../view/sereen/UserScreen/Home/MessageScreen/inbox_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/event_detail_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/access_granted_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/create_club_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/edit_club_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/create_post_screen.dart';
+import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/club_post_screen.dart';
+
+
+
+
 
 class AppRoutes {
   ///===========================Authentication==========================
@@ -40,6 +51,17 @@ class AppRoutes {
   static const String notificationScreen = "/NotificationScreen";
   static const String messageScreen = "/MessageScreen";
   static const String inboxScreen = "/InboxScreen";
+  static const String eventDetailScreen = "/EventDetailScreen";
+  static const String accessGrantedScreen = "/AccessGrantedScreen";
+  static const String createClubScreen = "/CreateClubScreen";
+  static const String editClubScreen = "/EditClubScreen";
+  static const String clubDetailsScreen = "/ClubDetailsScreen";
+  static const String createPostScreen = "/CreatePostScreen";
+  static const String clubPostScreen = "/ClubPostScreen";
+
+
+
+
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -68,5 +90,14 @@ class AppRoutes {
       avatarUrl: Get.arguments?["avatarUrl"] ?? "https://picsum.photos/100/100",
       isOnline: Get.arguments?["isOnline"] ?? false,
     )),
+    GetPage(name: eventDetailScreen, page: () => const EventDetailScreen()),
+    GetPage(name: accessGrantedScreen, page: () => const AccessGrantedScreen()),
+    GetPage(name: createClubScreen, page: () => const CreateClubScreen()),
+    GetPage(name: editClubScreen, page: () => const EditClubScreen()),
+    GetPage(name: clubDetailsScreen, page: () => const ClubDetailsScreen()),
+    GetPage(name: createPostScreen, page: () => CreatePostScreen()),
+    GetPage(name: clubPostScreen, page: () => const ClubPostScreen()),
+
   ];
 }
+
