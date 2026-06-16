@@ -23,11 +23,22 @@ import '../../view/sereen/UserScreen/Home/HomeScreen/event_detail_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/access_granted_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/create_club_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/edit_club_screen.dart';
-import '../../view/sereen/UserScreen/Home/HomeScreen/discover/discover_screen.dart';
-import '../../view/sereen/UserScreen/Home/HomeScreen/discover/add_spot_screen.dart';
-import '../../view/sereen/UserScreen/Home/HomeScreen/discover/add_video_screen.dart';
+import '../../view/sereen/UserScreen/track/track_hub_screen.dart';
+import '../../view/sereen/UserScreen/track/prepare_session_screen.dart';
+import '../../view/sereen/UserScreen/track/live_session_screen.dart';
+import '../../view/sereen/UserScreen/track/drive_summary_screen.dart';
+import '../../view/sereen/UserScreen/track/find_track_screen.dart';
+import '../../view/sereen/UserScreen/track/group_drives/group_drives_screen.dart';
+import '../../view/sereen/UserScreen/track/group_drives/trip_configurator_screen.dart';
+import '../../view/sereen/UserScreen/track/group_drives/trip_lobby_screen.dart';
+import '../../view/sereen/UserScreen/track/group_drives/active_drive_screen.dart';
+import '../../view/sereen/UserScreen/track/group_drives/end_expedition_screen.dart';
+import '../../view/sereen/UserScreen/track/group_drives/share_expedition_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/create_post_screen.dart';
 import '../../view/sereen/UserScreen/Home/HomeScreen/clubs/club_post_screen.dart';
+import '../../view/sereen/UserScreen/discover/add_spot_screen.dart';
+import '../../view/sereen/UserScreen/discover/add_video_screen.dart';
+import '../../view/sereen/UserScreen/discover/discover_screen.dart';
 
 
 
@@ -61,6 +72,17 @@ class AppRoutes {
   static const String discoverScreen = "/DiscoverScreen";
   static const String addSpotScreen = "/AddSpotScreen";
   static const String addVideoScreen = "/AddVideoScreen";
+  static const String trackHubScreen = "/TrackHubScreen";
+  static const String prepareSessionScreen = "/PrepareSessionScreen";
+  static const String liveSessionScreen = "/LiveSessionScreen";
+  static const String driveSummaryScreen = "/DriveSummaryScreen";
+  static const String findTrackScreen = "/FindTrackScreen";
+  static const String groupDrivesScreen = "/GroupDrivesScreen";
+  static const String tripConfiguratorScreen = "/TripConfiguratorScreen";
+  static const String tripLobbyScreen = "/TripLobbyScreen";
+  static const String activeDriveScreen = "/ActiveDriveScreen";
+  static const String endExpeditionScreen = "/EndExpeditionScreen";
+  static const String shareExpeditionScreen = "/ShareExpeditionScreen";
   static const String clubDetailsScreen = "/ClubDetailsScreen";
   static const String createPostScreen = "/CreatePostScreen";
   static const String clubPostScreen = "/ClubPostScreen";
@@ -103,10 +125,20 @@ class AppRoutes {
     GetPage(name: discoverScreen, page: () => const DiscoverScreen()),
     GetPage(name: addSpotScreen, page: () => const AddSpotScreen()),
     GetPage(name: addVideoScreen, page: () => const AddVideoScreen()),
+    GetPage(name: trackHubScreen, page: () => const TrackHubScreen()),
+    GetPage(name: prepareSessionScreen, page: () => const PrepareSessionScreen()),
+    GetPage(name: liveSessionScreen, page: () => const LiveSessionScreen()),
+    GetPage(name: driveSummaryScreen, page: () => const DriveSummaryScreen()),
+    GetPage(name: findTrackScreen, page: () => const FindTrackScreen()),
+    GetPage(name: groupDrivesScreen, page: () => const GroupDrivesScreen()),
+    GetPage(name: tripConfiguratorScreen, page: () => const TripConfiguratorScreen()),
+    GetPage(name: tripLobbyScreen, page: () => const TripLobbyScreen()),
+    GetPage(name: activeDriveScreen, page: () => const ActiveDriveScreen()),
+    GetPage(name: endExpeditionScreen, page: () => const EndExpeditionScreen()),
+    GetPage(name: shareExpeditionScreen, page: () => const ShareExpeditionScreen()),
     GetPage(name: clubDetailsScreen, page: () => const ClubDetailsScreen()),
     GetPage(name: createPostScreen, page: () => CreatePostScreen()),
     GetPage(name: clubPostScreen, page: () => const ClubPostScreen()),
 
   ];
 }
-

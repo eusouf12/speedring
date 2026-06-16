@@ -155,6 +155,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
         Get.offAllNamed(AppRoutes.userHomeScreen);
       } else if (index == 1) {
         Get.offAllNamed(AppRoutes.discoverScreen);
+      } else if (index == 2) {
+        Get.offAllNamed(AppRoutes.trackHubScreen);
       }
     }
   }
