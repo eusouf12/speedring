@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 
 
@@ -159,7 +160,7 @@ class _CommentSheet extends StatelessWidget {
                     vertical: 12,
                   ),
                   itemCount: _comments.length,
-                  separatorBuilder: (_, __) => const Divider(
+                  separatorBuilder: (_, _) => const Divider(
                     color: Colors.white12,
                     height: 24,
                   ),
@@ -167,7 +168,7 @@ class _CommentSheet extends StatelessWidget {
                 ),
               ),
 
-              /// ── Bottom input bar ─────────────────────────────────────
+              /// ── Bottom input bar ──────────
               const _CommentInputBar(),
             ],
           ),
@@ -177,29 +178,50 @@ class _CommentSheet extends StatelessWidget {
   }
 }
 
+// ───────────────────────────────────────────────── Controllers
+
+class CommentTileController extends GetxController {
+  final RxBool liked = false.obs;
+}
+
+class CommentInputBarController extends GetxController {
+  final TextEditingController ctrl = TextEditingController();
+  final RxBool hasText = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    ctrl.addListener(() {
+      hasText.value = ctrl.text.trim().isNotEmpty;
+    });
+  }
+
+  @override
+  void onClose() {
+    ctrl.dispose();
+    super.onClose();
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // _CommentTile
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _CommentTile extends StatefulWidget {
+class _CommentTile extends StatelessWidget {
   final _CommentData data;
 
   const _CommentTile({required this.data});
 
   @override
-  State<_CommentTile> createState() => _CommentTileState();
-}
-
-class _CommentTileState extends State<_CommentTile> {
-  bool _liked = false;
-
-  @override
   Widget build(BuildContext context) {
+    final tag = '${data.userName}_${data.text.hashCode}';
+    final controller = Get.put(CommentTileController(), tag: tag);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// Avatar
-        _Avatar(initials: widget.data.initials),
+        _Avatar(initials: data.initials),
 
         const SizedBox(width: 10),
 
@@ -211,7 +233,7 @@ class _CommentTileState extends State<_CommentTile> {
               Row(
                 children: [
                   Text(
-                    widget.data.userName,
+                    data.userName,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 11,
@@ -219,7 +241,7 @@ class _CommentTileState extends State<_CommentTile> {
                       letterSpacing: 0.5,
                     ),
                   ),
-                  if (widget.data.isVerified) ...[
+                  if (data.isVerified) ...[
                     const SizedBox(width: 4),
                     const Icon(
                       Icons.verified,
@@ -234,7 +256,7 @@ class _CommentTileState extends State<_CommentTile> {
 
               /// Comment text
               Text(
-                widget.data.text,
+                data.text,
                 style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 12,
@@ -248,7 +270,7 @@ class _CommentTileState extends State<_CommentTile> {
               Row(
                 children: [
                   Text(
-                    widget.data.timeAgo,
+                    data.timeAgo,
                     style: const TextStyle(
                       color: Colors.white38,
                       fontSize: 10,
@@ -259,17 +281,17 @@ class _CommentTileState extends State<_CommentTile> {
 
                   /// Like
                   GestureDetector(
-                    onTap: () => setState(() => _liked = !_liked),
+                    onTap: () => controller.liked.value = !controller.liked.value,
                     child: Row(
                       children: [
-                        Icon(
-                          _liked ? Icons.favorite : Icons.favorite_border,
-                          color: _liked ? Colors.red : Colors.white38,
+                        Obx(() => Icon(
+                          controller.liked.value ? Icons.favorite : Icons.favorite_border,
+                          color: controller.liked.value ? Colors.red : Colors.white38,
                           size: 13,
-                        ),
+                        )),
                         const SizedBox(width: 3),
                         Text(
-                          widget.data.likeCount,
+                          data.likeCount,
                           style: const TextStyle(
                             color: Colors.white38,
                             fontSize: 10,
@@ -304,12 +326,12 @@ class _CommentTileState extends State<_CommentTile> {
               ),
 
               /// View replies
-              if (widget.data.replyCount > 0) ...[
+              if (data.replyCount > 0) ...[
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () {},
                   child: Text(
-                    "VIEW ${widget.data.replyCount} REPLIES",
+                    "VIEW ${data.replyCount} REPLIES",
                     style: const TextStyle(
                       color: AppColors.yellow,
                       fontSize: 10,
@@ -364,34 +386,12 @@ class _Avatar extends StatelessWidget {
 // _CommentInputBar — bottom text field
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _CommentInputBar extends StatefulWidget {
+class _CommentInputBar extends StatelessWidget {
   const _CommentInputBar();
 
   @override
-  State<_CommentInputBar> createState() => _CommentInputBarState();
-}
-
-class _CommentInputBarState extends State<_CommentInputBar> {
-  final TextEditingController _ctrl = TextEditingController();
-  bool _hasText = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl.addListener(() {
-      final has = _ctrl.text.trim().isNotEmpty;
-      if (has != _hasText) setState(() => _hasText = has);
-    });
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CommentInputBarController());
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     return AnimatedPadding(
       duration: const Duration(milliseconds: 200),
@@ -407,7 +407,7 @@ class _CommentInputBarState extends State<_CommentInputBar> {
             /// Text field
             Expanded(
               child: TextField(
-                controller: _ctrl,
+                controller: controller.ctrl,
                 style: const TextStyle(color: Colors.white, fontSize: 13),
                 decoration: InputDecoration(
                   hintText: "Write a comment...",
@@ -432,28 +432,28 @@ class _CommentInputBarState extends State<_CommentInputBar> {
             const SizedBox(width: 10),
 
             /// Send button
-            AnimatedContainer(
+            Obx(() => AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: _hasText ? AppColors.yellow : Colors.white12,
+                color: controller.hasText.value ? AppColors.yellow : Colors.white12,
                 shape: BoxShape.circle,
               ),
               child: GestureDetector(
-                onTap: _hasText
+                onTap: controller.hasText.value
                     ? () {
-                        _ctrl.clear();
+                        controller.ctrl.clear();
                         FocusScope.of(context).unfocus();
                       }
                     : null,
                 child: Icon(
                   Icons.arrow_upward_rounded,
-                  color: _hasText ? Colors.black : Colors.white38,
+                  color: controller.hasText.value ? Colors.black : Colors.white38,
                   size: 20,
                 ),
               ),
-            ),
+            )),
           ],
         ),
       ),

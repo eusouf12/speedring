@@ -105,9 +105,7 @@ class SplashController extends GetxController
 
   void _navigateAfterDelay() {
     Future.delayed(const Duration(milliseconds: 4000), () {
-      // TODO: SharedPreferences দিয়ে login check করুন
-      // final isLoggedIn = Get.find<AuthService>().isLoggedIn;
-      // Get.offAllNamed(isLoggedIn ? AppRoutes.homeScreen : AppRoutes.onboardingScreen);
+     
       Get.offAllNamed(AppRoutes.onboardingScreen);
     });
   }

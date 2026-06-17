@@ -25,9 +25,9 @@ class CustomOnboardingCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(.35),
+            color: Colors.black.withValues(alpha:.35),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(.08)),
+            border: Border.all(color: Colors.white.withValues(alpha:.08)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +66,7 @@ class CustomOnboardingCard extends StatelessWidget {
               Text(
                 description,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(.75),
+                  color: Colors.white.withValues(alpha:.75),
                   fontSize: 15,
                   height: 1.5,
                 ),

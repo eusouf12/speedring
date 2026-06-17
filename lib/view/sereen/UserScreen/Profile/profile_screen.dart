@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../components/custom_button/custom_button.dart';
 import '../../../components/custom_text/custom_text.dart';
 import '../../../components/custom_nav_bar/navbar.dart';
@@ -21,271 +22,273 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
+    return CustomGradient(
+      child: Scaffold(
         backgroundColor: Colors.black,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: AppColors.yellow),
-          onPressed: () {},
-        ),
-        title: Image.network(
-          "https://picsum.photos/seed/speedringlogo/130/40",
-          height: 30,
-          width: 100,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) => const Text(
-            "SPEEDRING",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.0,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.menu, color: AppColors.yellow),
+            onPressed: () {},
+          ),
+          title: Image.network(
+            "https://picsum.photos/seed/speedringlogo/130/40",
+            height: 30,
+            width: 100,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) => const Text(
+              "SPEEDRING",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.0,
+              ),
             ),
           ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications_none, color: AppColors.yellow),
+              onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings_outlined, color: AppColors.yellow),
+              onPressed: () => Get.toNamed(AppRoutes.userParametersScreen),
+            ),
+          ],
         ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none, color: AppColors.yellow),
-            onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: AppColors.yellow),
-            onPressed: () => Get.toNamed(AppRoutes.userParametersScreen),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// Banner & Avatar Stack
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                /// Banner Image
-                Container(
-                  height: 180.h,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=800&fit=crop"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 12.h,
-                  right: 12.w,
-                  child: GestureDetector(
-                    onTap: () => Get.toNamed(AppRoutes.editProfileScreen),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                      decoration: BoxDecoration(
-                        color: Colors.black54,
-                        borderRadius: BorderRadius.circular(6.r),
-                        border: Border.all(color: Colors.white24),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.edit, color: Colors.white70, size: 12),
-                          SizedBox(width: 4.w),
-                          const Text(
-                            "EDIT",
-                            style: TextStyle(color: Colors.white70, fontSize: 8, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Banner & Avatar Stack
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  /// Banner Image
+                  Container(
+                    height: 180.h,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=800&fit=crop"),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                ),
-
-                /// Profile Avatar
-                Positioned(
-                  bottom: -40.h,
-                  left: 16.w,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        width: 80.w,
-                        height: 80.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black, width: 3),
-                          image: const DecorationImage(
-                            image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop"),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: const BoxDecoration(
-                            color: AppColors.yellow,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.check, color: Colors.black, size: 12),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                /// Coins indicator
-                Positioned(
-                  bottom: -36.h,
-                  right: 16.w,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
+                  Positioned(
+                    top: 12.h,
+                    right: 12.w,
+                    child: GestureDetector(
+                      onTap: () => Get.toNamed(AppRoutes.editProfileScreen),
+                      child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                         decoration: BoxDecoration(
-                          color: const Color(0xff161616),
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(color: Colors.white.withOpacity(0.05)),
+                          color: Colors.black54,
+                          borderRadius: BorderRadius.circular(6.r),
+                          border: Border.all(color: Colors.white24),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.wallet, color: AppColors.yellow, size: 14),
+                            const Icon(Icons.edit, color: Colors.white70, size: 12),
                             SizedBox(width: 4.w),
-                            CustomText(
-                              text: "12,450 COINS",
-                              color: AppColors.yellow1,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
+                            const Text(
+                              "EDIT",
+                              style: TextStyle(color: Colors.white70, fontSize: 8, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 48.h),
-
-            /// Profile Identity Details
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: "MAX VERSTAPPEN",
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.5,
+      
+                  /// Profile Avatar
+                  Positioned(
+                    bottom: -40.h,
+                    left: 16.w,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          width: 80.w,
+                          height: 80.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black, width: 3),
+                            image: const DecorationImage(
+                              image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop"),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: const BoxDecoration(
+                              color: AppColors.yellow,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.check, color: Colors.black, size: 12),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 4.h),
-                  Row(
-                    children: [
-                      const Icon(Icons.flag, color: Colors.blue, size: 14), // placeholder for Dutch flag
-                      SizedBox(width: 6.w),
-                      CustomText(
-                        text: "@max_verstappen_33   da",
-                        color: AppColors.yellow,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10.h),
-                  CustomText(
-                    text: "3-time World Champion. Pushing the limits of engineering and performance.",
-                    color: Colors.white70,
-                    fontSize: 11,
-                    textAlign: TextAlign.start,
-                    height: 1.4,
-                  ),
-                  SizedBox(height: 16.h),
-
-                  /// Social Toggles and Support button
-                  Row(
-                    children: [
-                      _buildSocialIcon(Icons.camera_alt_outlined),
-                      SizedBox(width: 10.w),
-                      _buildSocialIcon(Icons.music_note_outlined),
-                      SizedBox(width: 10.w),
-                      _buildSocialIcon(Icons.play_circle_outline),
-                      SizedBox(width: 10.w),
-                      _buildSocialIcon(Icons.facebook_outlined),
-                      const Spacer(),
-                      CustomButton(
-                        height: 34.h,
-                        width: 110.w,
-                        title: "SUPPORT",
-                        fontSize: 10,
-                        borderRadius: 18.r,
-                        icon: const Icon(Icons.sell_outlined, color: Colors.black, size: 12),
-                        onTap: () {
-                          setState(() {
-                            activeTab = 3;
-                          });
-                        },
-                      ),
-                    ],
+      
+                  /// Coins indicator
+                  Positioned(
+                    bottom: -36.h,
+                    right: 16.w,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          decoration: BoxDecoration(
+                            color: const Color(0xff161616),
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.wallet, color: AppColors.yellow, size: 14),
+                              SizedBox(width: 4.w),
+                              CustomText(
+                                text: "12,450 COINS",
+                                color: AppColors.yellow1,
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-            SizedBox(height: 20.h),
-
-            /// Stats section
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16.w),
-              padding: EdgeInsets.symmetric(vertical: 14.h),
-              decoration: BoxDecoration(
-                color: const Color(0xff111111),
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Colors.white10),
-              ),
-              child: Row(
-                children: [
-                  _buildStatItem("POSTS", "1.2K"),
-                  _buildStatDivider(),
-                  _buildStatItem("FOLLOWERS", "32M"),
-                  _buildStatDivider(),
-                  _buildStatItem("SESSIONS", "8.4K"),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.h),
-
-            /// Scrollable quick actions / highlights
-            SizedBox(
-              height: 70.h,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
+              SizedBox(height: 48.h),
+      
+              /// Profile Identity Details
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                children: [
-                  _buildQuickActionCircle(Icons.add, "CREATE", isYellowBg: true),
-                  _buildQuickThumb("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop", "MY DRIVE"),
-                  _buildQuickThumb("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop", "TELEMETRY"),
-                  _buildQuickThumb("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=100&fit=crop", "SPA LAPS"),
-                ],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      text: "MAX VERSTAPPEN",
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.5,
+                    ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      children: [
+                        const Icon(Icons.flag, color: Colors.blue, size: 14), // placeholder for Dutch flag
+                        SizedBox(width: 6.w),
+                        CustomText(
+                          text: "@max_verstappen_33   da",
+                          color: AppColors.yellow,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10.h),
+                    CustomText(
+                      text: "3-time World Champion. Pushing the limits of engineering and performance.",
+                      color: Colors.white70,
+                      fontSize: 11,
+                      textAlign: TextAlign.start,
+                      height: 1.4,
+                    ),
+                    SizedBox(height: 16.h),
+      
+                    /// Social Toggles and Support button
+                    Row(
+                      children: [
+                        _buildSocialIcon(Icons.camera_alt_outlined),
+                        SizedBox(width: 10.w),
+                        _buildSocialIcon(Icons.music_note_outlined),
+                        SizedBox(width: 10.w),
+                        _buildSocialIcon(Icons.play_circle_outline),
+                        SizedBox(width: 10.w),
+                        _buildSocialIcon(Icons.facebook_outlined),
+                        const Spacer(),
+                        CustomButton(
+                          height: 34.h,
+                          width: 110.w,
+                          title: "SUPPORT",
+                          fontSize: 10,
+                          borderRadius: 18.r,
+                          icon: const Icon(Icons.sell_outlined, color: Colors.black, size: 12),
+                          onTap: () {
+                            setState(() {
+                              activeTab = 3;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 24.h),
-
-            /// Nested Tab Navigation
-            _buildTabSelector(),
-
-            /// Active Tab Body
-            _buildActiveTabBody(),
-          ],
+              SizedBox(height: 20.h),
+      
+              /// Stats section
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xff111111),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: Colors.white10),
+                ),
+                child: Row(
+                  children: [
+                    _buildStatItem("POSTS", "1.2K"),
+                    _buildStatDivider(),
+                    _buildStatItem("FOLLOWERS", "32M"),
+                    _buildStatDivider(),
+                    _buildStatItem("SESSIONS", "8.4K"),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20.h),
+      
+              /// Scrollable quick actions / highlights
+              SizedBox(
+                height: 70.h,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  children: [
+                    _buildQuickActionCircle(Icons.add, "CREATE", isYellowBg: true),
+                    _buildQuickThumb("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop", "MY DRIVE"),
+                    _buildQuickThumb("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop", "TELEMETRY"),
+                    _buildQuickThumb("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=100&fit=crop", "SPA LAPS"),
+                  ],
+                ),
+              ),
+              SizedBox(height: 24.h),
+      
+              /// Nested Tab Navigation
+              _buildTabSelector(),
+      
+              /// Active Tab Body
+              _buildActiveTabBody(),
+            ],
+          ),
         ),
+        bottomNavigationBar: const CustomNavBar(currentIndex: 4),
       ),
-      bottomNavigationBar: const CustomNavBar(currentIndex: 4),
     );
   }
 
@@ -540,7 +543,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                colors: [Colors.transparent, Colors.black.withValues(alpha:0.8)],
               ),
             ),
           ),

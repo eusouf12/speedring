@@ -120,7 +120,7 @@ class ActiveDriveScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.yellow.withOpacity(0.3),
+                          color: AppColors.yellow.withValues(alpha:0.3),
                           blurRadius: 10,
                           spreadRadius: 1,
                         ),
@@ -190,7 +190,7 @@ class ActiveDriveScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xff111111).withOpacity(0.9),
+        color: const Color(0xff111111).withValues(alpha:0.9),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.white10),
       ),
@@ -231,7 +231,7 @@ class ActiveDriveScreen extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: const Color(0xff111111).withOpacity(0.9),
+        color: const Color(0xff111111).withValues(alpha:0.9),
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white10),
       ),
@@ -277,7 +277,7 @@ class _DriverNode extends StatelessWidget {
             border: Border.all(color: isLeader ? AppColors.yellow : Colors.white, width: 2),
             boxShadow: [
               BoxShadow(
-                color: (isLeader ? AppColors.yellow : Colors.white).withOpacity(0.3),
+                color: (isLeader ? AppColors.yellow : Colors.white).withValues(alpha:0.3),
                 blurRadius: 8,
                 spreadRadius: 1,
               ),
@@ -297,7 +297,7 @@ class _TopoMapPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
-      ..color = Colors.white.withOpacity(0.02)
+      ..color = Colors.white.withValues(alpha:0.02)
       ..strokeWidth = 0.5;
 
     const double gridSpacing = 25.0;
@@ -310,7 +310,7 @@ class _TopoMapPainter extends CustomPainter {
 
     // Topo contours
     final contourPaint = Paint()
-      ..color = Colors.white.withOpacity(0.04)
+      ..color = Colors.white.withValues(alpha:0.04)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
@@ -341,7 +341,7 @@ class _TopoMapPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final routeShadowPaint = Paint()
-      ..color = AppColors.yellow.withOpacity(0.25)
+      ..color = AppColors.yellow.withValues(alpha:0.25)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 10.0
       ..strokeCap = StrokeCap.round;

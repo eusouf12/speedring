@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import '../../../core/app_routes/app_routes.dart';
-import 'widget/customonboardingCard.dart';
+import 'widget/custom_onboarding_card.dart';
 import 'widget/on_bording_controller.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -31,9 +31,9 @@ class OnboardingScreen extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(.15),
-                    Colors.black.withOpacity(.45),
-                    Colors.black.withOpacity(.95),
+                    Colors.black.withValues(alpha:.15),
+                    Colors.black.withValues(alpha:.45),
+                    Colors.black.withValues(alpha:.95),
                   ],
                 ),
               ),
@@ -83,7 +83,7 @@ class OnboardingScreen extends StatelessWidget {
                   CustomText(
                     text:
                         "Track sessions. Share experiences. Discover cars, riders, clubs and motorsport events.",
-                    color: Colors.white.withOpacity(.75),
+                    color: Colors.white.withValues(alpha:.75),
                     fontSize: 14,
                     textAlign: TextAlign.center,
                     maxLines: 2,

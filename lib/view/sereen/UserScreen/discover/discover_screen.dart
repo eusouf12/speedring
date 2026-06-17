@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/components/custom_appbar_user/custom_appbar_user.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
 
 class DiscoverScreen extends StatefulWidget {
@@ -17,33 +18,38 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   String activeTag = "Trending";
   String activeVideoTag = "All";
 
-  final List<String> spottingTags = ["Trending", "GT3 Series", "Nürburgring", "Spa-Francorchamps"];
+  final List<String> spottingTags = [
+    "Trending",
+    "GT3 Series",
+    "Nürburgring",
+    "Spa-Francorchamps",
+  ];
   final List<String> videoTags = ["All", "Onboard", "Technical", "Vlogs"];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: CustomAppBarUser(
-        showSearchIcon: true,
-        onNotificationTap: () => Get.toNamed(AppRoutes.notificationScreen),
-        onMailTap: () => Get.toNamed(AppRoutes.messageScreen),
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 10),
+    return CustomGradient(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: CustomAppBarUser(
+          showSearchIcon: true,
+          onNotificationTap: () => Get.toNamed(AppRoutes.notificationScreen),
+          onMailTap: () => Get.toNamed(AppRoutes.messageScreen),
+        ),
+        body: Column(
+          children: [
+            const SizedBox(height: 10),
 
-          /// 1. Tab Selector: Spotting, Videos, Network
-          _buildTabBar(),
-          const SizedBox(height: 16),
+            /// 1. Tab Selector: Spotting, Videos, Network
+            _buildTabBar(),
+            const SizedBox(height: 16),
 
-          /// 2. Active Tab View
-          Expanded(
-            child: _buildActiveTabView(),
-          ),
-        ],
+            /// 2. Active Tab View
+            Expanded(child: _buildActiveTabView()),
+          ],
+        ),
+        bottomNavigationBar: const CustomNavBar(currentIndex: 1),
       ),
-      bottomNavigationBar: const CustomNavBar(currentIndex: 1),
     );
   }
 
@@ -129,7 +135,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 onTap: () => setState(() => activeTag = tag),
                 child: Container(
                   margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: isSel ? AppColors.yellow : const Color(0xff181818),
                     borderRadius: BorderRadius.circular(18),
@@ -254,9 +263,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 top: 12,
                 left: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.8),
+                    color: Colors.black.withValues(alpha:0.8),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -292,24 +304,26 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       ),
                     ),
                     if (isVerified)
-                      const Icon(Icons.verified, color: AppColors.yellow, size: 18)
+                      const Icon(
+                        Icons.verified,
+                        color: AppColors.yellow,
+                        size: 18,
+                      )
                     else
-                      const Icon(Icons.share_outlined, color: Colors.white54, size: 18),
+                      const Icon(
+                        Icons.share_outlined,
+                        color: Colors.white54,
+                        size: 18,
+                      ),
                   ],
                 ),
                 const SizedBox(height: 4),
                 Text(
                   "Spotted by $spottedBy",
-                  style: const TextStyle(
-                    color: Colors.white38,
-                    fontSize: 11,
-                  ),
+                  style: const TextStyle(color: Colors.white38, fontSize: 11),
                 ),
                 const SizedBox(height: 16),
-                Container(
-                  height: 1,
-                  color: Colors.white10,
-                ),
+                Container(height: 1, color: Colors.white10),
                 const SizedBox(height: 12),
 
                 /// Car Stats
@@ -330,7 +344,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 
-  Widget _buildStatCol(String label, String value, {bool isYellowValue = false}) {
+  Widget _buildStatCol(
+    String label,
+    String value, {
+    bool isYellowValue = false,
+  }) {
     return Expanded(
       child: Column(
         children: [
@@ -358,11 +376,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   Widget _buildVerticalDivider() {
-    return Container(
-      width: 1,
-      height: 24,
-      color: Colors.white10,
-    );
+    return Container(width: 1, height: 24, color: Colors.white10);
   }
 
   /// ==================== 2. VIDEOS TAB ====================
@@ -383,7 +397,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 onTap: () => setState(() => activeVideoTag = tag),
                 child: Container(
                   margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: isSel ? AppColors.yellow : const Color(0xff181818),
                     borderRadius: BorderRadius.circular(18),
@@ -535,7 +552,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       color: AppColors.yellow,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.play_arrow, color: Colors.black, size: 28),
+                    child: const Icon(
+                      Icons.play_arrow,
+                      color: Colors.black,
+                      size: 28,
+                    ),
                   ),
                 ),
               ),
@@ -543,9 +564,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 top: 12,
                 right: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.8),
+                    color: Colors.black.withValues(alpha:0.8),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -593,21 +617,38 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     const SizedBox(width: 4),
                     Text(
                       author,
-                      style: const TextStyle(color: Colors.white38, fontSize: 10),
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 10,
+                      ),
                     ),
                     const SizedBox(width: 12),
-                    const Icon(Icons.visibility_outlined, color: Colors.white38, size: 12),
+                    const Icon(
+                      Icons.visibility_outlined,
+                      color: Colors.white38,
+                      size: 12,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       views,
-                      style: const TextStyle(color: Colors.white38, fontSize: 10),
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 10,
+                      ),
                     ),
                     const Spacer(),
-                    const Icon(Icons.share_outlined, color: Colors.white38, size: 14),
+                    const Icon(
+                      Icons.share_outlined,
+                      color: Colors.white38,
+                      size: 14,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       timeAgo,
-                      style: const TextStyle(color: Colors.white38, fontSize: 10),
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 10,
+                      ),
                     ),
                   ],
                 ),
@@ -750,9 +791,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     right: 0,
                     child: Center(
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
-                          color: isGoldBorder ? AppColors.yellow : const Color(0xff222222),
+                          color: isGoldBorder
+                              ? AppColors.yellow
+                              : const Color(0xff222222),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -786,21 +832,28 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     ),
                     const SizedBox(height: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: isGoldBorder
-                            ? AppColors.yellow.withOpacity(0.15)
-                            : Colors.white.withOpacity(0.05),
+                            ? AppColors.yellow.withValues(alpha:0.15)
+                            : Colors.white.withValues(alpha:0.05),
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                          color: isGoldBorder ? AppColors.yellow : Colors.white24,
+                          color: isGoldBorder
+                              ? AppColors.yellow
+                              : Colors.white24,
                           width: 1,
                         ),
                       ),
                       child: Text(
                         tier,
                         style: TextStyle(
-                          color: isGoldBorder ? AppColors.yellow : Colors.white70,
+                          color: isGoldBorder
+                              ? AppColors.yellow
+                              : Colors.white70,
                           fontSize: 8,
                           fontWeight: FontWeight.bold,
                         ),
@@ -885,10 +938,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               onPressed: () {},
               child: const Text(
                 "Follow",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
               ),
             ),
           ),

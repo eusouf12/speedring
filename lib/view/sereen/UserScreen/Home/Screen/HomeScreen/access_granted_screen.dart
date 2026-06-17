@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 
-import '../../../../../core/app_routes/app_routes.dart';
+import '../../../../../../core/app_routes/app_routes.dart';
 
 class AccessGrantedScreen extends StatelessWidget {
   const AccessGrantedScreen({super.key});
@@ -19,15 +20,15 @@ class AccessGrantedScreen extends StatelessWidget {
       displayDate = "24.10.24";
     }
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Padding(
+    return CustomGradient(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
             children: [
               const Spacer(),
-
+        
               /// Header Title
               const Text(
                 "SESSION JOINED // ACCESS GRANTED",
@@ -40,7 +41,7 @@ class AccessGrantedScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
+        
               /// Card Container
               Container(
                 width: double.infinity,
@@ -73,21 +74,21 @@ class AccessGrantedScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 28),
-
+        
                     /// Event Row
                     _buildDetailRow(
                       label: "EVENT",
                       value: eventTitle.toUpperCase(),
                     ),
                     const Divider(color: Colors.white10, height: 24),
-
+        
                     /// Date Row
                     _buildDetailRow(
                       label: "DATE",
                       value: displayDate,
                     ),
                     const Divider(color: Colors.white10, height: 24),
-
+        
                     /// ID Row
                     _buildDetailRow(
                       label: "ID",
@@ -96,9 +97,9 @@ class AccessGrantedScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
+        
               const Spacer(),
-
+        
               /// Download Pass Button
               SizedBox(
                 width: double.infinity,
@@ -134,7 +135,7 @@ class AccessGrantedScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-
+        
               /// Add to Calendar Button
               SizedBox(
                 width: double.infinity,
@@ -171,7 +172,7 @@ class AccessGrantedScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
+        
               /// Return to Feed Link
               GestureDetector(
                 onTap: () {

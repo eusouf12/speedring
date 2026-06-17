@@ -51,7 +51,7 @@ class AuthController extends GetxController {
     isSignupLoading.value = true;
     await Future.delayed(const Duration(seconds: 2));
     isSignupLoading.value = false;
-    // TODO: wire up real signup
+    
   }
 
   // ── Forgot Password ──────────────────────────────────────────────────────
@@ -66,7 +66,7 @@ class AuthController extends GetxController {
     isForgotLoading.value = false;
     _startResendCountdown();
     Get.toNamed(AppRoutes.verifyOtpScreen);
-    // TODO: call API to send OTP
+   
   }
 
   // ── Verify OTP ───────────────────────────────────────────────────────────
@@ -96,7 +96,7 @@ class AuthController extends GetxController {
     await Future.delayed(const Duration(seconds: 1));
     isForgotLoading.value = false;
     _startResendCountdown();
-    // TODO: call API to resend OTP
+   
   }
 
   Future<void> verifyOtp() async {
@@ -106,7 +106,7 @@ class AuthController extends GetxController {
     await Future.delayed(const Duration(seconds: 2));
     isOtpLoading.value = false;
     Get.toNamed(AppRoutes.resetPasswordScreen);
-    // TODO: verify OTP with API
+    
   }
 
   // ── Reset Password ───────────────────────────────────────────────────────
@@ -121,7 +121,7 @@ class AuthController extends GetxController {
     isResetLoading.value = true;
     await Future.delayed(const Duration(seconds: 2));
     isResetLoading.value = false;
-    // TODO: call API to reset password
+   
     Get.offAllNamed(AppRoutes.loginScreen);
   }
 

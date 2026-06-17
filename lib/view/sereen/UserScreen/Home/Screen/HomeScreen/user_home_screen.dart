@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import '../../../../../core/app_routes/app_routes.dart';
-import '../../../../../utils/app_images/app_images.dart';
-import '../../../../components/custom_appbar_user/custom_appbar_user.dart';
+import '../../../../../../core/app_routes/app_routes.dart';
+import '../../../../../../utils/app_images/app_images.dart';
+import '../../../../../components/custom_appbar_user/custom_appbar_user.dart';
 import 'comment_screen.dart' show showCommentSheet;
 import 'story_view_screen.dart';
 import 'create_story_screen.dart';
 import 'post_detail_screen.dart';
 import 'create_post_screen.dart';
-import '../widget/story_item.dart';
-import '../widget/add_post_button.dart';
-import '../widget/post_card.dart';
-import '../../../../components/custom_nav_bar/navbar.dart';
-import '../../../../../utils/app_colors/app_colors.dart';
+import '../../widget/story_item.dart';
+import '../../widget/add_post_button.dart';
+import '../../widget/post_card.dart';
+import '../../../../../components/custom_nav_bar/navbar.dart';
+import '../../../../../../utils/app_colors/app_colors.dart';
 
 class HomeController extends GetxController {
   final rxActiveTab = 0.obs; // 0: ALL, 1: EVENTS, 2: CLUBS
@@ -584,7 +584,7 @@ class _EventCard extends StatelessWidget {
               height: 160,
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (context, _, __) => Container(height: 160, color: const Color(0xff1A1A1A)),
+              errorBuilder: (context, _, _) => Container(height: 160, color: const Color(0xff1A1A1A)),
             ),
 
             Padding(

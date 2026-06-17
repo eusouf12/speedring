@@ -151,7 +151,7 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
             color: isSelected ? const Color(0xff222222) : const Color(0xff111111),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isSelected ? AppColors.yellow.withOpacity(0.3) : Colors.white10,
+              color: isSelected ? AppColors.yellow.withValues(alpha:0.3) : Colors.white10,
               width: 1,
             ),
           ),
@@ -192,9 +192,9 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                   height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, _, __) => Container(
+                  errorBuilder: (context, _, _) => Container(
                     height: 150,
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha:0.05),
                     child: const Icon(Icons.directions_car, color: Colors.white24, size: 40),
                   ),
                 ),

@@ -1,41 +1,42 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 
-class CreateStoryScreen extends StatefulWidget {
+// ─── Controller ────────────────────────────────────────────────
+class CreateStoryController extends GetxController {
+  final Rxn<File> selectedFile = Rxn<File>();
+  final RxBool isVideo = false.obs;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> pickMedia({required bool isVideoVal}) async {
+    final XFile? picked = isVideoVal
+        ? await _picker.pickVideo(source: ImageSource.gallery)
+        : await _picker.pickImage(source: ImageSource.gallery);
+
+    if (picked != null) {
+      selectedFile.value = File(picked.path);
+      isVideo.value = isVideoVal;
+    }
+  }
+
+  void reset() {
+    selectedFile.value = null;
+    isVideo.value = false;
+  }
+}
+
+// ─── Screen ────────────────────────────────────────────────────
+class CreateStoryScreen extends StatelessWidget {
   const CreateStoryScreen({super.key, this.profileImageUrl, this.userName});
 
   final String? profileImageUrl;
   final String? userName;
 
-  @override
-  State<CreateStoryScreen> createState() => CreateStoryScreenState();
-}
-
-class CreateStoryScreenState extends State<CreateStoryScreen> {
-  File? _selectedFile;
-  bool _isVideo = false;
-  final ImagePicker _picker = ImagePicker();
-
-  /// Open gallery — photo or video
-  Future<void> _pickMedia({required bool isVideo}) async {
-    final XFile? picked = isVideo
-        ? await _picker.pickVideo(source: ImageSource.gallery)
-        : await _picker.pickImage(source: ImageSource.gallery);
-
-    if (picked != null) {
-      setState(() {
-        _selectedFile = File(picked.path);
-        _isVideo = isVideo;
-      });
-    }
-  }
-
-  /// Show bottom sheet to choose photo or video
-  void _showPickerSheet() {
+  void _showPickerSheet(BuildContext context, CreateStoryController controller) {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xff1C1C1C),
@@ -62,7 +63,7 @@ class CreateStoryScreenState extends State<CreateStoryScreen> {
                 label: "Choose Photo",
                 onTap: () {
                   Navigator.pop(context);
-                  _pickMedia(isVideo: false);
+                  controller.pickMedia(isVideoVal: false);
                 },
               ),
               const SizedBox(height: 12),
@@ -71,7 +72,7 @@ class CreateStoryScreenState extends State<CreateStoryScreen> {
                 label: "Choose Video",
                 onTap: () {
                   Navigator.pop(context);
-                  _pickMedia(isVideo: true);
+                  controller.pickMedia(isVideoVal: true);
                 },
               ),
               const SizedBox(height: 8),
@@ -84,21 +85,22 @@ class CreateStoryScreenState extends State<CreateStoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final controller = Get.put(CreateStoryController());
+
+    return Obx(() => Scaffold(
       backgroundColor: Colors.black,
-      body: _selectedFile == null
-          ? EmptyUploadView(onTap: _showPickerSheet)
+      body: controller.selectedFile.value == null
+          ? EmptyUploadView(onTap: () => _showPickerSheet(context, controller))
           : PreviewView(
-              file: _selectedFile!,
-              isVideo: _isVideo,
-              profileImageUrl: widget.profileImageUrl,
-              onClose: () => setState(() => _selectedFile = null),
+              file: controller.selectedFile.value!,
+              isVideo: controller.isVideo.value,
+              profileImageUrl: profileImageUrl,
+              onClose: () => controller.reset(),
               onShare: () {
-                // TODO: Share story logic
                 Navigator.pop(context);
               },
             ),
-    );
+    ));
   }
 }
 
@@ -106,7 +108,7 @@ class CreateStoryScreenState extends State<CreateStoryScreen> {
 class EmptyUploadView extends StatelessWidget {
   final VoidCallback onTap;
 
-  const EmptyUploadView({required this.onTap});
+  const EmptyUploadView({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -189,6 +191,7 @@ class PreviewView extends StatelessWidget {
   final VoidCallback onShare;
 
   const PreviewView({
+    super.key,
     required this.file,
     required this.isVideo,
     required this.onClose,
@@ -198,96 +201,97 @@ class PreviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.black,
-
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(8),
-          child: GestureDetector(
-            onTap: onClose,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white12,
-                shape: BoxShape.circle,
+    return CustomGradient(
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.black,
+      
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          leading: Padding(
+            padding: const EdgeInsets.all(8),
+            child: GestureDetector(
+              onTap: onClose,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white12,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 18),
               ),
-              child: const Icon(Icons.close, color: Colors.white, size: 18),
+            ),
+          ),
+          title: const Text(
+            "Create Story",
+            style: TextStyle(
+              color: AppColors.yellow,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
             ),
           ),
         ),
-        title: const Text(
-          "Create Story",
-          style: TextStyle(
-            color: AppColors.yellow,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ),
-
-      body: Stack(
-        children: [
-          /// Full Screen Media
-          Positioned.fill(
-            child: isVideo
-                ? Container(
-                    color: Colors.black,
-                    child: const Center(
-                      child: Icon(
-                        Icons.videocam,
-                        color: Colors.white38,
-                        size: 64,
+      
+        body: Stack(
+          children: [
+            /// Full Screen Media
+            Positioned.fill(
+              child: isVideo
+                  ? Container(
+                      color: Colors.black,
+                      child: const Center(
+                        child: Icon(
+                          Icons.videocam,
+                          color: Colors.white38,
+                          size: 64,
+                        ),
                       ),
-                    ),
-                  )
-                : Image.file(file, fit: BoxFit.cover),
-          ),
-
-          /// Overlay
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withValues(alpha: .5),
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: .7),
-                  ],
-                  stops: const [0.0, 0.15, 0.7, 1.0],
+                    )
+                  : Image.file(file, fit: BoxFit.cover),
+            ),
+      
+            /// Overlay
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: .5),
+                      Colors.transparent,
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: .7),
+                    ],
+                    stops: const [0.0, 0.15, 0.7, 1.0],
+                  ),
                 ),
               ),
             ),
-          ),
-
-          /// Share Button
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 24,
-            child: CustomButton(
-              onTap: () {
-                AppRoutes.userHomeScreen;
-              },
-              title: "SHARE STORY",
-              borderRadius: 30,
+      
+            /// Share Button
+            Positioned(
+              left: 16,
+              right: 16,
+              bottom: MediaQuery.of(context).padding.bottom + 24,
+              child: CustomButton(
+                onTap: () {
+                  Get.back();
+                },
+                title: "SHARE STORY",
+                borderRadius: 30,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
 /// ── Bottom sheet option row ────────────────────────────────────────────────
-
 class _SheetOption extends StatelessWidget {
   final IconData icon;
   final String label;

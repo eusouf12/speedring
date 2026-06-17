@@ -35,7 +35,7 @@ class TrackAppBar extends StatelessWidget implements PreferredSizeWidget {
                   height: 30,
                   width: 100,
                   fit: BoxFit.contain,
-                  errorBuilder: (context, _, __) => const Text(
+                  errorBuilder: (context, _, _) => const Text(
                     "SPEEDRING",
                     style: TextStyle(
                       color: Colors.white,

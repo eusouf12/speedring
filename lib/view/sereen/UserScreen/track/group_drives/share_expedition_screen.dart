@@ -372,7 +372,7 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
             color: isSelected ? const Color(0xff222222) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isSelected ? AppColors.yellow.withOpacity(0.3) : Colors.transparent,
+              color: isSelected ? AppColors.yellow.withValues(alpha:0.3) : Colors.transparent,
               width: 1,
             ),
           ),

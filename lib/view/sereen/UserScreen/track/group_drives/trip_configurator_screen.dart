@@ -148,7 +148,7 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
                   "PUBLIC DEPLOYMENT",
                   style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold),
                 ),
-                activeColor: Colors.black,
+                activeThumbColor: Colors.black,
                 activeTrackColor: AppColors.yellow,
                 inactiveThumbColor: Colors.white38,
                 inactiveTrackColor: Colors.white10,

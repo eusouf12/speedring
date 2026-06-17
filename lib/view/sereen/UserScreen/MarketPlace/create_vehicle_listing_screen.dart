@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../components/custom_button/custom_button.dart';
 import '../../../components/custom_text/custom_text.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
@@ -18,230 +19,232 @@ class _CreateVehicleListingScreenState extends State<CreateVehicleListingScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
+    return CustomGradient(
+      child: Scaffold(
         backgroundColor: Colors.black,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.yellow),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text(
-          "CREATE LISTING: VEHICLES",
-          style: TextStyle(
-            color: AppColors.yellow,
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.0,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.close, color: AppColors.yellow),
+            onPressed: () => Get.back(),
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// Phase 01: Core Specifications
-            _buildSectionHeader("PHASE 01: CORE SPECIFICATIONS"),
-            _buildCardContainer([
-              _buildFieldLabel("BRAND / MANUFACTURER"),
-              _buildTextField("e.g. Porsche, Ferrari, McLaren"),
-              SizedBox(height: 16.h),
-              _buildFieldLabel("MODEL DESIGNATION"),
-              _buildTextField("e.g. 911 GT3 RS"),
-              SizedBox(height: 16.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildFieldLabel("PRODUCTION YEAR"),
-                        _buildDropdown(["2024", "2023", "2022", "2021", "2020"]),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildFieldLabel("ASKING PRICE (USD)"),
-                        _buildTextField("0.00", keyboardType: TextInputType.number),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              _buildFieldLabel("VEHICLE LOCATION"),
-              _buildLocationField("City, Country"),
-            ]),
-
-            SizedBox(height: 24.h),
-
-            /// Phase 02: Telemetry & Metrics
-            _buildSectionHeader("PHASE 02: TELEMETRY & METRICS"),
-            _buildCardContainer([
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildFieldLabel("POWER (HP)"),
-                        _buildTextField("525", keyboardType: TextInputType.number),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildFieldLabel("0-100 KM/H"),
-                        _buildTextField("3.2s"),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildFieldLabel("TOP SPEED"),
-                        _buildTextField("296 km/h"),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildFieldLabel("WEIGHT (KG)"),
-                        _buildTextField("1450", keyboardType: TextInputType.number),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              _buildFieldLabel("MILEAGE (KM)"),
-              _buildTextField("1,240", keyboardType: TextInputType.number),
-            ]),
-
-            SizedBox(height: 24.h),
-
-            /// Phase 03: Engineering Dossier
-            _buildSectionHeader("PHASE 03: ENGINEERING DOSSIER"),
-            _buildCardContainer([
-              _buildFieldLabel("ENGINE CONFIGURATION"),
-              _buildTextField("e.g. 4.0L Flat-Six Naturally Aspirated"),
-              SizedBox(height: 16.h),
-              _buildFieldLabel("TRANSMISSION"),
-              Row(
-                children: [
-                  Expanded(child: _buildSegmentOption("PDK / AUTOMATIC", selectedTransmission == "PDK / AUTOMATIC")),
-                  SizedBox(width: 12.w),
-                  Expanded(child: _buildSegmentOption("MANUAL", selectedTransmission == "MANUAL")),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              _buildFieldLabel("DRIVETRAIN"),
-              _buildDropdown(["Rear-Wheel Drive (RWD)", "All-Wheel Drive (AWD)", "Front-Wheel Drive (FWD)"],
-                  onChanged: (val) {
-                if (val != null) {
-                  setState(() {
-                    selectedDrivetrain = val;
-                  });
-                }
-              }),
-              SizedBox(height: 16.h),
-              _buildFieldLabel("AERODYNAMICS / BODY"),
-              _buildTextField("Active Aero, Carbon Fiber, Widebody...", maxLines: 2),
-            ]),
-
-            SizedBox(height: 24.h),
-
-            /// Phase 04: Performance Narrative
-            _buildSectionHeader("PHASE 04: PERFORMANCE NARRATIVE"),
-            _buildCardContainer([
-              _buildFieldLabel("DETAILED DESCRIPTION & PROVENANCE"),
-              _buildTextField(
-                "Describe the vehicle's track history, maintenance record, and unique modifications...",
-                maxLines: 4,
-              ),
-            ]),
-
-            SizedBox(height: 24.h),
-
-            /// Phase 05: Visual Assets
-            _buildSectionHeader("PHASE 05: VISUAL ASSETS"),
-            _buildCardContainer([
-              Wrap(
-                spacing: 12.w,
-                runSpacing: 12.h,
-                children: [
-                  _buildUploadTile(),
-                  _buildImagePreview("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=150&fit=crop"),
-                  _buildImagePreview("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=150&fit=crop"),
-                  _buildVideoPreview("https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=150&fit=crop"),
-                ],
-              ),
-              SizedBox(height: 12.h),
-              const Center(
-                child: CustomText(
-                  text: "RECOMMENDED: 1920X1080 PX | PNG, JPEG | MAX 12 PHOTOS (1 VIDEO MAX SUPPORTED)",
-                  color: Colors.white38,
-                  fontSize: 7.5,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ]),
-
-            SizedBox(height: 32.h),
-
-            /// Submit and Cancel Buttons
-            CustomButton(
-              height: 50.h,
-              title: "PUBLISH LISTING",
+          title: const Text(
+            "CREATE LISTING: VEHICLES",
+            style: TextStyle(
+              color: AppColors.yellow,
               fontSize: 14,
-              onTap: () {
-                Get.back();
-                Get.back();
-                Get.snackbar(
-                  "Listing Submitted",
-                  "Your vehicle listing is now pending publication approval.",
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: const Color(0xff181818),
-                  colorText: Colors.white,
-                  borderColor: AppColors.yellow,
-                  borderWidth: 1,
-                );
-              },
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.0,
             ),
-            SizedBox(height: 16.h),
-            Center(
-              child: GestureDetector(
-                onTap: () => Get.back(),
-                child: const CustomText(
-                  text: "CANCEL",
-                  color: Colors.white38,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
+          ),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Phase 01: Core Specifications
+              _buildSectionHeader("PHASE 01: CORE SPECIFICATIONS"),
+              _buildCardContainer([
+                _buildFieldLabel("BRAND / MANUFACTURER"),
+                _buildTextField("e.g. Porsche, Ferrari, McLaren"),
+                SizedBox(height: 16.h),
+                _buildFieldLabel("MODEL DESIGNATION"),
+                _buildTextField("e.g. 911 GT3 RS"),
+                SizedBox(height: 16.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFieldLabel("PRODUCTION YEAR"),
+                          _buildDropdown(["2024", "2023", "2022", "2021", "2020"]),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFieldLabel("ASKING PRICE (USD)"),
+                          _buildTextField("0.00", keyboardType: TextInputType.number),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                _buildFieldLabel("VEHICLE LOCATION"),
+                _buildLocationField("City, Country"),
+              ]),
+      
+              SizedBox(height: 24.h),
+      
+              /// Phase 02: Telemetry & Metrics
+              _buildSectionHeader("PHASE 02: TELEMETRY & METRICS"),
+              _buildCardContainer([
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFieldLabel("POWER (HP)"),
+                          _buildTextField("525", keyboardType: TextInputType.number),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFieldLabel("0-100 KM/H"),
+                          _buildTextField("3.2s"),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFieldLabel("TOP SPEED"),
+                          _buildTextField("296 km/h"),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFieldLabel("WEIGHT (KG)"),
+                          _buildTextField("1450", keyboardType: TextInputType.number),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                _buildFieldLabel("MILEAGE (KM)"),
+                _buildTextField("1,240", keyboardType: TextInputType.number),
+              ]),
+      
+              SizedBox(height: 24.h),
+      
+              /// Phase 03: Engineering Dossier
+              _buildSectionHeader("PHASE 03: ENGINEERING DOSSIER"),
+              _buildCardContainer([
+                _buildFieldLabel("ENGINE CONFIGURATION"),
+                _buildTextField("e.g. 4.0L Flat-Six Naturally Aspirated"),
+                SizedBox(height: 16.h),
+                _buildFieldLabel("TRANSMISSION"),
+                Row(
+                  children: [
+                    Expanded(child: _buildSegmentOption("PDK / AUTOMATIC", selectedTransmission == "PDK / AUTOMATIC")),
+                    SizedBox(width: 12.w),
+                    Expanded(child: _buildSegmentOption("MANUAL", selectedTransmission == "MANUAL")),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                _buildFieldLabel("DRIVETRAIN"),
+                _buildDropdown(["Rear-Wheel Drive (RWD)", "All-Wheel Drive (AWD)", "Front-Wheel Drive (FWD)"],
+                    onChanged: (val) {
+                  if (val != null) {
+                    setState(() {
+                      selectedDrivetrain = val;
+                    });
+                  }
+                }),
+                SizedBox(height: 16.h),
+                _buildFieldLabel("AERODYNAMICS / BODY"),
+                _buildTextField("Active Aero, Carbon Fiber, Widebody...", maxLines: 2),
+              ]),
+      
+              SizedBox(height: 24.h),
+      
+              /// Phase 04: Performance Narrative
+              _buildSectionHeader("PHASE 04: PERFORMANCE NARRATIVE"),
+              _buildCardContainer([
+                _buildFieldLabel("DETAILED DESCRIPTION & PROVENANCE"),
+                _buildTextField(
+                  "Describe the vehicle's track history, maintenance record, and unique modifications...",
+                  maxLines: 4,
+                ),
+              ]),
+      
+              SizedBox(height: 24.h),
+      
+              /// Phase 05: Visual Assets
+              _buildSectionHeader("PHASE 05: VISUAL ASSETS"),
+              _buildCardContainer([
+                Wrap(
+                  spacing: 12.w,
+                  runSpacing: 12.h,
+                  children: [
+                    _buildUploadTile(),
+                    _buildImagePreview("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=150&fit=crop"),
+                    _buildImagePreview("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=150&fit=crop"),
+                    _buildVideoPreview("https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=150&fit=crop"),
+                  ],
+                ),
+                SizedBox(height: 12.h),
+                const Center(
+                  child: CustomText(
+                    text: "RECOMMENDED: 1920X1080 PX | PNG, JPEG | MAX 12 PHOTOS (1 VIDEO MAX SUPPORTED)",
+                    color: Colors.white38,
+                    fontSize: 7.5,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ]),
+      
+              SizedBox(height: 32.h),
+      
+              /// Submit and Cancel Buttons
+              CustomButton(
+                height: 50.h,
+                title: "PUBLISH LISTING",
+                fontSize: 14,
+                onTap: () {
+                  Get.back();
+                  Get.back();
+                  Get.snackbar(
+                    "Listing Submitted",
+                    "Your vehicle listing is now pending publication approval.",
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: const Color(0xff181818),
+                    colorText: Colors.white,
+                    borderColor: AppColors.yellow,
+                    borderWidth: 1,
+                  );
+                },
+              ),
+              SizedBox(height: 16.h),
+              Center(
+                child: GestureDetector(
+                  onTap: () => Get.back(),
+                  child: const CustomText(
+                    text: "CANCEL",
+                    color: Colors.white38,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 24.h),
-          ],
+              SizedBox(height: 24.h),
+            ],
+          ),
         ),
       ),
     );

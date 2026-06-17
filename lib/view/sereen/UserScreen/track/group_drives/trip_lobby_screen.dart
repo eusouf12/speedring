@@ -284,7 +284,7 @@ class TripLobbyScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.black26,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.white.withOpacity(0.05)),
+                            border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                             image: const DecorationImage(
                               image: NetworkImage("https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&fit=crop"),
                               fit: BoxFit.cover,
@@ -498,7 +498,7 @@ class _WireframePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
+      ..color = Colors.white.withValues(alpha:0.05)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 

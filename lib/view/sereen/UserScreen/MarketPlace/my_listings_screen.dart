@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../components/custom_button/custom_button.dart';
 import '../../../components/custom_text/custom_text.dart';
 import '../../../../utils/app_colors/app_colors.dart';
@@ -18,173 +19,175 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
+    return CustomGradient(
+      child: Scaffold(
         backgroundColor: Colors.black,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text(
-          "MY LISTINGS",
-          style: TextStyle(
-            color: AppColors.yellow,
-            fontSize: 16,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.0,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
+            onPressed: () => Get.back(),
           ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_circle, color: AppColors.yellow),
-            onPressed: () => Get.toNamed(AppRoutes.selectCategoryScreen),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// Metric boxes
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff111111),
-                      borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(color: Colors.white10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: "ACTIVE LISTINGS",
-                          color: Colors.white38,
-                          fontSize: 8.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        SizedBox(height: 4.h),
-                        const CustomText(
-                          text: "03",
-                          color: AppColors.yellow,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff111111),
-                      borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(color: Colors.white10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: "TOTAL VALUATION",
-                          color: Colors.white38,
-                          fontSize: 8.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        SizedBox(height: 4.h),
-                        const CustomText(
-                          text: "\$1,450,000",
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+          title: const Text(
+            "MY LISTINGS",
+            style: TextStyle(
+              color: AppColors.yellow,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.0,
             ),
-            SizedBox(height: 16.h),
-
-            /// Categories chips
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add_circle, color: AppColors.yellow),
+              onPressed: () => Get.toNamed(AppRoutes.selectCategoryScreen),
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Metric boxes
+              Row(
                 children: [
-                  _buildCategoryChip("ALL", "ALL (3)"),
-                  SizedBox(width: 8.w),
-                  _buildCategoryChip("VEHICLES", "VEHICLES (1)"),
-                  SizedBox(width: 8.w),
-                  _buildCategoryChip("MOTORCYCLES", "MOTORCYCLES (1)"),
-                  SizedBox(width: 8.w),
-                  _buildCategoryChip("PARTS", "PARTS (1)"),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff111111),
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(color: Colors.white10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: "ACTIVE LISTINGS",
+                            color: Colors.white38,
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          SizedBox(height: 4.h),
+                          const CustomText(
+                            text: "03",
+                            color: AppColors.yellow,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff111111),
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(color: Colors.white10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: "TOTAL VALUATION",
+                            color: Colors.white38,
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          SizedBox(height: 4.h),
+                          const CustomText(
+                            text: "\$1,450,000",
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            SizedBox(height: 20.h),
-
-            /// Listings items list
-            if (activeCategory == "ALL" || activeCategory == "VEHICLES") ...[
-              _buildListingCard(
-                imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
-                statusLabel: "ACTIVE",
-                statusColor: AppColors.yellow,
-                statusTextColor: Colors.black,
-                title: "Porsche 911 GT3 RS",
-                idLabel: "VEHICLE ID: #GT3-992-04",
-                price: "\$285,000",
-                priceColor: AppColors.yellow,
-                specs: {
-                  "ENGINE OUTPUT": "525 HP",
-                  "DISPLACEMENT": "3996 CC",
-                },
-                isEditButton: true,
-              ),
               SizedBox(height: 16.h),
-            ],
-            if (activeCategory == "ALL" || activeCategory == "MOTORCYCLES") ...[
-              _buildListingCard(
-                imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500&fit=crop",
-                statusLabel: "PENDING VERIFICATION",
-                statusColor: Colors.orange,
-                statusTextColor: Colors.white,
-                title: "Ducati Panigale V4 R",
-                idLabel: "MOTO ID: #V4R-DU-01",
-                price: "\$45,000",
-                priceColor: Colors.white,
-                specs: {
-                  "MAX POWER": "240 HP",
-                  "CAPACITY": "998 CC",
-                },
-                isEditButton: false,
+      
+              /// Categories chips
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildCategoryChip("ALL", "ALL (3)"),
+                    SizedBox(width: 8.w),
+                    _buildCategoryChip("VEHICLES", "VEHICLES (1)"),
+                    SizedBox(width: 8.w),
+                    _buildCategoryChip("MOTORCYCLES", "MOTORCYCLES (1)"),
+                    SizedBox(width: 8.w),
+                    _buildCategoryChip("PARTS", "PARTS (1)"),
+                  ],
+                ),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 20.h),
+      
+              /// Listings items list
+              if (activeCategory == "ALL" || activeCategory == "VEHICLES") ...[
+                _buildListingCard(
+                  imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
+                  statusLabel: "ACTIVE",
+                  statusColor: AppColors.yellow,
+                  statusTextColor: Colors.black,
+                  title: "Porsche 911 GT3 RS",
+                  idLabel: "VEHICLE ID: #GT3-992-04",
+                  price: "\$285,000",
+                  priceColor: AppColors.yellow,
+                  specs: {
+                    "ENGINE OUTPUT": "525 HP",
+                    "DISPLACEMENT": "3996 CC",
+                  },
+                  isEditButton: true,
+                ),
+                SizedBox(height: 16.h),
+              ],
+              if (activeCategory == "ALL" || activeCategory == "MOTORCYCLES") ...[
+                _buildListingCard(
+                  imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500&fit=crop",
+                  statusLabel: "PENDING VERIFICATION",
+                  statusColor: Colors.orange,
+                  statusTextColor: Colors.white,
+                  title: "Ducati Panigale V4 R",
+                  idLabel: "MOTO ID: #V4R-DU-01",
+                  price: "\$45,000",
+                  priceColor: Colors.white,
+                  specs: {
+                    "MAX POWER": "240 HP",
+                    "CAPACITY": "998 CC",
+                  },
+                  isEditButton: false,
+                ),
+                SizedBox(height: 16.h),
+              ],
+              if (activeCategory == "ALL" || activeCategory == "PARTS") ...[
+                _buildListingCard(
+                  imageUrl: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=500&fit=crop",
+                  statusLabel: "SOLD",
+                  statusColor: Colors.white24,
+                  statusTextColor: Colors.white60,
+                  title: "BREMBO GTR BRAKING SYSTEM",
+                  idLabel: "PART ID: #B-GTR-092",
+                  price: "\$12,500",
+                  priceColor: Colors.white54,
+                  specs: {
+                    "SPECIFICATION": "6-Piston Front",
+                  },
+                  isEditButton: false,
+                ),
+                SizedBox(height: 16.h),
+              ],
             ],
-            if (activeCategory == "ALL" || activeCategory == "PARTS") ...[
-              _buildListingCard(
-                imageUrl: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=500&fit=crop",
-                statusLabel: "SOLD",
-                statusColor: Colors.white24,
-                statusTextColor: Colors.white60,
-                title: "BREMBO GTR BRAKING SYSTEM",
-                idLabel: "PART ID: #B-GTR-092",
-                price: "\$12,500",
-                priceColor: Colors.white54,
-                specs: {
-                  "SPECIFICATION": "6-Piston Front",
-                },
-                isEditButton: false,
-              ),
-              SizedBox(height: 16.h),
-            ],
-          ],
+          ),
         ),
       ),
     );
@@ -376,7 +379,7 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                       decoration: BoxDecoration(
                         color: const Color(0xff1d1717),
                         borderRadius: BorderRadius.circular(6.r),
-                        border: Border.all(color: Colors.red.withOpacity(0.2)),
+                        border: Border.all(color: Colors.red.withValues(alpha:0.2)),
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
