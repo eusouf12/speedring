@@ -8,15 +8,8 @@ import '../../../../../utils/app_colors/app_colors.dart';
 import '../../../../../core/app_routes/app_routes.dart';
 import 'widgets/marketplace_item_card.dart';
 
-class MarketplaceListingFeedScreen extends StatefulWidget {
-  const MarketplaceListingFeedScreen({super.key});
-
-  @override
-  State<MarketplaceListingFeedScreen> createState() => _MarketplaceListingFeedScreenState();
-}
-
-class _MarketplaceListingFeedScreenState extends State<MarketplaceListingFeedScreen> {
-  final List<Map<String, String>> listings = [
+class MarketplaceFeedController extends GetxController {
+  final listings = <Map<String, String>>[
     {
       "imageUrl": "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&fit=crop",
       "title": "APEX-7 TURBO S",
@@ -32,7 +25,7 @@ class _MarketplaceListingFeedScreenState extends State<MarketplaceListingFeedScr
       "tag": "MOTORCYCLE",
     },
     {
-      "imageUrl": "https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=600&fit=crop",
+      "imageUrl": "https://picsum.photos/seed/stratosgt3/600/400",
       "title": "STRATOS GT3",
       "price": "\$510,000",
       "subtitle": "TRACK ONLY EDITION",
@@ -52,10 +45,15 @@ class _MarketplaceListingFeedScreenState extends State<MarketplaceListingFeedScr
       "subtitle": "Pit Garage Service",
       "tag": "SERVICES",
     },
-  ];
+  ].obs;
+}
+
+class MarketplaceListingFeedScreen extends StatelessWidget {
+  const MarketplaceListingFeedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(MarketplaceFeedController());
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -157,11 +155,11 @@ class _MarketplaceListingFeedScreenState extends State<MarketplaceListingFeedScr
       
             /// Feed Items List
             Expanded(
-              child: ListView.builder(
+              child: Obx(() => ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                itemCount: listings.length,
+                itemCount: controller.listings.length,
                 itemBuilder: (context, idx) {
-                  final item = listings[idx];
+                  final item = controller.listings[idx];
                   return MarketplaceItemCard(
                     imageUrl: item["imageUrl"]!,
                     title: item["title"]!,
@@ -181,7 +179,7 @@ class _MarketplaceListingFeedScreenState extends State<MarketplaceListingFeedScr
                     },
                   );
                 },
-              ),
+              )),
             ),
           ],
         ),

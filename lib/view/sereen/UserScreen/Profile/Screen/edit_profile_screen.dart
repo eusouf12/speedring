@@ -2,31 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import '../../../components/custom_button/custom_button.dart';
-import '../../../components/custom_text/custom_text.dart';
-import '../../../../utils/app_colors/app_colors.dart';
+import '../../../../components/custom_button/custom_button.dart';
+import '../../../../components/custom_text/custom_text.dart';
+import '../../../../../utils/app_colors/app_colors.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
-
-  @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
-}
-
-class _EditProfileScreenState extends State<EditProfileScreen> {
-  final TextEditingController _nameController = TextEditingController(text: "MAX VERSTAPPEN");
-  final TextEditingController _handleController = TextEditingController(text: "max_verstappen_33");
-  final TextEditingController _bioController = TextEditingController(
+class EditProfileController extends GetxController {
+  final nameController = TextEditingController(text: "MAX VERSTAPPEN");
+  final handleController = TextEditingController(text: "max_verstappen_33");
+  final bioController = TextEditingController(
     text: "3-time World Champion. Pushing the limits of engineering and performance.",
   );
   
-  final TextEditingController _instagramController = TextEditingController(text: "instagram.com/maxverstappen1");
-  final TextEditingController _tiktokController = TextEditingController();
-  final TextEditingController _youtubeController = TextEditingController();
-  final TextEditingController _facebookController = TextEditingController();
+  final instagramController = TextEditingController(text: "instagram.com/maxverstappen1");
+  final tiktokController = TextEditingController();
+  final youtubeController = TextEditingController();
+  final facebookController = TextEditingController();
+
+  @override
+  void onClose() {
+    nameController.dispose();
+    handleController.dispose();
+    bioController.dispose();
+    instagramController.dispose();
+    tiktokController.dispose();
+    youtubeController.dispose();
+    facebookController.dispose();
+    super.onClose();
+  }
+}
+
+class EditProfileScreen extends StatelessWidget {
+  const EditProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(EditProfileController());
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -58,13 +68,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 alignment: Alignment.center,
                 children: [
                   /// Cover Image
-                  Container(
+                  SizedBox(
                     height: 180.h,
                     width: double.infinity,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=800&fit=crop"),
-                        fit: BoxFit.cover,
+                    child: Image.network(
+                      "https://picsum.photos/seed/editprofilebanner/800/400",
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: const Color(0xff1C1C1C),
+                        child: const Center(
+                          child: Icon(Icons.image, color: Colors.white24, size: 48),
+                        ),
                       ),
                     ),
                   ),
@@ -97,9 +111,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.black, width: 4),
-                            image: const DecorationImage(
-                              image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop"),
+                            color: Colors.black,
+                          ),
+                          child: ClipOval(
+                            child: Image.network(
+                              "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop",
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                color: const Color(0xff222222),
+                                child: const Center(
+                                  child: Icon(Icons.person, color: Colors.white24, size: 40),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -135,21 +158,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     _buildCardContainer([
                       _buildFieldLabel("FULL NAME"),
                       _buildTextField(
-                        controller: _nameController,
+                        controller: controller.nameController,
                         hint: "Enter your full name",
                         prefixIcon: Icons.person_outline,
                       ),
                       SizedBox(height: 16.h),
                       _buildFieldLabel("HANDLE"),
                       _buildTextField(
-                        controller: _handleController,
+                        controller: controller.handleController,
                         hint: "Enter your handle",
                         prefixIcon: Icons.alternate_email,
                       ),
                       SizedBox(height: 16.h),
                       _buildFieldLabel("BIOGRAPHY"),
                       _buildTextField(
-                        controller: _bioController,
+                        controller: controller.bioController,
                         hint: "Tell us about yourself...",
                         maxLines: 3,
                       ),
@@ -160,25 +183,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     _buildSectionHeader("SOCIAL CONNECTIVITY"),
                     _buildCardContainer([
                       _buildSocialField(
-                        controller: _instagramController,
+                        controller: controller.instagramController,
                         hint: "instagram.com/username",
                         icon: Icons.camera_alt_outlined,
                       ),
                       SizedBox(height: 12.h),
                       _buildSocialField(
-                        controller: _tiktokController,
+                        controller: controller.tiktokController,
                         hint: "TikTok URL",
                         icon: Icons.video_library_outlined,
                       ),
                       SizedBox(height: 12.h),
                       _buildSocialField(
-                        controller: _youtubeController,
+                        controller: controller.youtubeController,
                         hint: "YouTube URL",
                         icon: Icons.play_circle_outline,
                       ),
                       SizedBox(height: 12.h),
                       _buildSocialField(
-                        controller: _facebookController,
+                        controller: controller.facebookController,
                         hint: "Facebook URL",
                         icon: Icons.public_outlined,
                       ),

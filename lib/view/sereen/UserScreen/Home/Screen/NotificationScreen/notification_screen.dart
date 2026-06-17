@@ -15,10 +15,7 @@ class NotificationScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.menu, color: AppColors.yellow),
-            onPressed: () {},
-          ),
+          leading: BackButton(color: AppColors.yellow,),
           title: Image.network(
             "https://picsum.photos/seed/speedringlogo/130/40",
             height: 30.h,
@@ -77,7 +74,11 @@ class NotificationScreen extends StatelessWidget {
                     onTap: () {},
                     child: Row(
                       children: [
-                        const Icon(Icons.close, color: Colors.white60, size: 14),
+                        const Icon(
+                          Icons.close,
+                          color: Colors.white60,
+                          size: 14,
+                        ),
                         SizedBox(width: 4.w),
                         CustomText(
                           text: "CLEAR ALL",
@@ -91,11 +92,11 @@ class NotificationScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 24.h),
-      
+
               /// NEW Section
               _buildSectionDivider("NEW"),
               SizedBox(height: 12.h),
-      
+
               /// Notification 1: Track
               _buildNotificationCard(
                 avatarWidget: _buildIconBox(Icons.speed, AppColors.yellow),
@@ -103,7 +104,8 @@ class NotificationScreen extends StatelessWidget {
                 categoryColor: AppColors.yellow,
                 time: "02:14 PM",
                 title: "SPA-FRANCORCHAMPS: SESSION LIVE",
-                content: "The circuit is now green for public lapping. Track temperature is 24°C. Grip levels optimal.",
+                content:
+                    "The circuit is now green for public lapping. Track temperature is 24°C. Grip levels optimal.",
                 isUnread: true,
                 actionButton: _buildActionButton(
                   label: "View",
@@ -112,7 +114,7 @@ class NotificationScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 12.h),
-      
+
               /// Notification 2: Social
               _buildNotificationCard(
                 avatarWidget: Container(
@@ -121,7 +123,9 @@ class NotificationScreen extends StatelessWidget {
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop"),
+                      image: NetworkImage(
+                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -131,16 +135,26 @@ class NotificationScreen extends StatelessWidget {
                 time: "11:45 AM",
                 contentWidget: RichText(
                   text: TextSpan(
-                    style: TextStyle(color: Colors.white70, fontSize: 12.sp, height: 1.45),
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12.sp,
+                      height: 1.45,
+                    ),
                     children: [
                       const TextSpan(
                         text: "@max_verstappen_33 ",
-                        style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: AppColors.yellow,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const TextSpan(text: "mentioned you:\n"),
                       TextSpan(
                         text: "\"Great line through Eau Rouge!\"",
-                        style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white.withValues(alpha:0.9)),
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
                       ),
                     ],
                   ),
@@ -153,15 +167,19 @@ class NotificationScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 12.h),
-      
+
               /// Notification 3: Market
               _buildNotificationCard(
-                avatarWidget: _buildIconBox(Icons.shopping_cart_outlined, AppColors.yellow),
+                avatarWidget: _buildIconBox(
+                  Icons.shopping_cart_outlined,
+                  AppColors.yellow,
+                ),
                 category: "MARKET",
                 categoryColor: AppColors.yellow,
                 time: "09:12 AM",
                 title: "NEW LEAD: 2024 PORSCHE 911 GT3 RS",
-                content: "A verified buyer has sent an inquiry regarding your listing. Buyer Rating: 4.9/5.0.",
+                content:
+                    "A verified buyer has sent an inquiry regarding your listing. Buyer Rating: 4.9/5.0.",
                 isUnread: true,
                 actionButton: _buildActionButton(
                   label: "VIEW LEAD",
@@ -170,19 +188,23 @@ class NotificationScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 24.h),
-      
+
               /// EARLIER Section
               _buildSectionDivider("EARLIER"),
               SizedBox(height: 12.h),
-      
+
               /// Notification 4: Track (Earlier)
               _buildNotificationCard(
-                avatarWidget: _buildIconBox(Icons.timer_outlined, AppColors.yellow),
+                avatarWidget: _buildIconBox(
+                  Icons.timer_outlined,
+                  AppColors.yellow,
+                ),
                 category: "TRACK",
                 categoryColor: Colors.white60,
                 time: "YESTERDAY",
                 title: "NEW RECORD: SECTOR 2 PB",
-                content: "You've set a new personal best in Sector 2 at Silverstone.",
+                content:
+                    "You've set a new personal best in Sector 2 at Silverstone.",
                 isUnread: false,
                 extraWidget: Container(
                   margin: EdgeInsets.only(top: 8.h),
@@ -232,7 +254,7 @@ class NotificationScreen extends StatelessWidget {
         Expanded(
           child: Container(
             height: 1,
-            color: Colors.white.withValues(alpha:0.08),
+            color: Colors.white.withValues(alpha: 0.08),
           ),
         ),
       ],
@@ -246,11 +268,9 @@ class NotificationScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff181818),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
-      child: Center(
-        child: Icon(icon, color: color, size: 18),
-      ),
+      child: Center(child: Icon(icon, color: color, size: 18)),
     );
   }
 
@@ -369,7 +389,9 @@ class NotificationScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSolid ? AppColors.yellow : Colors.transparent,
           borderRadius: BorderRadius.circular(6.r),
-          border: isSolid ? null : Border.all(color: AppColors.yellow.withValues(alpha:0.4)),
+          border: isSolid
+              ? null
+              : Border.all(color: AppColors.yellow.withValues(alpha: 0.4)),
         ),
         child: Center(
           child: CustomText(

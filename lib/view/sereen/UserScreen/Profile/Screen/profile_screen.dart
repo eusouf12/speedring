@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import '../../../components/custom_button/custom_button.dart';
-import '../../../components/custom_text/custom_text.dart';
-import '../../../components/custom_nav_bar/navbar.dart';
-import '../../../../utils/app_colors/app_colors.dart';
-import '../../../../core/app_routes/app_routes.dart';
-import 'widgets/profile_post_card.dart';
-import 'widgets/garage_vehicle_card.dart';
+import '../../../../components/custom_button/custom_button.dart';
+import '../../../../components/custom_text/custom_text.dart';
+import '../../../../components/custom_nav_bar/navbar.dart';
+import '../../../../../utils/app_colors/app_colors.dart';
+import '../../../../../core/app_routes/app_routes.dart';
+import '../widgets/profile_post_card.dart';
+import '../widgets/garage_vehicle_card.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreenController extends GetxController {
+  final _activeTab = 0.obs;
+  int get activeTab => _activeTab.value;
+  set activeTab(int val) => _activeTab.value = val;
+}
+
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  int activeTab = 0; // 0: POSTS, 1: OVERVIEW, 2: GARAGE, 3: SUPPORT
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ProfileScreenController());
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -68,13 +68,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 clipBehavior: Clip.none,
                 children: [
                   /// Banner Image
-                  Container(
+                  SizedBox(
                     height: 180.h,
                     width: double.infinity,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=800&fit=crop"),
-                        fit: BoxFit.cover,
+                    child: Image.network(
+                      "https://picsum.photos/seed/profilecover/800/400",
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: const Color(0xff1C1C1C),
+                        child: const Center(
+                          child: Icon(Icons.image, color: Colors.white24, size: 48),
+                        ),
                       ),
                     ),
                   ),
@@ -118,9 +122,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.black, width: 3),
-                            image: const DecorationImage(
-                              image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop"),
+                          ),
+                          child: ClipOval(
+                            child: Image.network(
+                              "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop",
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                color: const Color(0xff1C1C1C),
+                                child: const Icon(Icons.person, color: Colors.white24, size: 40),
+                              ),
                             ),
                           ),
                         ),
@@ -191,7 +201,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(height: 4.h),
                     Row(
                       children: [
-                        const Icon(Icons.flag, color: Colors.blue, size: 14), // placeholder for Dutch flag
+                        const Icon(Icons.flag, color: Colors.blue, size: 14), // Dutch flag placeholder
                         SizedBox(width: 6.w),
                         CustomText(
                           text: "@max_verstappen_33   da",
@@ -230,9 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: 18.r,
                           icon: const Icon(Icons.sell_outlined, color: Colors.black, size: 12),
                           onTap: () {
-                            setState(() {
-                              activeTab = 3;
-                            });
+                            controller.activeTab = 3;
                           },
                         ),
                       ],
@@ -273,7 +281,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _buildQuickActionCircle(Icons.add, "CREATE", isYellowBg: true),
                     _buildQuickThumb("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop", "MY DRIVE"),
                     _buildQuickThumb("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop", "TELEMETRY"),
-                    _buildQuickThumb("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=100&fit=crop", "SPA LAPS"),
+                    _buildQuickThumb("https://picsum.photos/seed/spalaps/100/100", "SPA LAPS"),
                   ],
                 ),
               ),
@@ -372,7 +380,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white24),
-              image: DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover),
+            ),
+            child: ClipOval(
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: const Color(0xff1C1C1C),
+                  child: const Icon(Icons.image, color: Colors.white24, size: 20),
+                ),
+              ),
             ),
           ),
           SizedBox(height: 6.h),
@@ -406,47 +423,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildTabItem(int index, String label) {
-    final bool isSelected = activeTab == index;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          activeTab = index;
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: isSelected ? AppColors.yellow : Colors.transparent,
-              width: 2,
+    final controller = Get.find<ProfileScreenController>();
+    return Obx(() {
+      final bool isSelected = controller.activeTab == index;
+      return GestureDetector(
+        onTap: () {
+          controller.activeTab = index;
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isSelected ? AppColors.yellow : Colors.transparent,
+                width: 2,
+              ),
             ),
           ),
+          child: CustomText(
+            text: label,
+            color: isSelected ? Colors.white : Colors.white38,
+            fontSize: 11,
+            fontWeight: isSelected ? FontWeight.w900 : FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
         ),
-        child: CustomText(
-          text: label,
-          color: isSelected ? Colors.white : Colors.white38,
-          fontSize: 11,
-          fontWeight: isSelected ? FontWeight.w900 : FontWeight.bold,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildActiveTabBody() {
-    switch (activeTab) {
-      case 0:
-        return _buildPostsTab();
-      case 1:
-        return _buildOverviewTab();
-      case 2:
-        return _buildGarageTab();
-      case 3:
-        return _buildSupportTab();
-      default:
-        return _buildPostsTab();
-    }
+    final controller = Get.find<ProfileScreenController>();
+    return Obx(() {
+      switch (controller.activeTab) {
+        case 0:
+          return _buildPostsTab();
+        case 1:
+          return _buildOverviewTab();
+        case 2:
+          return _buildGarageTab();
+        case 3:
+          return _buildSupportTab();
+        default:
+          return _buildPostsTab();
+      }
+    });
   }
 
   /// ── Tab 01: Posts Tab ──────────────────────────────────────────────────
@@ -468,7 +489,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             authorName: "MAX VERSTAPPEN",
             authorAvatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
             timeAgo: "3 hours ago",
-            imageUrl: "https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=500&fit=crop",
+            imageUrl: "https://picsum.photos/seed/postgt3/600/400",
             likes: "1.2M",
             comments: "45K",
             username: "max_verstappen_33",
@@ -479,7 +500,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             authorName: "MAX VERSTAPPEN",
             authorAvatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
             timeAgo: "Yesterday",
-            imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
+            imageUrl: "https://picsum.photos/seed/postredbull/600/400",
             likes: "2.8M",
             comments: "82K",
             username: "max_verstappen_33",
@@ -507,13 +528,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           SizedBox(height: 16.h),
           _buildActivityCard(
-            "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500&fit=crop",
+            "https://picsum.photos/seed/simvalidator/600/400",
             "SIM VALIDATOR",
             "LOGGED: 12.4H",
           ),
           SizedBox(height: 16.h),
           _buildActivityCard(
-            "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
+            "https://picsum.photos/seed/gphighlight/600/400",
             "GP HIGHLIGHT",
             "PLAY REPLAY",
             hasPlayButton: true,
@@ -530,60 +551,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: Colors.white10),
-        image: DecorationImage(
-          image: NetworkImage(imageUrl),
-          fit: BoxFit.cover,
-        ),
       ),
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black.withValues(alpha:0.8)],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16.r),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: const Color(0xff1A1A1A),
+                  child: const Icon(Icons.image, color: Colors.white24, size: 48),
+                ),
               ),
             ),
-          ),
-          if (hasPlayButton)
-            Center(
+            Positioned.fill(
               child: Container(
-                width: 48.w,
-                height: 48.w,
-                decoration: const BoxDecoration(
-                  color: AppColors.yellow,
-                  shape: BoxShape.circle,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.r),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withValues(alpha:0.8)],
+                  ),
                 ),
-                child: const Icon(Icons.play_arrow, color: Colors.black),
               ),
             ),
-          Positioned(
-            bottom: 16.h,
-            left: 16.w,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomText(
-                  text: tag,
-                  color: AppColors.yellow,
-                  fontSize: 8,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
+            if (hasPlayButton)
+              Center(
+                child: Container(
+                  width: 48.w,
+                  height: 48.w,
+                  decoration: const BoxDecoration(
+                    color: AppColors.yellow,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.play_arrow, color: Colors.black),
                 ),
-                SizedBox(height: 4.h),
-                CustomText(
-                  text: title,
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.5,
-                ),
-              ],
+              ),
+            Positioned(
+              bottom: 16.h,
+              left: 16.w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    text: tag,
+                    color: AppColors.yellow,
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                  SizedBox(height: 4.h),
+                  CustomText(
+                    text: title,
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.5,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -657,7 +689,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(height: 16.h),
 
           const GarageVehicleCard(
-            imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
+            imageUrl: "https://picsum.photos/seed/garagerb20/600/400",
             title: "ORACLE RED BULL RACING RB20",
             category: "FORMULA 1 2024",
             version: "V01",
@@ -668,7 +700,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             propulsion: "HYBRID",
           ),
           const GarageVehicleCard(
-            imageUrl: "https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=500&fit=crop",
+            imageUrl: "https://picsum.photos/seed/garagegt3/600/400",
             title: "PORSCHE 911 GT3 RS (992)",
             category: "STREET LEGAL / TRACK PREPARED",
             version: "V02",

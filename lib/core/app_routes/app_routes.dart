@@ -44,12 +44,17 @@ import '../../view/sereen/UserScreen/MarketPlace/item_detail_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/select_category_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/create_vehicle_listing_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/create_motorcycle_listing_screen.dart';
-import '../../view/sereen/UserScreen/Profile/profile_screen.dart';
-import '../../view/sereen/UserScreen/Profile/add_vehicle_screen.dart';
-import '../../view/sereen/UserScreen/Profile/edit_profile_screen.dart';
-import '../../view/sereen/UserScreen/Profile/user_parameters_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/profile_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/add_vehicle_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/edit_profile_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/user_parameters_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/my_listings_screen.dart';
-import '../../view/sereen/UserScreen/Profile/edit_vehicle_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/edit_vehicle_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/change_password_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/terms_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/privacy_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/help_support_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/about_screen.dart';
 
 
 
@@ -111,6 +116,11 @@ class AppRoutes {
   static const String userParametersScreen = "/UserParametersScreen";
   static const String myListingsScreen = "/MyListingsScreen";
   static const String editVehicleScreen = "/EditVehicleScreen";
+  static const String changePasswordScreen = "/ChangePasswordScreen";
+  static const String termsScreen = "/TermsScreen";
+  static const String privacyScreen = "/PrivacyScreen";
+  static const String helpSupportScreen = "/HelpSupportScreen";
+  static const String aboutScreen = "/AboutScreen";
 
 
 
@@ -177,6 +187,11 @@ class AppRoutes {
     GetPage(name: userParametersScreen, page: () => const UserParametersScreen()),
     GetPage(name: myListingsScreen, page: () => const MyListingsScreen()),
     GetPage(name: editVehicleScreen, page: () => const EditVehicleScreen()),
+    GetPage(name: changePasswordScreen, page: () => const ChangePasswordScreen()),
+    GetPage(name: termsScreen, page: () => const TermsScreen()),
+    GetPage(name: privacyScreen, page: () => const PrivacyScreen()),
+    GetPage(name: helpSupportScreen, page: () => const HelpSupportScreen()),
+    GetPage(name: aboutScreen, page: () => const AboutScreen()),
   ];
 
 }

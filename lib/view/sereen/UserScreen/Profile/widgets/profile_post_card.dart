@@ -46,11 +46,17 @@ class ProfilePostCard extends StatelessWidget {
               Container(
                 width: 38.w,
                 height: 38.w,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: NetworkImage(authorAvatar),
+                ),
+                child: ClipOval(
+                  child: Image.network(
+                    authorAvatar,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: const Color(0xff1C1C1C),
+                      child: const Icon(Icons.person, color: Colors.white24, size: 18),
+                    ),
                   ),
                 ),
               ),
@@ -88,9 +94,16 @@ class ProfilePostCard extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
-              image: DecorationImage(
-                image: NetworkImage(imageUrl),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12.r),
+              child: Image.network(
+                imageUrl,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: const Color(0xff1C1C1C),
+                  child: const Icon(Icons.image, color: Colors.white24, size: 48),
+                ),
               ),
             ),
           ),

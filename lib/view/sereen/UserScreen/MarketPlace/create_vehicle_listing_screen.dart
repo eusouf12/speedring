@@ -6,19 +6,17 @@ import '../../../components/custom_button/custom_button.dart';
 import '../../../components/custom_text/custom_text.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
 
-class CreateVehicleListingScreen extends StatefulWidget {
+class CreateVehicleListingController extends GetxController {
+  final selectedTransmission = "PDK / AUTOMATIC".obs;
+  final selectedDrivetrain = "Rear-Wheel Drive (RWD)".obs;
+}
+
+class CreateVehicleListingScreen extends StatelessWidget {
   const CreateVehicleListingScreen({super.key});
 
   @override
-  State<CreateVehicleListingScreen> createState() => _CreateVehicleListingScreenState();
-}
-
-class _CreateVehicleListingScreenState extends State<CreateVehicleListingScreen> {
-  String selectedTransmission = "PDK / AUTOMATIC";
-  String selectedDrivetrain = "Rear-Wheel Drive (RWD)";
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CreateVehicleListingController());
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -61,7 +59,7 @@ class _CreateVehicleListingScreenState extends State<CreateVehicleListingScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildFieldLabel("PRODUCTION YEAR"),
-                          _buildDropdown(["2024", "2023", "2022", "2021", "2020"]),
+                          _buildDropdownDirect(controller, ["2024", "2023", "2022", "2021", "2020"]),
                         ],
                       ),
                     ),
@@ -148,23 +146,16 @@ class _CreateVehicleListingScreenState extends State<CreateVehicleListingScreen>
                 _buildTextField("e.g. 4.0L Flat-Six Naturally Aspirated"),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("TRANSMISSION"),
-                Row(
+                Obx(() => Row(
                   children: [
-                    Expanded(child: _buildSegmentOption("PDK / AUTOMATIC", selectedTransmission == "PDK / AUTOMATIC")),
+                    Expanded(child: _buildSegmentOption(controller, "PDK / AUTOMATIC", controller.selectedTransmission.value == "PDK / AUTOMATIC")),
                     SizedBox(width: 12.w),
-                    Expanded(child: _buildSegmentOption("MANUAL", selectedTransmission == "MANUAL")),
+                    Expanded(child: _buildSegmentOption(controller, "MANUAL", controller.selectedTransmission.value == "MANUAL")),
                   ],
-                ),
+                )),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("DRIVETRAIN"),
-                _buildDropdown(["Rear-Wheel Drive (RWD)", "All-Wheel Drive (AWD)", "Front-Wheel Drive (FWD)"],
-                    onChanged: (val) {
-                  if (val != null) {
-                    setState(() {
-                      selectedDrivetrain = val;
-                    });
-                  }
-                }),
+                _buildDropdownDrivetrain(controller, ["Rear-Wheel Drive (RWD)", "All-Wheel Drive (AWD)", "Front-Wheel Drive (FWD)"]),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("AERODYNAMICS / BODY"),
                 _buildTextField("Active Aero, Carbon Fiber, Widebody...", maxLines: 2),
@@ -193,7 +184,7 @@ class _CreateVehicleListingScreenState extends State<CreateVehicleListingScreen>
                   children: [
                     _buildUploadTile(),
                     _buildImagePreview("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=150&fit=crop"),
-                    _buildImagePreview("https://images.unsplash.com/photo-1611245801312-51345985c6e8?w=150&fit=crop"),
+                    _buildImagePreview("https://picsum.photos/seed/vehiclepreview2/150/150"),
                     _buildVideoPreview("https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=150&fit=crop"),
                   ],
                 ),
@@ -340,7 +331,8 @@ class _CreateVehicleListingScreenState extends State<CreateVehicleListingScreen>
     );
   }
 
-  Widget _buildDropdown(List<String> items, {ValueChanged<String?>? onChanged}) {
+  Widget _buildDropdownDirect(CreateVehicleListingController controller, List<String> items) {
+    // Basic helper for Production Year (does not need reactivity for prototype)
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w),
       decoration: BoxDecoration(
@@ -359,18 +351,45 @@ class _CreateVehicleListingScreenState extends State<CreateVehicleListingScreen>
               child: Text(val),
             );
           }).toList(),
-          onChanged: onChanged,
+          onChanged: (val) {},
         ),
       ),
     );
   }
 
-  Widget _buildSegmentOption(String label, bool isSelected) {
+  Widget _buildDropdownDrivetrain(CreateVehicleListingController controller, List<String> items) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 14.w),
+      decoration: BoxDecoration(
+        color: const Color(0xff1d1d1d),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: Obx(() => DropdownButton<String>(
+          value: controller.selectedDrivetrain.value,
+          dropdownColor: const Color(0xff1d1d1d),
+          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
+          style: const TextStyle(color: Colors.white, fontSize: 13),
+          items: items.map((val) {
+            return DropdownMenuItem<String>(
+              value: val,
+              child: Text(val),
+            );
+          }).toList(),
+          onChanged: (val) {
+            if (val != null) {
+              controller.selectedDrivetrain.value = val;
+            }
+          },
+        )),
+      ),
+    );
+  }
+
+  Widget _buildSegmentOption(CreateVehicleListingController controller, String label, bool isSelected) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          selectedTransmission = label;
-        });
+        controller.selectedTransmission.value = label;
       },
       child: Container(
         height: 38.h,
@@ -428,7 +447,17 @@ class _CreateVehicleListingScreenState extends State<CreateVehicleListingScreen>
           decoration: BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.circular(8.r),
-            image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: Image.network(
+              url,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: const Color(0xff222222),
+                child: const Icon(Icons.broken_image, color: Colors.white24, size: 20),
+              ),
+            ),
           ),
         ),
         Positioned(
@@ -453,10 +482,20 @@ class _CreateVehicleListingScreenState extends State<CreateVehicleListingScreen>
           decoration: BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.circular(8.r),
-            image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover, opacity: 0.6),
           ),
-          child: const Center(
-            child: Icon(Icons.play_circle_outline, color: Colors.white, size: 24),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: Opacity(
+              opacity: 0.6,
+              child: Image.network(
+                url,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: const Color(0xff222222),
+                  child: const Icon(Icons.broken_image, color: Colors.white24, size: 20),
+                ),
+              ),
+            ),
           ),
         ),
         Positioned(
