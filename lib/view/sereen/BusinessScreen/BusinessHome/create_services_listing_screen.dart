@@ -5,36 +5,41 @@ import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../utils/app_colors/app_colors.dart';
 import '../../../components/custom_button/custom_button.dart';
 import '../../../components/custom_text/custom_text.dart';
-import '../../BusinessScreen/BusinessHome/business_dashboard_controller.dart';
+import 'business_dashboard_controller.dart';
 
-class CreateMotorcycleListingScreen extends StatefulWidget {
-  const CreateMotorcycleListingScreen({super.key});
+class CreateServicesListingScreen extends StatefulWidget {
+  const CreateServicesListingScreen({super.key});
 
   @override
-  State<CreateMotorcycleListingScreen> createState() => _CreateMotorcycleListingScreenState();
+  State<CreateServicesListingScreen> createState() => _CreateServicesListingScreenState();
 }
 
-class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingScreen> {
-  final manufacturerController = TextEditingController(text: "Ducati");
-  final modelController = TextEditingController(text: "Panigale V4 S");
-  final productionYearController = TextEditingController(text: "2024");
-  final priceController = TextEditingController(text: "32,000");
-  final locationController = TextEditingController(text: "Bologna, Italy");
+class _CreateServicesListingScreenState extends State<CreateServicesListingScreen> {
+  final serviceNameController = TextEditingController(text: "Pro Coaching & ECU Calibration");
+  final providerController = TextEditingController(text: "SpeedRing Performance");
+  final priceController = TextEditingController(text: "1,200 / Day");
+  
+  final turnaroundController = TextEditingController(text: "Booking required 7 days prior");
+  final scopeController = TextEditingController(
+    text: "Complete 1-on-1 trackside coaching with comprehensive telemetry analysis and custom ECU maps tailored to track conditions."
+  );
 
-  final outputController = TextEditingController(text: "215");
-  final displacementController = TextEditingController(text: "1103");
+  String locationCoverage = "Trackside / On-site";
+  int characterCount = 0;
 
-  String engineConfig = "Desmosedici Stradale 90° V4";
+  @override
+  void initState() {
+    super.initState();
+    characterCount = scopeController.text.length;
+  }
 
   @override
   void dispose() {
-    manufacturerController.dispose();
-    modelController.dispose();
-    productionYearController.dispose();
+    serviceNameController.dispose();
+    providerController.dispose();
     priceController.dispose();
-    locationController.dispose();
-    outputController.dispose();
-    displacementController.dispose();
+    turnaroundController.dispose();
+    scopeController.dispose();
     super.dispose();
   }
 
@@ -52,7 +57,7 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
           elevation: 0,
           leading: const SizedBox.shrink(),
           title: const Text(
-            "CREATE LISTING: MOTORCYCLES",
+            "CREATE LISTING: SERVICES",
             style: TextStyle(
               color: AppColors.yellow,
               fontSize: 14,
@@ -74,109 +79,71 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 01 / BASIC IDENTIFICATION
-              _buildPhaseHeader("01 / BASIC IDENTIFICATION"),
+              // 01 / SERVICE DEFINITION
+              _buildPhaseHeader("01 / SERVICE DEFINITION"),
               _buildSectionCard([
-                _buildFieldLabel("MANUFACTURER / BRAND"),
-                _buildOutlineIconField(manufacturerController, Icons.motorcycle_outlined, "e.g. Ducati"),
+                _buildFieldLabel("NOMENCLATURE / SERVICE NAME"),
+                _buildOutlineField(serviceNameController, "e.g. Pro Coaching & ECU Calibration"),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("MODEL NAME"),
-                _buildOutlineField(modelController, "e.g. Panigale V4 S"),
+                _buildFieldLabel("PROVIDER / WORKSHOP NAME"),
+                _buildOutlineField(providerController, "e.g. SpeedRing Performance"),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("PRODUCTION YEAR"),
-                _buildOutlineIconField(productionYearController, Icons.calendar_today_outlined, "2024", keyboardType: TextInputType.number),
-                SizedBox(height: 14.h),
-                _buildFieldLabel("ASKING PRICE (USD)"),
-                _buildOutlineIconField(priceController, Icons.payments_outlined, "32,000", keyboardType: TextInputType.number),
-                SizedBox(height: 14.h),
-                _buildFieldLabel("VEHICLE LOCATION"),
-                _buildOutlineIconField(locationController, Icons.location_on_outlined, "City, State, Country"),
+                _buildFieldLabel("VALUATION (USD)"),
+                _buildOutlineIconField(priceController, Icons.payments_outlined, "e.g. 1,200 / Day"),
               ]),
               SizedBox(height: 24.h),
 
-              // 02 / PERFORMANCE METRICS
-              _buildPhaseHeader("02 / PERFORMANCE METRICS"),
+              // 02 / OPERATIONAL LOGISTICS
+              _buildPhaseHeader("02 / OPERATIONAL LOGISTICS"),
               _buildSectionCard([
-                _buildFieldLabel("ENGINE CONFIG"),
+                _buildFieldLabel("LOCATION COVERAGE"),
                 _buildDropdownField(
-                  selectedValue: engineConfig,
+                  selectedValue: locationCoverage,
                   items: [
-                    "Desmosedici Stradale 90° V4",
-                    "Twin-Cylinder L-Twin",
-                    "Inline-Four crossplane",
-                    "Parallel-Twin Liquid-Cooled",
+                    "Trackside / On-site",
+                    "Global Remote",
+                    "Regional Workshop",
+                    "National Coverage",
                   ],
-                  icon: Icons.settings_outlined,
+                  icon: Icons.map_outlined,
                   onChanged: (val) {
                     if (val != null) {
                       setState(() {
-                        engineConfig = val;
+                        locationCoverage = val;
                       });
                     }
                   },
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("MAX OUTPUT (HP)"),
-                _buildOutlineIconField(outputController, Icons.bolt_outlined, "215", keyboardType: TextInputType.number),
-                SizedBox(height: 14.h),
-                _buildFieldLabel("DISPLACEMENT (CC)"),
-                _buildOutlineIconField(displacementController, Icons.speed_outlined, "1103", keyboardType: TextInputType.number),
+                _buildFieldLabel("TURNAROUND TIME / ACCESSIBILITY"),
+                _buildOutlineIconField(turnaroundController, Icons.hourglass_bottom_outlined, "e.g. 2-3 business days"),
               ]),
               SizedBox(height: 24.h),
 
-              // 03 / MEDIA ASSETS
-              _buildPhaseHeader("03 / MEDIA ASSETS"),
+              // 03 / TECHNICAL PHILOSOPHY
+              _buildPhaseHeader("03 / TECHNICAL PHILOSOPHY"),
               _buildSectionCard([
-                // Main View Image upload box
-                Container(
-                  height: 140.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(color: Colors.white10),
-                  ),
-                  child: Stack(
-                    children: [
-                      // motorcycle image preview faded
-                      Opacity(
-                        opacity: 0.4,
-                        child: Image.network(
-                          "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
-                          height: double.infinity,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (c, e, s) => Container(color: Colors.black),
-                        ),
-                      ),
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow, size: 24),
-                            SizedBox(height: 6.h),
-                            CustomText(
-                              text: "MAIN VIEW",
-                              color: Colors.white60,
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 12.h),
-
-                // Sub views
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(child: _buildSmallUploadTile()),
-                    SizedBox(width: 10.w),
-                    Expanded(child: _buildSmallUploadTile()),
+                    _buildFieldLabel("SCOPE OF WORK"),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 8.h),
+                      child: Text(
+                        "$characterCount / 500 characters",
+                        style: TextStyle(
+                          color: characterCount > 500 ? Colors.red : Colors.white38,
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
+                _buildScopeTextArea(),
+                SizedBox(height: 16.h),
+                _buildFieldLabel("TECHNICAL DOCUMENTATION / SCHEMATIC"),
+                _buildDocumentationUploadTile(),
               ]),
               SizedBox(height: 32.h),
 
@@ -217,29 +184,31 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
                       icon: const Icon(Icons.publish_rounded, color: Colors.black, size: 16),
                       onTap: () {
                         // Publish item to controller list
-                        String title = "${productionYearController.text} ${manufacturerController.text} ${modelController.text}".trim();
-                        if (title.trim().isEmpty) title = "2024 DUCATI PANIGALE V4 S";
+                        String title = serviceNameController.text.trim();
+                        if (title.isEmpty) title = "Pro Coaching & ECU Calibration";
                         String price = priceController.text.trim();
-                        if (!price.startsWith(r"$")) price = r"$" + price;
+                        if (!price.startsWith(r"$") && !price.contains("/ ")) {
+                          price = r"$" + price;
+                        }
 
                         controller.rxAssets.insert(0, AssetModel(
                           id: (controller.rxAssets.length + 1).toString(),
                           title: title.toUpperCase(),
                           status: "LIVE",
-                          code: "YA-DUC-PANV4",
-                          type: "MOTORCYCLES",
+                          code: "SR-SRV-ECU",
+                          type: "SERVICES",
                           price: price,
                           views: "0",
                           leads: "0",
-                          shipping: "YES",
-                          imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
-                          description: "Desmosedici Stradale performance superbike. Ready for track utilization.",
-                          power: "${outputController.text} HP",
-                          torque: "112 NM",
-                          zeroToSixty: "2.9 SEC",
-                          engineConfig: engineConfig,
-                          transmission: "6-Speed Quickshift",
-                          drivetrain: "RWD",
+                          shipping: "NO",
+                          imageUrl: "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop",
+                          description: "${scopeController.text}\nCoverage: $locationCoverage. Provider: ${providerController.text}.",
+                          power: "N/A",
+                          torque: "N/A",
+                          zeroToSixty: "N/A",
+                          engineConfig: "N/A",
+                          transmission: "N/A",
+                          drivetrain: "N/A",
                         ));
 
                         Get.back(); // Pop listing screen
@@ -247,7 +216,7 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
 
                         Get.snackbar(
                           "Asset Published",
-                          "Superbike added to active inventory list.",
+                          "Expert service added to active inventory list.",
                           snackPosition: SnackPosition.BOTTOM,
                           backgroundColor: const Color(0xff181818),
                           colorText: Colors.white,
@@ -276,6 +245,7 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
         fontSize: 9.sp,
         fontWeight: FontWeight.w900,
         letterSpacing: 1.0,
+        textAlign: TextAlign.start,
       ),
     );
   }
@@ -305,6 +275,7 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
         fontSize: 9.sp,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.5,
+        textAlign: TextAlign.start,
       ),
     );
   }
@@ -400,16 +371,56 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
     );
   }
 
-  Widget _buildSmallUploadTile() {
+  Widget _buildScopeTextArea() {
     return Container(
-      height: 60.h,
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: const Color(0xff0d0d0d),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: TextFormField(
+        controller: scopeController,
+        maxLines: 4,
+        style: const TextStyle(color: Colors.white, fontSize: 12),
+        onChanged: (text) {
+          setState(() {
+            characterCount = text.length;
+          });
+        },
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          hintText: "DESCRIBE SERVICE SCOPE, EQUIPMENT USED, AND PROCEDURES...",
+          hintStyle: TextStyle(color: Colors.white24, fontSize: 12),
+          isDense: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDocumentationUploadTile() {
+    return Container(
+      height: 100.h,
+      width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.black,
-        borderRadius: BorderRadius.circular(6.r),
-        border: Border.all(color: Colors.white10, style: BorderStyle.solid),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: Colors.white10),
       ),
-      child: const Center(
-        child: Icon(Icons.add, color: Colors.white24, size: 20),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.upload_file_outlined, color: AppColors.yellow, size: 28),
+            SizedBox(height: 8.h),
+            CustomText(
+              text: "UPLOAD SCHEMATIC / TECHNICAL DOCS (PDF)",
+              color: Colors.white60,
+              fontSize: 10.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -79,10 +79,10 @@ class SignupScreen extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xffF5C400).withValues(alpha:0.12),
+                        color: const Color(0xffF5C400).withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                          color: const Color(0xffF5C400).withValues(alpha:0.3),
+                          color: const Color(0xffF5C400).withValues(alpha: 0.3),
                         ),
                       ),
                       child: const CustomText(
@@ -302,9 +302,7 @@ class SignupScreen extends StatelessWidget {
 
                 // ── CREATE BUSINESS ACCOUNT button ────────────────────────
                 CustomButton(
-                  onTap: () {
-                   
-                  },
+                  onTap: () => Get.toNamed(AppRoutes.businessRegistrationStep1),
                   title: 'CREATE BUSINESS ACCOUNT',
                   fillColor: Colors.black,
                   textColor: Colors.white,
@@ -387,9 +385,7 @@ class SignupScreen extends StatelessWidget {
         const TextSpan(text: 'I agree to the '),
         WidgetSpan(
           child: GestureDetector(
-            onTap: () {
-              
-            },
+            onTap: () {},
             child: const Text(
               'Terms of Service',
               style: TextStyle(
@@ -404,9 +400,7 @@ class SignupScreen extends StatelessWidget {
         const TextSpan(text: ' and '),
         WidgetSpan(
           child: GestureDetector(
-            onTap: () {
-             
-            },
+            onTap: () {},
             child: const Text(
               'Privacy Policy',
               style: TextStyle(

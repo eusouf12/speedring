@@ -2,31 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../../../core/app_routes/app_routes.dart';
+import '../../../../utils/app_colors/app_colors.dart';
 import '../../../components/custom_button/custom_button.dart';
 import '../../../components/custom_text/custom_text.dart';
-import '../../../../../utils/app_colors/app_colors.dart';
-
-class CreateVehicleListingController extends GetxController {
-  final selectedTransmission = "PDK / AUTOMATIC".obs;
-  final selectedDrivetrain = "Rear-Wheel Drive (RWD)".obs;
-}
 
 class CreateVehicleListingScreen extends StatelessWidget {
   const CreateVehicleListingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CreateVehicleListingController());
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.close, color: AppColors.yellow),
-            onPressed: () => Get.back(),
-          ),
+          leading: const SizedBox.shrink(),
           title: const Text(
             "CREATE LISTING: VEHICLES",
             style: TextStyle(
@@ -36,202 +28,95 @@ class CreateVehicleListingScreen extends StatelessWidget {
               letterSpacing: 1.0,
             ),
           ),
-          centerTitle: true,
+          centerTitle: false,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.close, color: AppColors.yellow),
+              onPressed: () => Get.back(),
+            ),
+            SizedBox(width: 8.w),
+          ],
         ),
         body: SingleChildScrollView(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Phase 01: Core Specifications
-              _buildSectionHeader("PHASE 01: CORE SPECIFICATIONS"),
-              _buildCardContainer([
+              // Basic Specifications Section
+              _buildSectionHeader("BASIC SPECIFICATIONS", "Core identity parameters for the vehicle record."),
+              SizedBox(height: 12.h),
+              _buildFormCard([
                 _buildFieldLabel("BRAND / MANUFACTURER"),
-                _buildTextField("e.g. Porsche, Ferrari, McLaren"),
+                _buildWhiteTextField("e.g. Porsche"),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("MODEL DESIGNATION"),
-                _buildTextField("e.g. 911 GT3 RS"),
+                _buildFieldLabel("MODEL VARIANT"),
+                _buildWhiteTextField("e.g. 911 GT3 RS"),
                 SizedBox(height: 16.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildFieldLabel("PRODUCTION YEAR"),
-                          _buildDropdownDirect(controller, ["2024", "2023", "2022", "2021", "2020"]),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildFieldLabel("ASKING PRICE (USD)"),
-                          _buildTextField("0.00", keyboardType: TextInputType.number),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                _buildFieldLabel("PRODUCTION YEAR"),
+                _buildWhiteTextField("2024", keyboardType: TextInputType.number),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("VEHICLE LOCATION"),
-                _buildLocationField("City, Country"),
+                _buildFieldLabel("LISTING PRICE (USD)"),
+                _buildWhitePriceField("0.00"),
+                SizedBox(height: 16.h),
+                _buildFieldLabel("LOCATION / DEPOT"),
+                _buildWhiteLocationField("City, Country"),
               ]),
-      
-              SizedBox(height: 24.h),
-      
-              /// Phase 02: Telemetry & Metrics
-              _buildSectionHeader("PHASE 02: TELEMETRY & METRICS"),
-              _buildCardContainer([
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildFieldLabel("POWER (HP)"),
-                          _buildTextField("525", keyboardType: TextInputType.number),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildFieldLabel("0-100 KM/H"),
-                          _buildTextField("3.2s"),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildFieldLabel("TOP SPEED"),
-                          _buildTextField("296 km/h"),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildFieldLabel("WEIGHT (KG)"),
-                          _buildTextField("1450", keyboardType: TextInputType.number),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16.h),
-                _buildFieldLabel("MILEAGE (KM)"),
-                _buildTextField("1,240", keyboardType: TextInputType.number),
-              ]),
-      
-              SizedBox(height: 24.h),
-      
-              /// Phase 03: Engineering Dossier
-              _buildSectionHeader("PHASE 03: ENGINEERING DOSSIER"),
-              _buildCardContainer([
-                _buildFieldLabel("ENGINE CONFIGURATION"),
-                _buildTextField("e.g. 4.0L Flat-Six Naturally Aspirated"),
-                SizedBox(height: 16.h),
-                _buildFieldLabel("TRANSMISSION"),
-                Obx(() => Row(
-                  children: [
-                    Expanded(child: _buildSegmentOption(controller, "PDK / AUTOMATIC", controller.selectedTransmission.value == "PDK / AUTOMATIC")),
-                    SizedBox(width: 12.w),
-                    Expanded(child: _buildSegmentOption(controller, "MANUAL", controller.selectedTransmission.value == "MANUAL")),
-                  ],
-                )),
-                SizedBox(height: 16.h),
-                _buildFieldLabel("DRIVETRAIN"),
-                _buildDropdownDrivetrain(controller, ["Rear-Wheel Drive (RWD)", "All-Wheel Drive (AWD)", "Front-Wheel Drive (FWD)"]),
-                SizedBox(height: 16.h),
-                _buildFieldLabel("AERODYNAMICS / BODY"),
-                _buildTextField("Active Aero, Carbon Fiber, Widebody...", maxLines: 2),
-              ]),
-      
-              SizedBox(height: 24.h),
-      
-              /// Phase 04: Performance Narrative
-              _buildSectionHeader("PHASE 04: PERFORMANCE NARRATIVE"),
-              _buildCardContainer([
-                _buildFieldLabel("DETAILED DESCRIPTION & PROVENANCE"),
-                _buildTextField(
-                  "Describe the vehicle's track history, maintenance record, and unique modifications...",
-                  maxLines: 4,
-                ),
-              ]),
-      
-              SizedBox(height: 24.h),
-      
-              /// Phase 05: Visual Assets
-              _buildSectionHeader("PHASE 05: VISUAL ASSETS"),
-              _buildCardContainer([
-                Wrap(
-                  spacing: 12.w,
-                  runSpacing: 12.h,
-                  children: [
-                    _buildUploadTile(),
-                    _buildImagePreview("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=150&fit=crop"),
-                    _buildImagePreview("https://picsum.photos/seed/vehiclepreview2/150/150"),
-                    _buildVideoPreview("https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=150&fit=crop"),
-                  ],
-                ),
-                SizedBox(height: 12.h),
-                const Center(
-                  child: CustomText(
-                    text: "RECOMMENDED: 1920X1080 PX | PNG, JPEG | MAX 12 PHOTOS (1 VIDEO MAX SUPPORTED)",
-                    color: Colors.white38,
-                    fontSize: 7.5,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ]),
-      
+              SizedBox(height: 28.h),
+
+              // Performance Telemetry Section
+              _buildSectionHeader("PERFORMANCE TELEMETRY", "Precision engineering data points for verified enthusiasts."),
+              SizedBox(height: 12.h),
+              _buildTelemetryCard(),
+              SizedBox(height: 28.h),
+
+              // Media Assets Section
+              _buildSectionHeader("MEDIA ASSETS", "High-fidelity imagery and kinematic content."),
+              SizedBox(height: 12.h),
+              _buildMediaAssetsCard(),
               SizedBox(height: 32.h),
-      
-              /// Submit and Cancel Buttons
-              CustomButton(
-                height: 50.h,
-                title: "PUBLISH LISTING",
-                fontSize: 14,
-                onTap: () {
-                  Get.back();
-                  Get.back();
-                  Get.snackbar(
-                    "Listing Submitted",
-                    "Your vehicle listing is now pending publication approval.",
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: const Color(0xff181818),
-                    colorText: Colors.white,
-                    borderColor: AppColors.yellow,
-                    borderWidth: 1,
-                  );
-                },
-              ),
-              SizedBox(height: 16.h),
-              Center(
-                child: GestureDetector(
-                  onTap: () => Get.back(),
-                  child: const CustomText(
-                    text: "CANCEL",
-                    color: Colors.white38,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.0,
+
+              // Actions Bottom Bar
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.cancel_outlined, color: Colors.white60, size: 16),
+                          SizedBox(width: 6.w),
+                          CustomText(
+                            text: "CANCEL",
+                            color: Colors.white60,
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(width: 16.w),
+                  Expanded(
+                    flex: 3,
+                    child: CustomButton(
+                      height: 44.h,
+                      title: "PUBLISH LISTING",
+                      fontSize: 11.sp,
+                      fillColor: AppColors.yellow,
+                      textColor: Colors.black,
+                      borderRadius: 8.r,
+                      isImageRight: true,
+                      icon: const Icon(Icons.publish_rounded, color: Colors.black, size: 16),
+                      onTap: () {
+                        // Navigate to asset configuration flow
+                        Get.toNamed(AppRoutes.configureAssetScreen);
+                      },
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 24.h),
             ],
@@ -241,20 +126,34 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: CustomText(
-        text: title,
-        color: AppColors.yellow,
-        fontSize: 9,
-        fontWeight: FontWeight.w900,
-        letterSpacing: 1.0,
-      ),
+  Widget _buildSectionHeader(String title, String subtitle) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          text: title,
+          color: Colors.white,
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w900,
+        ),
+        SizedBox(height: 4.h),
+        CustomText(
+          text: subtitle,
+          color: Colors.white38,
+          fontSize: 10.sp,
+          fontWeight: FontWeight.bold,
+        ),
+        SizedBox(height: 6.h),
+        Container(
+          height: 2.h,
+          width: 40.w,
+          color: AppColors.yellow,
+        ),
+      ],
     );
   }
 
-  Widget _buildCardContainer(List<Widget> children) {
+  Widget _buildFormCard(List<Widget> children) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -275,53 +174,52 @@ class CreateVehicleListingScreen extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 8.h),
       child: CustomText(
         text: label,
-        color: Colors.white38,
-        fontSize: 9,
+        color: Colors.white60,
+        fontSize: 9.sp,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.5,
       ),
     );
   }
 
-  Widget _buildTextField(String hint, {int maxLines = 1, TextInputType? keyboardType}) {
+  Widget _buildWhiteTextField(String hint, {TextInputType? keyboardType}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: const Color(0xff1d1d1d),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: TextFormField(
-        maxLines: maxLines,
         keyboardType: keyboardType,
-        style: const TextStyle(color: Colors.white, fontSize: 13),
+        style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
+          hintStyle: const TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.bold),
           isDense: true,
         ),
       ),
     );
   }
 
-  Widget _buildLocationField(String hint) {
+  Widget _buildWhitePriceField(String hint) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: const Color(0xff1d1d1d),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
         children: [
-          const Icon(Icons.location_on_outlined, color: Colors.white38, size: 16),
-          SizedBox(width: 8.w),
+          const Text("\$ ", style: TextStyle(color: AppColors.yellow, fontSize: 13, fontWeight: FontWeight.bold)),
           Expanded(
             child: TextFormField(
-              style: const TextStyle(color: Colors.white, fontSize: 13),
+              keyboardType: TextInputType.number,
+              style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
-                hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
+                hintStyle: const TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.bold),
                 isDense: true,
               ),
             ),
@@ -331,192 +229,162 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDropdownDirect(CreateVehicleListingController controller, List<String> items) {
-    // Basic helper for Production Year (does not need reactivity for prototype)
+  Widget _buildWhiteLocationField(String hint) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: const Color(0xff1d1d1d),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(8.r),
       ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: items.first,
-          dropdownColor: const Color(0xff1d1d1d),
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-          style: const TextStyle(color: Colors.white, fontSize: 13),
-          items: items.map((val) {
-            return DropdownMenuItem<String>(
-              value: val,
-              child: Text(val),
-            );
-          }).toList(),
-          onChanged: (val) {},
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropdownDrivetrain(CreateVehicleListingController controller, List<String> items) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w),
-      decoration: BoxDecoration(
-        color: const Color(0xff1d1d1d),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: Obx(() => DropdownButton<String>(
-          value: controller.selectedDrivetrain.value,
-          dropdownColor: const Color(0xff1d1d1d),
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-          style: const TextStyle(color: Colors.white, fontSize: 13),
-          items: items.map((val) {
-            return DropdownMenuItem<String>(
-              value: val,
-              child: Text(val),
-            );
-          }).toList(),
-          onChanged: (val) {
-            if (val != null) {
-              controller.selectedDrivetrain.value = val;
-            }
-          },
-        )),
-      ),
-    );
-  }
-
-  Widget _buildSegmentOption(CreateVehicleListingController controller, String label, bool isSelected) {
-    return GestureDetector(
-      onTap: () {
-        controller.selectedTransmission.value = label;
-      },
-      child: Container(
-        height: 38.h,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(
-            color: isSelected ? AppColors.yellow : Colors.white10,
-            width: isSelected ? 1.5 : 1,
-          ),
-        ),
-        child: Center(
-          child: CustomText(
-            text: label,
-            color: isSelected ? AppColors.yellow : Colors.white60,
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUploadTile() {
-    return Container(
-      width: 70.w,
-      height: 70.w,
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white10, style: BorderStyle.solid),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Row(
         children: [
-          const Icon(Icons.add_a_photo_outlined, color: Colors.white38, size: 20),
-          SizedBox(height: 4.h),
-          const CustomText(
-            text: "ADD MEDIA",
-            color: Colors.white38,
-            fontSize: 7,
-            fontWeight: FontWeight.bold,
+          const Icon(Icons.location_on_outlined, color: Colors.black38, size: 16),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: TextFormField(
+              style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: hint,
+                hintStyle: const TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.bold),
+                isDense: true,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildImagePreview(String url) {
-    return Stack(
+  Widget _buildTelemetryCard() {
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: const Color(0xff111111),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Column(
+        children: [
+          _buildTelemetryRow("POWER OUTPUT (HP)", "000"),
+          SizedBox(height: 12.h),
+          _buildTelemetryRow("0-100 KM/H (SEC)", "0.0"),
+          SizedBox(height: 12.h),
+          _buildTelemetryRow("TOP SPEED (KM/H)", "000"),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTelemetryRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        CustomText(
+          text: label,
+          color: Colors.white38,
+          fontSize: 9.sp,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.5,
+        ),
         Container(
-          width: 70.w,
-          height: 70.w,
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
           decoration: BoxDecoration(
             color: Colors.black,
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(6.r),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8.r),
-            child: Image.network(
-              url,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                color: const Color(0xff222222),
-                child: const Icon(Icons.broken_image, color: Colors.white24, size: 20),
-              ),
+          child: Text(
+            value,
+            style: TextStyle(
+              color: const Color(0xff4A5260),
+              fontSize: 22.sp,
+              fontWeight: FontWeight.w900,
+              fontFamily: 'Courier', // Monospace digital-like font
+              letterSpacing: 1.5,
             ),
-          ),
-        ),
-        Positioned(
-          top: 4,
-          right: 4,
-          child: Container(
-            padding: const EdgeInsets.all(2),
-            decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
-            child: const Icon(Icons.close, color: Colors.white, size: 10),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildVideoPreview(String url) {
-    return Stack(
-      children: [
-        Container(
-          width: 70.w,
-          height: 70.w,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8.r),
-            child: Opacity(
-              opacity: 0.6,
-              child: Image.network(
-                url,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: const Color(0xff222222),
-                  child: const Icon(Icons.broken_image, color: Colors.white24, size: 20),
+  Widget _buildMediaAssetsCard() {
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: const Color(0xff111111),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Column(
+        children: [
+          // Main studio image box
+          Container(
+            height: 120.h,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(color: Colors.white10, style: BorderStyle.solid),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow, size: 28),
+                SizedBox(height: 8.h),
+                CustomText(
+                  text: "MAIN STUDIO SHOT",
+                  color: Colors.white60,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
-              ),
+              ],
             ),
           ),
-        ),
-        Positioned(
-          top: 4,
-          left: 4,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-            decoration: BoxDecoration(color: AppColors.yellow, borderRadius: BorderRadius.circular(4.r)),
-            child: const Text("VIDEO", style: TextStyle(color: Colors.black, fontSize: 6, fontWeight: FontWeight.bold)),
+          SizedBox(height: 16.h),
+
+          // Upload tiles row
+          Row(
+            children: [
+              Expanded(child: _buildSmallMediaUploadTile("INTERIOR")),
+              SizedBox(width: 8.w),
+              Expanded(child: _buildSmallMediaUploadTile("REAR VIEW")),
+              SizedBox(width: 8.w),
+              Expanded(child: _buildSmallMediaUploadTile("ENGINE")),
+              SizedBox(width: 8.w),
+              Expanded(child: _buildSmallMediaUploadTile("VIDEO REEL")),
+            ],
           ),
-        ),
-        Positioned(
-          top: 4,
-          right: 4,
-          child: Container(
-            padding: const EdgeInsets.all(2),
-            decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
-            child: const Icon(Icons.close, color: Colors.white, size: 10),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSmallMediaUploadTile(String label) {
+    return Container(
+      height: 60.h,
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(6.r),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.upload_file_outlined, color: Colors.white24, size: 16),
+          SizedBox(height: 4.h),
+          CustomText(
+            text: label,
+            color: Colors.white38,
+            fontSize: 7.sp,
+            fontWeight: FontWeight.bold,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
