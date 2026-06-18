@@ -5,7 +5,7 @@ import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../utils/app_colors/app_colors.dart';
 import '../../../components/custom_button/custom_button.dart';
 import '../../../components/custom_text/custom_text.dart';
-import '../../BusinessScreen/BusinessHome/business_dashboard_controller.dart';
+import '../../BusinessScreen/BusinessHome/Controller/business_dashboard_controller.dart';
 
 class CreateMotorcycleListingScreen extends StatefulWidget {
   const CreateMotorcycleListingScreen({super.key});

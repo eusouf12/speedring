@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../../core/app_routes/app_routes.dart';
-import '../../../../utils/app_colors/app_colors.dart';
-import '../../../../utils/app_images/app_images.dart';
-import '../../../components/custom_image/custom_image.dart';
-import '../../../components/custom_text/custom_text.dart';
-import 'business_navbar.dart';
-import 'business_dashboard_controller.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../../../../core/app_routes/app_routes.dart';
+import '../../../../../utils/app_colors/app_colors.dart';
+import '../../../../../utils/app_images/app_images.dart';
+import '../../../../components/custom_image/custom_image.dart';
+import '../../../../components/custom_text/custom_text.dart';
+import '../../BusinessHome/business_navbar.dart';
+import '../../BusinessHome/Controller/business_dashboard_controller.dart';
 
 class AssetInventoryScreen extends StatelessWidget {
   const AssetInventoryScreen({super.key});
@@ -18,88 +19,90 @@ class AssetInventoryScreen extends StatelessWidget {
         ? Get.find<BusinessDashboardController>()
         : Get.put(BusinessDashboardController());
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: _buildAppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 12.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomText(
-                  text: "OPERATIONAL COMMAND",
-                  color: AppColors.yellow,
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.0,
-                ),
-                SizedBox(height: 4.h),
-                CustomText(
-                  text: "ASSET INVENTORY",
-                  color: Colors.white,
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w900,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 16.h),
-
-          // Horizontal Category Tabs
-          _buildCategoryTabs(controller),
-          SizedBox(height: 16.h),
-
-          // Scrollable List of Assets
-          Expanded(
-            child: Obx(() {
-              final activeTab = controller.rxActiveTab.value;
-              final filteredAssets = controller.rxAssets.where((asset) {
-                if (activeTab == "ALL") return true;
-                return asset.type == activeTab;
-              }).toList();
-
-              if (filteredAssets.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.inventory_2_outlined, color: Colors.white24, size: 48.r),
-                      SizedBox(height: 12.h),
-                      CustomText(
-                        text: "NO ASSETS RECORDED",
-                        color: Colors.white38,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.0,
-                      ),
-                    ],
+    return CustomGradient(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: _buildAppBar(),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 12.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    text: "OPERATIONAL COMMAND",
+                    color: AppColors.yellow,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.0,
                   ),
+                  SizedBox(height: 4.h),
+                  CustomText(
+                    text: "ASSET INVENTORY",
+                    color: Colors.white,
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 16.h),
+      
+            // Horizontal Category Tabs
+            _buildCategoryTabs(controller),
+            SizedBox(height: 16.h),
+      
+            // Scrollable List of Assets
+            Expanded(
+              child: Obx(() {
+                final activeTab = controller.rxActiveTab.value;
+                final filteredAssets = controller.rxAssets.where((asset) {
+                  if (activeTab == "ALL") return true;
+                  return asset.type == activeTab;
+                }).toList();
+      
+                if (filteredAssets.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.inventory_2_outlined, color: Colors.white24, size: 48.r),
+                        SizedBox(height: 12.h),
+                        CustomText(
+                          text: "NO ASSETS RECORDED",
+                          color: Colors.white38,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                        ),
+                      ],
+                    ),
+                  );
+                }
+      
+                return ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
+                  itemCount: filteredAssets.length,
+                  itemBuilder: (context, index) {
+                    final asset = filteredAssets[index];
+                    return _buildAssetCard(asset, controller);
+                  },
                 );
-              }
-
-              return ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
-                itemCount: filteredAssets.length,
-                itemBuilder: (context, index) {
-                  final asset = filteredAssets[index];
-                  return _buildAssetCard(asset, controller);
-                },
-              );
-            }),
-          ),
-        ],
+              }),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Get.toNamed(AppRoutes.addAssetCategoryScreen),
+          backgroundColor: AppColors.yellow,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          child: const Icon(Icons.add, color: Colors.black, size: 28),
+        ),
+        bottomNavigationBar: const CustomBusinessNavBar(currentIndex: 1),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.toNamed(AppRoutes.addAssetCategoryScreen),
-        backgroundColor: AppColors.yellow,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-        child: const Icon(Icons.add, color: Colors.black, size: 28),
-      ),
-      bottomNavigationBar: const CustomBusinessNavBar(currentIndex: 1),
     );
   }
 

@@ -113,8 +113,10 @@ class BusinessDashboardController extends GetxController {
       views: "12,482",
       leads: "14",
       shipping: "YES",
-      imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
-      description: "High-performance track variant with Weissach package and carbon ceramic brakes.",
+      imageUrl:
+          "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
+      description:
+          "High-performance track variant with Weissach package and carbon ceramic brakes.",
       power: "518 HP",
       torque: "465 NM",
       zeroToSixty: "3.0 SEC",
@@ -132,8 +134,10 @@ class BusinessDashboardController extends GetxController {
       views: "8,114",
       leads: "2",
       shipping: "YES",
-      imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
-      description: "Elite two-wheel performance machinery with carbon winglets and race exhaust.",
+      imageUrl:
+          "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
+      description:
+          "Elite two-wheel performance machinery with carbon winglets and race exhaust.",
       power: "218 HP",
       torque: "112 NM",
       zeroToSixty: "2.7 SEC",
@@ -151,8 +155,10 @@ class BusinessDashboardController extends GetxController {
       views: "0",
       leads: "0",
       shipping: "NO",
-      imageUrl: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=800&fit=crop",
-      description: "Individual components and engineering modules. Custom tuned for track use.",
+      imageUrl:
+          "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=800&fit=crop",
+      description:
+          "Individual components and engineering modules. Custom tuned for track use.",
       power: "N/A",
       torque: "N/A",
       zeroToSixty: "N/A",
@@ -175,19 +181,6 @@ class BusinessDashboardController extends GetxController {
     super.onInit();
   }
 
-  @override
-  void onClose() {
-    manufacturerController.dispose();
-    modelController.dispose();
-    productionYearController.dispose();
-    askingPriceController.dispose();
-    powerController.dispose();
-    torqueController.dispose();
-    zeroToSixtyController.dispose();
-    descriptionController.dispose();
-    super.onClose();
-  }
-
   // Pre-fill fields for editing
   void setAssetForEdit(AssetModel asset) {
     rxSelectedAsset.value = asset;
@@ -208,8 +201,12 @@ class BusinessDashboardController extends GetxController {
 
     manufacturerController.text = manufacturer;
     modelController.text = model;
-    productionYearController.text = asset.title.startsWith("20") ? asset.title.substring(0, 4) : "2024";
-    askingPriceController.text = asset.price.replaceAll(r"$", "").replaceAll(",", "");
+    productionYearController.text = asset.title.startsWith("20")
+        ? asset.title.substring(0, 4)
+        : "2024";
+    askingPriceController.text = asset.price
+        .replaceAll(r"$", "")
+        .replaceAll(",", "");
     powerController.text = asset.power;
     torqueController.text = asset.torque;
     zeroToSixtyController.text = asset.zeroToSixty;
@@ -240,10 +237,12 @@ class BusinessDashboardController extends GetxController {
           double? p = double.tryParse(cleanPrice);
           if (p != null) {
             // simple formatter
-            final formatted = p.toStringAsFixed(0).replaceAllMapped(
-              RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-              (Match m) => '${m[1]},',
-            );
+            final formatted = p
+                .toStringAsFixed(0)
+                .replaceAllMapped(
+                  RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                  (Match m) => '${m[1]},',
+                );
             cleanPrice = r"$" + formatted;
           } else {
             cleanPrice = r"$" + cleanPrice;
@@ -285,7 +284,7 @@ class BusinessDashboardController extends GetxController {
   void addNewMockAsset(String category) {
     String newId = (rxAssets.length + 1).toString();
     AssetModel newAsset;
-    
+
     if (category == "VEHICLES") {
       newAsset = AssetModel(
         id: newId,
@@ -297,8 +296,10 @@ class BusinessDashboardController extends GetxController {
         views: "150",
         leads: "1",
         shipping: "YES",
-        imageUrl: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop",
-        description: "Hybrid supercar with extreme downforce and track pedigree.",
+        imageUrl:
+            "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop",
+        description:
+            "Hybrid supercar with extreme downforce and track pedigree.",
         power: "986 HP",
         torque: "800 NM",
         zeroToSixty: "2.5 SEC",
@@ -317,8 +318,10 @@ class BusinessDashboardController extends GetxController {
         views: "95",
         leads: "0",
         shipping: "YES",
-        imageUrl: "https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=800&fit=crop",
-        description: "Carbon fiber fairings, Öhlins electronic suspension, and MotoGP derived electronics.",
+        imageUrl:
+            "https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=800&fit=crop",
+        description:
+            "Carbon fiber fairings, Öhlins electronic suspension, and MotoGP derived electronics.",
         power: "200 HP",
         torque: "113 NM",
         zeroToSixty: "2.9 SEC",
@@ -337,8 +340,10 @@ class BusinessDashboardController extends GetxController {
         views: "340",
         leads: "3",
         shipping: "YES",
-        imageUrl: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&fit=crop",
-        description: "Monoblock billet aluminum calipers optimized for track heat dissipation.",
+        imageUrl:
+            "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&fit=crop",
+        description:
+            "Monoblock billet aluminum calipers optimized for track heat dissipation.",
         power: "N/A",
         torque: "N/A",
         zeroToSixty: "N/A",
@@ -357,8 +362,10 @@ class BusinessDashboardController extends GetxController {
         views: "48",
         leads: "2",
         shipping: "NO",
-        imageUrl: "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop",
-        description: "1-on-1 track coaching with telemetry analysis and custom ECU tuning.",
+        imageUrl:
+            "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop",
+        description:
+            "1-on-1 track coaching with telemetry analysis and custom ECU tuning.",
         power: "N/A",
         torque: "N/A",
         zeroToSixty: "N/A",

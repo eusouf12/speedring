@@ -84,7 +84,7 @@ class BusinessProfileSheetHelper {
               title: "Manage Events",
               subtitle: "Active racing sessions and briefings",
               onTap: () {
-                Get.back(); // Dismiss bottom sheet
+                Get.back(); 
                 Get.offAllNamed(AppRoutes.businessEventsListScreen);
               },
             ),
@@ -149,6 +149,7 @@ class BusinessProfileSheetHelper {
               child: Icon(icon, color: textColor == Colors.white ? Colors.white70 : textColor, size: 18.sp),
             ),
             SizedBox(width: 14.w),
+            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

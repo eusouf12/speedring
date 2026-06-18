@@ -59,11 +59,10 @@ import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/busin
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step2.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step3.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step4.dart';
-import '../../view/sereen/BusinessScreen/BusinessHome/business_dashboard_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessHome/asset_inventory_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessHome/manage_asset_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessHome/edit_listing_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessHome/add_asset_category_screen.dart';
+import '../../view/sereen/BusinessScreen/BusinessHome/Screen/business_dashboard_screen.dart';
+import '../../view/sereen/BusinessScreen/BusinessAssetsScreen/Screen/asset_inventory_screen.dart';
+import '../../view/sereen/BusinessScreen/BusinessAssetsScreen/Screen/manage_asset_screen.dart';
+import '../../view/sereen/BusinessScreen/BusinessAssetsScreen/Screen/edit_listing_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/configure_asset_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/create_parts_listing_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/create_services_listing_screen.dart';
@@ -74,6 +73,11 @@ import '../../view/sereen/BusinessScreen/BusiinessSocialHub/business_create_spot
 import '../../view/sereen/BusinessScreen/BusiinessSocialHub/business_create_track_update_screen.dart';
 import '../../view/sereen/BusinessScreen/BusiinessSocialHub/business_create_club_post_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_marketplace_screen.dart';
+import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_select_category_screen.dart';
+import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_vehicle_listing_screen.dart';
+import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_motorcycle_listing_screen.dart';
+import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_parts_listing_screen.dart';
+import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_services_listing_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_create_event_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_events_list_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_event_details_screen.dart';
@@ -163,6 +167,10 @@ class AppRoutes {
   static const String businessCreateTrackUpdateScreen = "/BusinessCreateTrackUpdateScreen";
   static const String businessCreateClubPostScreen = "/BusinessCreateClubPostScreen";
   static const String businessMarketplaceScreen = "/BusinessMarketplaceScreen";
+  static const String businessCreateVehicleListingScreen = "/BusinessCreateVehicleListingScreen";
+  static const String businessCreateMotorcycleListingScreen = "/BusinessCreateMotorcycleListingScreen";
+  static const String businessCreatePartsListingScreen = "/BusinessCreatePartsListingScreen";
+  static const String businessCreateServicesListingScreen = "/BusinessCreateServicesListingScreen";
   static const String businessCreateEventScreen = "/BusinessCreateEventScreen";
   static const String businessEventsListScreen = "/BusinessEventsListScreen";
   static const String businessEventDetailsScreen = "/BusinessEventDetailsScreen";
@@ -246,7 +254,7 @@ class AppRoutes {
     GetPage(name: assetInventoryScreen, page: () => const AssetInventoryScreen()),
     GetPage(name: manageAssetScreen, page: () => const ManageAssetScreen()),
     GetPage(name: editListingScreen, page: () => const EditListingScreen()),
-    GetPage(name: addAssetCategoryScreen, page: () => const AddAssetCategoryScreen()),
+    GetPage(name: addAssetCategoryScreen, page: () => const BusinessSelectCategoryScreen()),
     GetPage(name: configureAssetScreen, page: () => const ConfigureAssetScreen()),
     GetPage(name: createPartsListingScreen, page: () => const CreatePartsListingScreen()),
     GetPage(name: createServicesListingScreen, page: () => const CreateServicesListingScreen()),
@@ -257,6 +265,10 @@ class AppRoutes {
     GetPage(name: businessCreateTrackUpdateScreen, page: () => const BusinessCreateTrackUpdateScreen()),
     GetPage(name: businessCreateClubPostScreen, page: () => const BusinessCreateClubPostScreen()),
     GetPage(name: businessMarketplaceScreen, page: () => const BusinessMarketplaceScreen()),
+    GetPage(name: businessCreateVehicleListingScreen, page: () => const BusinessCreateVehicleListingScreen()),
+    GetPage(name: businessCreateMotorcycleListingScreen, page: () => const BusinessCreateMotorcycleListingScreen()),
+    GetPage(name: businessCreatePartsListingScreen, page: () => const BusinessCreatePartsListingScreen()),
+    GetPage(name: businessCreateServicesListingScreen, page: () => const BusinessCreateServicesListingScreen()),
     GetPage(name: businessCreateEventScreen, page: () => const BusinessCreateEventScreen()),
     GetPage(name: businessEventsListScreen, page: () => const BusinessEventsListScreen()),
     GetPage(name: businessEventDetailsScreen, page: () => const BusinessEventDetailsScreen()),
