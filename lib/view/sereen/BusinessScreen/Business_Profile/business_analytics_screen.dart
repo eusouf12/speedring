@@ -287,7 +287,7 @@ class BusinessAnalyticsScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ],
-          if (child != null) child,
+          ?child,
         ],
       ),
     );
@@ -446,7 +446,7 @@ class BusinessAnalyticsScreen extends StatelessWidget {
           // Boost Promotions Button
           GestureDetector(
             onTap: () {
-              Get.toNamed(AppRoutes.businessSelectPlanScreen);
+              Get.toNamed(AppRoutes.businessCreatePromotionScreen);
             },
             child: Container(
               height: 38.h,

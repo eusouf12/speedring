@@ -318,7 +318,7 @@ class BusinessProfileScreen extends StatelessWidget {
       {
         'title': 'PROMOTE POST',
         'icon': Icons.campaign_outlined,
-        'route': '',
+        'route': AppRoutes.businessPromotionHubScreen,
       },
       {
         'title': 'CLUBS',

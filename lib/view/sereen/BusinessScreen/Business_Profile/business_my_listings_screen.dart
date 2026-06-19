@@ -182,7 +182,7 @@ class BusinessMyListingsScreen extends StatelessWidget {
                   } else {
                     specs = {
                       "SPECIFICATION": asset.description.length > 20
-                          ? asset.description.substring(0, 20) + "..."
+                          ? "${asset.description.substring(0, 20)}..."
                           : asset.description,
                     };
                   }

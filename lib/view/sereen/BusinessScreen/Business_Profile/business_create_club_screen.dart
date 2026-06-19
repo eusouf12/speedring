@@ -121,7 +121,7 @@ class BusinessCreateClubScreen extends StatelessWidget {
                     Obx(() {
                       return Switch(
                         value: isTelemetryVerified.value,
-                        activeColor: AppColors.yellow,
+                        activeThumbColor: AppColors.yellow,
                         activeTrackColor: AppColors.yellow.withValues(alpha: 0.3),
                         inactiveThumbColor: Colors.grey,
                         inactiveTrackColor: const Color(0xff222222),

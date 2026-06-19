@@ -90,6 +90,8 @@ import '../../view/sereen/BusinessScreen/Business_Profile/business_edit_club_scr
 import '../../view/sereen/BusinessScreen/Business_Profile/business_analytics_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_account_settings_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_select_plan_screen.dart';
+import '../../view/sereen/BusinessScreen/Promotion/business_promotion_hub_screen.dart';
+import '../../view/sereen/BusinessScreen/Promotion/business_create_promotion_screen.dart';
 
 
 
@@ -191,6 +193,9 @@ class AppRoutes {
   static const String businessAnalyticsScreen = "/BusinessAnalyticsScreen";
   static const String businessAccountSettingsScreen = "/BusinessAccountSettingsScreen";
   static const String businessSelectPlanScreen = "/BusinessSelectPlanScreen";
+  static const String businessPromotionHubScreen = "/BusinessPromotionHubScreen";
+  static const String businessCreatePromotionScreen = "/BusinessCreatePromotionScreen";
+
 
 
 
@@ -297,6 +302,8 @@ class AppRoutes {
     GetPage(name: businessAnalyticsScreen, page: () => const BusinessAnalyticsScreen()),
     GetPage(name: businessAccountSettingsScreen, page: () => const BusinessAccountSettingsScreen()),
     GetPage(name: businessSelectPlanScreen, page: () => const BusinessSelectPlanScreen()),
+    GetPage(name: businessPromotionHubScreen, page: () => const BusinessPromotionHubScreen()),
+    GetPage(name: businessCreatePromotionScreen, page: () => const BusinessCreatePromotionScreen()),
   ];
 
 }

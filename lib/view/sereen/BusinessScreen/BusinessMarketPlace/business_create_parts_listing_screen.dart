@@ -341,30 +341,32 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                 SizedBox(height: 16.h),
 
                 _buildFieldLabel("SHIPPING STRATEGY"),
-                Column(
-                  children: [
-                    "Flat Rate International",
-                    "Calculate at Checkout",
-                    "Local Pickup Only"
-                  ].map((strategy) {
-                    return Obx(
-                      () => RadioListTile<String>(
-                        title: CustomText(
-                          text: strategy,
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          textAlign: TextAlign.start,
-                        ),
-                        value: strategy,
-                        groupValue: selectedShipping.value,
-                        activeColor: AppColors.yellow,
-                        onChanged: (val) {
-                          if (val != null) selectedShipping.value = val;
-                        },
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                    );
-                  }).toList(),
+                Obx(
+                  () => RadioGroup<String>(
+                    groupValue: selectedShipping.value,
+                    onChanged: (val) {
+                      if (val != null) selectedShipping.value = val;
+                    },
+                    child: Column(
+                      children: [
+                        "Flat Rate International",
+                        "Calculate at Checkout",
+                        "Local Pickup Only"
+                      ].map((strategy) {
+                        return RadioListTile<String>(
+                          title: CustomText(
+                            text: strategy,
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                            textAlign: TextAlign.start,
+                          ),
+                          value: strategy,
+                          activeColor: AppColors.yellow,
+                          contentPadding: EdgeInsets.zero,
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
               ]),
               SizedBox(height: 32.h),

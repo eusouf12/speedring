@@ -345,7 +345,7 @@ class BusinessAccountSettingsScreen extends StatelessWidget {
           ),
           Switch(
             value: isEnabled.value,
-            activeColor: AppColors.yellow,
+            activeThumbColor: AppColors.yellow,
             activeTrackColor: AppColors.yellow.withValues(alpha: 0.3),
             inactiveThumbColor: Colors.grey,
             inactiveTrackColor: const Color(0xff222222),

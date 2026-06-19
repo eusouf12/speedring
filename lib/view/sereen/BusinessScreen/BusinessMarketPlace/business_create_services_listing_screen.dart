@@ -127,57 +127,57 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
 
                 _buildFieldLabel("LOCATION TYPE"),
                 Obx(
-                  () => RadioListTile<String>(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: "GLOBAL REACH",
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        CustomText(
-                          text: "Available for worldwide travel & remote consultation",
-                          color: Colors.white38,
-                          fontSize: 9.sp,
-                        ),
-                      ],
-                    ),
-                    value: "GLOBAL REACH",
+                  () => RadioGroup<String>(
                     groupValue: selectedLocationType.value,
-                    activeColor: AppColors.yellow,
                     onChanged: (val) {
                       if (val != null) selectedLocationType.value = val;
                     },
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                ),
-                Obx(
-                  () => RadioListTile<String>(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
                       children: [
-                        CustomText(
-                          text: "CIRCUIT SPECIFIC",
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.bold,
+                        RadioListTile<String>(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                text: "GLOBAL REACH",
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              CustomText(
+                                text: "Available for worldwide travel & remote consultation",
+                                color: Colors.white38,
+                                fontSize: 9.sp,
+                              ),
+                            ],
+                          ),
+                          value: "GLOBAL REACH",
+                          activeColor: AppColors.yellow,
+                          contentPadding: EdgeInsets.zero,
                         ),
-                        CustomText(
-                          text: "Operating at specific race tracks or regional hubs",
-                          color: Colors.white38,
-                          fontSize: 9.sp,
+                        RadioListTile<String>(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                text: "CIRCUIT SPECIFIC",
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              CustomText(
+                                text: "Operating at specific race tracks or regional hubs",
+                                color: Colors.white38,
+                                fontSize: 9.sp,
+                              ),
+                            ],
+                          ),
+                          value: "CIRCUIT SPECIFIC",
+                          activeColor: AppColors.yellow,
+                          contentPadding: EdgeInsets.zero,
                         ),
                       ],
                     ),
-                    value: "CIRCUIT SPECIFIC",
-                    groupValue: selectedLocationType.value,
-                    activeColor: AppColors.yellow,
-                    onChanged: (val) {
-                      if (val != null) selectedLocationType.value = val;
-                    },
-                    contentPadding: EdgeInsets.zero,
                   ),
                 ),
                 SizedBox(height: 14.h),
