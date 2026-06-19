@@ -86,7 +86,7 @@ class CustomBusinessNavBar extends StatelessWidget {
       } else if (index == 3) {
         Get.offAllNamed(AppRoutes.businessMarketplaceScreen);
       } else if (index == 4) {
-        Get.offAllNamed(AppRoutes.businessEventsListScreen);
+        Get.offAllNamed(AppRoutes.businessProfileScreen);
       }
     }
   }

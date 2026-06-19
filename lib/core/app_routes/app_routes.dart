@@ -82,6 +82,14 @@ import '../../view/sereen/BusinessScreen/Business_Profile/business_create_event_
 import '../../view/sereen/BusinessScreen/Business_Profile/business_events_list_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_event_details_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_clubs_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Profile/business_profile_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Profile/business_my_listings_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Profile/business_club_details_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Profile/business_create_club_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Profile/business_edit_club_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Profile/business_analytics_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Profile/business_account_settings_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Profile/business_select_plan_screen.dart';
 
 
 
@@ -175,6 +183,14 @@ class AppRoutes {
   static const String businessEventsListScreen = "/BusinessEventsListScreen";
   static const String businessEventDetailsScreen = "/BusinessEventDetailsScreen";
   static const String businessClubsScreen = "/BusinessClubsScreen";
+  static const String businessProfileScreen = "/BusinessProfileScreen";
+  static const String businessMyListingsScreen = "/BusinessMyListingsScreen";
+  static const String businessClubDetailsScreen = "/BusinessClubDetailsScreen";
+  static const String businessCreateClubScreen = "/BusinessCreateClubScreen";
+  static const String businessEditClubScreen = "/BusinessEditClubScreen";
+  static const String businessAnalyticsScreen = "/BusinessAnalyticsScreen";
+  static const String businessAccountSettingsScreen = "/BusinessAccountSettingsScreen";
+  static const String businessSelectPlanScreen = "/BusinessSelectPlanScreen";
 
 
 
@@ -273,6 +289,14 @@ class AppRoutes {
     GetPage(name: businessEventsListScreen, page: () => const BusinessEventsListScreen()),
     GetPage(name: businessEventDetailsScreen, page: () => const BusinessEventDetailsScreen()),
     GetPage(name: businessClubsScreen, page: () => const BusinessClubsScreen()),
+    GetPage(name: businessProfileScreen, page: () => const BusinessProfileScreen()),
+    GetPage(name: businessMyListingsScreen, page: () => const BusinessMyListingsScreen()),
+    GetPage(name: businessClubDetailsScreen, page: () => const BusinessClubDetailsScreen()),
+    GetPage(name: businessCreateClubScreen, page: () => const BusinessCreateClubScreen()),
+    GetPage(name: businessEditClubScreen, page: () => const BusinessEditClubScreen()),
+    GetPage(name: businessAnalyticsScreen, page: () => const BusinessAnalyticsScreen()),
+    GetPage(name: businessAccountSettingsScreen, page: () => const BusinessAccountSettingsScreen()),
+    GetPage(name: businessSelectPlanScreen, page: () => const BusinessSelectPlanScreen()),
   ];
 
 }

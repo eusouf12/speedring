@@ -8,17 +8,12 @@ import '../../../../../utils/app_images/app_images.dart';
 import '../../../../components/custom_image/custom_image.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../business_navbar.dart';
-import '../Controller/business_dashboard_controller.dart';
 
 class BusinessHomeScreen extends StatelessWidget {
   const BusinessHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (!Get.isRegistered<BusinessDashboardController>()) {
-      Get.put(BusinessDashboardController());
-    }
-
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,

@@ -5,8 +5,8 @@ import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../utils/app_colors/app_colors.dart';
 import '../../../../utils/app_images/app_images.dart';
 import '../../../components/custom_text/custom_text.dart';
+import '../../../../core/app_routes/app_routes.dart';
 import '../BusinessHome/business_navbar.dart';
-import '../BusinessMarketPlace/business_profile_sheet_helper.dart';
 
 class BusinessClubsScreen extends StatefulWidget {
   const BusinessClubsScreen({super.key});
@@ -65,17 +65,9 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-          leading: Padding(
-            padding: EdgeInsets.all(12.w),
-            child: GestureDetector(
-              onTap: () => BusinessProfileSheetHelper.show(context),
-              child: CircleAvatar(
-                backgroundColor: const Color(0xff222222),
-                backgroundImage: const NetworkImage(
-                  "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
-                ),
-              ),
-            ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
+            onPressed: () => Get.back(),
           ),
           title: Image.asset(
             AppImages.logo,
@@ -154,30 +146,33 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
                   if (index == _myClubs.length) {
                     return Padding(
                       padding: EdgeInsets.only(right: 12.w),
-                      child: Column(
-                        children: [
-                          CustomPaint(
-                            painter: CircleDashedBorderPainter(color: AppColors.yellow, strokeWidth: 1.5, gap: 4, dashLength: 4),
-                            child: Container(
-                              width: 58.w,
-                              height: 58.w,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black,
-                              ),
-                              child: const Center(
-                                child: Icon(Icons.add, color: AppColors.yellow, size: 18),
+                      child: GestureDetector(
+                        onTap: () => Get.toNamed(AppRoutes.businessCreateClubScreen),
+                        child: Column(
+                          children: [
+                            CustomPaint(
+                              painter: CircleDashedBorderPainter(color: AppColors.yellow, strokeWidth: 1.5, gap: 4, dashLength: 4),
+                              child: Container(
+                                width: 58.w,
+                                height: 58.w,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.black,
+                                ),
+                                child: const Center(
+                                  child: Icon(Icons.add, color: AppColors.yellow, size: 18),
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 6.h),
-                          CustomText(
-                            text: "NEW CLUB",
-                            color: Colors.white54,
-                            fontSize: 8.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ],
+                            SizedBox(height: 6.h),
+                            CustomText(
+                              text: "NEW CLUB",
+                              color: Colors.white54,
+                              fontSize: 8.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }
@@ -185,28 +180,38 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
                   final club = _myClubs[index];
                   return Padding(
                     padding: EdgeInsets.only(right: 14.w),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 58.w,
-                          height: 58.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.yellow, width: 1.2),
-                            image: DecorationImage(
-                              image: NetworkImage(club['imageUrl'] as String),
-                              fit: BoxFit.cover,
+                    child: GestureDetector(
+                      onTap: () => Get.toNamed(
+                        AppRoutes.businessClubDetailsScreen,
+                        arguments: {
+                          'name': club['name'] == 'GT3 COLL.' ? 'Porsche GT3 Collective' : club['name'],
+                          'members': '1,240 ACTIVE MEMBERS',
+                          'imageUrl': club['imageUrl'],
+                        },
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 58.w,
+                            height: 58.w,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.yellow, width: 1.2),
+                              image: DecorationImage(
+                                image: NetworkImage(club['imageUrl'] as String),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 6.h),
-                        CustomText(
-                          text: club['name'] as String,
-                          color: Colors.white,
-                          fontSize: 8.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ],
+                          SizedBox(height: 6.h),
+                          CustomText(
+                            text: club['name'] as String,
+                            color: Colors.white,
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -236,81 +241,91 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
                 itemCount: _trendingClubs.length,
                 itemBuilder: (context, index) {
                   final club = _trendingClubs[index];
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 12.h),
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff111111),
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: Colors.white10),
+                  return GestureDetector(
+                    onTap: () => Get.toNamed(
+                      AppRoutes.businessClubDetailsScreen,
+                      arguments: {
+                        'name': club['name'] as String,
+                        'members': club['members'] as String,
+                        'imageUrl': club['imageUrl'] as String,
+                      },
                     ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 44.w,
-                          height: 44.w,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.r),
-                            image: DecorationImage(
-                              image: NetworkImage(club['imageUrl'] as String),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(
-                                text: club['name'] as String,
-                                color: Colors.white,
-                                fontSize: 11.5.sp,
-                                fontWeight: FontWeight.w900,
-                                textAlign: TextAlign.start,
-                              ),
-                              SizedBox(height: 2.h),
-                              CustomText(
-                                text: club['members'] as String,
-                                color: Colors.white38,
-                                fontSize: 8.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.yellow,
-                            foregroundColor: Colors.black,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 12.h),
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff111111),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: Colors.white10),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 44.w,
+                            height: 44.w,
+                            decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            minimumSize: Size(78.w, 30.h),
-                            padding: EdgeInsets.symmetric(horizontal: 10.w),
-                          ),
-                          onPressed: () {
-                            Get.snackbar(
-                              "Joined Club",
-                              "Successfully joined ${club['name']}. Group dashboard loaded.",
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: const Color(0xff181818),
-                              colorText: Colors.white,
-                              borderColor: AppColors.yellow,
-                              borderWidth: 1,
-                            );
-                          },
-                          child: Text(
-                            "JOIN CLUB",
-                            style: TextStyle(
-                              fontSize: 8.5.sp,
-                              fontWeight: FontWeight.w900,
+                              image: DecorationImage(
+                                image: NetworkImage(club['imageUrl'] as String),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: club['name'] as String,
+                                  color: Colors.white,
+                                  fontSize: 11.5.sp,
+                                  fontWeight: FontWeight.w900,
+                                  textAlign: TextAlign.start,
+                                ),
+                                SizedBox(height: 2.h),
+                                CustomText(
+                                  text: club['members'] as String,
+                                  color: Colors.white38,
+                                  fontSize: 8.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.yellow,
+                              foregroundColor: Colors.black,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              minimumSize: Size(78.w, 30.h),
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                            ),
+                            onPressed: () {
+                              Get.snackbar(
+                                "Joined Club",
+                                "Successfully joined ${club['name']}. Group dashboard loaded.",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: const Color(0xff181818),
+                                colorText: Colors.white,
+                                borderColor: AppColors.yellow,
+                                borderWidth: 1,
+                              );
+                            },
+                            child: Text(
+                              "JOIN CLUB",
+                              style: TextStyle(
+                                fontSize: 8.5.sp,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

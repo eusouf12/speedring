@@ -13,9 +13,7 @@ class ManageAssetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.isRegistered<BusinessDashboardController>()
-        ? Get.find<BusinessDashboardController>()
-        : Get.put(BusinessDashboardController());
+    final controller = Get.find<BusinessDashboardController>();
 
     return CustomGradient(
       child: Scaffold(

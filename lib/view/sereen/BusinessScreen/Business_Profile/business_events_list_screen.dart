@@ -7,7 +7,6 @@ import '../../../../utils/app_colors/app_colors.dart';
 import '../../../../utils/app_images/app_images.dart';
 import '../../../components/custom_text/custom_text.dart';
 import '../BusinessHome/business_navbar.dart';
-import '../BusinessMarketPlace/business_profile_sheet_helper.dart';
 
 class BusinessEventsListScreen extends StatefulWidget {
   const BusinessEventsListScreen({super.key});
@@ -70,17 +69,9 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-          leading: Padding(
-            padding: EdgeInsets.all(12.w),
-            child: GestureDetector(
-              onTap: () => BusinessProfileSheetHelper.show(context),
-              child: CircleAvatar(
-                backgroundColor: const Color(0xff222222),
-                backgroundImage: const NetworkImage(
-                  "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
-                ),
-              ),
-            ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
+            onPressed: () => Get.back(),
           ),
           title: Image.asset(
             AppImages.logo,
