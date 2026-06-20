@@ -26,11 +26,7 @@ class BusinessHomeScreen extends StatelessWidget {
               // Title Header
               Row(
                 children: [
-                  Container(
-                    width: 4.w,
-                    height: 24.h,
-                    color: AppColors.yellow,
-                  ),
+                  Container(width: 4.w, height: 24.h, color: AppColors.yellow),
                   SizedBox(width: 8.w),
                   CustomText(
                     text: "COMMAND CENTER",
@@ -50,7 +46,7 @@ class BusinessHomeScreen extends StatelessWidget {
                 letterSpacing: 1.0,
               ),
               SizedBox(height: 24.h),
-      
+
               // Strategic Operations Section Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,7 +70,7 @@ class BusinessHomeScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 16.h),
-      
+
               // Quick Actions Grid (2 columns)
               GridView.count(
                 crossAxisCount: 2,
@@ -92,32 +88,38 @@ class BusinessHomeScreen extends StatelessWidget {
                   _buildQuickActionCard(
                     title: "ORGANIZE EVENT",
                     icon: Icons.calendar_today_rounded,
-                    onTap: () => _showMockSnackbar("Organize Event", "Event creation flow is restricted to verified administrators."),
+                    onTap: () => _showMockSnackbar(
+                      "Organize Event",
+                      "Event creation flow is restricted to verified administrators.",
+                    ),
                   ),
                   _buildQuickActionCard(
                     title: "PROMOTE POST",
                     icon: Icons.campaign_rounded,
-                    onTap: () => _showMockSnackbar("Promote Post", "Select a post from your Social Hub to boost reach."),
+                    onTap: () => Get.toNamed(AppRoutes.businessPromotionHubScreen),
                   ),
                   _buildQuickActionCard(
-                    title: "CREATE GROUP/COMMUNITY",
-                    icon: Icons.groups_rounded,
-                    onTap: () => _showMockSnackbar("Create Group", "Community moderation console is initializing."),
+                    title: 'CLUBS',
+                    icon: Icons.groups_outlined,
+                    onTap: () => Get.toNamed(AppRoutes.businessClubsScreen),
                   ),
                   _buildQuickActionCard(
                     title: "TRACK ANALYTICS",
                     icon: Icons.analytics_rounded,
-                    onTap: () => _showMockSnackbar("Track Analytics", "Deep performance telemetry will sync on next lap."),
+                    onTap: () => Get.toNamed(AppRoutes.businessAnalyticsScreen),
                   ),
                   _buildQuickActionCard(
                     title: "SETTINGS",
                     icon: Icons.tune_rounded,
-                    onTap: () => _showMockSnackbar("Settings", "Operational panel configurations loaded."),
+                    onTap: () => _showMockSnackbar(
+                      "Settings",
+                      "Operational panel configurations loaded.",
+                    ),
                   ),
                 ],
               ),
               SizedBox(height: 28.h),
-      
+
               // Performance Cards
               _buildRevenueCard(),
               SizedBox(height: 16.h),
@@ -153,11 +155,19 @@ class BusinessHomeScreen extends StatelessWidget {
       centerTitle: true,
       actions: [
         IconButton(
-          icon: const Icon(Icons.mail_outline_rounded, color: Colors.white, size: 22),
+          icon: const Icon(
+            Icons.mail_outline_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
           onPressed: () => Get.toNamed(AppRoutes.messageScreen),
         ),
         IconButton(
-          icon: const Icon(Icons.notifications_none_rounded, color: Colors.white, size: 22),
+          icon: const Icon(
+            Icons.notifications_none_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
           onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
         ),
         SizedBox(width: 8.w),
@@ -183,11 +193,7 @@ class BusinessHomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              icon,
-              color: AppColors.yellow,
-              size: 24.sp,
-            ),
+            Icon(icon, color: AppColors.yellow, size: 24.sp),
             CustomText(
               text: title,
               color: Colors.white,
@@ -223,7 +229,11 @@ class BusinessHomeScreen extends StatelessWidget {
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.0,
               ),
-              const Icon(Icons.account_balance_wallet_outlined, color: Colors.white24, size: 18),
+              const Icon(
+                Icons.account_balance_wallet_outlined,
+                color: Colors.white24,
+                size: 18,
+              ),
             ],
           ),
           SizedBox(height: 12.h),
@@ -389,7 +399,9 @@ class BusinessHomeScreen extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 4.w),
               height: bar.height,
               decoration: BoxDecoration(
-                color: bar.isYellow ? AppColors.yellow : const Color(0xff222222),
+                color: bar.isYellow
+                    ? AppColors.yellow
+                    : const Color(0xff222222),
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),

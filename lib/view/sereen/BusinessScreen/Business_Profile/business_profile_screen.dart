@@ -37,9 +37,6 @@ class BusinessProfileScreen extends StatelessWidget {
                     _buildMetricsSection(),
                     SizedBox(height: 24.h),
 
-                    // Quick Operations Grid
-                    _buildQuickOperationsGrid(),
-                    SizedBox(height: 28.h),
 
                     // Navigation Tabs Header
                     _buildProfileTabs(activeTab),
@@ -335,99 +332,6 @@ class BusinessProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildQuickOperationsGrid() {
-    final operations = [
-      {
-        'title': 'ORGANIZE EVENTS',
-        'icon': Icons.calendar_today_outlined,
-        'route': AppRoutes.businessEventsListScreen,
-      },
-      {
-        'title': 'PROMOTE POST',
-        'icon': Icons.campaign_outlined,
-        'route': AppRoutes.businessPromotionHubScreen,
-      },
-      {
-        'title': 'CLUBS',
-        'icon': Icons.groups_outlined,
-        'route': AppRoutes.businessClubsScreen,
-      },
-      {
-        'title': 'TRACK ANALYTICS',
-        'icon': Icons.analytics_outlined,
-        'route': AppRoutes.businessAnalyticsScreen,
-      },
-      {
-        'title': 'ACCOUNT SETTINGS',
-        'icon': Icons.tune_rounded,
-        'route': AppRoutes.businessAccountSettingsScreen,
-      },
-      {
-        'title': 'LISTINGS',
-        'icon': Icons.storefront_outlined,
-        'route': AppRoutes.businessMyListingsScreen,
-      },
-    ];
-
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 12.h,
-        crossAxisSpacing: 12.w,
-        childAspectRatio: 1.6,
-      ),
-      itemCount: operations.length,
-      itemBuilder: (context, index) {
-        final op = operations[index];
-        return GestureDetector(
-          onTap: () {
-            final route = op['route'] as String;
-            if (route.isNotEmpty) {
-              Get.toNamed(route);
-            } else {
-              Get.snackbar(
-                op['title'] as String,
-                "This administrative action is fully calibrated and will connect to live servers soon.",
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: const Color(0xff111111),
-                colorText: Colors.white,
-                borderColor: AppColors.yellow,
-                borderWidth: 1,
-              );
-            }
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xff111111),
-              borderRadius: BorderRadius.circular(10.r),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  op['icon'] as IconData,
-                  color: AppColors.yellow,
-                  size: 24.sp,
-                ),
-                SizedBox(height: 8.h),
-                CustomText(
-                  text: op['title'] as String,
-                  color: Colors.white,
-                  fontSize: 8.5.sp,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.5,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 
