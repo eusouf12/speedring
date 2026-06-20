@@ -263,23 +263,7 @@ class SignupScreen extends StatelessWidget {
 
                 const SizedBox(height: 10),
 
-                Obx(
-                  () => _checkboxRow(
-                    value: controller.isAgeConfirmed.value,
-                    onChanged: (v) =>
-                        controller.isAgeConfirmed.value = v ?? false,
-                    richText: const TextSpan(
-                      text: 'I confirm that I am at least 16 years of age.',
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 13,
-                        height: 1.4,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 28),
+               
 
                 // ── CREATE ACCOUNT button ─────────────────────────────────
                 Obx(() {

@@ -200,6 +200,36 @@ class BusinessProfileScreen extends StatelessWidget {
               ],
             ),
           ),
+
+          // Coins indicator
+          Positioned(
+            bottom: 76.h,
+            right: 20.w,
+            child: GestureDetector(
+              onTap: () => Get.toNamed(AppRoutes.walletScreen),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xff161616),
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.wallet, color: AppColors.yellow, size: 14),
+                    SizedBox(width: 4.w),
+                    CustomText(
+                      text: "12,450 COINS",
+                      color: AppColors.yellow1,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

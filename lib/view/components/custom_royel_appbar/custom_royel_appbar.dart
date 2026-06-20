@@ -52,7 +52,7 @@ class CustomRoyelAppbar extends StatelessWidget implements PreferredSizeWidget {
       ],
       backgroundColor: Colors.transparent,
       leading: leftIcon == true
-          ? BackButton(color: leftIconColor ?? Colors.white)
+          ? BackButton(color: leftIconColor ?? AppColors.yellow)
           : SizedBox.shrink(),
       leadingWidth: leftIcon == true ? kToolbarHeight : 0,
 

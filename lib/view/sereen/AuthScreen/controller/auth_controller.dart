@@ -51,6 +51,7 @@ class AuthController extends GetxController {
     isSignupLoading.value = true;
     await Future.delayed(const Duration(seconds: 2));
     isSignupLoading.value = false;
+    Get.toNamed(AppRoutes.setupProfileScreen1);
     
   }
 

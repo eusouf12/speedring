@@ -45,6 +45,13 @@ import '../../view/sereen/UserScreen/MarketPlace/select_category_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/create_vehicle_listing_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/create_motorcycle_listing_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/profile_screen.dart';
+import '../../view/sereen/UserScreen/Wallet/Screen/wallet_screen.dart';
+import '../../view/sereen/UserScreen/Wallet/Screen/buy_coins_screen.dart';
+import '../../view/sereen/UserScreen/Wallet/Screen/transaction_report_screen.dart';
+import '../../view/sereen/UserScreen/Wallet/Screen/support_sent_screen.dart';
+import '../../view/sereen/UserScreen/Wallet/Screen/transaction_history_screen.dart';
+import '../../view/sereen/UserScreen/Wallet/Screen/transaction_verification_screen.dart';
+import '../../view/sereen/UserScreen/Wallet/Screen/support_success_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/add_vehicle_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/edit_profile_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/user_parameters_screen.dart';
@@ -148,6 +155,13 @@ class AppRoutes {
   static const String createVehicleListingScreen = "/CreateVehicleListingScreen";
   static const String createMotorcycleListingScreen = "/CreateMotorcycleListingScreen";
   static const String profileScreen = "/ProfileScreen";
+  static const String walletScreen = "/WalletScreen";
+  static const String buyCoinsScreen = "/BuyCoinsScreen";
+  static const String transactionReportScreen = "/TransactionReportScreen";
+  static const String supportSentScreen = "/SupportSentScreen";
+  static const String transactionHistoryScreen = "/TransactionHistoryScreen";
+  static const String transactionVerificationScreen = "/TransactionVerificationScreen";
+  static const String supportSuccessScreen = "/SupportSuccessScreen";
   static const String addVehicleScreen = "/AddVehicleScreen";
   static const String editProfileScreen = "/EditProfileScreen";
   static const String userParametersScreen = "/UserParametersScreen";
@@ -257,6 +271,13 @@ class AppRoutes {
     GetPage(name: createVehicleListingScreen, page: () => const CreateVehicleListingScreen()),
     GetPage(name: createMotorcycleListingScreen, page: () => const CreateMotorcycleListingScreen()),
     GetPage(name: profileScreen, page: () => const ProfileScreen()),
+    GetPage(name: walletScreen, page: () => const WalletScreen()),
+    GetPage(name: buyCoinsScreen, page: () => const BuyCoinsScreen()),
+    GetPage(name: transactionReportScreen, page: () => const TransactionReportScreen()),
+    GetPage(name: supportSentScreen, page: () => const SupportSentScreen()),
+    GetPage(name: transactionHistoryScreen, page: () => const TransactionHistoryScreen()),
+    GetPage(name: transactionVerificationScreen, page: () => const TransactionVerificationScreen()),
+    GetPage(name: supportSuccessScreen, page: () => const SupportSuccessScreen()),
     GetPage(name: addVehicleScreen, page: () => const AddVehicleScreen()),
     GetPage(name: editProfileScreen, page: () => const EditProfileScreen()),
     GetPage(name: userParametersScreen, page: () => const UserParametersScreen()),

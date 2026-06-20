@@ -64,126 +64,135 @@ class ProfileScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// Banner & Avatar Stack
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  /// Banner Image
-                  SizedBox(
-                    height: 180.h,
-                    width: double.infinity,
-                    child: Image.network(
-                      "https://picsum.photos/seed/profilecover/800/400",
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: const Color(0xff1C1C1C),
-                        child: const Center(
-                          child: Icon(Icons.image, color: Colors.white24, size: 48),
+              SizedBox(
+                height: 220.h,
+                width: double.infinity,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    /// Banner Image
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 180.h,
+                      child: Image.network(
+                        "https://picsum.photos/seed/profilecover/800/400",
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: const Color(0xff1C1C1C),
+                          child: const Center(
+                            child: Icon(Icons.image, color: Colors.white24, size: 48),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: 12.h,
-                    right: 12.w,
-                    child: GestureDetector(
-                      onTap: () => Get.toNamed(AppRoutes.editProfileScreen),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          borderRadius: BorderRadius.circular(6.r),
-                          border: Border.all(color: Colors.white24),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.edit, color: Colors.white70, size: 12),
-                            SizedBox(width: 4.w),
-                            const Text(
-                              "EDIT",
-                              style: TextStyle(color: Colors.white70, fontSize: 8, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-      
-                  /// Profile Avatar
-                  Positioned(
-                    bottom: -40.h,
-                    left: 16.w,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Container(
-                          width: 80.w,
-                          height: 80.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 3),
-                          ),
-                          child: ClipOval(
-                            child: Image.network(
-                              "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop",
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Container(
-                                color: const Color(0xff1C1C1C),
-                                child: const Icon(Icons.person, color: Colors.white24, size: 40),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: const BoxDecoration(
-                              color: AppColors.yellow,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(Icons.check, color: Colors.black, size: 12),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-      
-                  /// Coins indicator
-                  Positioned(
-                    bottom: -36.h,
-                    right: 16.w,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
+                    Positioned(
+                      top: 12.h,
+                      right: 12.w,
+                      child: GestureDetector(
+                        onTap: () => Get.toNamed(AppRoutes.editProfileScreen),
+                        child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
-                            color: const Color(0xff161616),
-                            borderRadius: BorderRadius.circular(8.r),
-                            border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(6.r),
+                            border: Border.all(color: Colors.white24),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.wallet, color: AppColors.yellow, size: 14),
+                              const Icon(Icons.edit, color: Colors.white70, size: 12),
                               SizedBox(width: 4.w),
-                              CustomText(
-                                text: "12,450 COINS",
-                                color: AppColors.yellow1,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
+                              const Text(
+                                "EDIT",
+                                style: TextStyle(color: Colors.white70, fontSize: 8, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+        
+                    /// Profile Avatar
+                    Positioned(
+                      bottom: 0,
+                      left: 16.w,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            width: 80.w,
+                            height: 80.w,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.black, width: 3),
+                            ),
+                            child: ClipOval(
+                              child: Image.network(
+                                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop",
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => Container(
+                                  color: const Color(0xff1C1C1C),
+                                  child: const Icon(Icons.person, color: Colors.white24, size: 40),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                color: AppColors.yellow,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.check, color: Colors.black, size: 12),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+        
+                    /// Coins indicator
+                    Positioned(
+                      bottom: 4.h,
+                      right: 16.w,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () => Get.toNamed(AppRoutes.walletScreen),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                              decoration: BoxDecoration(
+                                color: const Color(0xff161616),
+                                borderRadius: BorderRadius.circular(8.r),
+                                border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.wallet, color: AppColors.yellow, size: 14),
+                                  SizedBox(width: 4.w),
+                                  CustomText(
+                                    text: "12,450 COINS",
+                                    color: AppColors.yellow1,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 48.h),
+              SizedBox(height: 8.h),
       
               /// Profile Identity Details
               Padding(
@@ -780,17 +789,7 @@ class ProfileScreen extends StatelessWidget {
             fontSize: 13,
             borderRadius: 8.r,
             icon: const Icon(Icons.handshake_outlined, color: Colors.black, size: 18),
-            onTap: () {
-              Get.snackbar(
-                "Support Process Initiated",
-                "Thank you for choosing to support Max Verstappen.",
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: const Color(0xff181818),
-                colorText: Colors.white,
-                borderColor: AppColors.yellow,
-                borderWidth: 1,
-              );
-            },
+            onTap: () => Get.toNamed(AppRoutes.transactionVerificationScreen),
           ),
         ],
       ),
