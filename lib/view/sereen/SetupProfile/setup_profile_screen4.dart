@@ -7,6 +7,7 @@ import '../../components/custom_button/custom_button.dart';
 import '../../components/custom_gradient/custom_gradient.dart' show CustomGradient;
 import '../../components/custom_image/custom_image.dart';
 import '../../../utils/app_images/app_images.dart';
+import 'setup_profile_controller.dart';
 
 class SetupProfileScreen4 extends StatelessWidget {
   const SetupProfileScreen4({super.key});
@@ -15,6 +16,42 @@ class SetupProfileScreen4 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<SetupProfileController>();
+
+    final List<Map<String, dynamic>> items = [
+      {
+        'id': 'track_alerts',
+        'icon': Icons.flag_rounded,
+        'category': 'LIVE TELEMETRY',
+        'title': 'Track Open Alerts',
+        'trailingBadge': 'REAL-TIME',
+      },
+      {
+        'id': 'new_followers',
+        'icon': Icons.people_alt_rounded,
+        'category': 'SOCIAL',
+        'title': 'New Followers',
+      },
+      {
+        'id': 'live_sessions',
+        'icon': Icons.location_on_rounded,
+        'category': 'LOCATION BASED',
+        'title': 'Live Sessions Nearby',
+      },
+      {
+        'id': 'marketplace',
+        'icon': Icons.shopping_cart_rounded,
+        'category': 'MARKETPLACE',
+        'title': 'Marketplace Messages',
+      },
+      {
+        'id': 'event_updates',
+        'icon': Icons.emoji_events_rounded,
+        'category': 'PRO TOUR',
+        'title': 'Event Updates',
+      },
+    ];
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -91,31 +128,26 @@ class SetupProfileScreen4 extends StatelessWidget {
                       const SizedBox(height: 28),
 
                       /// ── Notification Features List ────────────────────
-                      _buildNotificationTile(
-                        icon: Icons.flag_rounded,
-                        category: 'LIVE TELEMETRY',
-                        title: 'Track Open Alerts',
-                        trailingBadge: 'REAL-TIME',
-                      ),
-                      _buildNotificationTile(
-                        icon: Icons.people_alt_rounded,
-                        category: 'SOCIAL',
-                        title: 'New Followers',
-                      ),
-                      _buildNotificationTile(
-                        icon: Icons.location_on_rounded,
-                        category: 'LOCATION BASED',
-                        title: 'Live Sessions Nearby',
-                      ),
-                      _buildNotificationTile(
-                        icon: Icons.shopping_cart_rounded,
-                        category: 'MARKETPLACE',
-                        title: 'Marketplace Messages',
-                      ),
-                      _buildNotificationTile(
-                        icon: Icons.emoji_events_rounded,
-                        category: 'PRO TOUR',
-                        title: 'Event Updates',
+                      Obx(
+                        () => Column(
+                          children: items.map((item) {
+                            final isSelected = controller.selectedNotifications.contains(item['id']);
+                            return _buildNotificationTile(
+                              icon: item['icon'] as IconData,
+                              category: item['category'] as String,
+                              title: item['title'] as String,
+                              trailingBadge: item['trailingBadge'] as String?,
+                              isSelected: isSelected,
+                              onTap: () {
+                                if (isSelected) {
+                                  controller.selectedNotifications.remove(item['id']);
+                                } else {
+                                  controller.selectedNotifications.add(item['id']);
+                                }
+                              },
+                            );
+                          }).toList(),
+                        ),
                       ),
 
                       const SizedBox(height: 16),
@@ -170,71 +202,83 @@ class SetupProfileScreen4 extends StatelessWidget {
     required IconData icon,
     required String category,
     required String title,
+    required bool isSelected,
+    required VoidCallback onTap,
     String? trailingBadge,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: _tileBg,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        children: [
-          /// Leading Icon Container Box
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              icon,
-              color: trailingBadge != null ? AppColors.yellow : Colors.white38,
-              size: 20,
-            ),
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: _tileBg,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? AppColors.yellow : Colors.transparent,
+            width: 1.5,
           ),
-          const SizedBox(width: 14),
-
-          /// Title Context Meta fields
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  category,
-                  style: const TextStyle(
-                    color: Colors.white38,
-                    fontSize: 8,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          /// Trailing Highlight Badge (e.g., REAL-TIME)
-          if (trailingBadge != null)
-            Text(
-              trailingBadge,
-              style: const TextStyle(
-                color: AppColors.yellow,
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.5,
+        ),
+        child: Row(
+          children: [
+            /// Leading Icon Container Box
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.yellow.withValues(alpha: 0.1)
+                    : Colors.white.withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                icon,
+                color: isSelected ? AppColors.yellow : Colors.white38,
+                size: 20,
               ),
             ),
-        ],
+            const SizedBox(width: 14),
+
+            /// Title Context Meta fields
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    category,
+                    style: TextStyle(
+                      color: isSelected ? AppColors.yellow.withValues(alpha: 0.7) : Colors.white38,
+                      fontSize: 8,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            /// Trailing Highlight Badge (e.g., REAL-TIME)
+            if (trailingBadge != null)
+              Text(
+                trailingBadge,
+                style: TextStyle(
+                  color: isSelected ? AppColors.yellow : Colors.white38,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -65,9 +65,18 @@ class SetupProfileScreen3 extends StatelessWidget {
                 hintText: 'e.g. Daily Driver',
                 fillColor: _cardBg,
               ),
+              
 
               const SizedBox(height: 16),
 
+               _SectionLabel(label: 'PLATE NUMBER'),
+              const SizedBox(height: 6),
+              CustomTextField(
+                textEditingController: controller.vehicleNameCtrl,
+                hintText: 'SR1-20334-DR-22',
+                fillColor: _cardBg,
+              ),
+               const SizedBox(height: 16),
               /// Brand & Model Row
               Row(
                 children: [

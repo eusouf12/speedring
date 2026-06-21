@@ -24,6 +24,7 @@ class SetupProfileController extends GetxController {
   final RxInt selectedCategory =
       0.obs; // 0=Combustion, 1=Electric, 2=Motorcycle, 3=Karting, 4=Old Timer
   final RxList<String> selectedInterests = <String>[].obs;
+  final RxList<String> selectedNotifications = <String>[].obs;
   final RxString engineType = 'combustion'.obs;
 
   // Auto swap preview images every 5 seconds
