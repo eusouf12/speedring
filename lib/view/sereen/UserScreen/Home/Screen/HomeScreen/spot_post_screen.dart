@@ -218,39 +218,39 @@ class SpotPostScreen extends StatelessWidget {
               ),
             ),
       
-            _SpecBox(
-              label: "0-100 KM/H (S)",
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.timer,
-                    color: AppColors.yellow,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: "E.G. 3.2",
-                        hintStyle: TextStyle(
-                          color: Colors.white38,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // _SpecBox(
+            //   label: "0-100 KM/H (S)",
+            //   child: Row(
+            //     children: [
+            //       const Icon(
+            //         Icons.timer,
+            //         color: AppColors.yellow,
+            //         size: 20,
+            //       ),
+            //       const SizedBox(width: 10),
+            //       Expanded(
+            //         child: TextFormField(
+            //           style: const TextStyle(
+            //             color: Colors.white,
+            //             fontSize: 14,
+            //             fontWeight: FontWeight.w600,
+            //           ),
+            //           decoration: const InputDecoration(
+            //             hintText: "E.G. 3.2",
+            //             hintStyle: TextStyle(
+            //               color: Colors.white38,
+            //               fontSize: 14,
+            //               fontWeight: FontWeight.w600,
+            //             ),
+            //             border: InputBorder.none,
+            //             isDense: true,
+            //             contentPadding: EdgeInsets.zero,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
       
             const SizedBox(height: 40),
       

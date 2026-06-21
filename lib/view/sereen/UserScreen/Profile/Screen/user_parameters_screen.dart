@@ -116,9 +116,9 @@ class UserParametersScreen extends StatelessWidget {
                       showDivider: true,
                     ),
                     _buildSettingsTile(
-                      icon: Icons.notifications_none_outlined,
-                      title: "NOTIFICATIONS",
-                      onTap: () => Get.toNamed(AppRoutes.notificationScreen),
+                      icon: Icons.tune,
+                      title: "PERSONALIZE YOUR INTERTEST    ",
+                      onTap: () => Get.toNamed(AppRoutes.personalizeInterestScreen),
                       showDivider: true,
                     ),
                     _buildSettingsTile(

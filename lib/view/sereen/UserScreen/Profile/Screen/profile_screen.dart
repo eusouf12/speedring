@@ -28,10 +28,7 @@ class ProfileScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.menu, color: AppColors.yellow),
-            onPressed: () {},
-          ),
+
           title: Image.network(
             "https://picsum.photos/seed/speedringlogo/130/40",
             height: 30,
@@ -50,11 +47,17 @@ class ProfileScreen extends StatelessWidget {
           centerTitle: true,
           actions: [
             IconButton(
-              icon: const Icon(Icons.notifications_none, color: AppColors.yellow),
+              icon: const Icon(
+                Icons.notifications_none,
+                color: AppColors.yellow,
+              ),
               onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
             ),
             IconButton(
-              icon: const Icon(Icons.settings_outlined, color: AppColors.yellow),
+              icon: const Icon(
+                Icons.settings_outlined,
+                color: AppColors.yellow,
+              ),
               onPressed: () => Get.toNamed(AppRoutes.userParametersScreen),
             ),
           ],
@@ -82,7 +85,11 @@ class ProfileScreen extends StatelessWidget {
                         errorBuilder: (context, error, stackTrace) => Container(
                           color: const Color(0xff1C1C1C),
                           child: const Center(
-                            child: Icon(Icons.image, color: Colors.white24, size: 48),
+                            child: Icon(
+                              Icons.image,
+                              color: Colors.white24,
+                              size: 48,
+                            ),
                           ),
                         ),
                       ),
@@ -93,7 +100,10 @@ class ProfileScreen extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () => Get.toNamed(AppRoutes.editProfileScreen),
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 4.h,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.black54,
                             borderRadius: BorderRadius.circular(6.r),
@@ -102,18 +112,26 @@ class ProfileScreen extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.edit, color: Colors.white70, size: 12),
+                              const Icon(
+                                Icons.edit,
+                                color: Colors.white70,
+                                size: 12,
+                              ),
                               SizedBox(width: 4.w),
                               const Text(
                                 "EDIT",
-                                style: TextStyle(color: Colors.white70, fontSize: 8, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ],
                           ),
                         ),
                       ),
                     ),
-        
+
                     /// Profile Avatar
                     Positioned(
                       bottom: 0,
@@ -132,10 +150,15 @@ class ProfileScreen extends StatelessWidget {
                               child: Image.network(
                                 "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop",
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Container(
-                                  color: const Color(0xff1C1C1C),
-                                  child: const Icon(Icons.person, color: Colors.white24, size: 40),
-                                ),
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                      color: const Color(0xff1C1C1C),
+                                      child: const Icon(
+                                        Icons.person,
+                                        color: Colors.white24,
+                                        size: 40,
+                                      ),
+                                    ),
                               ),
                             ),
                           ),
@@ -148,13 +171,17 @@ class ProfileScreen extends StatelessWidget {
                                 color: AppColors.yellow,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.check, color: Colors.black, size: 12),
+                              child: const Icon(
+                                Icons.check,
+                                color: Colors.black,
+                                size: 12,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-        
+
                     /// Coins indicator
                     Positioned(
                       bottom: 4.h,
@@ -165,16 +192,25 @@ class ProfileScreen extends StatelessWidget {
                           GestureDetector(
                             onTap: () => Get.toNamed(AppRoutes.walletScreen),
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 4.h,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xff161616),
                                 borderRadius: BorderRadius.circular(8.r),
-                                border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.05),
+                                ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.wallet, color: AppColors.yellow, size: 14),
+                                  const Icon(
+                                    Icons.wallet,
+                                    color: AppColors.yellow,
+                                    size: 14,
+                                  ),
                                   SizedBox(width: 4.w),
                                   CustomText(
                                     text: "12,450 COINS",
@@ -193,7 +229,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8.h),
-      
+
               /// Profile Identity Details
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -210,7 +246,11 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(height: 4.h),
                     Row(
                       children: [
-                        const Icon(Icons.flag, color: Colors.blue, size: 14), // Dutch flag placeholder
+                        const Icon(
+                          Icons.flag,
+                          color: Colors.blue,
+                          size: 14,
+                        ), // Dutch flag placeholder
                         SizedBox(width: 6.w),
                         CustomText(
                           text: "@max_verstappen_33   da",
@@ -222,14 +262,15 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 10.h),
                     CustomText(
-                      text: "3-time World Champion. Pushing the limits of engineering and performance.",
+                      text:
+                          "3-time World Champion. Pushing the limits of engineering and performance.",
                       color: Colors.white70,
                       fontSize: 11,
                       textAlign: TextAlign.start,
                       height: 1.4,
                     ),
                     SizedBox(height: 16.h),
-      
+
                     /// Social Toggles and Support button
                     Row(
                       children: [
@@ -247,7 +288,11 @@ class ProfileScreen extends StatelessWidget {
                           title: "SUPPORT",
                           fontSize: 10,
                           borderRadius: 18.r,
-                          icon: const Icon(Icons.sell_outlined, color: Colors.black, size: 12),
+                          icon: const Icon(
+                            Icons.sell_outlined,
+                            color: Colors.black,
+                            size: 12,
+                          ),
                           onTap: () {
                             controller.activeTab = 3;
                           },
@@ -258,7 +303,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20.h),
-      
+
               /// Stats section
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 16.w),
@@ -279,7 +324,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20.h),
-      
+
               /// Scrollable quick actions / highlights
               SizedBox(
                 height: 70.h,
@@ -287,18 +332,31 @@ class ProfileScreen extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
                   children: [
-                    _buildQuickActionCircle(Icons.add, "CREATE", isYellowBg: true),
-                    _buildQuickThumb("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop", "MY DRIVE"),
-                    _buildQuickThumb("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop", "TELEMETRY"),
-                    _buildQuickThumb("https://picsum.photos/seed/spalaps/100/100", "SPA LAPS"),
+                    _buildQuickActionCircle(
+                      Icons.add,
+                      "CREATE",
+                      isYellowBg: true,
+                    ),
+                    _buildQuickThumb(
+                      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
+                      "MY DRIVE",
+                    ),
+                    _buildQuickThumb(
+                      "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                      "TELEMETRY",
+                    ),
+                    _buildQuickThumb(
+                      "https://picsum.photos/seed/spalaps/100/100",
+                      "SPA LAPS",
+                    ),
                   ],
                 ),
               ),
               SizedBox(height: 24.h),
-      
+
               /// Nested Tab Navigation
               _buildTabSelector(),
-      
+
               /// Active Tab Body
               _buildActiveTabBody(),
             ],
@@ -345,14 +403,14 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildStatDivider() {
-    return Container(
-      width: 1,
-      height: 24.h,
-      color: Colors.white10,
-    );
+    return Container(width: 1, height: 24.h, color: Colors.white10);
   }
 
-  Widget _buildQuickActionCircle(IconData icon, String label, {bool isYellowBg = false}) {
+  Widget _buildQuickActionCircle(
+    IconData icon,
+    String label, {
+    bool isYellowBg = false,
+  }) {
     return Padding(
       padding: EdgeInsets.only(right: 16.w),
       child: Column(
@@ -364,7 +422,11 @@ class ProfileScreen extends StatelessWidget {
               color: isYellowBg ? AppColors.yellow : const Color(0xff1a1a1a),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: isYellowBg ? Colors.black : Colors.white70, size: 20),
+            child: Icon(
+              icon,
+              color: isYellowBg ? Colors.black : Colors.white70,
+              size: 20,
+            ),
           ),
           SizedBox(height: 6.h),
           CustomText(
@@ -396,7 +458,11 @@ class ProfileScreen extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: const Color(0xff1C1C1C),
-                  child: const Icon(Icons.image, color: Colors.white24, size: 20),
+                  child: const Icon(
+                    Icons.image,
+                    color: Colors.white24,
+                    size: 20,
+                  ),
                 ),
               ),
             ),
@@ -490,13 +556,18 @@ class ProfileScreen extends StatelessWidget {
             title: "ADD POST",
             fontSize: 12,
             borderRadius: 8.r,
-            icon: const Icon(Icons.add_circle_outline, color: Colors.black, size: 16),
+            icon: const Icon(
+              Icons.add_circle_outline,
+              color: Colors.black,
+              size: 16,
+            ),
             onTap: () => Get.toNamed(AppRoutes.createPostScreen),
           ),
           SizedBox(height: 20.h),
           const ProfilePostCard(
             authorName: "MAX VERSTAPPEN",
-            authorAvatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+            authorAvatar:
+                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
             timeAgo: "3 hours ago",
             imageUrl: "https://picsum.photos/seed/postgt3/600/400",
             likes: "1.2M",
@@ -507,13 +578,15 @@ class ProfileScreen extends StatelessWidget {
           ),
           const ProfilePostCard(
             authorName: "MAX VERSTAPPEN",
-            authorAvatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+            authorAvatar:
+                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
             timeAgo: "Yesterday",
             imageUrl: "https://picsum.photos/seed/postredbull/600/400",
             likes: "2.8M",
             comments: "82K",
             username: "max_verstappen_33",
-            caption: "Pure engineering perfection. The RB20 feels incredible this season.",
+            caption:
+                "Pure engineering perfection. The RB20 feels incredible this season.",
             hashtags: ["#F1", "#RedBullRacing", "#PushingLimits"],
           ),
         ],
@@ -553,7 +626,12 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActivityCard(String imageUrl, String tag, String title, {bool hasPlayButton = false}) {
+  Widget _buildActivityCard(
+    String imageUrl,
+    String tag,
+    String title, {
+    bool hasPlayButton = false,
+  }) {
     return Container(
       height: 240.h,
       width: double.infinity,
@@ -571,7 +649,11 @@ class ProfileScreen extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: const Color(0xff1A1A1A),
-                  child: const Icon(Icons.image, color: Colors.white24, size: 48),
+                  child: const Icon(
+                    Icons.image,
+                    color: Colors.white24,
+                    size: 48,
+                  ),
                 ),
               ),
             ),
@@ -582,7 +664,10 @@ class ProfileScreen extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withValues(alpha:0.8)],
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.8),
+                    ],
                   ),
                 ),
               ),
@@ -649,7 +734,11 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 const Text(
                   "SLOTS FILLED",
-                  style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 6.h),
                 Row(
@@ -657,7 +746,11 @@ class ProfileScreen extends StatelessWidget {
                   children: const [
                     Text(
                       "02 / 12",
-                      style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                   ],
                 ),
@@ -667,7 +760,9 @@ class ProfileScreen extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: 2 / 12,
                     backgroundColor: Colors.white10,
-                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.yellow),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.yellow,
+                    ),
                     minHeight: 4.h,
                   ),
                 ),
@@ -682,7 +777,11 @@ class ProfileScreen extends StatelessWidget {
             title: "ADD VEHICLE",
             fontSize: 12,
             borderRadius: 8.r,
-            icon: const Icon(Icons.add_circle_outline, color: Colors.black, size: 16),
+            icon: const Icon(
+              Icons.add_circle_outline,
+              color: Colors.black,
+              size: 16,
+            ),
             onTap: () => Get.toNamed(AppRoutes.addVehicleScreen),
           ),
 
@@ -745,7 +844,11 @@ class ProfileScreen extends StatelessWidget {
                   children: const [
                     Text(
                       "REVENUE TELEMETRY",
-                      style: TextStyle(color: AppColors.yellow, fontSize: 8, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: AppColors.yellow,
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Icon(Icons.query_stats, color: AppColors.yellow, size: 16),
                   ],
@@ -753,7 +856,11 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(height: 6.h),
                 const Text(
                   "FINANCIAL PERFORMANCE",
-                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
                 SizedBox(height: 20.h),
                 Row(
@@ -761,11 +868,19 @@ class ProfileScreen extends StatelessWidget {
                   children: const [
                     Text(
                       "SUPPORT RECEIVED (MTD)",
-                      style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.white38,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       "€8,250 / €10,000",
-                      style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -775,7 +890,9 @@ class ProfileScreen extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: 8250 / 10000,
                     backgroundColor: Colors.white10,
-                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.yellow),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.yellow,
+                    ),
                     minHeight: 5.h,
                   ),
                 ),
@@ -788,7 +905,11 @@ class ProfileScreen extends StatelessWidget {
             title: "SUPPORT THIS USER",
             fontSize: 13,
             borderRadius: 8.r,
-            icon: const Icon(Icons.handshake_outlined, color: Colors.black, size: 18),
+            icon: const Icon(
+              Icons.handshake_outlined,
+              color: Colors.black,
+              size: 18,
+            ),
             onTap: () => Get.toNamed(AppRoutes.transactionVerificationScreen),
           ),
         ],

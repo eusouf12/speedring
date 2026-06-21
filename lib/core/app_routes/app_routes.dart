@@ -47,6 +47,7 @@ import '../../view/sereen/UserScreen/MarketPlace/create_motorcycle_listing_scree
 import '../../view/sereen/UserScreen/Profile/Screen/profile_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/wallet_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/buy_coins_screen.dart';
+import '../../view/sereen/UserScreen/Wallet/Screen/recharge_selection_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/transaction_report_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/support_sent_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/transaction_history_screen.dart';
@@ -62,6 +63,7 @@ import '../../view/sereen/UserScreen/Profile/Screen/terms_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/privacy_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/help_support_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/about_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/personalize_interest_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step1.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step2.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step3.dart';
@@ -157,6 +159,7 @@ class AppRoutes {
   static const String profileScreen = "/ProfileScreen";
   static const String walletScreen = "/WalletScreen";
   static const String buyCoinsScreen = "/BuyCoinsScreen";
+  static const String rechargeSelectionScreen = "/RechargeSelectionScreen";
   static const String transactionReportScreen = "/TransactionReportScreen";
   static const String supportSentScreen = "/SupportSentScreen";
   static const String transactionHistoryScreen = "/TransactionHistoryScreen";
@@ -172,6 +175,7 @@ class AppRoutes {
   static const String privacyScreen = "/PrivacyScreen";
   static const String helpSupportScreen = "/HelpSupportScreen";
   static const String aboutScreen = "/AboutScreen";
+  static const String personalizeInterestScreen = "/PersonalizeInterestScreen";
   static const String businessRegistrationStep1 = "/BusinessRegistrationStep1";
   static const String businessRegistrationStep2 = "/BusinessRegistrationStep2";
   static const String businessRegistrationStep3 = "/BusinessRegistrationStep3";
@@ -273,6 +277,7 @@ class AppRoutes {
     GetPage(name: profileScreen, page: () => const ProfileScreen()),
     GetPage(name: walletScreen, page: () => const WalletScreen()),
     GetPage(name: buyCoinsScreen, page: () => const BuyCoinsScreen()),
+    GetPage(name: rechargeSelectionScreen, page: () => const RechargeSelectionScreen()),
     GetPage(name: transactionReportScreen, page: () => const TransactionReportScreen()),
     GetPage(name: supportSentScreen, page: () => const SupportSentScreen()),
     GetPage(name: transactionHistoryScreen, page: () => const TransactionHistoryScreen()),
@@ -288,6 +293,7 @@ class AppRoutes {
     GetPage(name: privacyScreen, page: () => const PrivacyScreen()),
     GetPage(name: helpSupportScreen, page: () => const HelpSupportScreen()),
     GetPage(name: aboutScreen, page: () => const AboutScreen()),
+    GetPage(name: personalizeInterestScreen, page: () => const PersonalizeInterestScreen()),
     GetPage(name: businessRegistrationStep1, page: () => const BusinessRegistrationStep1()),
     GetPage(name: businessRegistrationStep2, page: () => const BusinessRegistrationStep2()),
     GetPage(name: businessRegistrationStep3, page: () => const BusinessRegistrationStep3()),

@@ -142,9 +142,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       
                               Icon(
                                 Icons.chevron_right,
-                                color: isSelected
-                                    ? AppColors.yellow
-                                    : Colors.white24,
+                                color: isSelected ? AppColors.yellow : Colors.white24,
                                 size: 20,
                               ),
                             ],
@@ -161,12 +159,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       
             /// ── Bottom section ─────────────────────────────────────────────
             Padding(
-              padding: EdgeInsets.fromLTRB(
-                20,
-                12,
-                20,
-                MediaQuery.of(context).padding.bottom + 16,
-              ),
+              padding: EdgeInsets.fromLTRB(20, 12, 20, MediaQuery.of(context).padding.bottom + 16,),
               child: Column(
                 children: [
                   /// CONTINUE button
