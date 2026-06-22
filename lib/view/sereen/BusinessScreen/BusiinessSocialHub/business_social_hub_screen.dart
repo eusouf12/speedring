@@ -9,6 +9,7 @@ import '../../../../utils/app_images/app_images.dart';
 import '../../../components/custom_appbar_user/custom_appbar_user.dart';
 import '../../../components/custom_text/custom_text.dart';
 import '../../UserScreen/Home/widget/story_item.dart';
+import '../../UserScreen/Home/Screen/HomeScreen/story_view_screen.dart';
 import '../BusinessHome/business_navbar.dart';
 
 class BusinessSocialHubScreen extends StatefulWidget {
@@ -77,15 +78,11 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                       if (story['isMe'] == true) {
                         Get.toNamed(AppRoutes.businessCreatePostScreen);
                       } else {
-                        Get.snackbar(
-                          "Story Player",
-                          "Playing sequence: ${story['name']}",
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: const Color(0xff181818),
-                          colorText: Colors.white,
-                          borderColor: AppColors.yellow,
-                          borderWidth: 1,
-                        );
+                        Get.to(() => StoryViewScreen(
+                          userName: story['name'],
+                          timeAgo: '14M AGO',
+                          storyImageUrl: 'https://picsum.photos/400/800',
+                        ));
                       }
                     },
                     child: StoryItem(

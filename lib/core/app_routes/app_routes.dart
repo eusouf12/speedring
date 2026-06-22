@@ -19,6 +19,7 @@ import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/user_home_screen.dar
 import '../../view/sereen/UserScreen/Home/Screen/NotificationScreen/notification_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/message_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/inbox_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/support_member_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/event_detail_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/access_granted_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/clubs/create_club_screen.dart';
@@ -130,6 +131,7 @@ class AppRoutes {
   static const String notificationScreen = "/NotificationScreen";
   static const String messageScreen = "/MessageScreen";
   static const String inboxScreen = "/InboxScreen";
+  static const String supportMemberScreen = "/SupportMemberScreen";
   static const String eventDetailScreen = "/EventDetailScreen";
   static const String accessGrantedScreen = "/AccessGrantedScreen";
   static const String createClubScreen = "/CreateClubScreen";
@@ -248,6 +250,7 @@ class AppRoutes {
       avatarUrl: Get.arguments?["avatarUrl"] ?? "https://picsum.photos/100/100",
       isOnline: Get.arguments?["isOnline"] ?? false,
     )),
+    GetPage(name: supportMemberScreen, page: () => const SupportMemberScreen()),
     GetPage(name: eventDetailScreen, page: () => const EventDetailScreen()),
     GetPage(name: accessGrantedScreen, page: () => const AccessGrantedScreen()),
     GetPage(name: createClubScreen, page: () => const CreateClubScreen()),

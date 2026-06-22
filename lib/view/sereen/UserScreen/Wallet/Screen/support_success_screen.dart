@@ -24,7 +24,7 @@ class SupportSuccessController extends GetxController {
         timer.cancel();
         // Redirect back to profile
         if (Get.currentRoute == AppRoutes.supportSuccessScreen) {
-          Get.until((route) => Get.currentRoute == AppRoutes.profileScreen || route.isFirst);
+          Get.until((route) => Get.currentRoute == AppRoutes.inboxScreen || route.isFirst);
         }
       }
     });
