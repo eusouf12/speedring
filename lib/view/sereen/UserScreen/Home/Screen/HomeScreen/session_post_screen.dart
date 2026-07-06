@@ -83,8 +83,8 @@ class SessionPostScreen extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.black.withValues(alpha:0.2),
-                            Colors.black.withValues(alpha:0.6),
+                            Colors.black.withValues(alpha: 0.2),
+                            Colors.black.withValues(alpha: 0.6),
                           ],
                         ),
                       ),
@@ -115,37 +115,42 @@ class SessionPostScreen extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             const SizedBox(height: 20),
-      
+
             /// ── Vehicle ─────────────────────────────────────────────────
             const _FieldLabel("VEHICLE"),
             const SizedBox(height: 6),
             const _SelectorRow(value: "Ferrari SF90 Stradale"),
-      
+
             const SizedBox(height: 14),
-      
+
             /// ── Circuit ─────────────────────────────────────────────────
             const _FieldLabel("CIRCUIT"),
             const SizedBox(height: 6),
             const _SelectorRow(value: "Silverstone Circuit"),
-      
+
             const SizedBox(height: 14),
-      
+
             /// ── Track Name ──────────────────────────────────────────────
             const _FieldLabel("TRACK NAME"),
             const SizedBox(height: 6),
-            const _InputField(hint: "Grand Prix Loop", initialValue: "Grand Prix Loop"),
-      
+            const _InputField(
+              hint: "Grand Prix Loop",
+              initialValue: "Grand Prix Loop",
+            ),
+
             const SizedBox(height: 20),
-      
+
             /// ── Best Lap Time ────────────────────────────────────────────
             const _FieldLabel("BEST LAP TIME"),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.yellow.withValues(alpha:0.5)),
+                border: Border.all(
+                  color: AppColors.yellow.withValues(alpha: 0.5),
+                ),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Row(
@@ -165,9 +170,9 @@ class SessionPostScreen extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             const SizedBox(height: 20),
-      
+
             /// ── Top Speed ────────────────────────────────────────────────
             const _FieldLabel("TOP SPEED ACHIEVED"),
             const SizedBox(height: 8),
@@ -197,9 +202,9 @@ class SessionPostScreen extends StatelessWidget {
                 ),
               ],
             ),
-      
+
             const SizedBox(height: 20),
-      
+
             /// ── Driver Session Summary ───────────────────────────────────
             const _FieldLabel("DRIVER SESSION SUMMARY"),
             const SizedBox(height: 8),
@@ -223,12 +228,12 @@ class SessionPostScreen extends StatelessWidget {
                 ),
               ),
             ),
-      
+
             const SizedBox(height: 24),
-      
+
             /// ── Publish button ───────────────────────────────────────────
             const _PublishButton(label: "PUBLISH SESSION"),
-      
+
             const SizedBox(height: 32),
           ],
         ),

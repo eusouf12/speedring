@@ -44,7 +44,7 @@ class DriveSummaryScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 16),
-      
+
               /// 1. Drive Score Ring (Custom circular layout)
               Center(
                 child: SizedBox(
@@ -99,11 +99,19 @@ class DriveSummaryScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha:0.05),
+                                color: Colors.white.withValues(alpha: 0.05),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: AppColors.yellow.withValues(alpha:0.4), width: 1),
+                                border: Border.all(
+                                  color: AppColors.yellow.withValues(
+                                    alpha: 0.4,
+                                  ),
+                                  width: 1,
+                                ),
                               ),
                               child: const Text(
                                 "ELITE PERFORMANCE",
@@ -123,25 +131,45 @@ class DriveSummaryScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-      
+
               /// 2. Grid stats
               Row(
                 children: [
-                  Expanded(child: _buildStatCard(Icons.access_time_filled, "TIME", "00:45:12")),
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.access_time_filled,
+                      "TIME",
+                      "00:45:12",
+                    ),
+                  ),
                   const SizedBox(width: 12),
-                  Expanded(child: _buildStatCard(Icons.social_distance, "DISTANCE", "124.5 KM")),
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.social_distance,
+                      "DISTANCE",
+                      "124.5 KM",
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Expanded(child: _buildStatCard(Icons.flash_on, "TOP SPEED", "294 KM/H")),
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.flash_on,
+                      "TOP SPEED",
+                      "294 KM/H",
+                    ),
+                  ),
                   const SizedBox(width: 12),
-                  Expanded(child: _buildStatCard(Icons.speed, "AVG SPEED", "186 KM/H")),
+                  Expanded(
+                    child: _buildStatCard(Icons.speed, "AVG SPEED", "186 KM/H"),
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
-      
+
               /// 3. SESSION TRACK CARD
               Container(
                 width: double.infinity,
@@ -167,28 +195,48 @@ class DriveSummaryScreen extends StatelessWidget {
                     SizedBox(
                       height: 80,
                       width: double.infinity,
-                      child: CustomPaint(
-                        painter: TrackPathStaticPainter(),
-                      ),
+                      child: CustomPaint(painter: TrackPathStaticPainter()),
                     ),
                     const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const Icon(Icons.circle, color: AppColors.yellow, size: 6),
+                        const Icon(
+                          Icons.circle,
+                          color: AppColors.yellow,
+                          size: 6,
+                        ),
                         const SizedBox(width: 4),
-                        const Text("START", style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold)),
+                        const Text(
+                          "START",
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(width: 12),
-                        const Icon(Icons.circle, color: Colors.white70, size: 6),
+                        const Icon(
+                          Icons.circle,
+                          color: Colors.white70,
+                          size: 6,
+                        ),
                         const SizedBox(width: 4),
-                        const Text("END", style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold)),
+                        const Text(
+                          "END",
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
-      
+
               /// 4. SPEED OVER TIME CARD
               Container(
                 width: double.infinity,
@@ -228,25 +276,51 @@ class DriveSummaryScreen extends StatelessWidget {
                     SizedBox(
                       height: 120,
                       width: double.infinity,
-                      child: CustomPaint(
-                        painter: SpeedGraphPainter(),
-                      ),
+                      child: CustomPaint(painter: SpeedGraphPainter()),
                     ),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: const [
-                        Text("0:00", style: TextStyle(color: Colors.white24, fontSize: 9, fontWeight: FontWeight.bold)),
-                        Text("15:00", style: TextStyle(color: Colors.white24, fontSize: 9, fontWeight: FontWeight.bold)),
-                        Text("30:00", style: TextStyle(color: Colors.white24, fontSize: 9, fontWeight: FontWeight.bold)),
-                        Text("45:12", style: TextStyle(color: Colors.white24, fontSize: 9, fontWeight: FontWeight.bold)),
+                        Text(
+                          "0:00",
+                          style: TextStyle(
+                            color: Colors.white24,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "15:00",
+                          style: TextStyle(
+                            color: Colors.white24,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "30:00",
+                          style: TextStyle(
+                            color: Colors.white24,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "45:12",
+                          style: TextStyle(
+                            color: Colors.white24,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 32),
-      
+
               /// 5. SAVE BUTTON
               SizedBox(
                 width: double.infinity,
@@ -290,12 +364,16 @@ class DriveSummaryScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-      
+
               /// SHARE RESULTS LINK
               Center(
                 child: TextButton.icon(
                   onPressed: () {},
-                  icon: const Icon(Icons.share_outlined, color: Colors.white38, size: 14),
+                  icon: const Icon(
+                    Icons.share_outlined,
+                    color: Colors.white38,
+                    size: 14,
+                  ),
                   label: const Text(
                     "SHARE RESULTS",
                     style: TextStyle(
@@ -386,8 +464,16 @@ class TrackPathStaticPainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     // Draw Start (yellow) and End (white) points
-    canvas.drawCircle(Offset(size.width * 0.1, size.height / 2), 5, Paint()..color = AppColors.yellow);
-    canvas.drawCircle(Offset(size.width * 0.9, size.height / 2), 5, Paint()..color = Colors.white70);
+    canvas.drawCircle(
+      Offset(size.width * 0.1, size.height / 2),
+      5,
+      Paint()..color = AppColors.yellow,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.9, size.height / 2),
+      5,
+      Paint()..color = Colors.white70,
+    );
   }
 
   @override
@@ -399,7 +485,7 @@ class SpeedGraphPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final bgGridPaint = Paint()
-      ..color = Colors.white.withValues(alpha:0.03)
+      ..color = Colors.white.withValues(alpha: 0.03)
       ..strokeWidth = 1;
 
     final linePaint = Paint()
@@ -441,7 +527,7 @@ class SpeedGraphPainter extends CustomPainter {
 
     final fillPaint = Paint()
       ..shader = LinearGradient(
-        colors: [AppColors.yellow.withValues(alpha:0.25), Colors.transparent],
+        colors: [AppColors.yellow.withValues(alpha: 0.25), Colors.transparent],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ).createShader(Rect.fromLTRB(0, 0, size.width, size.height));

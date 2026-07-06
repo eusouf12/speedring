@@ -65,18 +65,18 @@ class SetupProfileScreen3 extends StatelessWidget {
                 hintText: 'e.g. Daily Driver',
                 fillColor: _cardBg,
               ),
-              
 
               const SizedBox(height: 16),
 
-               _SectionLabel(label: 'PLATE NUMBER'),
+              _SectionLabel(label: 'PLATE NUMBER'),
               const SizedBox(height: 6),
               CustomTextField(
                 textEditingController: controller.vehicleNameCtrl,
                 hintText: 'SR1-20334-DR-22',
                 fillColor: _cardBg,
               ),
-               const SizedBox(height: 16),
+              const SizedBox(height: 16),
+
               /// Brand & Model Row
               Row(
                 children: [
@@ -285,7 +285,8 @@ class SetupProfileScreen3 extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: Obx(() {
-                final imageSrc = controller.previewImages[controller.currentPreviewIndex.value];
+                final imageSrc = controller
+                    .previewImages[controller.currentPreviewIndex.value];
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 800),
                   transitionBuilder: (child, animation) {
@@ -399,22 +400,22 @@ class SetupProfileScreen3 extends StatelessWidget {
             right: 20,
             child: Obx(() {
               return Row(
-                children: List.generate(
-                  controller.previewImages.length,
-                  (index) {
-                    final isCurrent = controller.currentPreviewIndex.value == index;
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.only(left: 6),
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isCurrent ? AppColors.yellow : Colors.white38,
-                      ),
-                    );
-                  },
-                ),
+                children: List.generate(controller.previewImages.length, (
+                  index,
+                ) {
+                  final isCurrent =
+                      controller.currentPreviewIndex.value == index;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.only(left: 6),
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isCurrent ? AppColors.yellow : Colors.white38,
+                    ),
+                  );
+                }),
               );
             }),
           ),

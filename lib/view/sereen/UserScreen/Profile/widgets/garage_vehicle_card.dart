@@ -50,7 +50,11 @@ class GarageVehicleCard extends StatelessWidget {
               height: 170.h,
               color: const Color(0xff222222),
               child: const Center(
-                child: Icon(Icons.directions_car_outlined, color: Colors.white24, size: 40),
+                child: Icon(
+                  Icons.directions_car_outlined,
+                  color: Colors.white24,
+                  size: 40,
+                ),
               ),
             ),
           ),
@@ -90,7 +94,10 @@ class GarageVehicleCard extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 4.h,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xff1c1c1c),
                         borderRadius: BorderRadius.circular(6.r),
@@ -124,7 +131,11 @@ class GarageVehicleCard extends StatelessWidget {
                   children: [
                     _buildSpecCol("DRIVE TYPE", driveType),
                     _buildVerticalDivider(),
-                    _buildSpecCol("PROPULSION", propulsion, isYellowValue: true),
+                    _buildSpecCol(
+                      "PROPULSION",
+                      propulsion,
+                      isYellowValue: true,
+                    ),
                     _buildVerticalDivider(),
                     const Expanded(child: SizedBox.shrink()),
                   ],
@@ -137,7 +148,11 @@ class GarageVehicleCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSpecCol(String label, String value, {bool isYellowValue = false}) {
+  Widget _buildSpecCol(
+    String label,
+    String value, {
+    bool isYellowValue = false,
+  }) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

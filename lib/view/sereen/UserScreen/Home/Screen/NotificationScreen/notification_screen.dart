@@ -15,7 +15,7 @@ class NotificationScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-          leading: BackButton(color: AppColors.yellow,),
+          leading: BackButton(color: AppColors.yellow),
           title: Image.network(
             "https://picsum.photos/seed/speedringlogo/130/40",
             height: 30.h,

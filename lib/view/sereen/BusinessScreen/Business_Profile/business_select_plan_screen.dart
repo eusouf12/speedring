@@ -12,7 +12,8 @@ class BusinessSelectPlanScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Reactive states
     final RxString billingPeriod = "MONTHLY".obs; // MONTHLY, YEARLY
-    final RxString selectedPlan = "XL BUSINESS".obs; // BASIC, XL BUSINESS, XXL BUSINESS, GOLD BUSINESS
+    final RxString selectedPlan =
+        "XL BUSINESS".obs; // BASIC, XL BUSINESS, XXL BUSINESS, GOLD BUSINESS
 
     return CustomGradient(
       child: Scaffold(
@@ -51,10 +52,7 @@ class BusinessSelectPlanScreen extends StatelessWidget {
                       id: "BASIC",
                       title: "BASIC",
                       price: "Free Entry",
-                      features: [
-                        "1 active listing",
-                        "Essential tools",
-                      ],
+                      features: ["1 active listing", "Essential tools"],
                       selectedPlan: selectedPlan,
                       isFree: true,
                     ),
@@ -204,7 +202,7 @@ class BusinessSelectPlanScreen extends StatelessWidget {
                       color: AppColors.yellow.withValues(alpha: 0.1),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
-                    )
+                    ),
                   ]
                 : null,
           ),
@@ -224,7 +222,10 @@ class BusinessSelectPlanScreen extends StatelessWidget {
                   ),
                   if (isRecommended)
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 4.h,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.yellow,
                         borderRadius: BorderRadius.circular(4.r),
@@ -269,7 +270,11 @@ class BusinessSelectPlanScreen extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: 6.h),
                   child: Row(
                     children: [
-                      const Icon(Icons.check_circle_outline, color: AppColors.yellow, size: 13),
+                      const Icon(
+                        Icons.check_circle_outline,
+                        color: AppColors.yellow,
+                        size: 13,
+                      ),
                       SizedBox(width: 8.w),
                       CustomText(
                         text: feature,
@@ -352,7 +357,9 @@ class BusinessSelectPlanScreen extends StatelessWidget {
           children: [
             Obx(() {
               final planStr = selectedPlan.value;
-              final periodStr = billingPeriod.value == "MONTHLY" ? "Monthly" : "Yearly";
+              final periodStr = billingPeriod.value == "MONTHLY"
+                  ? "Monthly"
+                  : "Yearly";
               return Column(
                 children: [
                   CustomText(

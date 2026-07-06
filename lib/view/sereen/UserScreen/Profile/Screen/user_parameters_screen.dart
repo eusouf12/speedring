@@ -42,7 +42,7 @@ class UserParametersScreen extends StatelessWidget {
             ],
           ),
         ),
-        
+
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           child: Column(
@@ -118,7 +118,8 @@ class UserParametersScreen extends StatelessWidget {
                     _buildSettingsTile(
                       icon: Icons.tune,
                       title: "PERSONALIZE YOUR INTERTEST    ",
-                      onTap: () => Get.toNamed(AppRoutes.personalizeInterestScreen),
+                      onTap: () =>
+                          Get.toNamed(AppRoutes.personalizeInterestScreen),
                       showDivider: true,
                     ),
                     _buildSettingsTile(

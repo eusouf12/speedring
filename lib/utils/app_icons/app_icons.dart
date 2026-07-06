@@ -11,16 +11,13 @@ class AppIcons {
   static const String navMessage = "$basePath/message.svg";
   static const String locationIcon = "$basePath/locationIcon.png";
   static const String logOut = "$basePath/logout.svg";
-  static const String idCard= "$basePath/id_card.svg";
-  static const String file= "$basePath/file.svg";
-  static const String filter= "$basePath/filter.svg";
+  static const String idCard = "$basePath/id_card.svg";
+  static const String file = "$basePath/file.svg";
+  static const String filter = "$basePath/filter.svg";
 
   //========== Home Service =========
   static const String newLogo = "$basePath/newLogo.png";
   static const String appBar = "$basePath/appBar.svg";
   static const String arrow = "$basePath/arrow.svg";
   static const String logo = "$basePath/logo.svg";
-
-
-
 }

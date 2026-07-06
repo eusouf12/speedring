@@ -10,14 +10,19 @@ class BusinessCreateSpotPostScreen extends StatefulWidget {
   const BusinessCreateSpotPostScreen({super.key});
 
   @override
-  State<BusinessCreateSpotPostScreen> createState() => _BusinessCreateSpotPostScreenState();
+  State<BusinessCreateSpotPostScreen> createState() =>
+      _BusinessCreateSpotPostScreenState();
 }
 
-class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScreen> {
+class _BusinessCreateSpotPostScreenState
+    extends State<BusinessCreateSpotPostScreen> {
   final locationController = TextEditingController(text: "Monaco, MC");
-  final vehicleController = TextEditingController(text: "Ferrari SF90 Stradale");
+  final vehicleController = TextEditingController(
+    text: "Ferrari SF90 Stradale",
+  );
   final captionController = TextEditingController(
-    text: "Spotted this absolute masterpiece on the casino square. Incredible spec with carbon winglets and giallo highlights."
+    text:
+        "Spotted this absolute masterpiece on the casino square. Incredible spec with carbon winglets and giallo highlights.",
   );
 
   @override
@@ -55,7 +60,10 @@ class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScr
               onPressed: _onPublish,
               child: const Text(
                 "PUBLISH",
-                style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppColors.yellow,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -71,28 +79,57 @@ class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScr
 
               // Location Input
               _buildFieldLabel("LOCATION"),
-              _buildOutlineIconField(locationController, Icons.location_on_outlined, "Detecting location..."),
+              _buildOutlineIconField(
+                locationController,
+                Icons.location_on_outlined,
+                "Detecting location...",
+              ),
               SizedBox(height: 8.h),
               Row(
                 children: [
-                  _buildSuggestionPill("Monaco, MC", (val) => setState(() => locationController.text = val)),
+                  _buildSuggestionPill(
+                    "Monaco, MC",
+                    (val) => setState(() => locationController.text = val),
+                  ),
                   SizedBox(width: 8.w),
-                  _buildSuggestionPill("Nürburgring, DE", (val) => setState(() => locationController.text = val)),
+                  _buildSuggestionPill(
+                    "Nürburgring, DE",
+                    (val) => setState(() => locationController.text = val),
+                  ),
                 ],
               ),
               SizedBox(height: 18.h),
 
               // Vehicle Model Input
               _buildFieldLabel("VEHICLE MODEL"),
-              _buildOutlineIconField(vehicleController, Icons.search_rounded, "Search vehicle database"),
+              _buildOutlineIconField(
+                vehicleController,
+                Icons.search_rounded,
+                "Search vehicle database",
+              ),
               SizedBox(height: 8.h),
               Row(
                 children: [
-                  _buildSuggestionPill("Hypercar", (val) => setState(() => vehicleController.text = "Ferrari SF90 Stradale")),
+                  _buildSuggestionPill(
+                    "Hypercar",
+                    (val) => setState(
+                      () => vehicleController.text = "Ferrari SF90 Stradale",
+                    ),
+                  ),
                   SizedBox(width: 8.w),
-                  _buildSuggestionPill("GT3", (val) => setState(() => vehicleController.text = "Porsche 911 GT3 RS")),
+                  _buildSuggestionPill(
+                    "GT3",
+                    (val) => setState(
+                      () => vehicleController.text = "Porsche 911 GT3 RS",
+                    ),
+                  ),
                   SizedBox(width: 8.w),
-                  _buildSuggestionPill("EV Sport", (val) => setState(() => vehicleController.text = "Audi e-tron GT")),
+                  _buildSuggestionPill(
+                    "EV Sport",
+                    (val) => setState(
+                      () => vehicleController.text = "Audi e-tron GT",
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 18.h),
@@ -113,7 +150,11 @@ class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScr
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.5,
                   ),
-                  const Icon(Icons.remove_red_eye_outlined, color: Colors.white38, size: 14),
+                  const Icon(
+                    Icons.remove_red_eye_outlined,
+                    color: Colors.white38,
+                    size: 14,
+                  ),
                 ],
               ),
               SizedBox(height: 12.h),
@@ -191,7 +232,10 @@ class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScr
                     color: AppColors.yellow,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.add_a_photo_outlined, color: Colors.black),
+                  child: const Icon(
+                    Icons.add_a_photo_outlined,
+                    color: Colors.black,
+                  ),
                 ),
                 SizedBox(height: 8.h),
                 CustomText(
@@ -222,7 +266,11 @@ class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScr
     );
   }
 
-  Widget _buildOutlineIconField(TextEditingController controller, IconData icon, String hint) {
+  Widget _buildOutlineIconField(
+    TextEditingController controller,
+    IconData icon,
+    String hint,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -237,7 +285,11 @@ class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScr
           Expanded(
             child: TextFormField(
               controller: controller,
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
@@ -285,7 +337,8 @@ class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScr
         style: const TextStyle(color: Colors.white, fontSize: 12),
         decoration: const InputDecoration(
           border: InputBorder.none,
-          hintText: "Enter vehicle technical highlights, modifications, and rarity notes...",
+          hintText:
+              "Enter vehicle technical highlights, modifications, and rarity notes...",
           hintStyle: TextStyle(color: Colors.white24, fontSize: 12),
           isDense: true,
         ),
@@ -344,7 +397,9 @@ class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScr
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
               image: const DecorationImage(
-                image: NetworkImage("https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop"),
+                image: NetworkImage(
+                  "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop",
+                ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -358,7 +413,11 @@ class _BusinessCreateSpotPostScreenState extends State<BusinessCreateSpotPostScr
               ),
               child: Text(
                 "RARE SPOT",
-                style: TextStyle(color: Colors.white, fontSize: 6.sp, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 6.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

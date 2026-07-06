@@ -10,10 +10,13 @@ class EditProfileController extends GetxController {
   final nameController = TextEditingController(text: "MAX VERSTAPPEN");
   final handleController = TextEditingController(text: "max_verstappen_33");
   final bioController = TextEditingController(
-    text: "3-time World Champion. Pushing the limits of engineering and performance.",
+    text:
+        "3-time World Champion. Pushing the limits of engineering and performance.",
   );
-  
-  final instagramController = TextEditingController(text: "instagram.com/maxverstappen1");
+
+  final instagramController = TextEditingController(
+    text: "instagram.com/maxverstappen1",
+  );
   final tiktokController = TextEditingController();
   final youtubeController = TextEditingController();
   final facebookController = TextEditingController();
@@ -77,7 +80,11 @@ class EditProfileScreen extends StatelessWidget {
                       errorBuilder: (context, error, stackTrace) => Container(
                         color: const Color(0xff1C1C1C),
                         child: const Center(
-                          child: Icon(Icons.image, color: Colors.white24, size: 48),
+                          child: Icon(
+                            Icons.image,
+                            color: Colors.white24,
+                            size: 48,
+                          ),
                         ),
                       ),
                     ),
@@ -94,11 +101,15 @@ class EditProfileScreen extends StatelessWidget {
                           color: AppColors.yellow,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.edit, color: Colors.black, size: 16),
+                        child: const Icon(
+                          Icons.edit,
+                          color: Colors.black,
+                          size: 16,
+                        ),
                       ),
                     ),
                   ),
-      
+
                   /// Profile Avatar overlapping
                   Positioned(
                     bottom: -50.h,
@@ -117,12 +128,17 @@ class EditProfileScreen extends StatelessWidget {
                             child: Image.network(
                               "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop",
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Container(
-                                color: const Color(0xff222222),
-                                child: const Center(
-                                  child: Icon(Icons.person, color: Colors.white24, size: 40),
-                                ),
-                              ),
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                    color: const Color(0xff222222),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.person,
+                                        color: Colors.white24,
+                                        size: 40,
+                                      ),
+                                    ),
+                                  ),
                             ),
                           ),
                         ),
@@ -137,7 +153,11 @@ class EditProfileScreen extends StatelessWidget {
                                 color: AppColors.yellow,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.edit, color: Colors.black, size: 14),
+                              child: const Icon(
+                                Icons.edit,
+                                color: Colors.black,
+                                size: 14,
+                              ),
                             ),
                           ),
                         ),
@@ -147,7 +167,7 @@ class EditProfileScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 70.h),
-      
+
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Column(
@@ -178,7 +198,7 @@ class EditProfileScreen extends StatelessWidget {
                       ),
                     ]),
                     SizedBox(height: 24.h),
-      
+
                     /// SOCIAL CONNECTIVITY
                     _buildSectionHeader("SOCIAL CONNECTIVITY"),
                     _buildCardContainer([
@@ -207,7 +227,7 @@ class EditProfileScreen extends StatelessWidget {
                       ),
                     ]),
                     SizedBox(height: 32.h),
-      
+
                     /// Deactivate Button
                     Center(
                       child: TextButton(
@@ -215,7 +235,11 @@ class EditProfileScreen extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.disabled_by_default_outlined, color: Colors.redAccent, size: 16),
+                            const Icon(
+                              Icons.disabled_by_default_outlined,
+                              color: Colors.redAccent,
+                              size: 16,
+                            ),
                             SizedBox(width: 6.w),
                             const CustomText(
                               text: "DEACTIVATE DRIVER PROFILE",
@@ -229,7 +253,7 @@ class EditProfileScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 16.h),
-      
+
                     /// Save changes button
                     CustomButton(
                       height: 50.h,
@@ -309,11 +333,14 @@ class EditProfileScreen extends StatelessWidget {
     int maxLines = 1,
   }) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: maxLines > 1 ? 8.h : 4.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: 14.w,
+        vertical: maxLines > 1 ? 8.h : 4.h,
+      ),
       decoration: BoxDecoration(
         color: const Color(0xff1d1d1d),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.03)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.03)),
       ),
       child: Row(
         children: [
@@ -349,7 +376,7 @@ class EditProfileScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff1d1d1d),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.03)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.03)),
       ),
       child: Row(
         children: [

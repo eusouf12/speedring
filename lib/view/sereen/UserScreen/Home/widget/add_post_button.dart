@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AddPostButton extends StatelessWidget {
-  const AddPostButton({
-    super.key,
-    this.label = "ADD POST",
-    this.onTap,
-  });
+  const AddPostButton({super.key, this.label = "ADD POST", this.onTap});
 
   final String label;
   final VoidCallback? onTap;

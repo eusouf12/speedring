@@ -4,7 +4,8 @@ import 'package:speedring/view/components/custom_appbar_stepped/custom_appbar_st
 import '../../../core/app_routes/app_routes.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../components/custom_button/custom_button.dart';
-import '../../components/custom_gradient/custom_gradient.dart' show CustomGradient;
+import '../../components/custom_gradient/custom_gradient.dart'
+    show CustomGradient;
 import '../../components/custom_image/custom_image.dart';
 import '../../../utils/app_images/app_images.dart';
 import 'setup_profile_controller.dart';
@@ -12,7 +13,9 @@ import 'setup_profile_controller.dart';
 class SetupProfileScreen4 extends StatelessWidget {
   const SetupProfileScreen4({super.key});
 
-  static const Color _tileBg = Color(0xff141414); // Dark premium card background
+  static const Color _tileBg = Color(
+    0xff141414,
+  ); // Dark premium card background
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +82,7 @@ class SetupProfileScreen4 extends StatelessWidget {
                             alignment: Alignment.center,
                             children: [
                               CustomImage(
-                                imageSrc: AppImages.helmed2, 
+                                imageSrc: AppImages.helmed2,
                                 imageType: ImageType.png,
                                 height: 220,
                                 fit: BoxFit.contain,
@@ -99,11 +102,18 @@ class SetupProfileScreen4 extends StatelessWidget {
                             fontSize: 26,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.5,
-                            fontFamily: 'Changa', // Apnar custom impact font handle korbe
+                            fontFamily:
+                                'Changa', // Apnar custom impact font handle korbe
                           ),
                           children: [
-                            TextSpan(text: 'STAY IN THE ', style: TextStyle(color: Colors.white)),
-                            TextSpan(text: 'FAST LANE', style: TextStyle(color: AppColors.yellow)),
+                            TextSpan(
+                              text: 'STAY IN THE ',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            TextSpan(
+                              text: 'FAST LANE',
+                              style: TextStyle(color: AppColors.yellow),
+                            ),
                           ],
                         ),
                       ),
@@ -131,7 +141,8 @@ class SetupProfileScreen4 extends StatelessWidget {
                       Obx(
                         () => Column(
                           children: items.map((item) {
-                            final isSelected = controller.selectedNotifications.contains(item['id']);
+                            final isSelected = controller.selectedNotifications
+                                .contains(item['id']);
                             return _buildNotificationTile(
                               icon: item['icon'] as IconData,
                               category: item['category'] as String,
@@ -140,9 +151,13 @@ class SetupProfileScreen4 extends StatelessWidget {
                               isSelected: isSelected,
                               onTap: () {
                                 if (isSelected) {
-                                  controller.selectedNotifications.remove(item['id']);
+                                  controller.selectedNotifications.remove(
+                                    item['id'],
+                                  );
                                 } else {
-                                  controller.selectedNotifications.add(item['id']);
+                                  controller.selectedNotifications.add(
+                                    item['id'],
+                                  );
                                 }
                               },
                             );
@@ -247,7 +262,9 @@ class SetupProfileScreen4 extends StatelessWidget {
                   Text(
                     category,
                     style: TextStyle(
-                      color: isSelected ? AppColors.yellow.withValues(alpha: 0.7) : Colors.white38,
+                      color: isSelected
+                          ? AppColors.yellow.withValues(alpha: 0.7)
+                          : Colors.white38,
                       fontSize: 8,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.8,

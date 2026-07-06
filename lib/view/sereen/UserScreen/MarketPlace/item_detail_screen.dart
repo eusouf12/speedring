@@ -79,13 +79,15 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                   borderRadius: BorderRadius.circular(16.r),
                   border: Border.all(color: Colors.white10),
                   image: const DecorationImage(
-                    image: NetworkImage("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop"),
+                    image: NetworkImage(
+                      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               SizedBox(height: 16.h),
-      
+
               /// Title & Price
               CustomText(
                 text: "2024 PORSCHE 911 GT3 RS",
@@ -105,7 +107,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 textAlign: TextAlign.start,
               ),
               SizedBox(height: 24.h),
-      
+
               /// Purchase & Offer Actions
               CustomButton(
                 height: 48.h,
@@ -117,7 +119,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                     AppRoutes.inboxScreen,
                     arguments: {
                       "userName": "Anderson Racing",
-                      "avatarUrl": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                      "avatarUrl":
+                          "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
                       "isOnline": true,
                     },
                   );
@@ -146,7 +149,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 },
               ),
               SizedBox(height: 24.h),
-      
+
               /// PHASE 01: TECH SPECS
               _buildSectionHeader("PHASE 01: TECH SPECS"),
               GridView.count(
@@ -164,7 +167,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 ],
               ),
               SizedBox(height: 24.h),
-      
+
               /// PHASE 02: NARRATIVE
               _buildSectionHeader("PHASE 02: NARRATIVE"),
               Container(
@@ -188,7 +191,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                     ),
                     SizedBox(height: 8.h),
                     CustomText(
-                      text: "This 2024 iteration of the 911 GT3 RS represents the pinnacle of naturally aspirated performance. "
+                      text:
+                          "This 2024 iteration of the 911 GT3 RS represents the pinnacle of naturally aspirated performance. "
                           "Delivered in January 2024 to a private collection in Stuttgart, the vehicle has undergone strict "
                           "run-in procedures under professional supervision. Every component, from the DRS-enabled rear wing "
                           "to the carbon-fiber reinforced plastic doors, remains in showroom condition.",
@@ -212,7 +216,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 ),
               ),
               SizedBox(height: 24.h),
-      
+
               /// VERIFIED SELLER
               CustomText(
                 text: "VERIFIED SELLER",
@@ -240,7 +244,9 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                              image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop"),
+                              image: NetworkImage(
+                                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -261,7 +267,11 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                               SizedBox(height: 2.h),
                               Row(
                                 children: [
-                                  const Icon(Icons.star, color: AppColors.yellow, size: 12),
+                                  const Icon(
+                                    Icons.star,
+                                    color: AppColors.yellow,
+                                    size: 12,
+                                  ),
                                   SizedBox(width: 4.w),
                                   const CustomText(
                                     text: "4.9 / 5.0",
@@ -281,15 +291,22 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                             });
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 6.h,
+                            ),
                             decoration: BoxDecoration(
-                              color: isFollowing ? Colors.transparent : Colors.black,
+                              color: isFollowing
+                                  ? Colors.transparent
+                                  : Colors.black,
                               border: Border.all(color: AppColors.yellow),
                               borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: CustomText(
                               text: isFollowing ? "FOLLOWING" : "FOLLOW",
-                              color: isFollowing ? Colors.white70 : AppColors.yellow,
+                              color: isFollowing
+                                  ? Colors.white70
+                                  : AppColors.yellow,
                               fontSize: 9,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
@@ -312,7 +329,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 ),
               ),
               SizedBox(height: 24.h),
-      
+
               /// LOCATION TELEMETRY
               Container(
                 margin: EdgeInsets.only(bottom: 30.h),
@@ -344,22 +361,22 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                       ],
                     ),
                     SizedBox(height: 12.h),
-      
+
                     /// Styled map placeholder
                     Container(
                       height: 180.h,
                       decoration: BoxDecoration(
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(8.r),
-                        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.05),
+                        ),
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: Stack(
                         children: [
                           Positioned.fill(
-                            child: CustomPaint(
-                              painter: MapWireframePainter(),
-                            ),
+                            child: CustomPaint(painter: MapWireframePainter()),
                           ),
                           Center(
                             child: Container(
@@ -370,7 +387,9 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.yellow.withValues(alpha:0.5),
+                                    color: AppColors.yellow.withValues(
+                                      alpha: 0.5,
+                                    ),
                                     blurRadius: 10,
                                     spreadRadius: 3,
                                   ),
@@ -404,7 +423,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                     ),
                     SizedBox(height: 12.h),
                     CustomText(
-                      text: "Stuttgart Performance District. Secured climate-controlled facility with 24/7 technical monitoring.",
+                      text:
+                          "Stuttgart Performance District. Secured climate-controlled facility with 24/7 technical monitoring.",
                       color: Colors.white38,
                       fontSize: 10,
                       textAlign: TextAlign.start,
@@ -480,33 +500,61 @@ class MapWireframePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withValues(alpha:0.08)
+      ..color = Colors.white.withValues(alpha: 0.08)
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 
     final roadPaint = Paint()
-      ..color = Colors.white.withValues(alpha:0.15)
+      ..color = Colors.white.withValues(alpha: 0.15)
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
     // Draw some contour grid lines
     for (int i = 0; i < size.width; i += 30) {
-      canvas.drawLine(Offset(i.toDouble(), 0), Offset(i.toDouble(), size.height), paint);
+      canvas.drawLine(
+        Offset(i.toDouble(), 0),
+        Offset(i.toDouble(), size.height),
+        paint,
+      );
     }
     for (int j = 0; j < size.height; j += 30) {
-      canvas.drawLine(Offset(0, j.toDouble()), Offset(size.width, j.toDouble()), paint);
+      canvas.drawLine(
+        Offset(0, j.toDouble()),
+        Offset(size.width, j.toDouble()),
+        paint,
+      );
     }
 
     // Draw some wireframe road paths
     final path = Path()
       ..moveTo(0, size.height * 0.2)
-      ..quadraticBezierTo(size.width * 0.3, size.height * 0.1, size.width * 0.5, size.height * 0.5)
-      ..quadraticBezierTo(size.width * 0.7, size.height * 0.9, size.width, size.height * 0.7);
+      ..quadraticBezierTo(
+        size.width * 0.3,
+        size.height * 0.1,
+        size.width * 0.5,
+        size.height * 0.5,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.7,
+        size.height * 0.9,
+        size.width,
+        size.height * 0.7,
+      );
 
     final path2 = Path()
       ..moveTo(size.width * 0.2, size.height)
-      ..quadraticBezierTo(size.width * 0.4, size.height * 0.4, size.width * 0.5, size.height * 0.5)
-      ..quadraticBezierTo(size.width * 0.6, size.height * 0.6, size.width * 0.8, 0);
+      ..quadraticBezierTo(
+        size.width * 0.4,
+        size.height * 0.4,
+        size.width * 0.5,
+        size.height * 0.5,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.6,
+        size.height * 0.6,
+        size.width * 0.8,
+        0,
+      );
 
     canvas.drawPath(path, roadPaint);
     canvas.drawPath(path2, roadPaint);

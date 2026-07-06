@@ -125,13 +125,17 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                                   Image.network(
                                     "https://picsum.photos/seed/apex_banner/600/337",
                                     fit: BoxFit.cover,
-                                    errorBuilder: (c, o, s) => Container(color: const Color(0xff111111)),
+                                    errorBuilder: (c, o, s) => Container(
+                                      color: const Color(0xff111111),
+                                    ),
                                   ),
-                                  Container(
-                                    color: Colors.black38,
-                                  ),
+                                  Container(color: Colors.black38),
                                   Center(
-                                    child: Icon(Icons.add_a_photo_outlined, color: Colors.white, size: 28.r),
+                                    child: Icon(
+                                      Icons.add_a_photo_outlined,
+                                      color: Colors.white,
+                                      size: 28.r,
+                                    ),
                                   ),
                                 ],
                               )
@@ -141,9 +145,15 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     if (controller.isBannerUploading.value)
-                                      const CircularProgressIndicator(color: AppColors.yellow)
+                                      const CircularProgressIndicator(
+                                        color: AppColors.yellow,
+                                      )
                                     else ...[
-                                      Icon(Icons.add_a_photo_outlined, color: AppColors.yellow, size: 24.r),
+                                      Icon(
+                                        Icons.add_a_photo_outlined,
+                                        color: AppColors.yellow,
+                                        size: 24.r,
+                                      ),
                                       SizedBox(height: 8.h),
                                       CustomText(
                                         text: "UPLOAD HIGH-RES BANNER",
@@ -191,9 +201,15 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   if (controller.isBrandLogoUploading.value)
-                                    const CircularProgressIndicator(color: AppColors.yellow)
+                                    const CircularProgressIndicator(
+                                      color: AppColors.yellow,
+                                    )
                                   else ...[
-                                    Icon(Icons.upload_file_outlined, color: AppColors.yellow, size: 20.r),
+                                    Icon(
+                                      Icons.upload_file_outlined,
+                                      color: AppColors.yellow,
+                                      size: 20.r,
+                                    ),
                                     SizedBox(height: 6.h),
                                     CustomText(
                                       text: "ADD LOGO",
@@ -226,7 +242,10 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 CustomTextField(
                   textEditingController: controller.hqCtrl,
                   hintText: "Street Address, City, Country",
-                  prefixIcon: const Icon(Icons.location_on_outlined, color: Colors.white38),
+                  prefixIcon: const Icon(
+                    Icons.location_on_outlined,
+                    color: Colors.white38,
+                  ),
                 ),
                 SizedBox(height: 16.h),
 
@@ -234,7 +253,10 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 CustomTextField(
                   textEditingController: controller.commCtrl,
                   hintText: "+1(555) 000-0000",
-                  prefixIcon: const Icon(Icons.phone_outlined, color: Colors.white38),
+                  prefixIcon: const Icon(
+                    Icons.phone_outlined,
+                    color: Colors.white38,
+                  ),
                 ),
                 SizedBox(height: 16.h),
 
@@ -242,7 +264,10 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 CustomTextField(
                   textEditingController: controller.digitalHqCtrl,
                   hintText: "https://yourbusiness.com",
-                  prefixIcon: const Icon(Icons.language_outlined, color: Colors.white38),
+                  prefixIcon: const Icon(
+                    Icons.language_outlined,
+                    color: Colors.white38,
+                  ),
                 ),
                 SizedBox(height: 16.h),
 
@@ -250,7 +275,10 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 GestureDetector(
                   onTap: () => controller.configureSchedule(),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 14.h,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.black_80,
                       borderRadius: BorderRadius.circular(16.r),
@@ -258,7 +286,10 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.access_time_outlined, color: Colors.white38),
+                        const Icon(
+                          Icons.access_time_outlined,
+                          color: Colors.white38,
+                        ),
                         SizedBox(width: 14.w),
                         Expanded(
                           child: CustomText(
@@ -268,7 +299,11 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                             textAlign: TextAlign.start,
                           ),
                         ),
-                        const Icon(Icons.check_circle_outline, color: AppColors.yellow, size: 18),
+                        const Icon(
+                          Icons.check_circle_outline,
+                          color: AppColors.yellow,
+                          size: 18,
+                        ),
                       ],
                     ),
                   ),
@@ -278,13 +313,29 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 _buildModuleHeader("PHASE 03", "NETWORK SYNC"),
                 SizedBox(height: 16.h),
 
-                _buildSocialSyncField("Instagram Profile", controller.instagramCtrl, Icons.camera_alt_outlined),
+                _buildSocialSyncField(
+                  "Instagram Profile",
+                  controller.instagramCtrl,
+                  Icons.camera_alt_outlined,
+                ),
                 SizedBox(height: 12.h),
-                _buildSocialSyncField("YouTube Channel", controller.youtubeCtrl, Icons.play_circle_outline),
+                _buildSocialSyncField(
+                  "YouTube Channel",
+                  controller.youtubeCtrl,
+                  Icons.play_circle_outline,
+                ),
                 SizedBox(height: 12.h),
-                _buildSocialSyncField("TikTok Handle", controller.tiktokCtrl, Icons.music_note_outlined),
+                _buildSocialSyncField(
+                  "TikTok Handle",
+                  controller.tiktokCtrl,
+                  Icons.music_note_outlined,
+                ),
                 SizedBox(height: 12.h),
-                _buildSocialSyncField("Facebook Page", controller.facebookCtrl, Icons.facebook_outlined),
+                _buildSocialSyncField(
+                  "Facebook Page",
+                  controller.facebookCtrl,
+                  Icons.facebook_outlined,
+                ),
                 SizedBox(height: 40.h),
               ],
             ),
@@ -311,7 +362,11 @@ class BusinessRegistrationStep3 extends StatelessWidget {
   void _showHelpDialog() {
     Get.defaultDialog(
       title: "Business Verification",
-      titleStyle: TextStyle(color: AppColors.yellow, fontSize: 16.sp, fontWeight: FontWeight.bold),
+      titleStyle: TextStyle(
+        color: AppColors.yellow,
+        fontSize: 16.sp,
+        fontWeight: FontWeight.bold,
+      ),
       backgroundColor: const Color(0xff111111),
       content: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 12),
@@ -354,7 +409,9 @@ class BusinessRegistrationStep3 extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.yellow.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(4.r),
-              border: Border.all(color: AppColors.yellow.withValues(alpha: 0.3)),
+              border: Border.all(
+                color: AppColors.yellow.withValues(alpha: 0.3),
+              ),
             ),
             child: CustomText(
               text: module,
@@ -377,7 +434,11 @@ class BusinessRegistrationStep3 extends StatelessWidget {
     );
   }
 
-  Widget _buildSocialSyncField(String label, TextEditingController controller, IconData icon) {
+  Widget _buildSocialSyncField(
+    String label,
+    TextEditingController controller,
+    IconData icon,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xff111111),

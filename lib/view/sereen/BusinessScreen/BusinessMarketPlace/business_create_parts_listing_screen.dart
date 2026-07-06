@@ -83,26 +83,34 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                         value: selectedCategory.value,
                         isExpanded: true,
                         dropdownColor: Colors.black,
-                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white60,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         onChanged: (newValue) {
-                          if (newValue != null) selectedCategory.value = newValue;
+                          if (newValue != null)
+                            selectedCategory.value = newValue;
                         },
-                        items: [
-                          "Braking Systems",
-                          "Suspension Components",
-                          "Engine Components",
-                          "Exhaust Systems",
-                          "Aero & Bodywork",
-                          "Wheels & Tires",
-                          "Electronics & ECU",
-                          "Other Parts"
-                        ].map((cat) {
-                          return DropdownMenuItem<String>(
-                            value: cat,
-                            child: Text(cat),
-                          );
-                        }).toList(),
+                        items:
+                            [
+                              "Braking Systems",
+                              "Suspension Components",
+                              "Engine Components",
+                              "Exhaust Systems",
+                              "Aero & Bodywork",
+                              "Wheels & Tires",
+                              "Electronics & ECU",
+                              "Other Parts",
+                            ].map((cat) {
+                              return DropdownMenuItem<String>(
+                                value: cat,
+                                child: Text(cat),
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),
@@ -143,23 +151,31 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                         value: selectedCondition.value,
                         isExpanded: true,
                         dropdownColor: Colors.black,
-                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white60,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         onChanged: (newValue) {
-                          if (newValue != null) selectedCondition.value = newValue;
+                          if (newValue != null)
+                            selectedCondition.value = newValue;
                         },
-                        items: [
-                          "New (Sealed)",
-                          "Like New (Opened Box)",
-                          "Used (Good Condition)",
-                          "Refurbished",
-                          "For Parts Only"
-                        ].map((cond) {
-                          return DropdownMenuItem<String>(
-                            value: cond,
-                            child: Text(cond),
-                          );
-                        }).toList(),
+                        items:
+                            [
+                              "New (Sealed)",
+                              "Like New (Opened Box)",
+                              "Used (Good Condition)",
+                              "Refurbished",
+                              "For Parts Only",
+                            ].map((cond) {
+                              return DropdownMenuItem<String>(
+                                value: cond,
+                                child: Text(cond),
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),
@@ -234,7 +250,8 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                 _buildFieldLabel("PART OVERVIEW & HISTORY"),
                 CustomTextField(
                   textEditingController: provenanceController,
-                  hintText: "Describe the part's history, previous vehicle installation, and usage cycles...",
+                  hintText:
+                      "Describe the part's history, previous vehicle installation, and usage cycles...",
                   maxLines: 4,
                   fillColor: const Color(0xff111111),
                   fieldBorderColor: Colors.white10,
@@ -263,7 +280,10 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow),
+                          const Icon(
+                            Icons.add_a_photo_outlined,
+                            color: AppColors.yellow,
+                          ),
                           SizedBox(height: 6.h),
                           CustomText(
                             text: "UPLOAD IMAGE",
@@ -290,7 +310,10 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.video_call_outlined, color: AppColors.yellow),
+                          const Icon(
+                            Icons.video_call_outlined,
+                            color: AppColors.yellow,
+                          ),
                           SizedBox(height: 6.h),
                           CustomText(
                             text: "ADD VIDEO",
@@ -310,7 +333,10 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.analytics_outlined, color: AppColors.yellow),
+                          const Icon(
+                            Icons.analytics_outlined,
+                            color: AppColors.yellow,
+                          ),
                           SizedBox(height: 6.h),
                           CustomText(
                             text: "DYNO DATA",
@@ -348,23 +374,24 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                       if (val != null) selectedShipping.value = val;
                     },
                     child: Column(
-                      children: [
-                        "Flat Rate International",
-                        "Calculate at Checkout",
-                        "Local Pickup Only"
-                      ].map((strategy) {
-                        return RadioListTile<String>(
-                          title: CustomText(
-                            text: strategy,
-                            color: Colors.white,
-                            fontSize: 12.sp,
-                            textAlign: TextAlign.start,
-                          ),
-                          value: strategy,
-                          activeColor: AppColors.yellow,
-                          contentPadding: EdgeInsets.zero,
-                        );
-                      }).toList(),
+                      children:
+                          [
+                            "Flat Rate International",
+                            "Calculate at Checkout",
+                            "Local Pickup Only",
+                          ].map((strategy) {
+                            return RadioListTile<String>(
+                              title: CustomText(
+                                text: strategy,
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                textAlign: TextAlign.start,
+                              ),
+                              value: strategy,
+                              activeColor: AppColors.yellow,
+                              contentPadding: EdgeInsets.zero,
+                            );
+                          }).toList(),
                     ),
                   ),
                 ),

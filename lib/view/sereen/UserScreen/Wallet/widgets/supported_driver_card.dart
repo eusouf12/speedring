@@ -24,7 +24,7 @@ class SupportedDriverCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff111111),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -42,7 +42,11 @@ class SupportedDriverCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: const Color(0xff1C1C1C),
-                  child: const Icon(Icons.person, color: Colors.white24, size: 28),
+                  child: const Icon(
+                    Icons.person,
+                    color: Colors.white24,
+                    size: 28,
+                  ),
                 ),
               ),
             ),

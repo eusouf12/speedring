@@ -12,17 +12,18 @@ class CustomNetworkImage extends StatelessWidget {
   final Color? backgroundColor;
   final Widget? child;
   final ColorFilter? colorFilter;
-  const CustomNetworkImage(
-      {super.key,
-      this.child,
-      this.colorFilter,
-      required this.imageUrl,
-      this.backgroundColor,
-      required this.height,
-      required this.width,
-      this.border,
-      this.borderRadius,
-      this.boxShape = BoxShape.rectangle});
+  const CustomNetworkImage({
+    super.key,
+    this.child,
+    this.colorFilter,
+    required this.imageUrl,
+    this.backgroundColor,
+    required this.height,
+    required this.width,
+    this.border,
+    this.borderRadius,
+    this.boxShape = BoxShape.rectangle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,19 +46,20 @@ class CustomNetworkImage extends StatelessWidget {
         child: child,
       ),
       placeholder: (context, url) => Shimmer.fromColors(
-          baseColor: Colors.grey.withValues(alpha: 0.6),
-          highlightColor: Colors.grey.withValues(alpha: 0.3),
-          child: Container(
-            height: height,
-            width: width,
-            decoration: BoxDecoration(
-              border: border,
-              color: Colors.grey.withValues(alpha: 0.6),
-              borderRadius: borderRadius,
-              shape: boxShape,
-            ),
-            child: child,
-          )),
+        baseColor: Colors.grey.withValues(alpha: 0.6),
+        highlightColor: Colors.grey.withValues(alpha: 0.3),
+        child: Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            border: border,
+            color: Colors.grey.withValues(alpha: 0.6),
+            borderRadius: borderRadius,
+            shape: boxShape,
+          ),
+          child: child,
+        ),
+      ),
       errorWidget: (context, url, error) => Container(
         height: height,
         width: width,
@@ -72,4 +74,3 @@ class CustomNetworkImage extends StatelessWidget {
     );
   }
 }
-

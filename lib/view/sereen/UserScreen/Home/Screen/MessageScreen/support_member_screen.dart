@@ -41,7 +41,8 @@ class SupportMemberScreen extends StatefulWidget {
 
 class _SupportMemberScreenState extends State<SupportMemberScreen> {
   final Random _random = Random();
-  String _selectedId = 'fuel'; // Default selected item matches the screenshot (Fuel)
+  String _selectedId =
+      'fuel'; // Default selected item matches the screenshot (Fuel)
 
   final List<Map<String, dynamic>> _supportItems = [
     {
@@ -97,10 +98,12 @@ class _SupportMemberScreenState extends State<SupportMemberScreen> {
   @override
   Widget build(BuildContext context) {
     // Retrieve arguments (like recipient's name)
-    final Map<String, dynamic> args = Get.arguments ?? {
-      "userName": "Alex Racer",
-      "avatarUrl": "https://picsum.photos/seed/alex/100/100"
-    };
+    final Map<String, dynamic> args =
+        Get.arguments ??
+        {
+          "userName": "Alex Racer",
+          "avatarUrl": "https://picsum.photos/seed/alex/100/100",
+        };
     final String userName = args["userName"];
 
     return CustomGradient(
@@ -242,7 +245,9 @@ class _SupportMemberScreenState extends State<SupportMemberScreen> {
                         },
                         child: CustomPaint(
                           foregroundPainter: CornerTickPainter(
-                            color: isSelected ? Colors.transparent : AppColors.yellow.withValues(alpha: 0.5),
+                            color: isSelected
+                                ? Colors.transparent
+                                : AppColors.yellow.withValues(alpha: 0.5),
                           ),
                           child: Container(
                             padding: EdgeInsets.all(12.w),
@@ -250,7 +255,9 @@ class _SupportMemberScreenState extends State<SupportMemberScreen> {
                               color: const Color(0xff0E0E0E),
                               borderRadius: BorderRadius.circular(4.r),
                               border: Border.all(
-                                color: isSelected ? AppColors.yellow : Colors.white.withValues(alpha: 0.04),
+                                color: isSelected
+                                    ? AppColors.yellow
+                                    : Colors.white.withValues(alpha: 0.04),
                                 width: isSelected ? 1.5 : 1.0,
                               ),
                             ),
@@ -260,7 +267,9 @@ class _SupportMemberScreenState extends State<SupportMemberScreen> {
                               children: [
                                 Icon(
                                   item['icon'] as IconData,
-                                  color: isSelected ? AppColors.yellow : Colors.white70,
+                                  color: isSelected
+                                      ? AppColors.yellow
+                                      : Colors.white70,
                                   size: 20.sp,
                                 ),
                                 Column(
@@ -295,7 +304,7 @@ class _SupportMemberScreenState extends State<SupportMemberScreen> {
                 ),
 
                 /// Info Banner at bottom
-             SizedBox(height: 16.h),
+                SizedBox(height: 16.h),
 
                 /// Send Support Button
                 CustomButton(
@@ -307,13 +316,16 @@ class _SupportMemberScreenState extends State<SupportMemberScreen> {
                   borderRadius: 8.r,
                   height: 48.h,
                   onTap: () {
-                    final selectedItem = _supportItems.firstWhere((item) => item['id'] == _selectedId);
+                    final selectedItem = _supportItems.firstWhere(
+                      (item) => item['id'] == _selectedId,
+                    );
                     Get.toNamed(
                       AppRoutes.supportSuccessScreen,
                       arguments: {
                         "amount": selectedItem['price'],
                         "recipient": userName.toUpperCase(),
-                        "txId": "SRX-${100 + _random.nextInt(899)}-${100 + _random.nextInt(899)}-M7"
+                        "txId":
+                            "SRX-${100 + _random.nextInt(899)}-${100 + _random.nextInt(899)}-M7",
                       },
                     );
                   },

@@ -20,25 +20,29 @@ class BusinessSelectCategoryScreen extends StatelessWidget {
         'id': 'CAT-01',
         'title': 'VEHICLES',
         'desc': 'High-performance cars, GT3 racers, and luxury collectibles.',
-        'image': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
+        'image':
+            'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
       },
       {
         'id': 'CAT-02',
         'title': 'MOTORCYCLES',
         'desc': 'Superbikes, custom builds, and professional racing machinery.',
-        'image': 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop',
+        'image':
+            'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop',
       },
       {
         'id': 'CAT-03',
         'title': 'PERFORMANCE PARTS',
         'desc': 'Engine components, aero kits, and technical hardware.',
-        'image': 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&fit=crop',
+        'image':
+            'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&fit=crop',
       },
       {
         'id': 'CAT-04',
         'title': 'EXPERT SERVICES',
         'desc': 'Tuning, coaching, track-side support, and logistics.',
-        'image': 'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop',
+        'image':
+            'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop',
       },
     ];
 
@@ -89,7 +93,8 @@ class BusinessSelectCategoryScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8.h),
                     CustomText(
-                      text: "Choose the asset class you wish to list on the global marketplace.",
+                      text:
+                          "Choose the asset class you wish to list on the global marketplace.",
                       color: Colors.white60,
                       fontSize: 12.sp,
                       textAlign: TextAlign.start,
@@ -115,7 +120,9 @@ class BusinessSelectCategoryScreen extends StatelessWidget {
                                 color: const Color(0xff111111),
                                 borderRadius: BorderRadius.circular(16.r),
                                 border: Border.all(
-                                  color: isSelected ? AppColors.yellow : Colors.white10,
+                                  color: isSelected
+                                      ? AppColors.yellow
+                                      : Colors.white10,
                                   width: isSelected ? 1.5.w : 1.0.w,
                                 ),
                               ),
@@ -130,7 +137,9 @@ class BusinessSelectCategoryScreen extends StatelessWidget {
                                       height: double.infinity,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => Container(color: Colors.black),
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(color: Colors.black),
                                     ),
                                   ),
 
@@ -138,8 +147,10 @@ class BusinessSelectCategoryScreen extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.all(20.w),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Row(
                                           children: [
@@ -154,7 +165,8 @@ class BusinessSelectCategoryScreen extends StatelessWidget {
                                             Container(
                                               height: 1.h,
                                               width: 24.w,
-                                              color: AppColors.yellow.withValues(alpha: 0.5),
+                                              color: AppColors.yellow
+                                                  .withValues(alpha: 0.5),
                                             ),
                                           ],
                                         ),
@@ -196,7 +208,9 @@ class BusinessSelectCategoryScreen extends StatelessWidget {
                   height: 48.h,
                   title: "CONTINUE",
                   fontSize: 12.sp,
-                  fillColor: hasSelection ? AppColors.yellow : const Color(0xff222222),
+                  fillColor: hasSelection
+                      ? AppColors.yellow
+                      : const Color(0xff222222),
                   textColor: hasSelection ? Colors.black : Colors.white30,
                   borderRadius: 10.r,
                   onTap: hasSelection
@@ -204,16 +218,24 @@ class BusinessSelectCategoryScreen extends StatelessWidget {
                           // Route based on selection
                           switch (selectedIndex.value) {
                             case 0:
-                              Get.toNamed(AppRoutes.businessCreateVehicleListingScreen);
+                              Get.toNamed(
+                                AppRoutes.businessCreateVehicleListingScreen,
+                              );
                               break;
                             case 1:
-                              Get.toNamed(AppRoutes.businessCreateMotorcycleListingScreen);
+                              Get.toNamed(
+                                AppRoutes.businessCreateMotorcycleListingScreen,
+                              );
                               break;
                             case 2:
-                              Get.toNamed(AppRoutes.businessCreatePartsListingScreen);
+                              Get.toNamed(
+                                AppRoutes.businessCreatePartsListingScreen,
+                              );
                               break;
                             case 3:
-                              Get.toNamed(AppRoutes.businessCreateServicesListingScreen);
+                              Get.toNamed(
+                                AppRoutes.businessCreateServicesListingScreen,
+                              );
                               break;
                           }
                         }

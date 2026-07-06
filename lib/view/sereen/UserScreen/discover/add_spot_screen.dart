@@ -377,7 +377,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
       decoration: BoxDecoration(
         color: const Color(0xff181818),
         borderRadius: BorderRadius.circular(2),
-        border: Border.all(color: AppColors.yellow.withValues(alpha:0.3)),
+        border: Border.all(color: AppColors.yellow.withValues(alpha: 0.3)),
       ),
       child: Text(
         title,

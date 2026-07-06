@@ -12,7 +12,8 @@ class BusinessEventsListScreen extends StatefulWidget {
   const BusinessEventsListScreen({super.key});
 
   @override
-  State<BusinessEventsListScreen> createState() => _BusinessEventsListScreenState();
+  State<BusinessEventsListScreen> createState() =>
+      _BusinessEventsListScreenState();
 }
 
 class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
@@ -21,7 +22,8 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
       'id': '1',
       'title': 'SILVERSTONE PERFORMANCE PADDOCK',
       'organizer': 'ANDERSON RACING',
-      'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
       'date': 'OCT 24',
       'type': 'TRACK DAY',
       'location': 'SILVERSTONE',
@@ -35,7 +37,8 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
       'id': '2',
       'title': 'NÜRBURGRING ENDURANCE SERIES',
       'organizer': 'SPEEDRING ELITE',
-      'imageUrl': 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop',
       'date': 'NOV 17',
       'type': 'ENDURANCE',
       'location': 'ADENAU',
@@ -49,7 +52,8 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
       'id': '3',
       'title': 'YAS MARINA NIGHT SESSIONS',
       'organizer': 'SPEEDRING ELITE',
-      'imageUrl': 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop',
       'date': 'DEC 05',
       'type': 'EXPERIENCE',
       'location': 'ABU DHABI',
@@ -73,15 +77,14 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
             icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
             onPressed: () => Get.back(),
           ),
-          title: Image.asset(
-            AppImages.logo,
-            height: 26.h,
-            fit: BoxFit.contain,
-          ),
+          title: Image.asset(AppImages.logo, height: 26.h, fit: BoxFit.contain),
           centerTitle: true,
           actions: [
             IconButton(
-              icon: const Icon(Icons.notifications_none_rounded, color: Colors.white),
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                color: Colors.white,
+              ),
               onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
             ),
           ],
@@ -154,7 +157,9 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: NetworkImage(event['imageUrl'] as String),
+                                    image: NetworkImage(
+                                      event['imageUrl'] as String,
+                                    ),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -165,7 +170,10 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                                 top: 12.h,
                                 right: 12.w,
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10.w,
+                                    vertical: 5.h,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: AppColors.yellow,
                                     borderRadius: BorderRadius.circular(4.r),
@@ -196,7 +204,11 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                                   CircleAvatar(
                                     radius: 10.r,
                                     backgroundColor: const Color(0xff222222),
-                                    child: Icon(Icons.person, size: 10.r, color: Colors.white60),
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 10.r,
+                                      color: Colors.white60,
+                                    ),
                                   ),
                                   SizedBox(width: 8.w),
                                   CustomText(
@@ -206,7 +218,11 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                                     fontWeight: FontWeight.w900,
                                   ),
                                   SizedBox(width: 4.w),
-                                  const Icon(Icons.verified, color: AppColors.yellow, size: 12),
+                                  const Icon(
+                                    Icons.verified,
+                                    color: AppColors.yellow,
+                                    size: 12,
+                                  ),
                                 ],
                               ),
                               SizedBox(height: 10.h),
@@ -223,15 +239,27 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
 
                               // Event specifics row
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  _buildSpecRow(Icons.calendar_today_outlined, event['date'] as String),
-                                  _buildSpecRow(Icons.flag_outlined, event['type'] as String),
-                                  _buildSpecRow(Icons.location_on_outlined, event['location'] as String),
+                                  _buildSpecRow(
+                                    Icons.calendar_today_outlined,
+                                    event['date'] as String,
+                                  ),
+                                  _buildSpecRow(
+                                    Icons.flag_outlined,
+                                    event['type'] as String,
+                                  ),
+                                  _buildSpecRow(
+                                    Icons.location_on_outlined,
+                                    event['location'] as String,
+                                  ),
                                   _buildSpecRow(
                                     Icons.group_outlined,
                                     event['slots'] as String,
-                                    color: event['isSlotsFull'] == true ? Colors.red : AppColors.yellow,
+                                    color: event['isSlotsFull'] == true
+                                        ? Colors.red
+                                        : AppColors.yellow,
                                   ),
                                 ],
                               ),
@@ -240,7 +268,11 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                               // Likes, Comments, Share & Actions row
                               Row(
                                 children: [
-                                  Icon(Icons.favorite_border_rounded, color: Colors.white24, size: 16.sp),
+                                  Icon(
+                                    Icons.favorite_border_rounded,
+                                    color: Colors.white24,
+                                    size: 16.sp,
+                                  ),
                                   SizedBox(width: 4.w),
                                   CustomText(
                                     text: event['likes'] as String,
@@ -249,7 +281,11 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                   SizedBox(width: 14.w),
-                                  Icon(Icons.chat_bubble_outline_rounded, color: Colors.white24, size: 15.sp),
+                                  Icon(
+                                    Icons.chat_bubble_outline_rounded,
+                                    color: Colors.white24,
+                                    size: 15.sp,
+                                  ),
                                   SizedBox(width: 4.w),
                                   CustomText(
                                     text: event['comments'] as String,
@@ -258,7 +294,11 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                   SizedBox(width: 14.w),
-                                  Icon(Icons.share_outlined, color: Colors.white24, size: 15.sp),
+                                  Icon(
+                                    Icons.share_outlined,
+                                    color: Colors.white24,
+                                    size: 15.sp,
+                                  ),
                                   const Spacer(),
 
                                   // Manage & Delete buttons
@@ -268,16 +308,23 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                                       foregroundColor: Colors.black,
                                       elevation: 0,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8.r),
+                                        borderRadius: BorderRadius.circular(
+                                          8.r,
+                                        ),
                                       ),
                                       minimumSize: Size(96.w, 32.h),
-                                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w,
+                                      ),
                                     ),
                                     onPressed: () => Get.toNamed(
                                       AppRoutes.businessEventDetailsScreen,
                                       arguments: event,
                                     ),
-                                    icon: const Icon(Icons.edit_outlined, size: 13),
+                                    icon: const Icon(
+                                      Icons.edit_outlined,
+                                      size: 13,
+                                    ),
                                     label: Text(
                                       "MANAGE EVENT",
                                       style: TextStyle(
@@ -293,7 +340,9 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                                         "Delete Event",
                                         "Hold to permanently remove this event.",
                                         snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: const Color(0xff181818),
+                                        backgroundColor: const Color(
+                                          0xff181818,
+                                        ),
                                         colorText: Colors.white,
                                         borderColor: Colors.redAccent,
                                         borderWidth: 1,
@@ -304,10 +353,18 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
                                       height: 32.h,
                                       decoration: BoxDecoration(
                                         color: Colors.black,
-                                        borderRadius: BorderRadius.circular(8.r),
-                                        border: Border.all(color: Colors.white10),
+                                        borderRadius: BorderRadius.circular(
+                                          8.r,
+                                        ),
+                                        border: Border.all(
+                                          color: Colors.white10,
+                                        ),
                                       ),
-                                      child: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 15),
+                                      child: const Icon(
+                                        Icons.delete_outline_rounded,
+                                        color: Colors.redAccent,
+                                        size: 15,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -328,7 +385,11 @@ class _BusinessEventsListScreenState extends State<BusinessEventsListScreen> {
     );
   }
 
-  Widget _buildSpecRow(IconData icon, String label, {Color color = Colors.white60}) {
+  Widget _buildSpecRow(
+    IconData icon,
+    String label, {
+    Color color = Colors.white60,
+  }) {
     return Row(
       children: [
         Icon(icon, color: Colors.white24, size: 11.sp),

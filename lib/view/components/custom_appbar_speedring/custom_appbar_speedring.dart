@@ -25,7 +25,6 @@ class CustomAppBarSpeedring extends StatelessWidget
       toolbarHeight: preferredSize.height,
       title: Row(
         children: [
-       
           BackButton(),
           const Spacer(),
 

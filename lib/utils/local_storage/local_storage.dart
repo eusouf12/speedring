@@ -1,6 +1,6 @@
 import 'package:get_storage/get_storage.dart';
 
-class StorageService{
+class StorageService {
   final GetStorage _box = GetStorage();
 
   Future<void> initStorage() async {

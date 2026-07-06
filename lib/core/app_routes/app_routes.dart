@@ -5,7 +5,8 @@ import '../../view/sereen/SetupProfile/preview.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen2.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen3.dart';
-import '../../view/sereen/SetupProfile/setup_profile_screen4.dart' show SetupProfileScreen4;
+import '../../view/sereen/SetupProfile/setup_profile_screen4.dart'
+    show SetupProfileScreen4;
 import '../../view/sereen/SplashScreen/splash_screen.dart';
 import '../../view/sereen/OnboardingScreen/onboarding_screen.dart';
 import '../../view/sereen/AuthScreen/LoginScreen/login_screen.dart';
@@ -16,6 +17,8 @@ import '../../view/sereen/AuthScreen/VerifyOtpScreen/verify_otp_screen.dart';
 import '../../view/sereen/AuthScreen/ResetPasswordScreen/reset_password_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/clubs/club_details_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/user_home_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/reels_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/create_reel_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/NotificationScreen/notification_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/message_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/inbox_screen.dart';
@@ -103,13 +106,6 @@ import '../../view/sereen/BusinessScreen/Business_Profile/business_select_plan_s
 import '../../view/sereen/BusinessScreen/Promotion/business_promotion_hub_screen.dart';
 import '../../view/sereen/BusinessScreen/Promotion/business_create_promotion_screen.dart';
 
-
-
-
-
-
-
-
 class AppRoutes {
   ///===========================Authentication==========================
   static const String splashScreen = "/SplashScreen";
@@ -156,8 +152,10 @@ class AppRoutes {
   static const String marketplaceFeedScreen = "/MarketplaceFeedScreen";
   static const String itemDetailScreen = "/ItemDetailScreen";
   static const String selectCategoryScreen = "/SelectCategoryScreen";
-  static const String createVehicleListingScreen = "/CreateVehicleListingScreen";
-  static const String createMotorcycleListingScreen = "/CreateMotorcycleListingScreen";
+  static const String createVehicleListingScreen =
+      "/CreateVehicleListingScreen";
+  static const String createMotorcycleListingScreen =
+      "/CreateMotorcycleListingScreen";
   static const String profileScreen = "/ProfileScreen";
   static const String walletScreen = "/WalletScreen";
   static const String buyCoinsScreen = "/BuyCoinsScreen";
@@ -165,7 +163,8 @@ class AppRoutes {
   static const String transactionReportScreen = "/TransactionReportScreen";
   static const String supportSentScreen = "/SupportSentScreen";
   static const String transactionHistoryScreen = "/TransactionHistoryScreen";
-  static const String transactionVerificationScreen = "/TransactionVerificationScreen";
+  static const String transactionVerificationScreen =
+      "/TransactionVerificationScreen";
   static const String supportSuccessScreen = "/SupportSuccessScreen";
   static const String addVehicleScreen = "/AddVehicleScreen";
   static const String editProfileScreen = "/EditProfileScreen";
@@ -189,21 +188,31 @@ class AppRoutes {
   static const String addAssetCategoryScreen = "/AddAssetCategoryScreen";
   static const String configureAssetScreen = "/ConfigureAssetScreen";
   static const String createPartsListingScreen = "/CreatePartsListingScreen";
-  static const String createServicesListingScreen = "/CreateServicesListingScreen";
+  static const String createServicesListingScreen =
+      "/CreateServicesListingScreen";
   static const String businessSocialHubScreen = "/BusinessSocialHubScreen";
   static const String businessCreatePostScreen = "/BusinessCreatePostScreen";
-  static const String businessCreateSessionPostScreen = "/BusinessCreateSessionPostScreen";
-  static const String businessCreateSpotPostScreen = "/BusinessCreateSpotPostScreen";
-  static const String businessCreateTrackUpdateScreen = "/BusinessCreateTrackUpdateScreen";
-  static const String businessCreateClubPostScreen = "/BusinessCreateClubPostScreen";
+  static const String businessCreateSessionPostScreen =
+      "/BusinessCreateSessionPostScreen";
+  static const String businessCreateSpotPostScreen =
+      "/BusinessCreateSpotPostScreen";
+  static const String businessCreateTrackUpdateScreen =
+      "/BusinessCreateTrackUpdateScreen";
+  static const String businessCreateClubPostScreen =
+      "/BusinessCreateClubPostScreen";
   static const String businessMarketplaceScreen = "/BusinessMarketplaceScreen";
-  static const String businessCreateVehicleListingScreen = "/BusinessCreateVehicleListingScreen";
-  static const String businessCreateMotorcycleListingScreen = "/BusinessCreateMotorcycleListingScreen";
-  static const String businessCreatePartsListingScreen = "/BusinessCreatePartsListingScreen";
-  static const String businessCreateServicesListingScreen = "/BusinessCreateServicesListingScreen";
+  static const String businessCreateVehicleListingScreen =
+      "/BusinessCreateVehicleListingScreen";
+  static const String businessCreateMotorcycleListingScreen =
+      "/BusinessCreateMotorcycleListingScreen";
+  static const String businessCreatePartsListingScreen =
+      "/BusinessCreatePartsListingScreen";
+  static const String businessCreateServicesListingScreen =
+      "/BusinessCreateServicesListingScreen";
   static const String businessCreateEventScreen = "/BusinessCreateEventScreen";
   static const String businessEventsListScreen = "/BusinessEventsListScreen";
-  static const String businessEventDetailsScreen = "/BusinessEventDetailsScreen";
+  static const String businessEventDetailsScreen =
+      "/BusinessEventDetailsScreen";
   static const String businessClubsScreen = "/BusinessClubsScreen";
   static const String businessProfileScreen = "/BusinessProfileScreen";
   static const String businessMyListingsScreen = "/BusinessMyListingsScreen";
@@ -211,17 +220,16 @@ class AppRoutes {
   static const String businessCreateClubScreen = "/BusinessCreateClubScreen";
   static const String businessEditClubScreen = "/BusinessEditClubScreen";
   static const String businessAnalyticsScreen = "/BusinessAnalyticsScreen";
-  static const String businessAccountSettingsScreen = "/BusinessAccountSettingsScreen";
+  static const String businessAccountSettingsScreen =
+      "/BusinessAccountSettingsScreen";
   static const String businessSelectPlanScreen = "/BusinessSelectPlanScreen";
-  static const String businessPromotionHubScreen = "/BusinessPromotionHubScreen";
-  static const String businessCreatePromotionScreen = "/BusinessCreatePromotionScreen";
+  static const String businessPromotionHubScreen =
+      "/BusinessPromotionHubScreen";
+  static const String businessCreatePromotionScreen =
+      "/BusinessCreatePromotionScreen";
 
-
-
-
-
-
-
+  static const String reelsScreen = "/ReelsScreen";
+  static const String createReelScreen = "/CreateReelScreen";
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -234,7 +242,7 @@ class AppRoutes {
     GetPage(name: setupProfileScreen1, page: () => const SetupProfileScreen1()),
     GetPage(name: setupProfileScreen2, page: () => const SetupProfileScreen2()),
     GetPage(name: setupProfileScreen3, page: () => const SetupProfileScreen3()),
-     GetPage(name: setupProfileScreen4, page: () => const SetupProfileScreen4()),
+    GetPage(name: setupProfileScreen4, page: () => const SetupProfileScreen4()),
     GetPage(name: choosePlanScreen, page: () => const ChoosePlanScreen()),
     GetPage(name: loginScreen, page: () => LoginScreen()),
     GetPage(name: signupScreen, page: () => SignupScreen()),
@@ -245,11 +253,15 @@ class AppRoutes {
     GetPage(name: userHomeScreen, page: () => UserHomeScreen()),
     GetPage(name: notificationScreen, page: () => const NotificationScreen()),
     GetPage(name: messageScreen, page: () => const MessageScreen()),
-    GetPage(name: inboxScreen, page: () => InboxScreen(
-      userName: Get.arguments?["userName"] ?? "Driver",
-      avatarUrl: Get.arguments?["avatarUrl"] ?? "https://picsum.photos/100/100",
-      isOnline: Get.arguments?["isOnline"] ?? false,
-    )),
+    GetPage(
+      name: inboxScreen,
+      page: () => InboxScreen(
+        userName: Get.arguments?["userName"] ?? "Driver",
+        avatarUrl:
+            Get.arguments?["avatarUrl"] ?? "https://picsum.photos/100/100",
+        isOnline: Get.arguments?["isOnline"] ?? false,
+      ),
+    ),
     GetPage(name: supportMemberScreen, page: () => const SupportMemberScreen()),
     GetPage(name: eventDetailScreen, page: () => const EventDetailScreen()),
     GetPage(name: accessGrantedScreen, page: () => const AccessGrantedScreen()),
@@ -259,81 +271,226 @@ class AppRoutes {
     GetPage(name: addSpotScreen, page: () => const AddSpotScreen()),
     GetPage(name: addVideoScreen, page: () => const AddVideoScreen()),
     GetPage(name: trackHubScreen, page: () => const TrackHubScreen()),
-    GetPage(name: prepareSessionScreen, page: () => const PrepareSessionScreen()),
+    GetPage(
+      name: prepareSessionScreen,
+      page: () => const PrepareSessionScreen(),
+    ),
     GetPage(name: liveSessionScreen, page: () => const LiveSessionScreen()),
     GetPage(name: driveSummaryScreen, page: () => const DriveSummaryScreen()),
     GetPage(name: findTrackScreen, page: () => const FindTrackScreen()),
     GetPage(name: groupDrivesScreen, page: () => const GroupDrivesScreen()),
-    GetPage(name: tripConfiguratorScreen, page: () => const TripConfiguratorScreen()),
+    GetPage(
+      name: tripConfiguratorScreen,
+      page: () => const TripConfiguratorScreen(),
+    ),
     GetPage(name: tripLobbyScreen, page: () => const TripLobbyScreen()),
     GetPage(name: activeDriveScreen, page: () => const ActiveDriveScreen()),
     GetPage(name: endExpeditionScreen, page: () => const EndExpeditionScreen()),
-    GetPage(name: shareExpeditionScreen, page: () => const ShareExpeditionScreen()),
+    GetPage(
+      name: shareExpeditionScreen,
+      page: () => const ShareExpeditionScreen(),
+    ),
     GetPage(name: clubDetailsScreen, page: () => const ClubDetailsScreen()),
     GetPage(name: createPostScreen, page: () => CreatePostScreen()),
     GetPage(name: clubPostScreen, page: () => const ClubPostScreen()),
-    GetPage(name: marketplaceFeedScreen, page: () => const MarketplaceListingFeedScreen()),
+    GetPage(
+      name: marketplaceFeedScreen,
+      page: () => const MarketplaceListingFeedScreen(),
+    ),
     GetPage(name: itemDetailScreen, page: () => const ItemDetailScreen()),
-    GetPage(name: selectCategoryScreen, page: () => const SelectCategoryScreen()),
-    GetPage(name: createVehicleListingScreen, page: () => const CreateVehicleListingScreen()),
-    GetPage(name: createMotorcycleListingScreen, page: () => const CreateMotorcycleListingScreen()),
+    GetPage(
+      name: selectCategoryScreen,
+      page: () => const SelectCategoryScreen(),
+    ),
+    GetPage(
+      name: createVehicleListingScreen,
+      page: () => const CreateVehicleListingScreen(),
+    ),
+    GetPage(
+      name: createMotorcycleListingScreen,
+      page: () => const CreateMotorcycleListingScreen(),
+    ),
     GetPage(name: profileScreen, page: () => const ProfileScreen()),
     GetPage(name: walletScreen, page: () => const WalletScreen()),
     GetPage(name: buyCoinsScreen, page: () => const BuyCoinsScreen()),
-    GetPage(name: rechargeSelectionScreen, page: () => const RechargeSelectionScreen()),
-    GetPage(name: transactionReportScreen, page: () => const TransactionReportScreen()),
+    GetPage(
+      name: rechargeSelectionScreen,
+      page: () => const RechargeSelectionScreen(),
+    ),
+    GetPage(
+      name: transactionReportScreen,
+      page: () => const TransactionReportScreen(),
+    ),
     GetPage(name: supportSentScreen, page: () => const SupportSentScreen()),
-    GetPage(name: transactionHistoryScreen, page: () => const TransactionHistoryScreen()),
-    GetPage(name: transactionVerificationScreen, page: () => const TransactionVerificationScreen()),
-    GetPage(name: supportSuccessScreen, page: () => const SupportSuccessScreen()),
+    GetPage(
+      name: transactionHistoryScreen,
+      page: () => const TransactionHistoryScreen(),
+    ),
+    GetPage(
+      name: transactionVerificationScreen,
+      page: () => const TransactionVerificationScreen(),
+    ),
+    GetPage(
+      name: supportSuccessScreen,
+      page: () => const SupportSuccessScreen(),
+    ),
     GetPage(name: addVehicleScreen, page: () => const AddVehicleScreen()),
     GetPage(name: editProfileScreen, page: () => const EditProfileScreen()),
-    GetPage(name: userParametersScreen, page: () => const UserParametersScreen()),
+    GetPage(
+      name: userParametersScreen,
+      page: () => const UserParametersScreen(),
+    ),
     GetPage(name: myListingsScreen, page: () => const MyListingsScreen()),
     GetPage(name: editVehicleScreen, page: () => const EditVehicleScreen()),
-    GetPage(name: changePasswordScreen, page: () => const ChangePasswordScreen()),
+    GetPage(
+      name: changePasswordScreen,
+      page: () => const ChangePasswordScreen(),
+    ),
     GetPage(name: termsScreen, page: () => const TermsScreen()),
     GetPage(name: privacyScreen, page: () => const PrivacyScreen()),
     GetPage(name: helpSupportScreen, page: () => const HelpSupportScreen()),
     GetPage(name: aboutScreen, page: () => const AboutScreen()),
-    GetPage(name: personalizeInterestScreen, page: () => const PersonalizeInterestScreen()),
-    GetPage(name: businessRegistrationStep1, page: () => const BusinessRegistrationStep1()),
-    GetPage(name: businessRegistrationStep2, page: () => const BusinessRegistrationStep2()),
-    GetPage(name: businessRegistrationStep3, page: () => const BusinessRegistrationStep3()),
-    GetPage(name: businessRegistrationStep4, page: () => const BusinessRegistrationStep4()),
+    GetPage(
+      name: personalizeInterestScreen,
+      page: () => const PersonalizeInterestScreen(),
+    ),
+    GetPage(
+      name: businessRegistrationStep1,
+      page: () => const BusinessRegistrationStep1(),
+    ),
+    GetPage(
+      name: businessRegistrationStep2,
+      page: () => const BusinessRegistrationStep2(),
+    ),
+    GetPage(
+      name: businessRegistrationStep3,
+      page: () => const BusinessRegistrationStep3(),
+    ),
+    GetPage(
+      name: businessRegistrationStep4,
+      page: () => const BusinessRegistrationStep4(),
+    ),
     GetPage(name: businessHomeScreen, page: () => const BusinessHomeScreen()),
-    GetPage(name: assetInventoryScreen, page: () => const AssetInventoryScreen()),
+    GetPage(
+      name: assetInventoryScreen,
+      page: () => const AssetInventoryScreen(),
+    ),
     GetPage(name: manageAssetScreen, page: () => const ManageAssetScreen()),
     GetPage(name: editListingScreen, page: () => const EditListingScreen()),
-    GetPage(name: addAssetCategoryScreen, page: () => const BusinessSelectCategoryScreen()),
-    GetPage(name: configureAssetScreen, page: () => const ConfigureAssetScreen()),
-    GetPage(name: createPartsListingScreen, page: () => const CreatePartsListingScreen()),
-    GetPage(name: createServicesListingScreen, page: () => const CreateServicesListingScreen()),
-    GetPage(name: businessSocialHubScreen, page: () => const BusinessSocialHubScreen()),
-    GetPage(name: businessCreatePostScreen, page: () => const BusinessCreatePostScreen()),
-    GetPage(name: businessCreateSessionPostScreen, page: () => const BusinessCreateSessionPostScreen()),
-    GetPage(name: businessCreateSpotPostScreen, page: () => const BusinessCreateSpotPostScreen()),
-    GetPage(name: businessCreateTrackUpdateScreen, page: () => const BusinessCreateTrackUpdateScreen()),
-    GetPage(name: businessCreateClubPostScreen, page: () => const BusinessCreateClubPostScreen()),
-    GetPage(name: businessMarketplaceScreen, page: () => const BusinessMarketplaceScreen()),
-    GetPage(name: businessCreateVehicleListingScreen, page: () => const BusinessCreateVehicleListingScreen()),
-    GetPage(name: businessCreateMotorcycleListingScreen, page: () => const BusinessCreateMotorcycleListingScreen()),
-    GetPage(name: businessCreatePartsListingScreen, page: () => const BusinessCreatePartsListingScreen()),
-    GetPage(name: businessCreateServicesListingScreen, page: () => const BusinessCreateServicesListingScreen()),
-    GetPage(name: businessCreateEventScreen, page: () => const BusinessCreateEventScreen()),
-    GetPage(name: businessEventsListScreen, page: () => const BusinessEventsListScreen()),
-    GetPage(name: businessEventDetailsScreen, page: () => const BusinessEventDetailsScreen()),
+    GetPage(
+      name: addAssetCategoryScreen,
+      page: () => const BusinessSelectCategoryScreen(),
+    ),
+    GetPage(
+      name: configureAssetScreen,
+      page: () => const ConfigureAssetScreen(),
+    ),
+    GetPage(
+      name: createPartsListingScreen,
+      page: () => const CreatePartsListingScreen(),
+    ),
+    GetPage(
+      name: createServicesListingScreen,
+      page: () => const CreateServicesListingScreen(),
+    ),
+    GetPage(
+      name: businessSocialHubScreen,
+      page: () => const BusinessSocialHubScreen(),
+    ),
+    GetPage(
+      name: businessCreatePostScreen,
+      page: () => const BusinessCreatePostScreen(),
+    ),
+    GetPage(
+      name: businessCreateSessionPostScreen,
+      page: () => const BusinessCreateSessionPostScreen(),
+    ),
+    GetPage(
+      name: businessCreateSpotPostScreen,
+      page: () => const BusinessCreateSpotPostScreen(),
+    ),
+    GetPage(
+      name: businessCreateTrackUpdateScreen,
+      page: () => const BusinessCreateTrackUpdateScreen(),
+    ),
+    GetPage(
+      name: businessCreateClubPostScreen,
+      page: () => const BusinessCreateClubPostScreen(),
+    ),
+    GetPage(
+      name: businessMarketplaceScreen,
+      page: () => const BusinessMarketplaceScreen(),
+    ),
+    GetPage(
+      name: businessCreateVehicleListingScreen,
+      page: () => const BusinessCreateVehicleListingScreen(),
+    ),
+    GetPage(
+      name: businessCreateMotorcycleListingScreen,
+      page: () => const BusinessCreateMotorcycleListingScreen(),
+    ),
+    GetPage(
+      name: businessCreatePartsListingScreen,
+      page: () => const BusinessCreatePartsListingScreen(),
+    ),
+    GetPage(
+      name: businessCreateServicesListingScreen,
+      page: () => const BusinessCreateServicesListingScreen(),
+    ),
+    GetPage(
+      name: businessCreateEventScreen,
+      page: () => const BusinessCreateEventScreen(),
+    ),
+    GetPage(
+      name: businessEventsListScreen,
+      page: () => const BusinessEventsListScreen(),
+    ),
+    GetPage(
+      name: businessEventDetailsScreen,
+      page: () => const BusinessEventDetailsScreen(),
+    ),
     GetPage(name: businessClubsScreen, page: () => const BusinessClubsScreen()),
-    GetPage(name: businessProfileScreen, page: () => const BusinessProfileScreen()),
-    GetPage(name: businessMyListingsScreen, page: () => const BusinessMyListingsScreen()),
-    GetPage(name: businessClubDetailsScreen, page: () => const BusinessClubDetailsScreen()),
-    GetPage(name: businessCreateClubScreen, page: () => const BusinessCreateClubScreen()),
-    GetPage(name: businessEditClubScreen, page: () => const BusinessEditClubScreen()),
-    GetPage(name: businessAnalyticsScreen, page: () => const BusinessAnalyticsScreen()),
-    GetPage(name: businessAccountSettingsScreen, page: () => const BusinessAccountSettingsScreen()),
-    GetPage(name: businessSelectPlanScreen, page: () => const BusinessSelectPlanScreen()),
-    GetPage(name: businessPromotionHubScreen, page: () => const BusinessPromotionHubScreen()),
-    GetPage(name: businessCreatePromotionScreen, page: () => const BusinessCreatePromotionScreen()),
+    GetPage(
+      name: businessProfileScreen,
+      page: () => const BusinessProfileScreen(),
+    ),
+    GetPage(
+      name: businessMyListingsScreen,
+      page: () => const BusinessMyListingsScreen(),
+    ),
+    GetPage(
+      name: businessClubDetailsScreen,
+      page: () => const BusinessClubDetailsScreen(),
+    ),
+    GetPage(
+      name: businessCreateClubScreen,
+      page: () => const BusinessCreateClubScreen(),
+    ),
+    GetPage(
+      name: businessEditClubScreen,
+      page: () => const BusinessEditClubScreen(),
+    ),
+    GetPage(
+      name: businessAnalyticsScreen,
+      page: () => const BusinessAnalyticsScreen(),
+    ),
+    GetPage(
+      name: businessAccountSettingsScreen,
+      page: () => const BusinessAccountSettingsScreen(),
+    ),
+    GetPage(
+      name: businessSelectPlanScreen,
+      page: () => const BusinessSelectPlanScreen(),
+    ),
+    GetPage(
+      name: businessPromotionHubScreen,
+      page: () => const BusinessPromotionHubScreen(),
+    ),
+    GetPage(
+      name: businessCreatePromotionScreen,
+      page: () => const BusinessCreatePromotionScreen(),
+    ),
+    GetPage(name: reelsScreen, page: () => const ReelsScreen()),
+    GetPage(name: createReelScreen, page: () => const CreateReelScreen()),
   ];
-
 }

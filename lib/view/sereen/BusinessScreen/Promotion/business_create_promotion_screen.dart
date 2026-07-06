@@ -12,15 +12,18 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Local reactive states
     final RxString selectedGoal = "Views".obs; // Views, Interactions, Leads
-    final RxString selectedAudience = "Racing Fans".obs; // Racing Fans, Drivers Near Me, Everyone
+    final RxString selectedAudience =
+        "Racing Fans".obs; // Racing Fans, Drivers Near Me, Everyone
     final RxInt selectedBudget = 25.obs; // 10, 25, 50, 0 (0 means Custom)
     final RxInt customBudget = 15.obs;
     final RxInt durationDays = 7.obs;
 
     // Helper calculations
-    int getDailyBudget() => selectedBudget.value == 0 ? customBudget.value : selectedBudget.value;
+    int getDailyBudget() =>
+        selectedBudget.value == 0 ? customBudget.value : selectedBudget.value;
     int getTotalSpend() => getDailyBudget() * durationDays.value;
-    int getEstimatedReach() => getDailyBudget() * 116.8.toInt() * durationDays.value;
+    int getEstimatedReach() =>
+        getDailyBudget() * 116.8.toInt() * durationDays.value;
 
     return CustomGradient(
       child: Scaffold(
@@ -53,7 +56,9 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.yellow, width: 1),
                   image: const DecorationImage(
-                    image: NetworkImage("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop"),
+                    image: NetworkImage(
+                      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -97,7 +102,10 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                           width: 60.r,
                           height: 60.r,
                           color: Colors.white10,
-                          child: const Icon(Icons.broken_image, color: Colors.white24),
+                          child: const Icon(
+                            Icons.broken_image,
+                            color: Colors.white24,
+                          ),
                         ),
                       ),
                     ),
@@ -114,7 +122,8 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 4.h),
                           CustomText(
-                            text: "Completed the track telemetry calibration on our primary 911 GT3 RS. Aerodynamic efficiency was measured...",
+                            text:
+                                "Completed the track telemetry calibration on our primary 911 GT3 RS. Aerodynamic efficiency was measured...",
                             color: Colors.white54,
                             fontSize: 8.5.sp,
                             textAlign: TextAlign.start,
@@ -123,7 +132,11 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                           SizedBox(height: 6.h),
                           Row(
                             children: [
-                              Icon(Icons.favorite_border, color: AppColors.yellow, size: 12.sp),
+                              Icon(
+                                Icons.favorite_border,
+                                color: AppColors.yellow,
+                                size: 12.sp,
+                              ),
                               SizedBox(width: 4.w),
                               CustomText(
                                 text: "1.8K Likes",
@@ -132,7 +145,11 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                               SizedBox(width: 12.w),
-                              Icon(Icons.chat_bubble_outline, color: Colors.white38, size: 11.sp),
+                              Icon(
+                                Icons.chat_bubble_outline,
+                                color: Colors.white38,
+                                size: 11.sp,
+                              ),
                               SizedBox(width: 4.w),
                               CustomText(
                                 text: "242 Comments",
@@ -159,36 +176,41 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                 letterSpacing: 0.8,
               ),
               SizedBox(height: 10.h),
-              Obx(() => Column(
-                children: [
-                  _buildGoalCard(
-                    goalId: "Views",
-                    title: "MORE VIEWS",
-                    description: "Increase video and post reach to build brand authority.",
-                    icon: Icons.play_circle_outline,
-                    isSelected: selectedGoal.value == "Views",
-                    onTap: () => selectedGoal.value = "Views",
-                  ),
-                  SizedBox(height: 10.h),
-                  _buildGoalCard(
-                    goalId: "Interactions",
-                    title: "MORE INTERACTIONS",
-                    description: "Get more messages, post likes, shares, or club joins.",
-                    icon: Icons.chat_bubble_outline,
-                    isSelected: selectedGoal.value == "Interactions",
-                    onTap: () => selectedGoal.value = "Interactions",
-                  ),
-                  SizedBox(height: 10.h),
-                  _buildGoalCard(
-                    goalId: "Leads",
-                    title: "MORE LEADS",
-                    description: "Gather customer contact info and direct sales inquiries.",
-                    icon: Icons.contact_mail_outlined,
-                    isSelected: selectedGoal.value == "Leads",
-                    onTap: () => selectedGoal.value = "Leads",
-                  ),
-                ],
-              )),
+              Obx(
+                () => Column(
+                  children: [
+                    _buildGoalCard(
+                      goalId: "Views",
+                      title: "MORE VIEWS",
+                      description:
+                          "Increase video and post reach to build brand authority.",
+                      icon: Icons.play_circle_outline,
+                      isSelected: selectedGoal.value == "Views",
+                      onTap: () => selectedGoal.value = "Views",
+                    ),
+                    SizedBox(height: 10.h),
+                    _buildGoalCard(
+                      goalId: "Interactions",
+                      title: "MORE INTERACTIONS",
+                      description:
+                          "Get more messages, post likes, shares, or club joins.",
+                      icon: Icons.chat_bubble_outline,
+                      isSelected: selectedGoal.value == "Interactions",
+                      onTap: () => selectedGoal.value = "Interactions",
+                    ),
+                    SizedBox(height: 10.h),
+                    _buildGoalCard(
+                      goalId: "Leads",
+                      title: "MORE LEADS",
+                      description:
+                          "Gather customer contact info and direct sales inquiries.",
+                      icon: Icons.contact_mail_outlined,
+                      isSelected: selectedGoal.value == "Leads",
+                      onTap: () => selectedGoal.value = "Leads",
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 24.h),
 
               // SECTION 2: AUDIENCE
@@ -200,15 +222,29 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                 letterSpacing: 0.8,
               ),
               SizedBox(height: 10.h),
-              Obx(() => Row(
-                children: [
-                  _buildAudienceChip("Racing Fans", selectedAudience.value == "Racing Fans", () => selectedAudience.value = "Racing Fans"),
-                  SizedBox(width: 10.w),
-                  _buildAudienceChip("Drivers Near Me", selectedAudience.value == "Drivers Near Me", () => selectedAudience.value = "Drivers Near Me"),
-                  SizedBox(width: 10.w),
-                  _buildAudienceChip("Everyone", selectedAudience.value == "Everyone", () => selectedAudience.value = "Everyone"),
-                ],
-              )),
+              Obx(
+                () => Row(
+                  children: [
+                    _buildAudienceChip(
+                      "Racing Fans",
+                      selectedAudience.value == "Racing Fans",
+                      () => selectedAudience.value = "Racing Fans",
+                    ),
+                    SizedBox(width: 10.w),
+                    _buildAudienceChip(
+                      "Drivers Near Me",
+                      selectedAudience.value == "Drivers Near Me",
+                      () => selectedAudience.value = "Drivers Near Me",
+                    ),
+                    SizedBox(width: 10.w),
+                    _buildAudienceChip(
+                      "Everyone",
+                      selectedAudience.value == "Everyone",
+                      () => selectedAudience.value = "Everyone",
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 24.h),
 
               // SECTION 3: DAILY BUDGET
@@ -220,59 +256,83 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                 letterSpacing: 0.8,
               ),
               SizedBox(height: 10.h),
-              Obx(() => Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildBudgetButton(10, selectedBudget.value == 10, () => selectedBudget.value = 10),
-                      _buildBudgetButton(25, selectedBudget.value == 25, () => selectedBudget.value = 25),
-                      _buildBudgetButton(50, selectedBudget.value == 50, () => selectedBudget.value = 50),
-                      _buildBudgetButton(0, selectedBudget.value == 0, () => selectedBudget.value = 0), // Custom
-                    ],
-                  ),
-                  if (selectedBudget.value == 0) ...[
-                    SizedBox(height: 14.h),
+              Obx(
+                () => Column(
+                  children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomText(
-                          text: "CUSTOM BUDGET (\$/DAY):",
-                          color: Colors.white70,
-                          fontSize: 9.sp,
-                          fontWeight: FontWeight.bold,
+                        _buildBudgetButton(
+                          10,
+                          selectedBudget.value == 10,
+                          () => selectedBudget.value = 10,
                         ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: SliderTheme(
-                            data: SliderTheme.of(context).copyWith(
-                              activeTrackColor: AppColors.yellow,
-                              inactiveTrackColor: Colors.white12,
-                              thumbColor: AppColors.yellow,
-                              overlayColor: AppColors.yellow.withValues(alpha: 0.2),
-                              valueIndicatorColor: AppColors.yellow,
-                              valueIndicatorTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                            ),
-                            child: Slider(
-                              value: customBudget.value.toDouble(),
-                              min: 5,
-                              max: 200,
-                              divisions: 39,
-                              label: "\$${customBudget.value}",
-                              onChanged: (val) => customBudget.value = val.round(),
-                            ),
-                          ),
+                        _buildBudgetButton(
+                          25,
+                          selectedBudget.value == 25,
+                          () => selectedBudget.value = 25,
                         ),
-                        CustomText(
-                          text: "\$${customBudget.value}",
-                          color: AppColors.yellow,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w900,
+                        _buildBudgetButton(
+                          50,
+                          selectedBudget.value == 50,
+                          () => selectedBudget.value = 50,
                         ),
+                        _buildBudgetButton(
+                          0,
+                          selectedBudget.value == 0,
+                          () => selectedBudget.value = 0,
+                        ), // Custom
                       ],
                     ),
+                    if (selectedBudget.value == 0) ...[
+                      SizedBox(height: 14.h),
+                      Row(
+                        children: [
+                          CustomText(
+                            text: "CUSTOM BUDGET (\$/DAY):",
+                            color: Colors.white70,
+                            fontSize: 9.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: AppColors.yellow,
+                                inactiveTrackColor: Colors.white12,
+                                thumbColor: AppColors.yellow,
+                                overlayColor: AppColors.yellow.withValues(
+                                  alpha: 0.2,
+                                ),
+                                valueIndicatorColor: AppColors.yellow,
+                                valueIndicatorTextStyle: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              child: Slider(
+                                value: customBudget.value.toDouble(),
+                                min: 5,
+                                max: 200,
+                                divisions: 39,
+                                label: "\$${customBudget.value}",
+                                onChanged: (val) =>
+                                    customBudget.value = val.round(),
+                              ),
+                            ),
+                          ),
+                          CustomText(
+                            text: "\$${customBudget.value}",
+                            color: AppColors.yellow,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
-                ],
-              )),
+                ),
+              ),
               SizedBox(height: 20.h),
 
               // DURATION SLIDER
@@ -286,30 +346,34 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                     letterSpacing: 0.8,
                   ),
-                  Obx(() => CustomText(
-                    text: "${durationDays.value} DAYS",
-                    color: AppColors.yellow,
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w900,
-                  )),
+                  Obx(
+                    () => CustomText(
+                      text: "${durationDays.value} DAYS",
+                      color: AppColors.yellow,
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 6.h),
-              Obx(() => SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                  activeTrackColor: AppColors.yellow,
-                  inactiveTrackColor: Colors.white12,
-                  thumbColor: AppColors.yellow,
-                  overlayColor: AppColors.yellow.withValues(alpha: 0.2),
+              Obx(
+                () => SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    activeTrackColor: AppColors.yellow,
+                    inactiveTrackColor: Colors.white12,
+                    thumbColor: AppColors.yellow,
+                    overlayColor: AppColors.yellow.withValues(alpha: 0.2),
+                  ),
+                  child: Slider(
+                    value: durationDays.value.toDouble(),
+                    min: 1,
+                    max: 30,
+                    divisions: 29,
+                    onChanged: (val) => durationDays.value = val.round(),
+                  ),
                 ),
-                child: Slider(
-                  value: durationDays.value.toDouble(),
-                  min: 1,
-                  max: 30,
-                  divisions: 29,
-                  onChanged: (val) => durationDays.value = val.round(),
-                ),
-              )),
+              ),
               SizedBox(height: 24.h),
 
               // SECTION 4: Reach Estimation Box
@@ -329,12 +393,15 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Obx(() => CustomText(
-                              text: "${getEstimatedReach().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} Fans",
-                              color: Colors.white,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w900,
-                            )),
+                            Obx(
+                              () => CustomText(
+                                text:
+                                    "${getEstimatedReach().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} Fans",
+                                color: Colors.white,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
                             SizedBox(height: 4.h),
                             CustomText(
                               text: "ESTIMATED CAMPAIGN REACH",
@@ -348,12 +415,14 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Obx(() => CustomText(
-                              text: "${durationDays.value} Days",
-                              color: AppColors.yellow,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w900,
-                            )),
+                            Obx(
+                              () => CustomText(
+                                text: "${durationDays.value} Days",
+                                color: AppColors.yellow,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
                             SizedBox(height: 4.h),
                             CustomText(
                               text: "CAMPAIGN DURATION",
@@ -367,12 +436,15 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
                       ],
                     ),
                     const Divider(color: Colors.white10, height: 24),
-                    Obx(() => CustomText(
-                      text: "Total marketing investment for this campaign: \$${getTotalSpend()}.00 USD.",
-                      color: Colors.white54,
-                      fontSize: 9.sp,
-                      fontWeight: FontWeight.bold,
-                    )),
+                    Obx(
+                      () => CustomText(
+                        text:
+                            "Total marketing investment for this campaign: \$${getTotalSpend()}.00 USD.",
+                        color: Colors.white54,
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -467,7 +539,11 @@ class BusinessCreatePromotionScreen extends StatelessWidget {
               ),
             ),
             if (isSelected)
-              Icon(Icons.radio_button_checked, color: AppColors.yellow, size: 18.sp)
+              Icon(
+                Icons.radio_button_checked,
+                color: AppColors.yellow,
+                size: 18.sp,
+              )
             else
               Icon(Icons.radio_button_off, color: Colors.white24, size: 18.sp),
           ],

@@ -5,12 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharePrefsHelper {
   //===========================Get Data From Shared Preference===================
 
-  static Future<String> getString(String key,{String defaultValue = ''}) async {
+  static Future<String> getString(
+    String key, {
+    String defaultValue = '',
+  }) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString(key) ?? defaultValue;
   }
-
-
 
   static Future<List<String>> getLisOfString(String key) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -31,7 +32,7 @@ class SharePrefsHelper {
     return preferences.getInt(key) ?? (-1);
   }
 
-///===========================Save Data To Shared Preference===================
+  ///===========================Save Data To Shared Preference===================
 
   static Future<void> setString(String key, String? value) async {
     // SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -43,12 +44,12 @@ class SharePrefsHelper {
       debugPrint("Warning: Trying to set a null value for key: $key");
     }
   }
-/*  static Future setString(String key, value) async {
+  /*  static Future setString(String key, value) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.setString(key, value);
   }*/
 
-/*  static Future<void> setString(String key, String? value) async {
+  /*  static Future<void> setString(String key, String? value) async {
    // SharedPreferences preferences = await SharedPreferences.getInstance();
    // await preferences.setString(key, value!);
     if (value != null) {
@@ -77,13 +78,12 @@ class SharePrefsHelper {
     await preferences.setInt(key, value);
   }
 
-//===========================Remove Value===================
+  //===========================Remove Value===================
 
   static Future remove(String key) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.remove(key);
   }
-
 
   ///========Save String Value =======
   // Save a string value
@@ -97,7 +97,7 @@ class SharePrefsHelper {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.setString(key, value);
   }
-/*  // Get a string value
+  /*  // Get a string value
   static Future<String?> getString(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(key);
@@ -107,7 +107,4 @@ class SharePrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
-
 }
-
-

@@ -41,7 +41,7 @@ class _PrepareSessionScreenState extends State<PrepareSessionScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-      
+
               /// Title Header: PREPARE
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,15 +56,11 @@ class _PrepareSessionScreenState extends State<PrepareSessionScreen> {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Container(
-                    width: 60,
-                    height: 3,
-                    color: AppColors.yellow,
-                  ),
+                  Container(width: 60, height: 3, color: AppColors.yellow),
                 ],
               ),
               const SizedBox(height: 24),
-      
+
               /// 1. YOUR CAR Card
               Container(
                 width: double.infinity,
@@ -90,11 +86,16 @@ class _PrepareSessionScreenState extends State<PrepareSessionScreen> {
                           top: 12,
                           left: 12,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: AppColors.yellow.withValues(alpha:0.3)),
+                              border: Border.all(
+                                color: AppColors.yellow.withValues(alpha: 0.3),
+                              ),
                             ),
                             child: const Text(
                               "YOUR CAR",
@@ -109,7 +110,7 @@ class _PrepareSessionScreenState extends State<PrepareSessionScreen> {
                         ),
                       ],
                     ),
-      
+
                     /// Car Description
                     Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -159,7 +160,7 @@ class _PrepareSessionScreenState extends State<PrepareSessionScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-      
+
               /// 2. THE TRACK Selector Card
               Container(
                 padding: const EdgeInsets.all(16),
@@ -194,14 +195,22 @@ class _PrepareSessionScreenState extends State<PrepareSessionScreen> {
                         ],
                       ),
                     ),
-                    const Icon(Icons.map_outlined, color: AppColors.yellow, size: 20),
+                    const Icon(
+                      Icons.map_outlined,
+                      color: AppColors.yellow,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
-                    const Icon(Icons.chevron_right, color: Colors.white38, size: 20),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: Colors.white38,
+                      size: 20,
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
-      
+
               /// 3. Telemetry card
               Container(
                 padding: const EdgeInsets.all(16),
@@ -243,7 +252,7 @@ class _PrepareSessionScreenState extends State<PrepareSessionScreen> {
                         });
                       },
                       activeThumbColor: AppColors.yellow,
-                      activeTrackColor: AppColors.yellow.withValues(alpha:0.3),
+                      activeTrackColor: AppColors.yellow.withValues(alpha: 0.3),
                       inactiveThumbColor: Colors.white38,
                       inactiveTrackColor: Colors.white10,
                     ),
@@ -251,7 +260,7 @@ class _PrepareSessionScreenState extends State<PrepareSessionScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-      
+
               /// 4. START SESSION button
               SizedBox(
                 width: double.infinity,
@@ -284,7 +293,7 @@ class _PrepareSessionScreenState extends State<PrepareSessionScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-      
+
               /// System Signal acquired text
               const Center(
                 child: Text(

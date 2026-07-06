@@ -77,7 +77,11 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
                 _buildWhiteTextField(modelController, "E.G. 911 GT3 RS"),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("PRODUCTION YEAR"),
-                _buildWhiteTextField(productionYearController, "2024", keyboardType: TextInputType.number),
+                _buildWhiteTextField(
+                  productionYearController,
+                  "2024",
+                  keyboardType: TextInputType.number,
+                ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("ASKING PRICE [USD]"),
                 _buildWhitePriceField(priceController, "0.00"),
@@ -92,15 +96,21 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
               _buildCardContainer([
                 Row(
                   children: [
-                    Expanded(child: _buildMetricTile("POWER OUTPUT", "525", "HP")),
+                    Expanded(
+                      child: _buildMetricTile("POWER OUTPUT", "525", "HP"),
+                    ),
                     SizedBox(width: 12.w),
-                    Expanded(child: _buildMetricTile("PEAK TORQUE", "465", "NM")),
+                    Expanded(
+                      child: _buildMetricTile("PEAK TORQUE", "465", "NM"),
+                    ),
                   ],
                 ),
                 SizedBox(height: 12.h),
                 Row(
                   children: [
-                    Expanded(child: _buildMetricTile("CURB WEIGHT", "1450", "KG")),
+                    Expanded(
+                      child: _buildMetricTile("CURB WEIGHT", "1450", "KG"),
+                    ),
                     SizedBox(width: 12.w),
                     Expanded(child: _buildMetricTile("0-100 KM/H", "3.2", "S")),
                   ],
@@ -116,7 +126,12 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
                 _buildFieldLabel("ENGINE CONFIGURATION"),
                 _buildDropdownDirect(
                   selectedValue: selectedEngine,
-                  items: ["NATURALLY ASPIRATED FLAT-6", "TWIN-TURBO FLAT-6", "998CC V4", "N/A"],
+                  items: [
+                    "NATURALLY ASPIRATED FLAT-6",
+                    "TWIN-TURBO FLAT-6",
+                    "998CC V4",
+                    "N/A",
+                  ],
                   onChanged: (val) {
                     if (val != null) {
                       setState(() {
@@ -142,14 +157,18 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
                           child: Container(
                             height: 36.h,
                             decoration: BoxDecoration(
-                              color: isPdkSelected ? AppColors.yellow : Colors.transparent,
+                              color: isPdkSelected
+                                  ? AppColors.yellow
+                                  : Colors.transparent,
                               borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: Center(
                               child: Text(
                                 "PDK / DUAL-CLUTCH",
                                 style: TextStyle(
-                                  color: isPdkSelected ? Colors.black : Colors.white60,
+                                  color: isPdkSelected
+                                      ? Colors.black
+                                      : Colors.white60,
                                   fontSize: 8.5.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -164,14 +183,18 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
                           child: Container(
                             height: 36.h,
                             decoration: BoxDecoration(
-                              color: !isPdkSelected ? AppColors.yellow : Colors.transparent,
+                              color: !isPdkSelected
+                                  ? AppColors.yellow
+                                  : Colors.transparent,
                               borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: Center(
                               child: Text(
                                 "MANUAL / SEQUENTIAL",
                                 style: TextStyle(
-                                  color: !isPdkSelected ? Colors.black : Colors.white60,
+                                  color: !isPdkSelected
+                                      ? Colors.black
+                                      : Colors.white60,
                                   fontSize: 8.5.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -210,7 +233,11 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.cancel_outlined, color: Colors.white60, size: 16),
+                          const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.white60,
+                            size: 16,
+                          ),
                           SizedBox(width: 6.w),
                           CustomText(
                             text: "CANCEL",
@@ -234,37 +261,51 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
                       textColor: Colors.black,
                       borderRadius: 8.r,
                       isImageRight: true,
-                      icon: const Icon(Icons.cloud_upload_outlined, color: Colors.black, size: 16),
+                      icon: const Icon(
+                        Icons.cloud_upload_outlined,
+                        color: Colors.black,
+                        size: 16,
+                      ),
                       onTap: () {
                         // Gather values and add to active inventory controller
-                        String newTitle = "${productionYearController.text} ${manufacturerController.text} ${modelController.text}".trim();
-                        if (newTitle.trim().isEmpty) newTitle = "2024 PORSCHE 911 GT3 RS";
+                        String newTitle =
+                            "${productionYearController.text} ${manufacturerController.text} ${modelController.text}"
+                                .trim();
+                        if (newTitle.trim().isEmpty)
+                          newTitle = "2024 PORSCHE 911 GT3 RS";
                         String newPrice = priceController.text.trim();
                         if (newPrice.isEmpty) newPrice = "284,500";
-                        if (!newPrice.startsWith(r"$")) newPrice = r"$" + newPrice;
+                        if (!newPrice.startsWith(r"$"))
+                          newPrice = r"$" + newPrice;
 
                         // Mock addition
-                        controller.rxAssets.insert(0, AssetModel(
-                          id: (controller.rxAssets.length + 1).toString(),
-                          title: newTitle.toUpperCase(),
-                          status: "LIVE",
-                          code: "SR-992-GT3",
-                          type: "VEHICLES",
-                          price: newPrice,
-                          views: "0",
-                          leads: "0",
-                          shipping: "YES",
-                          imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
-                          description: aeroController.text.isEmpty
-                              ? "High-performance track variant with Weissach package and carbon ceramic brakes."
-                              : aeroController.text,
-                          power: "525 HP",
-                          torque: "465 NM",
-                          zeroToSixty: "3.2 SEC",
-                          engineConfig: selectedEngine,
-                          transmission: isPdkSelected ? "7-Speed PDK" : "6-Speed Manual",
-                          drivetrain: selectedDrivetrain,
-                        ));
+                        controller.rxAssets.insert(
+                          0,
+                          AssetModel(
+                            id: (controller.rxAssets.length + 1).toString(),
+                            title: newTitle.toUpperCase(),
+                            status: "LIVE",
+                            code: "SR-992-GT3",
+                            type: "VEHICLES",
+                            price: newPrice,
+                            views: "0",
+                            leads: "0",
+                            shipping: "YES",
+                            imageUrl:
+                                "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
+                            description: aeroController.text.isEmpty
+                                ? "High-performance track variant with Weissach package and carbon ceramic brakes."
+                                : aeroController.text,
+                            power: "525 HP",
+                            torque: "465 NM",
+                            zeroToSixty: "3.2 SEC",
+                            engineConfig: selectedEngine,
+                            transmission: isPdkSelected
+                                ? "7-Speed PDK"
+                                : "6-Speed Manual",
+                            drivetrain: selectedDrivetrain,
+                          ),
+                        );
 
                         // Clear navigation stack
                         Get.back(); // Pop Configure Screen
@@ -335,7 +376,11 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
     );
   }
 
-  Widget _buildWhiteTextField(TextEditingController textController, String hint, {TextInputType? keyboardType}) {
+  Widget _buildWhiteTextField(
+    TextEditingController textController,
+    String hint, {
+    TextInputType? keyboardType,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -345,18 +390,29 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
       child: TextFormField(
         controller: textController,
         keyboardType: keyboardType,
-        style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.bold),
+          hintStyle: const TextStyle(
+            color: Colors.black38,
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
           isDense: true,
         ),
       ),
     );
   }
 
-  Widget _buildWhitePriceField(TextEditingController textController, String hint) {
+  Widget _buildWhitePriceField(
+    TextEditingController textController,
+    String hint,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -365,16 +421,31 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
       ),
       child: Row(
         children: [
-          const Text("\$ ", style: TextStyle(color: AppColors.yellow, fontSize: 13, fontWeight: FontWeight.bold)),
+          const Text(
+            "\$ ",
+            style: TextStyle(
+              color: AppColors.yellow,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Expanded(
             child: TextFormField(
               controller: textController,
               keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
-                hintStyle: const TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(
+                  color: Colors.black38,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 isDense: true,
               ),
             ),
@@ -384,7 +455,10 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
     );
   }
 
-  Widget _buildWhiteLocationField(TextEditingController textController, String hint) {
+  Widget _buildWhiteLocationField(
+    TextEditingController textController,
+    String hint,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -393,16 +467,28 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.location_on_outlined, color: Colors.black38, size: 16),
+          const Icon(
+            Icons.location_on_outlined,
+            color: Colors.black38,
+            size: 16,
+          ),
           SizedBox(width: 8.w),
           Expanded(
             child: TextFormField(
               controller: textController,
-              style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
-                hintStyle: const TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(
+                  color: Colors.black38,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 isDense: true,
               ),
             ),
@@ -473,12 +559,13 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
           value: items.contains(selectedValue) ? selectedValue : items.first,
           dropdownColor: Colors.black,
           icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-          style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
           items: items.map((val) {
-            return DropdownMenuItem<String>(
-              value: val,
-              child: Text(val),
-            );
+            return DropdownMenuItem<String>(value: val, child: Text(val));
           }).toList(),
           onChanged: onChanged,
         ),

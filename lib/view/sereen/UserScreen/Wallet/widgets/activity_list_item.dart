@@ -27,7 +27,7 @@ class ActivityListItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff111111),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
@@ -81,7 +81,9 @@ class ActivityListItem extends StatelessWidget {
               SizedBox(height: 4.h),
               CustomText(
                 text: status,
-                color: isIncoming ? AppColors.yellow.withValues(alpha:0.7) : Colors.white38,
+                color: isIncoming
+                    ? AppColors.yellow.withValues(alpha: 0.7)
+                    : Colors.white38,
                 fontSize: 7.5,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,

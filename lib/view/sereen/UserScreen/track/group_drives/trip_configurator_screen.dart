@@ -11,12 +11,19 @@ class TripConfiguratorScreen extends StatefulWidget {
 }
 
 class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
-  final TextEditingController nameController = TextEditingController(text: "Midnight Coast Run");
-  final TextEditingController objectiveController = TextEditingController(
-    text: "Describe the deployment objectives, route characteristics, and pace expectations...",
+  final TextEditingController nameController = TextEditingController(
+    text: "Midnight Coast Run",
   );
-  final TextEditingController dateController = TextEditingController(text: "10/24/2026");
-  final TextEditingController timeController = TextEditingController(text: "22:00 UTC");
+  final TextEditingController objectiveController = TextEditingController(
+    text:
+        "Describe the deployment objectives, route characteristics, and pace expectations...",
+  );
+  final TextEditingController dateController = TextEditingController(
+    text: "10/24/2026",
+  );
+  final TextEditingController timeController = TextEditingController(
+    text: "22:00 UTC",
+  );
   final TextEditingController meetingPointController = TextEditingController(
     text: "Pacific Coast Highway // Gate 4",
   );
@@ -68,7 +75,9 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.white10),
                 image: const DecorationImage(
-                  image: NetworkImage("https://picsum.photos/seed/coastalrun/600/300"),
+                  image: NetworkImage(
+                    "https://picsum.photos/seed/coastalrun/600/300",
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -86,7 +95,11 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
             _buildFieldLabel("MEETING POINT"),
             _buildTextField(
               meetingPointController,
-              prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.yellow, size: 20),
+              prefixIcon: const Icon(
+                Icons.location_on_outlined,
+                color: AppColors.yellow,
+                size: 20,
+              ),
             ),
             const SizedBox(height: 16),
             Row(
@@ -94,11 +107,19 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
               children: [
                 const Text(
                   "MAXIMUM PARTICIPANTS",
-                  style: TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   "${maxParticipants.toInt()}",
-                  style: const TextStyle(color: AppColors.yellow, fontSize: 14, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: AppColors.yellow,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -146,7 +167,11 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
                 },
                 title: const Text(
                   "PUBLIC DEPLOYMENT",
-                  style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 activeThumbColor: Colors.black,
                 activeTrackColor: AppColors.yellow,
@@ -169,12 +194,22 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
               ),
               child: ListTile(
                 onTap: () {},
-                leading: const Icon(Icons.map_outlined, color: AppColors.yellow),
+                leading: const Icon(
+                  Icons.map_outlined,
+                  color: AppColors.yellow,
+                ),
                 title: const Text(
                   "Select from Saved Telemetry Routes",
-                  style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                trailing: const Icon(Icons.chevron_right, color: Colors.white38),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: Colors.white38,
+                ),
               ),
             ),
             const SizedBox(height: 40),
@@ -188,7 +223,9 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xffF0294A)),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       onPressed: () => Get.back(),
                       child: Row(
@@ -196,7 +233,14 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
                         children: const [
                           Icon(Icons.close, color: Color(0xffF0294A), size: 18),
                           SizedBox(width: 8),
-                          Text("DISCARD", style: TextStyle(color: Color(0xffF0294A), fontSize: 13, fontWeight: FontWeight.bold)),
+                          Text(
+                            "DISCARD",
+                            style: TextStyle(
+                              color: Color(0xffF0294A),
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -210,13 +254,21 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.yellow,
                         foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       onPressed: () => Get.back(),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Text("CREATE TRIP", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                          Text(
+                            "CREATE TRIP",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           SizedBox(width: 6),
                           Icon(Icons.chevron_right, size: 18),
                         ],
@@ -253,12 +305,21 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
       padding: const EdgeInsets.only(bottom: 6.0),
       child: Text(
         label,
-        style: const TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+        style: const TextStyle(
+          color: Colors.white38,
+          fontSize: 9,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, {int maxLines = 1, Widget? prefixIcon}) {
+  Widget _buildTextField(
+    TextEditingController controller, {
+    int maxLines = 1,
+    Widget? prefixIcon,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
@@ -302,7 +363,11 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: isSelected ? Colors.black : Colors.white60, size: 20),
+              Icon(
+                icon,
+                color: isSelected ? Colors.black : Colors.white60,
+                size: 20,
+              ),
               const SizedBox(height: 6),
               Text(
                 label,

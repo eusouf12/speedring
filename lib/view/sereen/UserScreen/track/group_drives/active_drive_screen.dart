@@ -39,7 +39,11 @@ class ActiveDriveScreen extends StatelessWidget {
                 const SizedBox(width: 6),
                 const Text(
                   "LIVE TELEMETRY",
-                  style: TextStyle(color: AppColors.yellow, fontSize: 8, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: AppColors.yellow,
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -53,11 +57,7 @@ class ActiveDriveScreen extends StatelessWidget {
       body: Stack(
         children: [
           /// Background Topo Map CustomPainter
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _TopoMapPainter(),
-            ),
-          ),
+          Positioned.fill(child: CustomPaint(painter: _TopoMapPainter())),
 
           /// Driver Avatars Nodes Overlay on Map
           const Positioned(
@@ -93,9 +93,23 @@ class ActiveDriveScreen extends StatelessWidget {
             right: 16,
             child: Row(
               children: [
-                Expanded(child: _buildMetricCard("CURR SPEED", "184", "KM/H", isHighlighted: true)),
+                Expanded(
+                  child: _buildMetricCard(
+                    "CURR SPEED",
+                    "184",
+                    "KM/H",
+                    isHighlighted: true,
+                  ),
+                ),
                 const SizedBox(width: 16),
-                Expanded(child: _buildMetricCard("DISTANCE", "42.8", "KM", isHighlighted: false)),
+                Expanded(
+                  child: _buildMetricCard(
+                    "DISTANCE",
+                    "42.8",
+                    "KM",
+                    isHighlighted: false,
+                  ),
+                ),
               ],
             ),
           ),
@@ -120,13 +134,17 @@ class ActiveDriveScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.yellow.withValues(alpha:0.3),
+                          color: AppColors.yellow.withValues(alpha: 0.3),
                           blurRadius: 10,
                           spreadRadius: 1,
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.my_location, color: Colors.black, size: 22),
+                    child: const Icon(
+                      Icons.my_location,
+                      color: Colors.black,
+                      size: 22,
+                    ),
                   ),
                 ),
               ],
@@ -146,12 +164,19 @@ class ActiveDriveScreen extends StatelessWidget {
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.white24),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       onPressed: () {},
                       child: const Text(
                         "PAUSE TRACKING",
-                        style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                   ),
@@ -166,14 +191,22 @@ class ActiveDriveScreen extends StatelessWidget {
                         foregroundColor: AppColors.yellow,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(color: AppColors.yellow, width: 1.5),
+                          side: const BorderSide(
+                            color: AppColors.yellow,
+                            width: 1.5,
+                          ),
                         ),
                         elevation: 0,
                       ),
-                      onPressed: () => Get.toNamed(AppRoutes.endExpeditionScreen),
+                      onPressed: () =>
+                          Get.toNamed(AppRoutes.endExpeditionScreen),
                       child: const Text(
                         "END TRIP",
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                   ),
@@ -186,11 +219,16 @@ class ActiveDriveScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricCard(String label, String value, String unit, {required bool isHighlighted}) {
+  Widget _buildMetricCard(
+    String label,
+    String value,
+    String unit, {
+    required bool isHighlighted,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xff111111).withValues(alpha:0.9),
+        color: const Color(0xff111111).withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.white10),
       ),
@@ -199,7 +237,12 @@ class ActiveDriveScreen extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+            style: const TextStyle(
+              color: Colors.white38,
+              fontSize: 8,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
           ),
           const SizedBox(height: 6),
           Row(
@@ -217,7 +260,11 @@ class ActiveDriveScreen extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 unit,
-                style: const TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white38,
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -231,7 +278,7 @@ class ActiveDriveScreen extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: const Color(0xff111111).withValues(alpha:0.9),
+        color: const Color(0xff111111).withValues(alpha: 0.9),
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white10),
       ),
@@ -266,7 +313,11 @@ class _DriverNode extends StatelessWidget {
             ),
             child: Text(
               label!,
-              style: const TextStyle(color: Colors.black, fontSize: 7, fontWeight: FontWeight.w900),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 7,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
         Container(
@@ -274,10 +325,15 @@ class _DriverNode extends StatelessWidget {
           height: 38,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: isLeader ? AppColors.yellow : Colors.white, width: 2),
+            border: Border.all(
+              color: isLeader ? AppColors.yellow : Colors.white,
+              width: 2,
+            ),
             boxShadow: [
               BoxShadow(
-                color: (isLeader ? AppColors.yellow : Colors.white).withValues(alpha:0.3),
+                color: (isLeader ? AppColors.yellow : Colors.white).withValues(
+                  alpha: 0.3,
+                ),
                 blurRadius: 8,
                 spreadRadius: 1,
               ),
@@ -297,7 +353,7 @@ class _TopoMapPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
-      ..color = Colors.white.withValues(alpha:0.02)
+      ..color = Colors.white.withValues(alpha: 0.02)
       ..strokeWidth = 0.5;
 
     const double gridSpacing = 25.0;
@@ -310,24 +366,54 @@ class _TopoMapPainter extends CustomPainter {
 
     // Topo contours
     final contourPaint = Paint()
-      ..color = Colors.white.withValues(alpha:0.04)
+      ..color = Colors.white.withValues(alpha: 0.04)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
     final Path topoPath1 = Path()
       ..moveTo(0, size.height * 0.3)
-      ..quadraticBezierTo(size.width * 0.4, size.height * 0.2, size.width * 0.6, size.height * 0.4)
-      ..quadraticBezierTo(size.width * 0.8, size.height * 0.6, size.width, size.height * 0.55);
+      ..quadraticBezierTo(
+        size.width * 0.4,
+        size.height * 0.2,
+        size.width * 0.6,
+        size.height * 0.4,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.8,
+        size.height * 0.6,
+        size.width,
+        size.height * 0.55,
+      );
 
     final Path topoPath2 = Path()
       ..moveTo(0, size.height * 0.4)
-      ..quadraticBezierTo(size.width * 0.4, size.height * 0.3, size.width * 0.6, size.height * 0.5)
-      ..quadraticBezierTo(size.width * 0.8, size.height * 0.7, size.width, size.height * 0.65);
+      ..quadraticBezierTo(
+        size.width * 0.4,
+        size.height * 0.3,
+        size.width * 0.6,
+        size.height * 0.5,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.8,
+        size.height * 0.7,
+        size.width,
+        size.height * 0.65,
+      );
 
     final Path topoPath3 = Path()
       ..moveTo(0, size.height * 0.5)
-      ..quadraticBezierTo(size.width * 0.4, size.height * 0.4, size.width * 0.6, size.height * 0.6)
-      ..quadraticBezierTo(size.width * 0.8, size.height * 0.8, size.width, size.height * 0.75);
+      ..quadraticBezierTo(
+        size.width * 0.4,
+        size.height * 0.4,
+        size.width * 0.6,
+        size.height * 0.6,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.8,
+        size.height * 0.8,
+        size.width,
+        size.height * 0.75,
+      );
 
     canvas.drawPath(topoPath1, contourPaint);
     canvas.drawPath(topoPath2, contourPaint);
@@ -341,7 +427,7 @@ class _TopoMapPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final routeShadowPaint = Paint()
-      ..color = AppColors.yellow.withValues(alpha:0.25)
+      ..color = AppColors.yellow.withValues(alpha: 0.25)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 10.0
       ..strokeCap = StrokeCap.round;
@@ -349,8 +435,22 @@ class _TopoMapPainter extends CustomPainter {
     final Path mainRoute = Path()
       ..moveTo(size.width * 0.1, size.height * 0.8)
       ..lineTo(size.width * 0.2, size.height * 0.65)
-      ..cubicTo(size.width * 0.25, size.height * 0.55, size.width * 0.45, size.height * 0.45, size.width * 0.4, size.height * 0.35)
-      ..cubicTo(size.width * 0.35, size.height * 0.25, size.width * 0.7, size.height * 0.2, size.width * 0.8, size.height * 0.1);
+      ..cubicTo(
+        size.width * 0.25,
+        size.height * 0.55,
+        size.width * 0.45,
+        size.height * 0.45,
+        size.width * 0.4,
+        size.height * 0.35,
+      )
+      ..cubicTo(
+        size.width * 0.35,
+        size.height * 0.25,
+        size.width * 0.7,
+        size.height * 0.2,
+        size.width * 0.8,
+        size.height * 0.1,
+      );
 
     canvas.drawPath(mainRoute, routeShadowPaint);
     canvas.drawPath(mainRoute, routePaint);

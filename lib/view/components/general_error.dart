@@ -17,37 +17,37 @@ class GeneralErrorScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // const CustomImage(imageSrc: AppImages.noInternetImage),
-            SizedBox(
-              height: 20.h,
-            ),
+            SizedBox(height: 20.h),
             Text(
               "Something wrong",
               style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 24.sp,
-                  color: Colors.white),
+                fontWeight: FontWeight.w500,
+                fontSize: 24.sp,
+                color: Colors.white,
+              ),
             ),
-            SizedBox(
-              height: 20.h,
-            ),
+            SizedBox(height: 20.h),
             ElevatedButton(
               onPressed: onTap,
               style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.red,
-                  minimumSize: Size(Get.width / 1.6, 40.h),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
+                backgroundColor: AppColors.red,
+                minimumSize: Size(Get.width / 1.6, 40.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
                     topRight: Radius.circular(32.r),
                     bottomLeft: Radius.circular(32.r),
-                  ))),
+                  ),
+                ),
+              ),
               child: const Text(
                 "Try Again",
                 style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),

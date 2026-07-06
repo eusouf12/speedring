@@ -3,7 +3,6 @@
 import 'package:intl/intl.dart';
 
 class DateConverter {
-
   ///======== time format 32 may 2025 10 : 00 AM ========
   static String estimatedDateTime(DateTime dateTime) {
     final localDateTime = dateTime.toLocal();
@@ -11,9 +10,11 @@ class DateConverter {
     final timePart = DateFormat('hh:mm a').format(localDateTime);
     return '$datePart, $timePart';
   }
+
   static String estimatedDate(DateTime dateTime) {
     return DateFormat('dd MMM yyyy').format(dateTime);
   }
+
   ///======== time format string ========
   static String timeFormatString(String dateTime) {
     DateTime parsedDate = DateTime.parse(dateTime);
@@ -64,7 +65,7 @@ class DateConverter {
     }
   }
 
-//================== Get Age =================
+  //================== Get Age =================
 
   static String getAge({required String dOB}) {
     // Parse the date of birth from the string input
@@ -93,7 +94,7 @@ class DateConverter {
   ///======================= Calculate CreatedAt time and show it =========================
 
   static String formatTimeAgo(String dateTimeString) {
-    if(dateTimeString.isEmpty) return'';
+    if (dateTimeString.isEmpty) return '';
     // Parse the string into a DateTime object
     DateTime dateTime = DateTime.parse(dateTimeString);
 
@@ -132,7 +133,7 @@ class DateConverter {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return months[month - 1];
   }
@@ -154,8 +155,11 @@ class DateConverter {
     // Adjust if negative months or days (correct for partial year)
     if (days < 0) {
       months--;
-      days += DateTime(currentDate.year, currentDate.month, 0)
-          .day; // Add days of previous month
+      days += DateTime(
+        currentDate.year,
+        currentDate.month,
+        0,
+      ).day; // Add days of previous month
     }
     if (months < 0) {
       years--;
@@ -176,7 +180,7 @@ class DateConverter {
       "$months months",
       "$weeks weeks",
       "$remainingDays days",
-      "${lifeSpentPercent.toStringAsFixed(2)}%"
+      "${lifeSpentPercent.toStringAsFixed(2)}%",
     ];
 
     return result;
@@ -188,8 +192,11 @@ class DateConverter {
     DateTime currentDate = DateTime.now();
 
     // Calculate the target date (when the user reaches the target age)
-    DateTime targetDate =
-        DateTime(birthDate.year + targetAge, birthDate.month, birthDate.day);
+    DateTime targetDate = DateTime(
+      birthDate.year + targetAge,
+      birthDate.month,
+      birthDate.day,
+    );
 
     // Calculate the difference between the current date and the target date
     Duration remainingDuration = targetDate.difference(currentDate);
@@ -211,8 +218,11 @@ class DateConverter {
 
     if (remainingDays < 0) {
       remainingMonths--;
-      remainingDays += DateTime(currentDate.year, currentDate.month + 1, 0)
-          .day; // Adjust for negative days
+      remainingDays += DateTime(
+        currentDate.year,
+        currentDate.month + 1,
+        0,
+      ).day; // Adjust for negative days
     }
     if (remainingMonths < 0) {
       remainingYears--;
@@ -234,7 +244,7 @@ class DateConverter {
       "$remainingMonths months",
       "$weeks weeks",
       "$extraDays days",
-      "${lifeRemainingPercent.toStringAsFixed(2)}%"
+      "${lifeRemainingPercent.toStringAsFixed(2)}%",
     ];
 
     return result;
@@ -264,32 +274,31 @@ class DateConverter {
 
     // Return spent weeks and total weeks as a list of two integers
     return [spentWeeks, totalWeeks];
-  } 
-
-
-
-static String formatServerTime(String serverTime) {
-  // Parse the server time
-  DateTime serverDateTime = DateTime.parse(serverTime).toLocal();
-  DateTime now = DateTime.now();
-  
-  // Determine if the date is today, yesterday, or another day
-  if (DateFormat('yyyy-MM-dd').format(serverDateTime) == 
-      DateFormat('yyyy-MM-dd').format(now)) {
-    // If today
-    return "Today ${DateFormat('hh:mm a').format(serverDateTime)}";
-  } else if (DateFormat('yyyy-MM-dd').format(serverDateTime) == 
-             DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 1)))) {
-    // If yesterday
-    return "Yesterday ${DateFormat('hh:mm a').format(serverDateTime)}";
-  } else {
-    // If other day
-    return DateFormat('EEEE, MMMM yyyy, hh:mm a').format(serverDateTime);
   }
-}
 
+  static String formatServerTime(String serverTime) {
+    // Parse the server time
+    DateTime serverDateTime = DateTime.parse(serverTime).toLocal();
+    DateTime now = DateTime.now();
 
- static String calculateAge(String dateOfBirth) {
+    // Determine if the date is today, yesterday, or another day
+    if (DateFormat('yyyy-MM-dd').format(serverDateTime) ==
+        DateFormat('yyyy-MM-dd').format(now)) {
+      // If today
+      return "Today ${DateFormat('hh:mm a').format(serverDateTime)}";
+    } else if (DateFormat('yyyy-MM-dd').format(serverDateTime) ==
+        DateFormat(
+          'yyyy-MM-dd',
+        ).format(now.subtract(const Duration(days: 1)))) {
+      // If yesterday
+      return "Yesterday ${DateFormat('hh:mm a').format(serverDateTime)}";
+    } else {
+      // If other day
+      return DateFormat('EEEE, MMMM yyyy, hh:mm a').format(serverDateTime);
+    }
+  }
+
+  static String calculateAge(String dateOfBirth) {
     // Parse the dateOfBirth to a DateTime object
     DateTime birthDate = DateTime.parse(dateOfBirth);
     DateTime today = DateTime.now();
@@ -298,12 +307,12 @@ static String formatServerTime(String serverTime) {
     int age = today.year - birthDate.year;
 
     // If the birth date hasn't occurred yet this year, subtract 1 from the age
-    if (today.month < birthDate.month || (today.month == birthDate.month && today.day < birthDate.day)) {
+    if (today.month < birthDate.month ||
+        (today.month == birthDate.month && today.day < birthDate.day)) {
       age--;
     }
 
     // Return the formatted age
     return "$age years old";
   }
-
 }

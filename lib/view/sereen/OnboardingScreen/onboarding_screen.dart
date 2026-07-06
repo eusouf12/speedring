@@ -31,9 +31,9 @@ class OnboardingScreen extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withValues(alpha:.15),
-                    Colors.black.withValues(alpha:.45),
-                    Colors.black.withValues(alpha:.95),
+                    Colors.black.withValues(alpha: .15),
+                    Colors.black.withValues(alpha: .45),
+                    Colors.black.withValues(alpha: .95),
                   ],
                 ),
               ),
@@ -83,7 +83,7 @@ class OnboardingScreen extends StatelessWidget {
                   CustomText(
                     text:
                         "Track sessions. Share experiences. Discover cars, riders, clubs and motorsport events.",
-                    color: Colors.white.withValues(alpha:.75),
+                    color: Colors.white.withValues(alpha: .75),
                     fontSize: 14,
                     textAlign: TextAlign.center,
                     maxLines: 2,

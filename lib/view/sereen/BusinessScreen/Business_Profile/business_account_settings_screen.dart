@@ -168,19 +168,32 @@ class BusinessAccountSettingsScreen extends StatelessWidget {
               Get.dialog(
                 AlertDialog(
                   backgroundColor: const Color(0xff111111),
-                  title: const Text("Edit Information", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  title: const Text(
+                    "Edit Information",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   content: TextFormField(
                     controller: controller,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.yellow)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white24),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.yellow),
+                      ),
                     ),
                   ),
                   actions: [
                     TextButton(
                       onPressed: () => Get.back(),
-                      child: const Text("CANCEL", style: TextStyle(color: Colors.white54)),
+                      child: const Text(
+                        "CANCEL",
+                        style: TextStyle(color: Colors.white54),
+                      ),
                     ),
                     TextButton(
                       onPressed: () {
@@ -193,7 +206,13 @@ class BusinessAccountSettingsScreen extends StatelessWidget {
                           colorText: Colors.white,
                         );
                       },
-                      child: const Text("SAVE", style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold)),
+                      child: const Text(
+                        "SAVE",
+                        style: TextStyle(
+                          color: AppColors.yellow,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -329,10 +348,7 @@ class BusinessAccountSettingsScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildSwitchRow({
-    required String title,
-    required RxBool isEnabled,
-  }) {
+  Widget _buildSwitchRow({required String title, required RxBool isEnabled}) {
     return Obx(() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -411,10 +427,18 @@ class BusinessAccountSettingsScreen extends StatelessWidget {
                   children: [
                     Text(
                       "CHANGE PLAN",
-                      style: TextStyle(fontSize: 8.sp, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+                      style: TextStyle(
+                        fontSize: 8.sp,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                     SizedBox(width: 4.w),
-                    Icon(Icons.open_in_new, color: AppColors.yellow, size: 10.sp),
+                    Icon(
+                      Icons.open_in_new,
+                      color: AppColors.yellow,
+                      size: 10.sp,
+                    ),
                   ],
                 ),
               ),
@@ -501,12 +525,24 @@ class BusinessAccountSettingsScreen extends StatelessWidget {
         Get.dialog(
           AlertDialog(
             backgroundColor: const Color(0xff111111),
-            title: const Text("Log Out?", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            content: const Text("Are you sure you want to log out of Speedring Business Paddock?", style: TextStyle(color: Colors.white70)),
+            title: const Text(
+              "Log Out?",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: const Text(
+              "Are you sure you want to log out of Speedring Business Paddock?",
+              style: TextStyle(color: Colors.white70),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Get.back(),
-                child: const Text("CANCEL", style: TextStyle(color: Colors.white54)),
+                child: const Text(
+                  "CANCEL",
+                  style: TextStyle(color: Colors.white54),
+                ),
               ),
               TextButton(
                 onPressed: () {
@@ -514,7 +550,13 @@ class BusinessAccountSettingsScreen extends StatelessWidget {
                   // In a real app we clear session and go to login. For mock, go back to onboarding/login.
                   Get.offAllNamed(AppRoutes.onboardingScreen);
                 },
-                child: const Text("LOGOUT", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                child: const Text(
+                  "LOGOUT",
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),

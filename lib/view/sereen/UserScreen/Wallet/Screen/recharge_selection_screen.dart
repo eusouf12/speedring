@@ -98,7 +98,9 @@ class RechargeSelectionScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xff141414),
                   borderRadius: BorderRadius.circular(20.r),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.08),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +171,9 @@ class RechargeSelectionScreen extends StatelessWidget {
                     Column(
                       children: assets.map((item) {
                         return Obx(() {
-                          final isSelected = controller.selectedAssets.contains(item['id']);
+                          final isSelected = controller.selectedAssets.contains(
+                            item['id'],
+                          );
                           return GestureDetector(
                             onTap: () {
                               if (isSelected) {
@@ -181,12 +185,17 @@ class RechargeSelectionScreen extends StatelessWidget {
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 150),
                               margin: EdgeInsets.only(bottom: 12.h),
-                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 14.h,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xff111111),
                                 borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(
-                                  color: isSelected ? AppColors.yellow : Colors.white.withValues(alpha: 0.03),
+                                  color: isSelected
+                                      ? AppColors.yellow
+                                      : Colors.white.withValues(alpha: 0.03),
                                   width: 1.5,
                                 ),
                               ),
@@ -194,7 +203,11 @@ class RechargeSelectionScreen extends StatelessWidget {
                                 children: [
                                   Icon(
                                     item['icon'] as IconData,
-                                    color: isSelected ? AppColors.yellow : AppColors.yellow.withValues(alpha: 0.6),
+                                    color: isSelected
+                                        ? AppColors.yellow
+                                        : AppColors.yellow.withValues(
+                                            alpha: 0.6,
+                                          ),
                                     size: 20.sp,
                                   ),
                                   SizedBox(width: 16.w),
@@ -202,7 +215,9 @@ class RechargeSelectionScreen extends StatelessWidget {
                                     child: Text(
                                       item['title'] as String,
                                       style: TextStyle(
-                                        color: isSelected ? Colors.white : Colors.white70,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : Colors.white70,
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w700,
                                         letterSpacing: 0.5,
@@ -212,7 +227,9 @@ class RechargeSelectionScreen extends StatelessWidget {
                                   Text(
                                     "${item['value']}",
                                     style: TextStyle(
-                                      color: isSelected ? AppColors.yellow : Colors.white54,
+                                      color: isSelected
+                                          ? AppColors.yellow
+                                          : Colors.white54,
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -243,7 +260,9 @@ class RechargeSelectionScreen extends StatelessWidget {
                             snackPosition: SnackPosition.BOTTOM,
                             backgroundColor: const Color(0xff181818),
                             colorText: Colors.redAccent,
-                            borderColor: Colors.redAccent.withValues(alpha: 0.5),
+                            borderColor: Colors.redAccent.withValues(
+                              alpha: 0.5,
+                            ),
                             borderWidth: 1,
                           );
                         } else {

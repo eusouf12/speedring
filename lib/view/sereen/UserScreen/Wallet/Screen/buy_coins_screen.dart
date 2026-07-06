@@ -10,35 +10,34 @@ import '../widgets/package_list_item.dart';
 import '../widgets/payment_method_item.dart';
 
 class BuyCoinsController extends GetxController {
-  final selectedPackageIndex = 2.obs; // Default 220 coins
+  final selectedPackageIndex = 7.obs; // Default 200 € / GOLD package
   final selectedPaymentMethod = 0.obs; // Default Stripe
-  final customQtyText = "".obs;
 
   final packages = [
-    {"coins": "50 COINS", "price": 5.0, "label": "50 SPEEDRING COINS"},
-    {"coins": "110 COINS", "price": 10.0, "label": "110 SPEEDRING COINS"},
-    {"coins": "220 COINS", "price": 20.0, "label": "220 SPEEDRING COINS"},
-    {"coins": "600 COINS", "price": 50.0, "label": "600 SPEEDRING COINS"},
-    {"coins": "1250 COINS", "price": 100.0, "label": "1250 SPEEDRING COINS"},
-    {"coins": "CUSTOM ALLOCATION", "price": 0.0, "label": "CUSTOM SPEEDRING COINS"},
+    {"coins": "2", "price": 0.25, "priceStr": "0,25 €", "label": "SCHRAUBE"},
+    {"coins": "10", "price": 1.0, "priceStr": "1,00 €", "label": "KAFFEE"},
+    {"coins": "20", "price": 2.0, "priceStr": "2,00 €", "label": "ENERGY"},
+    {"coins": "30", "price": 3.0, "priceStr": "3,00 €", "label": "ESPRESSO"},
+    {"coins": "100", "price": 10.0, "priceStr": "10 €", "label": "FUEL"},
+    {"coins": "500", "price": 50.0, "priceStr": "50 €", "label": "BRONZE"},
+    {"coins": "1000", "price": 100.0, "priceStr": "100 €", "label": "SILBER"},
+    {"coins": "2000", "price": 200.0, "priceStr": "200 €", "label": "GOLD"},
+    {
+      "coins": "5000",
+      "price": 500.0,
+      "priceStr": "500 €",
+      "label": "CHAMPIONS TROPHÄE",
+    },
   ];
 
   double get subtotal {
     int idx = selectedPackageIndex.value;
-    if (idx == 5) {
-      double qty = double.tryParse(customQtyText.value) ?? 0.0;
-      return qty * 0.10; // €0.10 per coin
-    }
     return packages[idx]["price"] as double;
   }
 
   String get selectedItemLabel {
     int idx = selectedPackageIndex.value;
-    if (idx == 5) {
-      String qty = customQtyText.value.isEmpty ? "0" : customQtyText.value;
-      return "$qty SPEEDRING COINS";
-    }
-    return packages[idx]["label"] as String;
+    return "${packages[idx]['label']} (${packages[idx]['coins']} COINS)";
   }
 
   double get processingFee => 0.00;
@@ -60,7 +59,7 @@ class BuyCoinsScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
           scrolledUnderElevation: 0,
-           leading: BackButton(color: AppColors.yellow),
+          leading: BackButton(color: AppColors.yellow),
           title: CustomText(
             text: "TECHNICAL ENQUIRY",
             color: AppColors.yellow,
@@ -93,121 +92,149 @@ class BuyCoinsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
 
-                // Packages list
-                Obx(() => Column(
-                      children: List.generate(controller.packages.length, (index) {
-                        final pkg = controller.packages[index];
-                        final isCustom = index == 5;
-                        final isSelected = controller.selectedPackageIndex.value == index;
-                        final priceStr = isCustom
-                            ? "€${controller.subtotal.toStringAsFixed(2)}"
-                            : "€${(pkg['price'] as double).toStringAsFixed(2)}";
+                // Packages grid
+                Obx(
+                  () => Column(
+                    children: [
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 10.w,
+                          mainAxisSpacing: 10.h,
+                          childAspectRatio: 1.15,
+                        ),
+                        itemCount: 8,
+                        itemBuilder: (context, index) {
+                          final pkg = controller.packages[index];
+                          final isSelected =
+                              controller.selectedPackageIndex.value == index;
 
-                        return PackageListItem(
-                          coins: pkg["coins"] as String,
-                          price: priceStr,
-                          isSelected: isSelected,
-                          isCustom: isCustom,
-                          onQtyChanged: (val) {
-                            controller.customQtyText.value = val;
-                          },
-                          onTap: () {
-                            controller.selectedPackageIndex.value = index;
-                          },
-                        );
-                      }),
-                    )),
+                          return PackageListItem(
+                            coins: pkg["label"] as String,
+                            price: pkg["priceStr"] as String,
+                            isSelected: isSelected,
+                            onTap: () {
+                              controller.selectedPackageIndex.value = index;
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(height: 10.h),
+                      PackageListItem(
+                        coins: controller.packages[8]["label"] as String,
+                        price: controller.packages[8]["priceStr"] as String,
+                        isSelected: controller.selectedPackageIndex.value == 8,
+                        isFullWidth: true,
+                        onTap: () {
+                          controller.selectedPackageIndex.value = 8;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
 
                 SizedBox(height: 24.h),
 
                 // Checkout Details
-                Obx(() => Container(
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: const Color(0xff111111),
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                Obx(
+                  () => Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      color: const Color(0xff111111),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.05),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomText(
-                                text: "SELECTED ITEM",
-                                color: Colors.white38,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              CustomText(
-                                text: controller.selectedItemLabel,
-                                color: Colors.white70,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomText(
+                              text: "SELECTED ITEM",
+                              color: Colors.white38,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            CustomText(
+                              text: controller.selectedItemLabel,
+                              color: Colors.white70,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomText(
+                              text: "SUBTOTAL",
+                              color: Colors.white38,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            CustomText(
+                              text:
+                                  "€${controller.subtotal.toStringAsFixed(2)}",
+                              color: Colors.white70,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomText(
+                              text: "PROCESSING FEE",
+                              color: Colors.white38,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            CustomText(
+                              text:
+                                  "€${controller.processingFee.toStringAsFixed(2)}",
+                              color: Colors.white70,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          child: Divider(
+                            color: Colors.white.withValues(alpha: 0.05),
+                            height: 1,
                           ),
-                          SizedBox(height: 12.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomText(
-                                text: "SUBTOTAL",
-                                color: Colors.white38,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              CustomText(
-                                text: "€${controller.subtotal.toStringAsFixed(2)}",
-                                color: Colors.white70,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 12.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomText(
-                                text: "PROCESSING FEE",
-                                color: Colors.white38,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              CustomText(
-                                text: "€${controller.processingFee.toStringAsFixed(2)}",
-                                color: Colors.white70,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 12.h),
-                            child: Divider(color: Colors.white.withValues(alpha:0.05), height: 1),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomText(
-                                text: "TOTAL AMOUNT",
-                                color: Colors.white70,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              CustomText(
-                                text: "€${controller.totalAmount.toStringAsFixed(2)}",
-                                color: AppColors.yellow,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    )),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomText(
+                              text: "TOTAL AMOUNT",
+                              color: Colors.white70,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            CustomText(
+                              text:
+                                  "€${controller.totalAmount.toStringAsFixed(2)}",
+                              color: AppColors.yellow,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
 
                 SizedBox(height: 24.h),
 
@@ -221,34 +248,52 @@ class BuyCoinsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
 
-                Obx(() => Column(
-                      children: [
-                        PaymentMethodItem(
-                          icon: Icon(Icons.credit_card_outlined, color: AppColors.yellow, size: 20.w),
-                          label: "Stripe Secure Checkout",
-                          isSelected: controller.selectedPaymentMethod.value == 0,
-                          onTap: () => controller.selectedPaymentMethod.value = 0,
+                Obx(
+                  () => Column(
+                    children: [
+                      PaymentMethodItem(
+                        icon: Icon(
+                          Icons.credit_card_outlined,
+                          color: AppColors.yellow,
+                          size: 20.w,
                         ),
-                        PaymentMethodItem(
-                          icon: Icon(Icons.apple, color: Colors.white, size: 20.w),
-                          label: "Apple Pay",
-                          isSelected: controller.selectedPaymentMethod.value == 1,
-                          onTap: () => controller.selectedPaymentMethod.value = 1,
+                        label: "Stripe Secure Checkout",
+                        isSelected: controller.selectedPaymentMethod.value == 0,
+                        onTap: () => controller.selectedPaymentMethod.value = 0,
+                      ),
+                      PaymentMethodItem(
+                        icon: Icon(
+                          Icons.apple,
+                          color: Colors.white,
+                          size: 20.w,
                         ),
-                        PaymentMethodItem(
-                          icon: Icon(Icons.payment, color: Colors.white, size: 20.w),
-                          label: "Google Pay",
-                          isSelected: controller.selectedPaymentMethod.value == 2,
-                          onTap: () => controller.selectedPaymentMethod.value = 2,
+                        label: "Apple Pay",
+                        isSelected: controller.selectedPaymentMethod.value == 1,
+                        onTap: () => controller.selectedPaymentMethod.value = 1,
+                      ),
+                      PaymentMethodItem(
+                        icon: Icon(
+                          Icons.payment,
+                          color: Colors.white,
+                          size: 20.w,
                         ),
-                        PaymentMethodItem(
-                          icon: Icon(Icons.paypal, color: Colors.white, size: 20.w),
-                          label: "PayPal",
-                          isSelected: controller.selectedPaymentMethod.value == 3,
-                          onTap: () => controller.selectedPaymentMethod.value = 3,
+                        label: "Google Pay",
+                        isSelected: controller.selectedPaymentMethod.value == 2,
+                        onTap: () => controller.selectedPaymentMethod.value = 2,
+                      ),
+                      PaymentMethodItem(
+                        icon: Icon(
+                          Icons.paypal,
+                          color: Colors.white,
+                          size: 20.w,
                         ),
-                      ],
-                    )),
+                        label: "PayPal",
+                        isSelected: controller.selectedPaymentMethod.value == 3,
+                        onTap: () => controller.selectedPaymentMethod.value = 3,
+                      ),
+                    ],
+                  ),
+                ),
 
                 SizedBox(height: 32.h),
 
@@ -266,11 +311,11 @@ class BuyCoinsScreen extends StatelessWidget {
                       AppRoutes.transactionReportScreen,
                       arguments: {
                         "amount": controller.totalAmount.toStringAsFixed(2),
-                        "coins": controller.selectedPackageIndex.value == 5
-                            ? (double.tryParse(controller.customQtyText.value) ?? 0.0).toStringAsFixed(0)
-                            : controller.packages[controller.selectedPackageIndex.value]["coins"]
-                                .toString()
-                                .replaceAll(" COINS", "")
+                        "coins": controller
+                            .packages[controller
+                                .selectedPackageIndex
+                                .value]["coins"]
+                            .toString(),
                       },
                     );
                   },

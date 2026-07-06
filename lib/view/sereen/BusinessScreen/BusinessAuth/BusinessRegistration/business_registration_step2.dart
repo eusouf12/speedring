@@ -103,7 +103,8 @@ class BusinessRegistrationStep2 extends StatelessWidget {
 
                 _buildModuleHeader("MODULE 01", "BUSINESS LICENSE"),
                 CustomText(
-                  text: "Upload a valid copy of your official operating license.",
+                  text:
+                      "Upload a valid copy of your official operating license.",
                   color: Colors.white38,
                   fontSize: 11.sp,
                   textAlign: TextAlign.start,
@@ -120,7 +121,8 @@ class BusinessRegistrationStep2 extends StatelessWidget {
 
                 _buildModuleHeader("MODULE 02", "TRADE REGISTRATION"),
                 CustomText(
-                  text: "Certificate of incorporation or local trade register entry.",
+                  text:
+                      "Certificate of incorporation or local trade register entry.",
                   color: Colors.white38,
                   fontSize: 11.sp,
                   textAlign: TextAlign.start,
@@ -163,7 +165,9 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(0xff111111),
                     borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.08),
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -183,7 +187,10 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 ),
                               )
-                            : const Icon(Icons.image_outlined, color: Colors.white24),
+                            : const Icon(
+                                Icons.image_outlined,
+                                color: Colors.white24,
+                              ),
                       ),
                       SizedBox(width: 16.w),
                       Expanded(
@@ -194,14 +201,19 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                               const SizedBox(
                                 height: 16,
                                 width: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.yellow),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.yellow,
+                                ),
                               )
                             else
                               CustomText(
                                 text: controller.logoFileName.value.isEmpty
                                     ? "No logo uploaded"
                                     : controller.logoFileName.value,
-                                color: controller.logoFileName.value.isEmpty ? Colors.white38 : AppColors.yellow,
+                                color: controller.logoFileName.value.isEmpty
+                                    ? Colors.white38
+                                    : AppColors.yellow,
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -249,7 +261,11 @@ class BusinessRegistrationStep2 extends StatelessWidget {
   void _showHelpDialog() {
     Get.defaultDialog(
       title: "Business Verification",
-      titleStyle: TextStyle(color: AppColors.yellow, fontSize: 16.sp, fontWeight: FontWeight.bold),
+      titleStyle: TextStyle(
+        color: AppColors.yellow,
+        fontSize: 16.sp,
+        fontWeight: FontWeight.bold,
+      ),
       backgroundColor: const Color(0xff111111),
       content: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 12),
@@ -278,7 +294,9 @@ class BusinessRegistrationStep2 extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.yellow.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(4.r),
-              border: Border.all(color: AppColors.yellow.withValues(alpha: 0.3)),
+              border: Border.all(
+                color: AppColors.yellow.withValues(alpha: 0.3),
+              ),
             ),
             child: CustomText(
               text: module,
@@ -330,7 +348,11 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.check_circle_outline, color: Colors.green, size: 20),
+                    const Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.green,
+                      size: 20,
+                    ),
                     SizedBox(width: 8.w),
                     CustomText(
                       text: fileName,
@@ -355,7 +377,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                   fontSize: 10.sp,
                   fontWeight: FontWeight.bold,
                 ),
-              ]
+              ],
             ],
           ),
         ),

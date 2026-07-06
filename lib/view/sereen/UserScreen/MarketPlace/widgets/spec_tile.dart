@@ -6,11 +6,7 @@ class SpecTile extends StatelessWidget {
   final String label;
   final String value;
 
-  const SpecTile({
-    required this.label,
-    required this.value,
-    super.key,
-  });
+  const SpecTile({required this.label, required this.value, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +15,7 @@ class SpecTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff161616),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

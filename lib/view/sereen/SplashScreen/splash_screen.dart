@@ -40,7 +40,8 @@ class SplashScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40.0),
                     child: Obx(() {
-                      final progressPercent = (controller.progress.value * 100).toInt();
+                      final progressPercent = (controller.progress.value * 100)
+                          .toInt();
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -48,7 +49,9 @@ class SplashScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                controller.statusMessages[controller.statusIndex.value],
+                                controller.statusMessages[controller
+                                    .statusIndex
+                                    .value],
                                 style: const TextStyle(
                                   color: Color(0xFFFFC107), // Amber/Yellow
                                   fontFamily: 'Courier',
@@ -84,7 +87,9 @@ class SplashScreen extends StatelessWidget {
                               children: List.generate(
                                 3,
                                 (index) => Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 4.0,
+                                  ),
                                   child: Container(
                                     width: 4,
                                     height: 4,

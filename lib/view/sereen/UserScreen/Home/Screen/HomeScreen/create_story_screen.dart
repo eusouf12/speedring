@@ -36,7 +36,10 @@ class CreateStoryScreen extends StatelessWidget {
   final String? profileImageUrl;
   final String? userName;
 
-  void _showPickerSheet(BuildContext context, CreateStoryController controller) {
+  void _showPickerSheet(
+    BuildContext context,
+    CreateStoryController controller,
+  ) {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xff1C1C1C),
@@ -87,20 +90,24 @@ class CreateStoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(CreateStoryController());
 
-    return Obx(() => Scaffold(
-      backgroundColor: Colors.black,
-      body: controller.selectedFile.value == null
-          ? EmptyUploadView(onTap: () => _showPickerSheet(context, controller))
-          : PreviewView(
-              file: controller.selectedFile.value!,
-              isVideo: controller.isVideo.value,
-              profileImageUrl: profileImageUrl,
-              onClose: () => controller.reset(),
-              onShare: () {
-                Navigator.pop(context);
-              },
-            ),
-    ));
+    return Obx(
+      () => Scaffold(
+        backgroundColor: Colors.black,
+        body: controller.selectedFile.value == null
+            ? EmptyUploadView(
+                onTap: () => _showPickerSheet(context, controller),
+              )
+            : PreviewView(
+                file: controller.selectedFile.value!,
+                isVideo: controller.isVideo.value,
+                profileImageUrl: profileImageUrl,
+                onClose: () => controller.reset(),
+                onShare: () {
+                  Navigator.pop(context);
+                },
+              ),
+      ),
+    );
   }
 }
 
@@ -205,7 +212,7 @@ class PreviewView extends StatelessWidget {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.black,
-      
+
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -233,7 +240,7 @@ class PreviewView extends StatelessWidget {
             ),
           ),
         ),
-      
+
         body: Stack(
           children: [
             /// Full Screen Media
@@ -251,7 +258,7 @@ class PreviewView extends StatelessWidget {
                     )
                   : Image.file(file, fit: BoxFit.cover),
             ),
-      
+
             /// Overlay
             Positioned.fill(
               child: DecoratedBox(
@@ -270,7 +277,7 @@ class PreviewView extends StatelessWidget {
                 ),
               ),
             ),
-      
+
             /// Share Button
             Positioned(
               left: 16,

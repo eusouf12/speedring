@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../custom_image/custom_image.dart';
-import '../../../utils/app_images/app_images.dart';
+import 'package:get/get.dart';
+import '../../../core/app_routes/app_routes.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 /// Premium User AppBar with search icon, centered logo, and action icons (mail, notification).
@@ -41,32 +41,40 @@ class CustomAppBarUser extends StatelessWidget implements PreferredSizeWidget {
             if (showSearchIcon)
               GestureDetector(
                 onTap: onSearchTap,
-                child: const Icon(
-                  Icons.search,
-                  color: Colors.white,
-                  size: 24,
-                ),
+                child: const Icon(Icons.search, color: Colors.white, size: 24),
               )
             else
               const SizedBox(width: 24),
 
-            const Spacer(),
+            // const Spacer(),
 
-            /// ── Center side: Logo ──
-            CustomImage(
-              imageSrc: AppImages.logo,
-              imageType: ImageType.png,
-              height: 40,
-              width: 130,
-              fit: BoxFit.contain,
-            ),
-
+            // /// ── Center side: Logo ──
+            // CustomImage(
+            //   imageSrc: AppImages.logo,
+            //   imageType: ImageType.png,
+            //   height: 40,
+            //   width: 130,
+            //   fit: BoxFit.contain,
+            // ),
             const Spacer(),
 
             /// ── Right side: Mail & Notification ──
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                /// Reels Icon
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.reelsScreen);
+                  },
+                  child: const Icon(
+                    Icons.play_circle_outline_rounded,
+                    color: Color(0xffD1C5AB),
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+
                 /// Mail Icon
                 GestureDetector(
                   onTap: onMailTap,
@@ -75,7 +83,9 @@ class CustomAppBarUser extends StatelessWidget implements PreferredSizeWidget {
                     children: [
                       const Icon(
                         Icons.mail_outline_rounded,
-                        color: Color(0xffD1C5AB), // Muted tan/gold color from SS
+                        color: Color(
+                          0xffD1C5AB,
+                        ), // Muted tan/gold color from SS
                         size: 24,
                       ),
                       if (hasNewMail)
@@ -104,7 +114,9 @@ class CustomAppBarUser extends StatelessWidget implements PreferredSizeWidget {
                     children: [
                       const Icon(
                         Icons.notifications_none_outlined,
-                        color: Color(0xffD1C5AB), // Muted tan/gold color from SS
+                        color: Color(
+                          0xffD1C5AB,
+                        ), // Muted tan/gold color from SS
                         size: 24,
                       ),
                       if (hasNewNotification)

@@ -139,8 +139,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                                   image: NetworkImage(cat["image"]!),
                                   fit: BoxFit.cover,
                                   colorFilter: ColorFilter.mode(
-                                    Colors.black.withValues(alpha:
-                                      isSel ? 0.65 : 0.8,
+                                    Colors.black.withValues(
+                                      alpha: isSel ? 0.65 : 0.8,
                                     ),
                                     BlendMode.srcOver,
                                   ),

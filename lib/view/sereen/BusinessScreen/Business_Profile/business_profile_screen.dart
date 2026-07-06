@@ -37,7 +37,6 @@ class BusinessProfileScreen extends StatelessWidget {
                     _buildMetricsSection(),
                     SizedBox(height: 24.h),
 
-
                     // Navigation Tabs Header
                     _buildProfileTabs(activeTab),
                     SizedBox(height: 20.h),
@@ -179,7 +178,11 @@ class BusinessProfileScreen extends StatelessWidget {
                               fontWeight: FontWeight.w900,
                             ),
                             SizedBox(width: 6.w),
-                            const Icon(Icons.verified, color: AppColors.yellow, size: 16),
+                            const Icon(
+                              Icons.verified,
+                              color: AppColors.yellow,
+                              size: 16,
+                            ),
                           ],
                         ),
                         SizedBox(height: 2.h),
@@ -209,7 +212,9 @@ class BusinessProfileScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xff161616),
                   borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.05),
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -410,13 +415,15 @@ class BusinessProfileScreen extends StatelessWidget {
       {
         'title': 'TELEMETRY CALIBRATION REPORT',
         'time': '2 HOURS AGO',
-        'body': 'Completed the track telemetry calibration on our primary 911 GT3 RS. Aerodynamic efficiency was measured with +15% downforce improvement under the Weissach Package specifications.',
+        'body':
+            'Completed the track telemetry calibration on our primary 911 GT3 RS. Aerodynamic efficiency was measured with +15% downforce improvement under the Weissach Package specifications.',
         'views': '1.8K',
       },
       {
         'title': 'BREMBO GTR CALIPERS INSTALLED',
         'time': '1 DAY AGO',
-        'body': 'Billet monoblock brake system successfully integrated for racing telemetry. Testing begins tomorrow at Silverstone circuit.',
+        'body':
+            'Billet monoblock brake system successfully integrated for racing telemetry. Testing begins tomorrow at Silverstone circuit.',
         'views': '940',
       },
     ];
@@ -462,7 +469,11 @@ class BusinessProfileScreen extends StatelessWidget {
               SizedBox(height: 12.h),
               Row(
                 children: [
-                  const Icon(Icons.remove_red_eye_outlined, color: Colors.white24, size: 14),
+                  const Icon(
+                    Icons.remove_red_eye_outlined,
+                    color: Colors.white24,
+                    size: 14,
+                  ),
                   SizedBox(width: 4.w),
                   CustomText(
                     text: "${post['views']} Views",
@@ -528,7 +539,11 @@ class BusinessProfileScreen extends StatelessWidget {
                       errorBuilder: (context, error, stackTrace) => Container(
                         height: 140.h,
                         color: const Color(0xff222222),
-                        child: const Icon(Icons.broken_image, color: Colors.white24, size: 28),
+                        child: const Icon(
+                          Icons.broken_image,
+                          color: Colors.white24,
+                          size: 28,
+                        ),
                       ),
                     ),
                     Padding(
@@ -563,7 +578,11 @@ class BusinessProfileScreen extends StatelessWidget {
                           const Divider(color: Colors.white10, height: 16),
                           Row(
                             children: [
-                              const Icon(Icons.remove_red_eye_outlined, color: Colors.white24, size: 13),
+                              const Icon(
+                                Icons.remove_red_eye_outlined,
+                                color: Colors.white24,
+                                size: 13,
+                              ),
                               SizedBox(width: 4.w),
                               CustomText(
                                 text: "${asset.views} Views",
@@ -572,7 +591,11 @@ class BusinessProfileScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                               SizedBox(width: 14.w),
-                              const Icon(Icons.favorite_border, color: Colors.white24, size: 12),
+                              const Icon(
+                                Icons.favorite_border,
+                                color: Colors.white24,
+                                size: 12,
+                              ),
                               SizedBox(width: 4.w),
                               CustomText(
                                 text: "${asset.leads} Likes",
@@ -638,7 +661,8 @@ class BusinessProfileScreen extends StatelessWidget {
                 arguments: {
                   'title': event['title'],
                   'organizer': 'ANDERSON RACING',
-                  'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
+                  'imageUrl':
+                      'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
                   'date': '${event['date']}, 2024',
                   'time': '09:00 GMT',
                   'location': '${event['location']} CIRCUIT',
@@ -701,7 +725,11 @@ class BusinessProfileScreen extends StatelessWidget {
                           SizedBox(height: 2.h),
                           Row(
                             children: [
-                              const Icon(Icons.location_on_outlined, color: Colors.white38, size: 11),
+                              const Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.white38,
+                                size: 11,
+                              ),
                               SizedBox(width: 4.w),
                               CustomText(
                                 text: event['location']!,
@@ -710,7 +738,11 @@ class BusinessProfileScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                               SizedBox(width: 12.w),
-                              const Icon(Icons.group_outlined, color: Colors.white38, size: 11),
+                              const Icon(
+                                Icons.group_outlined,
+                                color: Colors.white38,
+                                size: 11,
+                              ),
                               SizedBox(width: 4.w),
                               CustomText(
                                 text: "SLOTS: ${event['slots']}",
@@ -738,7 +770,8 @@ class BusinessProfileScreen extends StatelessWidget {
       {
         'name': 'Porsche GT3 Collective',
         'members': '1,240 ACTIVE MEMBERS',
-        'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop',
+        'imageUrl':
+            'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop',
       },
     ];
 
@@ -770,7 +803,10 @@ class BusinessProfileScreen extends StatelessWidget {
         Column(
           children: clubs.map((club) {
             return GestureDetector(
-              onTap: () => Get.toNamed(AppRoutes.businessClubDetailsScreen, arguments: club),
+              onTap: () => Get.toNamed(
+                AppRoutes.businessClubDetailsScreen,
+                arguments: club,
+              ),
               child: Container(
                 margin: EdgeInsets.only(bottom: 12.h),
                 padding: EdgeInsets.all(12.w),

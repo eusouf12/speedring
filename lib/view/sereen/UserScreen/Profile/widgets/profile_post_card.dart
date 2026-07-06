@@ -46,16 +46,18 @@ class ProfilePostCard extends StatelessWidget {
               Container(
                 width: 38.w,
                 height: 38.w,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
+                decoration: const BoxDecoration(shape: BoxShape.circle),
                 child: ClipOval(
                   child: Image.network(
                     authorAvatar,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: const Color(0xff1C1C1C),
-                      child: const Icon(Icons.person, color: Colors.white24, size: 18),
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white24,
+                        size: 18,
+                      ),
                     ),
                   ),
                 ),
@@ -102,7 +104,11 @@ class ProfilePostCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: const Color(0xff1C1C1C),
-                  child: const Icon(Icons.image, color: Colors.white24, size: 48),
+                  child: const Icon(
+                    Icons.image,
+                    color: Colors.white24,
+                    size: 48,
+                  ),
                 ),
               ),
             ),
@@ -112,7 +118,11 @@ class ProfilePostCard extends StatelessWidget {
           /// Actions Row: Like, Comment, Share
           Row(
             children: [
-              const Icon(Icons.favorite_border, color: Colors.white70, size: 20),
+              const Icon(
+                Icons.favorite_border,
+                color: Colors.white70,
+                size: 20,
+              ),
               SizedBox(width: 6.w),
               CustomText(
                 text: likes,
@@ -121,7 +131,11 @@ class ProfilePostCard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               SizedBox(width: 18.w),
-              const Icon(Icons.chat_bubble_outline, color: Colors.white70, size: 18),
+              const Icon(
+                Icons.chat_bubble_outline,
+                color: Colors.white70,
+                size: 18,
+              ),
               SizedBox(width: 6.w),
               CustomText(
                 text: comments,
@@ -154,9 +168,7 @@ class ProfilePostCard extends StatelessWidget {
                 ),
                 TextSpan(
                   text: "$caption ",
-                  style: const TextStyle(
-                    color: Colors.white70,
-                  ),
+                  style: const TextStyle(color: Colors.white70),
                 ),
                 ...hashtags.map(
                   (tag) => TextSpan(

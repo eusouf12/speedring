@@ -10,8 +10,10 @@ class AccessGrantedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String eventTitle = Get.arguments?['title'] ?? 'SILVERSTONE PERFORMANCE PADDOCK';
-    final String date = Get.arguments?['date'] ?? '24.10.24'; // default or format date
+    final String eventTitle =
+        Get.arguments?['title'] ?? 'SILVERSTONE PERFORMANCE PADDOCK';
+    final String date =
+        Get.arguments?['date'] ?? '24.10.24'; // default or format date
     final String passId = Get.arguments?['passId'] ?? 'XP-992-GTR';
 
     // Normalize date to DD.MM.YY format if it's like "OCT 24, 2024"
@@ -28,7 +30,7 @@ class AccessGrantedScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(),
-        
+
               /// Header Title
               const Text(
                 "SESSION JOINED // ACCESS GRANTED",
@@ -41,11 +43,14 @@ class AccessGrantedScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-        
+
               /// Card Container
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 24,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xff181818),
                   borderRadius: BorderRadius.circular(12),
@@ -69,43 +74,45 @@ class AccessGrantedScreen extends StatelessWidget {
                           height: 180,
                           width: 180,
                           color: Colors.black,
-                          child: const Icon(Icons.qr_code_2, color: Colors.white, size: 80),
+                          child: const Icon(
+                            Icons.qr_code_2,
+                            color: Colors.white,
+                            size: 80,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 28),
-        
+
                     /// Event Row
                     _buildDetailRow(
                       label: "EVENT",
                       value: eventTitle.toUpperCase(),
                     ),
                     const Divider(color: Colors.white10, height: 24),
-        
+
                     /// Date Row
-                    _buildDetailRow(
-                      label: "DATE",
-                      value: displayDate,
-                    ),
+                    _buildDetailRow(label: "DATE", value: displayDate),
                     const Divider(color: Colors.white10, height: 24),
-        
+
                     /// ID Row
-                    _buildDetailRow(
-                      label: "ID",
-                      value: passId,
-                    ),
+                    _buildDetailRow(label: "ID", value: passId),
                   ],
                 ),
               ),
-        
+
               const Spacer(),
-        
+
               /// Download Pass Button
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: OutlinedButton.icon(
-                  icon: const Icon(Icons.download, color: AppColors.yellow, size: 18),
+                  icon: const Icon(
+                    Icons.download,
+                    color: AppColors.yellow,
+                    size: 18,
+                  ),
                   label: const Text(
                     "DOWNLOAD PASS",
                     style: TextStyle(
@@ -135,13 +142,17 @@ class AccessGrantedScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-        
+
               /// Add to Calendar Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton.icon(
-                  icon: const Icon(Icons.calendar_today, color: Colors.black, size: 16),
+                  icon: const Icon(
+                    Icons.calendar_today,
+                    color: Colors.black,
+                    size: 16,
+                  ),
                   label: const Text(
                     "ADD TO CALENDAR",
                     style: TextStyle(
@@ -172,12 +183,14 @@ class AccessGrantedScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-        
+
               /// Return to Feed Link
               GestureDetector(
                 onTap: () {
                   // Navigate back to user home screen
-                  Get.until((route) => Get.currentRoute == AppRoutes.userHomeScreen);
+                  Get.until(
+                    (route) => Get.currentRoute == AppRoutes.userHomeScreen,
+                  );
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

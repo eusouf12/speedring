@@ -34,50 +34,54 @@ class AddAssetCategoryScreen extends StatelessWidget {
                 fontSize: 12.sp,
               ),
               SizedBox(height: 24.h),
-      
+
               // Vehicles Category Card
               _buildCategoryCard(
                 label: "VEHICLES",
                 title: "HIGH-PERFORMANCE VEHICLES",
                 desc: "GT3, Formula, and Road-Legal track specials.",
-                imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
                 onTap: () {
                   // Route to vehicle listing creation screen
                   Get.toNamed(AppRoutes.createVehicleListingScreen);
                 },
               ),
               SizedBox(height: 16.h),
-      
+
               // Motorcycles Category Card
               _buildCategoryCard(
                 label: "MOTORCYCLES",
                 title: "SUPERBIKES",
                 desc: "Elite two-wheel performance machinery.",
-                imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
                 onTap: () {
                   Get.toNamed(AppRoutes.createMotorcycleListingScreen);
                 },
               ),
               SizedBox(height: 16.h),
-      
+
               // Parts Category Card
               _buildCategoryCard(
                 label: "PARTS",
                 title: "PERFORMANCE PARTS",
                 desc: "Individual components and engineering modules.",
-                imageUrl: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=800&fit=crop",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=800&fit=crop",
                 onTap: () {
                   Get.toNamed(AppRoutes.createPartsListingScreen);
                 },
               ),
               SizedBox(height: 16.h),
-      
+
               // Services Category Card
               _buildCategoryCard(
                 label: "SERVICES",
                 title: "EXPERT SERVICES",
                 desc: "Workshop tuning, coaching, and maintenance.",
-                imageUrl: "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop",
                 onTap: () {
                   Get.toNamed(AppRoutes.createServicesListingScreen);
                 },
@@ -149,7 +153,8 @@ class AddAssetCategoryScreen extends StatelessWidget {
                 height: double.infinity,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(color: Colors.black),
+                errorBuilder: (context, error, stackTrace) =>
+                    Container(color: Colors.black),
               ),
             ),
 

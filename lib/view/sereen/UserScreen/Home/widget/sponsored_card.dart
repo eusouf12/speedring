@@ -32,7 +32,6 @@ class SponsoredCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           /// "SPONSORED" label
           Row(
             children: [

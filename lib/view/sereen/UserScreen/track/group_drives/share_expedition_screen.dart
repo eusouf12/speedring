@@ -65,9 +65,14 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                           height: 38,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.yellow, width: 1.5),
+                            border: Border.all(
+                              color: AppColors.yellow,
+                              width: 1.5,
+                            ),
                             image: const DecorationImage(
-                              image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop"),
+                              image: NetworkImage(
+                                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -79,18 +84,29 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                             children: const [
                               Text(
                                 "@COMMANDER_ALPHA",
-                                style: TextStyle(color: AppColors.yellow, fontSize: 11, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: AppColors.yellow,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               SizedBox(height: 2),
                               Text(
                                 "MIDNIGHT COAST RUN",
-                                style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w900),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
                             ],
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.more_vert, color: Colors.white60),
+                          icon: const Icon(
+                            Icons.more_vert,
+                            color: Colors.white60,
+                          ),
                           onPressed: () {},
                         ),
                       ],
@@ -103,7 +119,9 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                     width: double.infinity,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage("https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&fit=crop"),
+                        image: NetworkImage(
+                          "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&fit=crop",
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -115,26 +133,45 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                     color: const Color(0xff0d0d0d),
                     child: Row(
                       children: [
-                        Expanded(child: _buildPreviewMetric("DISTANCE", "142.8", "KM")),
-                        Expanded(child: _buildPreviewMetric("TIME", "03:12:45", "")),
-                        Expanded(child: _buildPreviewMetric("AVG VELOCITY", "107", "KM/H")),
+                        Expanded(
+                          child: _buildPreviewMetric("DISTANCE", "142.8", "KM"),
+                        ),
+                        Expanded(
+                          child: _buildPreviewMetric("TIME", "03:12:45", ""),
+                        ),
+                        Expanded(
+                          child: _buildPreviewMetric(
+                            "AVG VELOCITY",
+                            "107",
+                            "KM/H",
+                          ),
+                        ),
                       ],
                     ),
                   ),
 
                   /// Card Footer (Avatars + Likes/Comments/Share)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 12,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            _buildMiniAvatar("https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop"),
+                            _buildMiniAvatar(
+                              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop",
+                            ),
                             const SizedBox(width: 4),
-                            _buildMiniAvatar("https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&fit=crop"),
+                            _buildMiniAvatar(
+                              "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&fit=crop",
+                            ),
                             const SizedBox(width: 4),
-                            _buildMiniAvatar("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop"),
+                            _buildMiniAvatar(
+                              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop",
+                            ),
                             const SizedBox(width: 4),
                             Container(
                               width: 20,
@@ -146,7 +183,11 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                               alignment: Alignment.center,
                               child: const Text(
                                 "+8",
-                                style: TextStyle(color: Colors.white60, fontSize: 7, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: Colors.white60,
+                                  fontSize: 7,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ],
@@ -155,17 +196,29 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                           children: [
                             IconButton(
                               visualDensity: VisualDensity.compact,
-                              icon: const Icon(Icons.favorite_border, color: Colors.white70, size: 20),
+                              icon: const Icon(
+                                Icons.favorite_border,
+                                color: Colors.white70,
+                                size: 20,
+                              ),
                               onPressed: () {},
                             ),
                             IconButton(
                               visualDensity: VisualDensity.compact,
-                              icon: const Icon(Icons.chat_bubble_outline, color: Colors.white70, size: 20),
+                              icon: const Icon(
+                                Icons.chat_bubble_outline,
+                                color: Colors.white70,
+                                size: 20,
+                              ),
                               onPressed: () {},
                             ),
                             IconButton(
                               visualDensity: VisualDensity.compact,
-                              icon: const Icon(Icons.share_outlined, color: Colors.white70, size: 20),
+                              icon: const Icon(
+                                Icons.share_outlined,
+                                color: Colors.white70,
+                                size: 20,
+                              ),
                               onPressed: () {},
                             ),
                           ],
@@ -199,7 +252,10 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.yellow, width: 1),
+                  borderSide: const BorderSide(
+                    color: AppColors.yellow,
+                    width: 1,
+                  ),
                 ),
               ),
             ),
@@ -209,9 +265,19 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
             _buildSectionHeader("TACTICAL TAGGING"),
             Row(
               children: [
-                Expanded(child: _buildTaggingButton("TAG PILOTS", Icons.person_add_alt_1_outlined)),
+                Expanded(
+                  child: _buildTaggingButton(
+                    "TAG PILOTS",
+                    Icons.person_add_alt_1_outlined,
+                  ),
+                ),
                 const SizedBox(width: 12),
-                Expanded(child: _buildTaggingButton("TAG VEHICLES", Icons.directions_car_outlined)),
+                Expanded(
+                  child: _buildTaggingButton(
+                    "TAG VEHICLES",
+                    Icons.directions_car_outlined,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 24),
@@ -259,7 +325,11 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                     SizedBox(width: 8),
                     Text(
                       "POST TO FEED",
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ],
                 ),
@@ -293,7 +363,11 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(color: Colors.white38, fontSize: 7, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white38,
+            fontSize: 7,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 4),
         Row(
@@ -302,15 +376,23 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
           children: [
             Text(
               val,
-              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
+              ),
             ),
             if (unit.isNotEmpty) ...[
               const SizedBox(width: 2),
               Text(
                 unit,
-                style: const TextStyle(color: Colors.white38, fontSize: 7, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white38,
+                  fontSize: 7,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ]
+            ],
           ],
         ),
       ],
@@ -347,7 +429,11 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
             const SizedBox(width: 8),
             Text(
               label,
-              style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(width: 4),
             const Icon(Icons.chevron_right, color: Colors.white38, size: 12),
@@ -372,14 +458,20 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
             color: isSelected ? const Color(0xff222222) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isSelected ? AppColors.yellow.withValues(alpha:0.3) : Colors.transparent,
+              color: isSelected
+                  ? AppColors.yellow.withValues(alpha: 0.3)
+                  : Colors.transparent,
               width: 1,
             ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: isSelected ? AppColors.yellow : Colors.white38, size: 14),
+              Icon(
+                icon,
+                color: isSelected ? AppColors.yellow : Colors.white38,
+                size: 14,
+              ),
               const SizedBox(width: 6),
               Text(
                 label,

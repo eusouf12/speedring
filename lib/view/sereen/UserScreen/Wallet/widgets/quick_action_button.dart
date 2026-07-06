@@ -25,16 +25,12 @@ class QuickActionButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xff111111),
             borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: AppColors.yellow,
-                size: 28.w,
-              ),
+              Icon(icon, color: AppColors.yellow, size: 28.w),
               SizedBox(height: 12.h),
               CustomText(
                 text: title,

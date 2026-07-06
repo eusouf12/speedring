@@ -21,7 +21,7 @@ class ChoosePlanScreen extends StatelessWidget {
 
     return CustomGradient(
       child: Scaffold(
-        backgroundColor:AppColors.black,
+        backgroundColor: AppColors.black,
         appBar: const CustomAppBarSpeedring(),
         body: Column(
           children: [
@@ -147,7 +147,6 @@ class ChoosePlanScreen extends StatelessWidget {
   }
 }
 
-
 //  _PlanCard  –  StatelessWidget
 
 class _PlanCard extends StatelessWidget {
@@ -175,7 +174,6 @@ class _PlanCard extends StatelessWidget {
   final bool proBadge;
   final bool highlighted;
 
- 
   static const Color _cardBg = Color(0xff1C1C1C);
 
   @override
@@ -217,7 +215,9 @@ class _PlanCard extends StatelessWidget {
                         children: [
                           CustomText(
                             text: tier,
-                            color: highlighted ? AppColors.yellow: Colors.white54,
+                            color: highlighted
+                                ? AppColors.yellow
+                                : Colors.white54,
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 1.2,
@@ -261,7 +261,9 @@ class _PlanCard extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.check,
-                          color: highlighted ? AppColors.yellow : Colors.white60,
+                          color: highlighted
+                              ? AppColors.yellow
+                              : Colors.white60,
                           size: 14,
                         ),
                         const SizedBox(width: 8),
@@ -320,8 +322,6 @@ class _PromoTag extends StatelessWidget {
   const _PromoTag({required this.label});
   final String label;
 
- 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -343,8 +343,6 @@ class _PromoTag extends StatelessWidget {
 
 class _ProBadgeRow extends StatelessWidget {
   const _ProBadgeRow();
-
- 
 
   @override
   Widget build(BuildContext context) {

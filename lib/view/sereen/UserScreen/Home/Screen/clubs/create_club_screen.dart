@@ -44,7 +44,11 @@ class CreateClubScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.yellow, size: 24),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColors.yellow,
+              size: 24,
+            ),
             onPressed: () => Get.back(),
           ),
           title: const Text(
@@ -64,7 +68,7 @@ class CreateClubScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-      
+
               /// SECTION 01 - IDENTITY
               _buildSectionHeader("SECTION 01 - IDENTITY"),
               Container(
@@ -101,58 +105,70 @@ class CreateClubScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-      
+
               /// SECTION 02 - CLASSIFICATION
               _buildSectionHeader("SECTION 02 - CLASSIFICATION"),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: _buildCardDecoration(),
-                child: Obx(() => Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: categories.map((cat) {
-                    final bool isSelected = cat['name'] == controller.selectedClass.value;
-                    return GestureDetector(
-                      onTap: () {
-                        controller.selectedClass.value = cat['name'];
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: isSelected ? AppColors.yellow : Colors.white10,
-                            width: 1.5,
+                child: Obx(
+                  () => Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: categories.map((cat) {
+                      final bool isSelected =
+                          cat['name'] == controller.selectedClass.value;
+                      return GestureDetector(
+                        onTap: () {
+                          controller.selectedClass.value = cat['name'];
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.yellow
+                                  : Colors.white10,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                cat['icon'],
+                                color: isSelected
+                                    ? AppColors.yellow
+                                    : Colors.white60,
+                                size: 14,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                cat['name'],
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? AppColors.yellow
+                                      : Colors.white60,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              cat['icon'],
-                              color: isSelected ? AppColors.yellow : Colors.white60,
-                              size: 14,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              cat['name'],
-                              style: TextStyle(
-                                color: isSelected ? AppColors.yellow : Colors.white60,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                )),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
-      
+
               /// SECTION 03 - VISIBILITY
               _buildSectionHeader("SECTION 03 - VISIBILITY"),
               Container(
@@ -174,46 +190,52 @@ class CreateClubScreen extends StatelessWidget {
                     const SizedBox(height: 4),
                     const Text(
                       "Define entry protocol",
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 11,
-                      ),
+                      style: TextStyle(color: Colors.white60, fontSize: 11),
                     ),
                     const SizedBox(height: 12),
-                    Obx(() => Row(
-                      children: ["PUBLIC", "APPROVAL", "INVITE"].map((type) {
-                        final bool isSel = type == controller.selectedAccess.value;
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              controller.selectedAccess.value = type;
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
-                              height: 38,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(
-                                  color: isSel ? AppColors.yellow : Colors.white10,
-                                  width: 1,
+                    Obx(
+                      () => Row(
+                        children: ["PUBLIC", "APPROVAL", "INVITE"].map((type) {
+                          final bool isSel =
+                              type == controller.selectedAccess.value;
+                          return Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                controller.selectedAccess.value = type;
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 4,
                                 ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  type,
-                                  style: TextStyle(
-                                    color: isSel ? AppColors.yellow : Colors.white60,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                                height: 38,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: isSel
+                                        ? AppColors.yellow
+                                        : Colors.white10,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    type,
+                                    style: TextStyle(
+                                      color: isSel
+                                          ? AppColors.yellow
+                                          : Colors.white60,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      }).toList(),
-                    )),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -239,23 +261,27 @@ class CreateClubScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Obx(() => Switch(
-                          value: controller.telemetryVerification.value,
-                          onChanged: (val) {
-                            controller.telemetryVerification.value = val;
-                          },
-                          activeThumbColor: AppColors.yellow,
-                          activeTrackColor: AppColors.yellow.withValues(alpha:0.3),
-                          inactiveThumbColor: Colors.white38,
-                          inactiveTrackColor: Colors.white10,
-                        )),
+                        Obx(
+                          () => Switch(
+                            value: controller.telemetryVerification.value,
+                            onChanged: (val) {
+                              controller.telemetryVerification.value = val;
+                            },
+                            activeThumbColor: AppColors.yellow,
+                            activeTrackColor: AppColors.yellow.withValues(
+                              alpha: 0.3,
+                            ),
+                            inactiveThumbColor: Colors.white38,
+                            inactiveTrackColor: Colors.white10,
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
-      
+
               /// SECTION 04 - VISUALS
               _buildSectionHeader("SECTION 04 - VISUALS"),
               Container(
@@ -279,17 +305,28 @@ class CreateClubScreen extends StatelessWidget {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white12, style: BorderStyle.solid),
+                        border: Border.all(
+                          color: Colors.white12,
+                          style: BorderStyle.solid,
+                        ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Icon(Icons.upload_file_outlined, color: Colors.white60, size: 24),
+                          Icon(
+                            Icons.upload_file_outlined,
+                            color: Colors.white60,
+                            size: 24,
+                          ),
                           SizedBox(height: 4),
                           Text(
                             "SVG / PNG",
-                            style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -312,7 +349,9 @@ class CreateClubScreen extends StatelessWidget {
                         border: Border.all(color: Colors.white12),
                         borderRadius: BorderRadius.circular(8),
                         image: const DecorationImage(
-                          image: NetworkImage("https://picsum.photos/seed/createbanner/600/300"),
+                          image: NetworkImage(
+                            "https://picsum.photos/seed/createbanner/600/300",
+                          ),
                           fit: BoxFit.cover,
                           opacity: 0.3,
                         ),
@@ -321,11 +360,19 @@ class CreateClubScreen extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
-                            Icon(Icons.add_photo_alternate_outlined, color: Colors.white70, size: 28),
+                            Icon(
+                              Icons.add_photo_alternate_outlined,
+                              color: Colors.white70,
+                              size: 28,
+                            ),
                             SizedBox(height: 6),
                             Text(
                               "DEPLOY BANNER ASSET",
-                              style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w900),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w900,
+                              ),
                             ),
                           ],
                         ),
@@ -335,7 +382,7 @@ class CreateClubScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32),
-      
+
               /// Create Club Button
               SizedBox(
                 width: double.infinity,
@@ -372,7 +419,7 @@ class CreateClubScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-      
+
               /// Cancel Button
               Center(
                 child: TextButton(

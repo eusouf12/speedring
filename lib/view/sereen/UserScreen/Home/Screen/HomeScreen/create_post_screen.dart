@@ -51,10 +51,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-      
+
         /// ── AppBar ─────────────────────────────────────────────────────────
         appBar: CustomRoyelAppbar(titleName: "Create Post", leftIcon: true),
-      
+
         body: Column(
           children: [
             Expanded(
@@ -64,7 +64,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 60),
-      
+
                     /// ── Post type cards ────────────────────────────────────
                     ...List.generate(_postTypes.length, (i) {
                       final type = _postTypes[i];
@@ -106,9 +106,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   size: 22,
                                 ),
                               ),
-      
+
                               const SizedBox(width: 14),
-      
+
                               /// Text
                               Expanded(
                                 child: Column(
@@ -137,12 +137,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   ],
                                 ),
                               ),
-      
+
                               const SizedBox(width: 8),
-      
+
                               Icon(
                                 Icons.chevron_right,
-                                color: isSelected ? AppColors.yellow : Colors.white24,
+                                color: isSelected
+                                    ? AppColors.yellow
+                                    : Colors.white24,
                                 size: 20,
                               ),
                             ],
@@ -150,46 +152,53 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         ),
                       );
                     }),
-      
+
                     const SizedBox(height: 24),
                   ],
                 ),
               ),
             ),
-      
+
             /// ── Bottom section ─────────────────────────────────────────────
             Padding(
-              padding: EdgeInsets.fromLTRB(20, 12, 20, MediaQuery.of(context).padding.bottom + 16,),
+              padding: EdgeInsets.fromLTRB(
+                20,
+                12,
+                20,
+                MediaQuery.of(context).padding.bottom + 16,
+              ),
               child: Column(
                 children: [
                   /// CONTINUE button
                   GestureDetector(
-                    onTap: _selectedIndex != null ? () {
-                      Widget target;
-                      switch (_selectedIndex) {
-                        case 0:
-                          target = const SessionPostScreen();
-                          break;
-                        case 1:
-                          target = const SpotPostScreen();
-                          break;
-                        case 2:
-                          target = const TrackUpdateScreen();
-                          break;
-                        case 3:
-                          target = const ClubPostScreen();
-                          break;
-                        case 4:
-                          target = const BusinessPostScreen();
-                          break;
-                        default:
-                          return;
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => target),
-                      );
-                    } : null,
+                    onTap: _selectedIndex != null
+                        ? () {
+                            Widget target;
+                            switch (_selectedIndex) {
+                              case 0:
+                                target = const SessionPostScreen();
+                                break;
+                              case 1:
+                                target = const SpotPostScreen();
+                                break;
+                              case 2:
+                                target = const TrackUpdateScreen();
+                                break;
+                              case 3:
+                                target = const ClubPostScreen();
+                                break;
+                              case 4:
+                                target = const BusinessPostScreen();
+                                break;
+                              default:
+                                return;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => target),
+                            );
+                          }
+                        : null,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       height: 56,
@@ -214,9 +223,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       ),
                     ),
                   ),
-      
+
                   const SizedBox(height: 12),
-      
+
                   const Text(
                     "SELECT A CATEGORY TO PROCEED TO THE EDITOR",
                     textAlign: TextAlign.center,

@@ -11,7 +11,6 @@ class CustomTabSingleText extends StatelessWidget {
   final bool? isTextColorActive;
   final bool? isPadding;
 
-
   const CustomTabSingleText({
     super.key,
     required this.tabs,
@@ -28,12 +27,7 @@ class CustomTabSingleText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 0,
-            color: unselectedColor,
-          ),
-        ),
+        border: Border(bottom: BorderSide(width: 0, color: unselectedColor)),
       ),
       padding: isPadding!
           ? const EdgeInsets.symmetric(horizontal: 22)
@@ -74,7 +68,7 @@ class CustomTabSingleText extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 20,),
+                SizedBox(width: 20),
               ],
             );
           }),

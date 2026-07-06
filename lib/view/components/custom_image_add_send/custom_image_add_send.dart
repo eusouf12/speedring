@@ -149,7 +149,7 @@ class _CustomImageAddSendState extends State<CustomImageAddSend> {
 /*   IconButton(
                   onPressed: customImageAddSendController.sendMessage,
                   icon: Icon(Icons.send, color: Colors.blue),
-                ),*//*
+                ),*/ /*
 
           ],
         ),

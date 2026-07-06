@@ -65,8 +65,8 @@ class SpotPostScreen extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.black.withValues(alpha:0.2),
-                            Colors.black.withValues(alpha:0.7),
+                            Colors.black.withValues(alpha: 0.2),
+                            Colors.black.withValues(alpha: 0.7),
                           ],
                         ),
                       ),
@@ -97,10 +97,10 @@ class SpotPostScreen extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             /// ── SECTION 1: VEHICLE IDENTIFICATION ──────────────────────────
             const _SectionHeader("VEHICLE IDENTIFICATION"),
-      
+
             const _FieldLabel("LICENSE PLATE"),
             const SizedBox(height: 6),
             const _CustomInputRow(
@@ -114,22 +114,18 @@ class SpotPostScreen extends StatelessWidget {
               ),
               hint: "ENTER PLATE ID",
             ),
-      
+
             const SizedBox(height: 14),
-      
+
             const _FieldLabel("REGION / COUNTRY"),
             const SizedBox(height: 6),
             const _CustomInputRow(
-              icon: Icon(
-                Icons.public,
-                color: AppColors.yellow,
-                size: 20,
-              ),
+              icon: Icon(Icons.public, color: AppColors.yellow, size: 20),
               hint: "SELECT REGION",
             ),
-      
+
             const SizedBox(height: 14),
-      
+
             const _FieldLabel("MAKE & MODEL"),
             const SizedBox(height: 6),
             const _CustomInputRow(
@@ -140,10 +136,10 @@ class SpotPostScreen extends StatelessWidget {
               ),
               hint: "E.G. PORSCHE 911 GT3 RS",
             ),
-      
+
             /// ── SECTION 2: SPECIFICATION OVERRIDE ──────────────────────────
             const _SectionHeader("SPECIFICATION OVERRIDE"),
-      
+
             _SpecBox(
               label: "ENGINE",
               child: Column(
@@ -183,16 +179,12 @@ class SpotPostScreen extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             _SpecBox(
               label: "POWER (HP)",
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.flash_on,
-                    color: AppColors.yellow,
-                    size: 20,
-                  ),
+                  const Icon(Icons.flash_on, color: AppColors.yellow, size: 20),
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextFormField(
@@ -217,7 +209,7 @@ class SpotPostScreen extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             // _SpecBox(
             //   label: "0-100 KM/H (S)",
             //   child: Row(
@@ -251,9 +243,8 @@ class SpotPostScreen extends StatelessWidget {
             //     ],
             //   ),
             // ),
-      
             const SizedBox(height: 40),
-      
+
             /// ── Publish button ───────────────────────────────────────────
             GestureDetector(
               onTap: () => Navigator.pop(context),
@@ -276,7 +267,7 @@ class SpotPostScreen extends StatelessWidget {
                 ),
               ),
             ),
-      
+
             const SizedBox(height: 32),
           ],
         ),
@@ -319,14 +310,14 @@ class _FieldLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white38,
-          fontSize: 9,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 1.2,
-        ),
-      );
+    text,
+    style: const TextStyle(
+      color: Colors.white38,
+      fontSize: 9,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 1.2,
+    ),
+  );
 }
 
 class _CustomInputRow extends StatelessWidget {

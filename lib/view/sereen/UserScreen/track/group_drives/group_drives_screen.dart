@@ -23,7 +23,8 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
       "date": "24.OCT // 22:00",
       "members": "12/20",
       "startingPoint": "PACIFIC COAST HIGHWAY // GATE 4",
-      "imageUrl": "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&auto=format&fit=crop",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&auto=format&fit=crop",
       "isJoinable": true,
       "isFull": false,
     },
@@ -34,7 +35,8 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
       "date": "26.OCT // 05:30",
       "members": "38/38",
       "startingPoint": "SPEEDRING HUB // MAIN ENTRANCE",
-      "imageUrl": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&auto=format&fit=crop",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&auto=format&fit=crop",
       "isJoinable": false,
       "isFull": true,
     },
@@ -45,10 +47,11 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
       "date": "27.OCT // 01:00",
       "members": "04/15",
       "startingPoint": "SOUTH TUNNEL // SECTOR B",
-      "imageUrl": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop",
       "isJoinable": true,
       "isFull": false,
-    }
+    },
   ];
 
   @override
@@ -148,10 +151,14 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
         child: Container(
           height: 38,
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xff222222) : const Color(0xff111111),
+            color: isSelected
+                ? const Color(0xff222222)
+                : const Color(0xff111111),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isSelected ? AppColors.yellow.withValues(alpha:0.3) : Colors.white10,
+              color: isSelected
+                  ? AppColors.yellow.withValues(alpha: 0.3)
+                  : Colors.white10,
               width: 1,
             ),
           ),
@@ -186,7 +193,9 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
                 child: Image.network(
                   drive["imageUrl"],
                   height: 150,
@@ -194,8 +203,12 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                   fit: BoxFit.cover,
                   errorBuilder: (context, _, _) => Container(
                     height: 150,
-                    color: Colors.white.withValues(alpha:0.05),
-                    child: const Icon(Icons.directions_car, color: Colors.white24, size: 40),
+                    color: Colors.white.withValues(alpha: 0.05),
+                    child: const Icon(
+                      Icons.directions_car,
+                      color: Colors.white24,
+                      size: 40,
+                    ),
                   ),
                 ),
               ),
@@ -203,7 +216,10 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                 top: 12,
                 right: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: isOpen ? AppColors.yellow : const Color(0xff333333),
                     borderRadius: BorderRadius.circular(4),
@@ -222,7 +238,10 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                 bottom: 12,
                 left: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   color: Colors.black54,
                   child: Text(
                     drive["phase"],
@@ -262,12 +281,20 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                         children: [
                           const Text(
                             "DATE & TIME",
-                            style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             drive["date"],
-                            style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -278,12 +305,20 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                         children: [
                           const Text(
                             "MEMBERS",
-                            style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             drive["members"],
-                            style: const TextStyle(color: AppColors.yellow, fontSize: 12, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: AppColors.yellow,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -293,12 +328,20 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                 const SizedBox(height: 12),
                 const Text(
                   "STARTING POINT",
-                  style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   drive["startingPoint"],
-                  style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 16),
 
@@ -310,8 +353,12 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                         height: 44,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isOpen ? AppColors.yellow : const Color(0xff2a2a2a),
-                            foregroundColor: isOpen ? Colors.black : Colors.white30,
+                            backgroundColor: isOpen
+                                ? AppColors.yellow
+                                : const Color(0xff2a2a2a),
+                            foregroundColor: isOpen
+                                ? Colors.black
+                                : Colors.white30,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -324,7 +371,11 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                           },
                           child: Text(
                             isOpen ? "JOIN DRIVE" : "LOBBY FULL",
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ),
                       ),
@@ -338,15 +389,19 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.share_outlined, color: Colors.white70, size: 18),
+                        icon: const Icon(
+                          Icons.share_outlined,
+                          color: Colors.white70,
+                          size: 18,
+                        ),
                         onPressed: () {},
                       ),
-                    )
+                    ),
                   ],
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

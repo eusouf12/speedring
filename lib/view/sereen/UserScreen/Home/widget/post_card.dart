@@ -40,16 +40,13 @@ class PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             /// Header
             ListTile(
               leading: CircleAvatar(
                 backgroundImage: profileImage != null
                     ? NetworkImage(profileImage!)
                     : null,
-                child: profileImage == null
-                    ? const Icon(Icons.person)
-                    : null,
+                child: profileImage == null ? const Icon(Icons.person) : null,
               ),
               title: Text(
                 userName,
@@ -88,12 +85,18 @@ class PostCard extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: onLike,
-                    child: const Icon(Icons.favorite_border, color: Colors.white),
+                    child: const Icon(
+                      Icons.favorite_border,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   GestureDetector(
                     onTap: onComment,
-                    child: const Icon(Icons.chat_bubble_outline, color: Colors.white),
+                    child: const Icon(
+                      Icons.chat_bubble_outline,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   GestureDetector(
@@ -109,10 +112,7 @@ class PostCard extends StatelessWidget {
             /// Caption
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Text(
-                caption,
-                style: const TextStyle(color: Colors.white),
-              ),
+              child: Text(caption, style: const TextStyle(color: Colors.white)),
             ),
           ],
         ),

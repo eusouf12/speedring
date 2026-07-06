@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 
-
 void showCommentSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
@@ -120,7 +119,11 @@ class _CommentSheet extends StatelessWidget {
                     const Spacer(),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.close, color: Colors.white, size: 22),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
                   ],
                 ),
@@ -160,10 +163,8 @@ class _CommentSheet extends StatelessWidget {
                     vertical: 12,
                   ),
                   itemCount: _comments.length,
-                  separatorBuilder: (_, _) => const Divider(
-                    color: Colors.white12,
-                    height: 24,
-                  ),
+                  separatorBuilder: (_, _) =>
+                      const Divider(color: Colors.white12, height: 24),
                   itemBuilder: (_, i) => _CommentTile(data: _comments[i]),
                 ),
               ),
@@ -271,24 +272,28 @@ class _CommentTile extends StatelessWidget {
                 children: [
                   Text(
                     data.timeAgo,
-                    style: const TextStyle(
-                      color: Colors.white38,
-                      fontSize: 10,
-                    ),
+                    style: const TextStyle(color: Colors.white38, fontSize: 10),
                   ),
 
                   const SizedBox(width: 16),
 
                   /// Like
                   GestureDetector(
-                    onTap: () => controller.liked.value = !controller.liked.value,
+                    onTap: () =>
+                        controller.liked.value = !controller.liked.value,
                     child: Row(
                       children: [
-                        Obx(() => Icon(
-                          controller.liked.value ? Icons.favorite : Icons.favorite_border,
-                          color: controller.liked.value ? Colors.red : Colors.white38,
-                          size: 13,
-                        )),
+                        Obx(
+                          () => Icon(
+                            controller.liked.value
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: controller.liked.value
+                                ? Colors.red
+                                : Colors.white38,
+                            size: 13,
+                          ),
+                        ),
                         const SizedBox(width: 3),
                         Text(
                           data.likeCount,
@@ -432,28 +437,34 @@ class _CommentInputBar extends StatelessWidget {
             const SizedBox(width: 10),
 
             /// Send button
-            Obx(() => AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: controller.hasText.value ? AppColors.yellow : Colors.white12,
-                shape: BoxShape.circle,
-              ),
-              child: GestureDetector(
-                onTap: controller.hasText.value
-                    ? () {
-                        controller.ctrl.clear();
-                        FocusScope.of(context).unfocus();
-                      }
-                    : null,
-                child: Icon(
-                  Icons.arrow_upward_rounded,
-                  color: controller.hasText.value ? Colors.black : Colors.white38,
-                  size: 20,
+            Obx(
+              () => AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: controller.hasText.value
+                      ? AppColors.yellow
+                      : Colors.white12,
+                  shape: BoxShape.circle,
+                ),
+                child: GestureDetector(
+                  onTap: controller.hasText.value
+                      ? () {
+                          controller.ctrl.clear();
+                          FocusScope.of(context).unfocus();
+                        }
+                      : null,
+                  child: Icon(
+                    Icons.arrow_upward_rounded,
+                    color: controller.hasText.value
+                        ? Colors.black
+                        : Colors.white38,
+                    size: 20,
+                  ),
                 ),
               ),
-            )),
+            ),
           ],
         ),
       ),

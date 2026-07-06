@@ -11,14 +11,17 @@ class CreatePartsListingScreen extends StatefulWidget {
   const CreatePartsListingScreen({super.key});
 
   @override
-  State<CreatePartsListingScreen> createState() => _CreatePartsListingScreenState();
+  State<CreatePartsListingScreen> createState() =>
+      _CreatePartsListingScreenState();
 }
 
 class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
-  final partNameController = TextEditingController(text: "Brembo GTR Racing Calipers");
+  final partNameController = TextEditingController(
+    text: "Brembo GTR Racing Calipers",
+  );
   final priceController = TextEditingController(text: "8,500");
   final skuController = TextEditingController(text: "BR-GTR-CAL-04");
-  
+
   final makeController = TextEditingController(text: "Porsche");
   final modelController = TextEditingController(text: "911 GT3 / Cup");
   final yearRangeController = TextEditingController(text: "2020 - 2025");
@@ -107,10 +110,18 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                 ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("PART NAME / DESIGNATION"),
-                _buildOutlineField(partNameController, "e.g. Brembo GTR Racing Calipers"),
+                _buildOutlineField(
+                  partNameController,
+                  "e.g. Brembo GTR Racing Calipers",
+                ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("ASKING PRICE (USD)"),
-                _buildOutlineIconField(priceController, Icons.payments_outlined, "8,500", keyboardType: TextInputType.number),
+                _buildOutlineIconField(
+                  priceController,
+                  Icons.payments_outlined,
+                  "8,500",
+                  keyboardType: TextInputType.number,
+                ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("SKU / SERIAL NUMBER"),
                 _buildOutlineIconField(
@@ -118,7 +129,11 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                   Icons.qr_code_scanner_outlined,
                   "e.g. BR-GTR-CAL-04",
                   suffixIcon: IconButton(
-                    icon: const Icon(Icons.qr_code_scanner, color: AppColors.yellow, size: 20),
+                    icon: const Icon(
+                      Icons.qr_code_scanner,
+                      color: AppColors.yellow,
+                      size: 20,
+                    ),
                     onPressed: () {
                       Get.snackbar(
                         "Scanner Active",
@@ -145,9 +160,13 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                 _buildOutlineField(modelController, "e.g. 911 GT3 / Cup"),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("MODEL YEAR RANGE"),
-                _buildOutlineIconField(yearRangeController, Icons.calendar_today_outlined, "e.g. 2020 - 2025"),
+                _buildOutlineIconField(
+                  yearRangeController,
+                  Icons.calendar_today_outlined,
+                  "e.g. 2020 - 2025",
+                ),
                 SizedBox(height: 18.h),
-                
+
                 // Specifications metrics in yellow font
                 const Divider(color: Colors.white10),
                 SizedBox(height: 10.h),
@@ -177,7 +196,10 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildFieldLabel("MATERIAL"),
-                          _buildYellowOutlineField(materialController, "Billet Aluminum"),
+                          _buildYellowOutlineField(
+                            materialController,
+                            "Billet Aluminum",
+                          ),
                         ],
                       ),
                     ),
@@ -191,7 +213,10 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildFieldLabel("TOLERANCE"),
-                          _buildYellowOutlineField(toleranceController, "±0.01 mm"),
+                          _buildYellowOutlineField(
+                            toleranceController,
+                            "±0.01 mm",
+                          ),
                         ],
                       ),
                     ),
@@ -201,7 +226,10 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildFieldLabel("RATING / CERTIFICATE"),
-                          _buildYellowOutlineField(ratingController, "Track Certified"),
+                          _buildYellowOutlineField(
+                            ratingController,
+                            "Track Certified",
+                          ),
                         ],
                       ),
                     ),
@@ -232,14 +260,19 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                           height: double.infinity,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (c, e, s) => Container(color: Colors.black),
+                          errorBuilder: (c, e, s) =>
+                              Container(color: Colors.black),
                         ),
                       ),
                       Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow, size: 24),
+                            const Icon(
+                              Icons.add_a_photo_outlined,
+                              color: AppColors.yellow,
+                              size: 24,
+                            ),
                             SizedBox(height: 6.h),
                             CustomText(
                               text: "PRIMARY PART VIEW",
@@ -280,7 +313,11 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.cancel_outlined, color: Colors.white60, size: 16),
+                          const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.white60,
+                            size: 16,
+                          ),
                           SizedBox(width: 6.w),
                           CustomText(
                             text: "CANCEL",
@@ -304,7 +341,11 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                       textColor: Colors.black,
                       borderRadius: 8.r,
                       isImageRight: true,
-                      icon: const Icon(Icons.publish_rounded, color: Colors.black, size: 16),
+                      icon: const Icon(
+                        Icons.publish_rounded,
+                        color: Colors.black,
+                        size: 16,
+                      ),
                       onTap: () {
                         // Publish item to controller list
                         String title = partNameController.text.trim();
@@ -312,25 +353,32 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
                         String price = priceController.text.trim();
                         if (!price.startsWith(r"$")) price = r"$" + price;
 
-                        controller.rxAssets.insert(0, AssetModel(
-                          id: (controller.rxAssets.length + 1).toString(),
-                          title: title.toUpperCase(),
-                          status: "LIVE",
-                          code: skuController.text.isEmpty ? "BR-GTR-CAL-04" : skuController.text,
-                          type: "PARTS",
-                          price: price,
-                          views: "0",
-                          leads: "0",
-                          shipping: "YES",
-                          imageUrl: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&fit=crop",
-                          description: "High performance ${partCategory.toLowerCase()} for ${makeController.text} ${modelController.text} (${yearRangeController.text}). Specs: Weight ${weightController.text}, Material ${materialController.text}.",
-                          power: "N/A",
-                          torque: "N/A",
-                          zeroToSixty: "N/A",
-                          engineConfig: "N/A",
-                          transmission: "N/A",
-                          drivetrain: "N/A",
-                        ));
+                        controller.rxAssets.insert(
+                          0,
+                          AssetModel(
+                            id: (controller.rxAssets.length + 1).toString(),
+                            title: title.toUpperCase(),
+                            status: "LIVE",
+                            code: skuController.text.isEmpty
+                                ? "BR-GTR-CAL-04"
+                                : skuController.text,
+                            type: "PARTS",
+                            price: price,
+                            views: "0",
+                            leads: "0",
+                            shipping: "YES",
+                            imageUrl:
+                                "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&fit=crop",
+                            description:
+                                "High performance ${partCategory.toLowerCase()} for ${makeController.text} ${modelController.text} (${yearRangeController.text}). Specs: Weight ${weightController.text}, Material ${materialController.text}.",
+                            power: "N/A",
+                            torque: "N/A",
+                            zeroToSixty: "N/A",
+                            engineConfig: "N/A",
+                            transmission: "N/A",
+                            drivetrain: "N/A",
+                          ),
+                        );
 
                         Get.back(); // Pop listing screen
                         Get.back(); // Pop Selector Screen
@@ -411,18 +459,32 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
       ),
       child: TextFormField(
         controller: textController,
-        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.white24, fontSize: 13, fontWeight: FontWeight.bold),
+          hintStyle: const TextStyle(
+            color: Colors.white24,
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
           isDense: true,
         ),
       ),
     );
   }
 
-  Widget _buildOutlineIconField(TextEditingController textController, IconData icon, String hint, {TextInputType? keyboardType, Widget? suffixIcon}) {
+  Widget _buildOutlineIconField(
+    TextEditingController textController,
+    IconData icon,
+    String hint, {
+    TextInputType? keyboardType,
+    Widget? suffixIcon,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -438,11 +500,19 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
             child: TextFormField(
               controller: textController,
               keyboardType: keyboardType,
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
-                hintStyle: const TextStyle(color: Colors.white24, fontSize: 13, fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(
+                  color: Colors.white24,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 isDense: true,
               ),
             ),
@@ -453,7 +523,10 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
     );
   }
 
-  Widget _buildYellowOutlineField(TextEditingController textController, String hint) {
+  Widget _buildYellowOutlineField(
+    TextEditingController textController,
+    String hint,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -463,11 +536,19 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
       ),
       child: TextFormField(
         controller: textController,
-        style: const TextStyle(color: AppColors.yellow, fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: AppColors.yellow,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: TextStyle(color: AppColors.yellow.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.bold),
+          hintStyle: TextStyle(
+            color: AppColors.yellow.withValues(alpha: 0.4),
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
           isDense: true,
         ),
       ),
@@ -495,15 +576,21 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
           Expanded(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                value: items.contains(selectedValue) ? selectedValue : items.first,
+                value: items.contains(selectedValue)
+                    ? selectedValue
+                    : items.first,
                 dropdownColor: const Color(0xff111111),
-                icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.white60,
+                ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
                 items: items.map((val) {
-                  return DropdownMenuItem<String>(
-                    value: val,
-                    child: Text(val),
-                  );
+                  return DropdownMenuItem<String>(value: val, child: Text(val));
                 }).toList(),
                 onChanged: onChanged,
               ),
@@ -525,7 +612,11 @@ class _CreatePartsListingScreenState extends State<CreatePartsListingScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.upload_file_outlined, color: Colors.white24, size: 16),
+          const Icon(
+            Icons.upload_file_outlined,
+            color: Colors.white24,
+            size: 16,
+          ),
           SizedBox(height: 4.h),
           CustomText(
             text: label,

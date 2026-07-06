@@ -57,7 +57,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
           child: Column(
             children: [
               const Spacer(flex: 1),
-      
+
               /// 1. Speed display
               const Text(
                 "CURRENT VELOCITY",
@@ -94,10 +94,13 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-      
+
               /// 2. Timer Pill
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
                   borderRadius: BorderRadius.circular(20),
@@ -106,7 +109,11 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: const [
-                    Icon(Icons.timer_outlined, color: AppColors.yellow, size: 14),
+                    Icon(
+                      Icons.timer_outlined,
+                      color: AppColors.yellow,
+                      size: 14,
+                    ),
                     SizedBox(width: 8),
                     Text(
                       "00:42:18.6",
@@ -120,7 +127,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
                 ),
               ),
               const Spacer(flex: 2),
-      
+
               /// 3. Wavy Track Path Graphic
               SizedBox(
                 height: 100,
@@ -139,7 +146,11 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
                         children: const [
                           Text(
                             "START",
-                            style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           SizedBox(height: 4),
                           Icon(Icons.circle, color: Colors.white24, size: 6),
@@ -153,10 +164,18 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
                         children: const [
                           Text(
                             "FINISH",
-                            style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           SizedBox(height: 4),
-                          Icon(Icons.circle_outlined, color: Colors.white24, size: 6),
+                          Icon(
+                            Icons.circle_outlined,
+                            color: Colors.white24,
+                            size: 6,
+                          ),
                         ],
                       ),
                     ),
@@ -164,7 +183,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
                 ),
               ),
               const Spacer(flex: 2),
-      
+
               /// 4. Stats Grid
               Row(
                 children: [
@@ -224,7 +243,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
                 ],
               ),
               const Spacer(flex: 2),
-      
+
               /// 5. FINISH SESSION button
               SizedBox(
                 width: double.infinity,
@@ -350,7 +369,9 @@ class TrackWavyPainter extends CustomPainter {
         canvas.drawCircle(
           tangent.position,
           12,
-          Paint()..color = AppColors.yellow.withValues(alpha:0.25)..style = PaintingStyle.fill,
+          Paint()
+            ..color = AppColors.yellow.withValues(alpha: 0.25)
+            ..style = PaintingStyle.fill,
         );
       }
     }

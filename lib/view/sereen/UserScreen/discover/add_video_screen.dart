@@ -32,7 +32,11 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
           elevation: 0,
           centerTitle: true,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.yellow, size: 24),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColors.yellow,
+              size: 24,
+            ),
             onPressed: () => Get.back(),
           ),
           title: const Text(
@@ -55,21 +59,27 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                 child: _buildSectionHeader("PRIMARY MEDIA"),
               ),
               const SizedBox(height: 8),
-      
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Container(
                   width: double.infinity,
                   height: 150,
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.yellow.withValues(alpha:0.4)),
+                    border: Border.all(
+                      color: AppColors.yellow.withValues(alpha: 0.4),
+                    ),
                     borderRadius: BorderRadius.circular(4),
                     color: const Color(0xff111111),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.videocam_outlined, color: AppColors.yellow, size: 36),
+                      Icon(
+                        Icons.videocam_outlined,
+                        color: AppColors.yellow,
+                        size: 36,
+                      ),
                       SizedBox(height: 12),
                       Text(
                         "DRAG & DROP OR TAP TO UPLOAD RAW/MP4 (MAX 2GB)",
@@ -86,28 +96,34 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-      
+
               /// 2. THUMBNAIL
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: _buildSectionHeader("THUMBNAIL"),
               ),
               const SizedBox(height: 8),
-      
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Container(
                   width: double.infinity,
                   height: 150,
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.yellow.withValues(alpha:0.4)),
+                    border: Border.all(
+                      color: AppColors.yellow.withValues(alpha: 0.4),
+                    ),
                     borderRadius: BorderRadius.circular(4),
                     color: const Color(0xff111111),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.add_photo_alternate_outlined, color: AppColors.yellow, size: 36),
+                      Icon(
+                        Icons.add_photo_alternate_outlined,
+                        color: AppColors.yellow,
+                        size: 36,
+                      ),
                       SizedBox(height: 12),
                       Text(
                         "UPLOAD CUSTOM THUMBNAIL",
@@ -124,7 +140,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-      
+
               /// 3. VIDEO IDENTITY
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -138,7 +154,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                       /// Inner Header tag
                       _buildInnerTag("VIDEO IDENTITY"),
                       const SizedBox(height: 16),
-      
+
                       const Text(
                         "VIDEO TITLE",
                         style: TextStyle(
@@ -149,9 +165,12 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      _buildTextField(_titleController, "ENTER SESSION NAME..."),
+                      _buildTextField(
+                        _titleController,
+                        "ENTER SESSION NAME...",
+                      ),
                       const SizedBox(height: 20),
-      
+
                       const Text(
                         "DESCRIPTION",
                         style: TextStyle(
@@ -172,18 +191,20 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-      
+
               /// 4. CLASSIFICATION
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: _buildSectionHeader("CLASSIFICATION"),
               ),
               const SizedBox(height: 8),
-      
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
-                  children: ["ONBOARD", "TECHNICAL", "VLOG", "RACE"].map((type) {
+                  children: ["ONBOARD", "TECHNICAL", "VLOG", "RACE"].map((
+                    type,
+                  ) {
                     final bool isSelected = type == selectedClassification;
                     return Expanded(
                       child: GestureDetector(
@@ -199,7 +220,9 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                             color: const Color(0xff111111),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
-                              color: isSelected ? AppColors.yellow : Colors.white10,
+                              color: isSelected
+                                  ? AppColors.yellow
+                                  : Colors.white10,
                               width: 1.5,
                             ),
                           ),
@@ -207,7 +230,9 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                             child: Text(
                               type,
                               style: TextStyle(
-                                color: isSelected ? AppColors.yellow : Colors.white60,
+                                color: isSelected
+                                    ? AppColors.yellow
+                                    : Colors.white60,
                                 fontSize: 9,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -220,7 +245,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-      
+
               /// Bottom Publish Button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -273,7 +298,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
       decoration: BoxDecoration(
         color: const Color(0xff181818),
         borderRadius: BorderRadius.circular(2),
-        border: Border.all(color: AppColors.yellow.withValues(alpha:0.3)),
+        border: Border.all(color: AppColors.yellow.withValues(alpha: 0.3)),
       ),
       child: Text(
         title,
@@ -290,11 +315,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
   Widget _buildInnerTag(String title) {
     return Row(
       children: [
-        Container(
-          width: 3,
-          height: 12,
-          color: AppColors.yellow,
-        ),
+        Container(width: 3, height: 12, color: AppColors.yellow),
         const SizedBox(width: 8),
         Text(
           title,
@@ -317,7 +338,11 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, {int maxLines = 1}) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String hint, {
+    int maxLines = 1,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(

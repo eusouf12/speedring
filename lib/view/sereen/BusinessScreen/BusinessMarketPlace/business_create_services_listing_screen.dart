@@ -22,7 +22,11 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
     // Reactive states
     final RxString selectedCategory = "Technical Engineering".obs;
     final RxString selectedLocationType = "GLOBAL REACH".obs;
-    final RxList<String> tracks = ["SPA-FRANCORCHAMPS", "NURBURGRING", "MONZA"].obs;
+    final RxList<String> tracks = [
+      "SPA-FRANCORCHAMPS",
+      "NURBURGRING",
+      "MONZA",
+    ].obs;
 
     return CustomGradient(
       child: Scaffold(
@@ -77,23 +81,31 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                         value: selectedCategory.value,
                         isExpanded: true,
                         dropdownColor: Colors.black,
-                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white60,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         onChanged: (newValue) {
-                          if (newValue != null) selectedCategory.value = newValue;
+                          if (newValue != null)
+                            selectedCategory.value = newValue;
                         },
-                        items: [
-                          "Technical Engineering",
-                          "Track Coaching",
-                          "Logistics & Transport",
-                          "Pit Crew & Garage Support",
-                          "Engine Tuning & ECU Calibration"
-                        ].map((cat) {
-                          return DropdownMenuItem<String>(
-                            value: cat,
-                            child: Text(cat),
-                          );
-                        }).toList(),
+                        items:
+                            [
+                              "Technical Engineering",
+                              "Track Coaching",
+                              "Logistics & Transport",
+                              "Pit Crew & Garage Support",
+                              "Engine Tuning & ECU Calibration",
+                            ].map((cat) {
+                              return DropdownMenuItem<String>(
+                                value: cat,
+                                child: Text(cat),
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),
@@ -145,7 +157,8 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                               CustomText(
-                                text: "Available for worldwide travel & remote consultation",
+                                text:
+                                    "Available for worldwide travel & remote consultation",
                                 color: Colors.white38,
                                 fontSize: 9.sp,
                               ),
@@ -166,7 +179,8 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                               CustomText(
-                                text: "Operating at specific race tracks or regional hubs",
+                                text:
+                                    "Operating at specific race tracks or regional hubs",
                                 color: Colors.white38,
                                 fontSize: 9.sp,
                               ),
@@ -207,7 +221,11 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                         bottom: 16.h,
                         child: Row(
                           children: [
-                            const Icon(Icons.location_searching, color: AppColors.yellow, size: 14),
+                            const Icon(
+                              Icons.location_searching,
+                              color: AppColors.yellow,
+                              size: 14,
+                            ),
                             SizedBox(width: 8.w),
                             CustomText(
                               text: "AWAITING LOCATION COORDINATES...",
@@ -235,11 +253,17 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                     children: [
                       ...tracks.map((track) {
                         return Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 5.h,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.yellow.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(20.r),
-                            border: Border.all(color: AppColors.yellow, width: 1),
+                            border: Border.all(
+                              color: AppColors.yellow,
+                              width: 1,
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -269,7 +293,10 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                           tracks.add("NÜRBURGRING GP");
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 5.h,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xff1E1E1E),
                             borderRadius: BorderRadius.circular(20.r),
@@ -278,7 +305,11 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.add, color: Colors.white60, size: 12),
+                              const Icon(
+                                Icons.add,
+                                color: Colors.white60,
+                                size: 12,
+                              ),
                               SizedBox(width: 4.w),
                               CustomText(
                                 text: "ADD TRACK",
@@ -313,7 +344,8 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                 _buildFieldLabel("SERVICE OVERVIEW & MISSION"),
                 CustomTextField(
                   textEditingController: descController,
-                  hintText: "Describe your unique approach to performance, history in motorsport, and what clients can expect from your elite service...",
+                  hintText:
+                      "Describe your unique approach to performance, history in motorsport, and what clients can expect from your elite service...",
                   maxLines: 4,
                   fillColor: const Color(0xff111111),
                   fieldBorderColor: Colors.white10,
@@ -342,7 +374,10 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow),
+                          const Icon(
+                            Icons.add_a_photo_outlined,
+                            color: AppColors.yellow,
+                          ),
                           SizedBox(height: 6.h),
                           CustomText(
                             text: "UPLOAD MEDIA",

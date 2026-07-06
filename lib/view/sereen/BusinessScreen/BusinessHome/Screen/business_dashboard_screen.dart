@@ -96,7 +96,8 @@ class BusinessHomeScreen extends StatelessWidget {
                   _buildQuickActionCard(
                     title: "PROMOTE POST",
                     icon: Icons.campaign_rounded,
-                    onTap: () => Get.toNamed(AppRoutes.businessPromotionHubScreen),
+                    onTap: () =>
+                        Get.toNamed(AppRoutes.businessPromotionHubScreen),
                   ),
                   _buildQuickActionCard(
                     title: 'CLUBS',

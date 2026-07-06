@@ -11,16 +11,22 @@ class BusinessEditClubScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Retrieve club info from arguments or use fallback defaults
-    final Map<String, dynamic> clubArgs = Get.arguments as Map<String, dynamic>? ?? {
-      'name': 'Porsche GT3 Collective',
-      'members': '1,240 ACTIVE MEMBERS',
-      'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
-    };
+    final Map<String, dynamic> clubArgs =
+        Get.arguments as Map<String, dynamic>? ??
+        {
+          'name': 'Porsche GT3 Collective',
+          'members': '1,240 ACTIVE MEMBERS',
+          'imageUrl':
+              'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
+        };
 
     // Text controllers
-    final nameController = TextEditingController(text: clubArgs['name'] as String);
+    final nameController = TextEditingController(
+      text: clubArgs['name'] as String,
+    );
     final aboutController = TextEditingController(
-      text: "The Porsche GT3 Collective is dedicated to the purist pursuit of naturally aspirated performance. We focus on the intersection of driver mechanical empathy and track-optimized engineering. Members are expected to maintain technical telemetry logs and show driving precision.",
+      text:
+          "The Porsche GT3 Collective is dedicated to the purist pursuit of naturally aspirated performance. We focus on the intersection of driver mechanical empathy and track-optimized engineering. Members are expected to maintain technical telemetry logs and show driving precision.",
     );
 
     // Reactive states
@@ -29,7 +35,7 @@ class BusinessEditClubScreen extends StatelessWidget {
       "GT3",
       "Nürburgring",
       "Flat-Six",
-      "9000-RPM"
+      "9000-RPM",
     ].obs;
 
     return CustomGradient(
@@ -79,14 +85,33 @@ class BusinessEditClubScreen extends StatelessWidget {
                     _buildSectionHeader("CORE IDENTITY"),
                     _buildFormCard([
                       _buildFieldLabel("CLUB DESIGNATION"),
-                      _buildOutlineField(nameController, "Club Designation", prefixIcon: Icons.badge_outlined),
+                      _buildOutlineField(
+                        nameController,
+                        "Club Designation",
+                        prefixIcon: Icons.badge_outlined,
+                      ),
                       SizedBox(height: 16.h),
                       _buildFieldLabel("SECURITY PROTOCOL"),
-                      _buildSecurityProtocolRadio(selectedSecurity, "PUBLIC", "PUBLIC", "OPEN ENTRY"),
+                      _buildSecurityProtocolRadio(
+                        selectedSecurity,
+                        "PUBLIC",
+                        "PUBLIC",
+                        "OPEN ENTRY",
+                      ),
                       SizedBox(height: 8.h),
-                      _buildSecurityProtocolRadio(selectedSecurity, "PRIVATE", "PRIVATE", "APPROVAL REQ."),
+                      _buildSecurityProtocolRadio(
+                        selectedSecurity,
+                        "PRIVATE",
+                        "PRIVATE",
+                        "APPROVAL REQ.",
+                      ),
                       SizedBox(height: 8.h),
-                      _buildSecurityProtocolRadio(selectedSecurity, "INVITE", "INVITE ONLY", "STEALTH MODE"),
+                      _buildSecurityProtocolRadio(
+                        selectedSecurity,
+                        "INVITE",
+                        "INVITE ONLY",
+                        "STEALTH MODE",
+                      ),
                     ]),
                     SizedBox(height: 24.h),
 
@@ -94,7 +119,11 @@ class BusinessEditClubScreen extends StatelessWidget {
                     _buildSectionHeader("ABOUT"),
                     _buildFormCard([
                       _buildFieldLabel("DETAILS"),
-                      _buildOutlineField(aboutController, "About details", maxLines: 4),
+                      _buildOutlineField(
+                        aboutController,
+                        "About details",
+                        maxLines: 4,
+                      ),
                       SizedBox(height: 16.h),
                       _buildFieldLabel("TECHNICAL TAGS"),
                       Obx(() {
@@ -102,7 +131,9 @@ class BusinessEditClubScreen extends StatelessWidget {
                           spacing: 8.w,
                           runSpacing: 8.h,
                           children: [
-                            ...technicalTags.map((tag) => _buildTagChip(tag, technicalTags)),
+                            ...technicalTags.map(
+                              (tag) => _buildTagChip(tag, technicalTags),
+                            ),
                             _buildAddParameterChip(context, technicalTags),
                           ],
                         );
@@ -143,9 +174,7 @@ class BusinessEditClubScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Container(
-              color: Colors.black.withValues(alpha: 0.2),
-            ),
+            child: Container(color: Colors.black.withValues(alpha: 0.2)),
           ),
 
           // Edit Cover Button
@@ -315,7 +344,12 @@ class BusinessEditClubScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOutlineField(TextEditingController textController, String hint, {IconData? prefixIcon, int maxLines = 1}) {
+  Widget _buildOutlineField(
+    TextEditingController textController,
+    String hint, {
+    IconData? prefixIcon,
+    int maxLines = 1,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -326,20 +360,38 @@ class BusinessEditClubScreen extends StatelessWidget {
       child: TextFormField(
         controller: textController,
         maxLines: maxLines,
-        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.white24, fontSize: 13, fontWeight: FontWeight.bold),
+          hintStyle: const TextStyle(
+            color: Colors.white24,
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
           isDense: true,
-          prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: Colors.white38, size: 16.sp) : null,
-          prefixIconConstraints: const BoxConstraints(minWidth: 26, minHeight: 0),
+          prefixIcon: prefixIcon != null
+              ? Icon(prefixIcon, color: Colors.white38, size: 16.sp)
+              : null,
+          prefixIconConstraints: const BoxConstraints(
+            minWidth: 26,
+            minHeight: 0,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSecurityProtocolRadio(RxString groupVal, String value, String title, String subtitle) {
+  Widget _buildSecurityProtocolRadio(
+    RxString groupVal,
+    String value,
+    String title,
+    String subtitle,
+  ) {
     return Obx(() {
       final isSelected = groupVal.value == value;
       return GestureDetector(
@@ -429,21 +481,34 @@ class BusinessEditClubScreen extends StatelessWidget {
         Get.dialog(
           AlertDialog(
             backgroundColor: const Color(0xff111111),
-            title: const Text("Add Technical Tag", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            title: const Text(
+              "Add Technical Tag",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             content: TextFormField(
               controller: paramController,
               style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 hintText: "e.g. Aerodynamics",
                 hintStyle: TextStyle(color: Colors.white24),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
-                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.yellow)),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white24),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.yellow),
+                ),
               ),
             ),
             actions: [
               TextButton(
                 onPressed: () => Get.back(),
-                child: const Text("CANCEL", style: TextStyle(color: Colors.white54)),
+                child: const Text(
+                  "CANCEL",
+                  style: TextStyle(color: Colors.white54),
+                ),
               ),
               TextButton(
                 onPressed: () {
@@ -453,7 +518,13 @@ class BusinessEditClubScreen extends StatelessWidget {
                   }
                   Get.back();
                 },
-                child: const Text("ADD", style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold)),
+                child: const Text(
+                  "ADD",
+                  style: TextStyle(
+                    color: AppColors.yellow,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
@@ -502,7 +573,8 @@ class BusinessEditClubScreen extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           CustomText(
-            text: "Deleting this club is irreversible. All telemetry data and squadron records will be purged.",
+            text:
+                "Deleting this club is irreversible. All telemetry data and squadron records will be purged.",
             color: Colors.white38,
             fontSize: 9.sp,
             fontWeight: FontWeight.bold,
@@ -515,12 +587,24 @@ class BusinessEditClubScreen extends StatelessWidget {
               Get.dialog(
                 AlertDialog(
                   backgroundColor: const Color(0xff111111),
-                  title: const Text("Decommission Club?", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  content: const Text("This action cannot be undone. Are you sure you want to permanently delete this club?", style: TextStyle(color: Colors.white70)),
+                  title: const Text(
+                    "Decommission Club?",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  content: const Text(
+                    "This action cannot be undone. Are you sure you want to permanently delete this club?",
+                    style: TextStyle(color: Colors.white70),
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () => Get.back(),
-                      child: const Text("CANCEL", style: TextStyle(color: Colors.white54)),
+                      child: const Text(
+                        "CANCEL",
+                        style: TextStyle(color: Colors.white54),
+                      ),
                     ),
                     TextButton(
                       onPressed: () {
@@ -537,7 +621,13 @@ class BusinessEditClubScreen extends StatelessWidget {
                           borderWidth: 1,
                         );
                       },
-                      child: const Text("DECOMMISSION", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                      child: const Text(
+                        "DECOMMISSION",
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -548,7 +638,9 @@ class BusinessEditClubScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(6.r),
-                border: Border.all(color: Colors.redAccent.withValues(alpha: 0.5)),
+                border: Border.all(
+                  color: Colors.redAccent.withValues(alpha: 0.5),
+                ),
               ),
               child: const Center(
                 child: CustomText(

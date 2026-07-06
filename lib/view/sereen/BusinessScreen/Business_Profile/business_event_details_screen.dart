@@ -10,39 +10,48 @@ class BusinessEventDetailsScreen extends StatefulWidget {
   const BusinessEventDetailsScreen({super.key});
 
   @override
-  State<BusinessEventDetailsScreen> createState() => _BusinessEventDetailsScreenState();
+  State<BusinessEventDetailsScreen> createState() =>
+      _BusinessEventDetailsScreenState();
 }
 
-class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen> {
+class _BusinessEventDetailsScreenState
+    extends State<BusinessEventDetailsScreen> {
   late Map<String, dynamic> _eventData;
 
   @override
   void initState() {
     super.initState();
     // Fetch arguments from previous screen or load default Silverstone values
-    _eventData = Get.arguments as Map<String, dynamic>? ?? {
-      'title': 'SILVERSTONE PERFORMANCE PADDOCK',
-      'organizer': 'Anderson Racing',
-      'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
-      'date': 'OCT 24, 2024',
-      'time': '09:00 GMT',
-      'location': 'SILVERSTONE CIRCUIT, UK',
-      'capacity': 0.84,
-      'capacityText': '84% FULL',
-      'weather': 'OPTIMAL (18°C)',
-      'dataStream': 'FULL ACCESS',
-    };
+    _eventData =
+        Get.arguments as Map<String, dynamic>? ??
+        {
+          'title': 'SILVERSTONE PERFORMANCE PADDOCK',
+          'organizer': 'Anderson Racing',
+          'imageUrl':
+              'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
+          'date': 'OCT 24, 2024',
+          'time': '09:00 GMT',
+          'location': 'SILVERSTONE CIRCUIT, UK',
+          'capacity': 0.84,
+          'capacityText': '84% FULL',
+          'weather': 'OPTIMAL (18°C)',
+          'dataStream': 'FULL ACCESS',
+        };
   }
 
   @override
   Widget build(BuildContext context) {
     final title = _eventData['title'] ?? 'SILVERSTONE PERFORMANCE PADDOCK';
-    final imageUrl = _eventData['imageUrl'] ?? 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop';
+    final imageUrl =
+        _eventData['imageUrl'] ??
+        'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop';
     final organizer = _eventData['organizer'] ?? 'Anderson Racing';
     final date = _eventData['date'] ?? 'OCT 24, 2024';
     final time = _eventData['time'] ?? '09:00 GMT';
     final location = _eventData['location'] ?? 'SILVERSTONE CIRCUIT, UK';
-    final capacity = _eventData['capacity'] is double ? _eventData['capacity'] as double : 0.84;
+    final capacity = _eventData['capacity'] is double
+        ? _eventData['capacity'] as double
+        : 0.84;
     final capacityText = _eventData['capacityText'] ?? '84% FULL';
     final weather = _eventData['weather'] ?? 'OPTIMAL (18°C)';
     final dataStream = _eventData['dataStream'] ?? 'FULL ACCESS';
@@ -57,11 +66,7 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Get.back(),
           ),
-          title: Image.asset(
-            AppImages.logo,
-            height: 26.h,
-            fit: BoxFit.contain,
-          ),
+          title: Image.asset(AppImages.logo, height: 26.h, fit: BoxFit.contain),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -87,7 +92,10 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
                   children: [
                     // LIVE MISSION BADGE
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 4.h,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.yellow,
                         borderRadius: BorderRadius.circular(4.r),
@@ -120,7 +128,11 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
                         CircleAvatar(
                           radius: 12.r,
                           backgroundColor: const Color(0xff222222),
-                          child: Icon(Icons.person, size: 12.r, color: Colors.white60),
+                          child: Icon(
+                            Icons.person,
+                            size: 12.r,
+                            color: Colors.white60,
+                          ),
                         ),
                         SizedBox(width: 8.w),
                         CustomText(
@@ -130,14 +142,19 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
                           fontWeight: FontWeight.w900,
                         ),
                         SizedBox(width: 4.w),
-                        const Icon(Icons.verified, color: AppColors.yellow, size: 13),
+                        const Icon(
+                          Icons.verified,
+                          color: AppColors.yellow,
+                          size: 13,
+                        ),
                       ],
                     ),
                     SizedBox(height: 14.h),
 
                     // DESCRIPTION
                     CustomText(
-                      text: "Execute high-intensity technical sequences at Britain's home of racing. Our engineering team will provide real-time telemetry overlays and post-session data reviews to optimize entry speeds and braking zones.",
+                      text:
+                          "Execute high-intensity technical sequences at Britain's home of racing. Our engineering team will provide real-time telemetry overlays and post-session data reviews to optimize entry speeds and braking zones.",
                       color: Colors.white60,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.bold,
@@ -148,7 +165,11 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
                     // Stats icons
                     Row(
                       children: [
-                        Icon(Icons.favorite_border_rounded, color: Colors.white70, size: 16.sp),
+                        Icon(
+                          Icons.favorite_border_rounded,
+                          color: Colors.white70,
+                          size: 16.sp,
+                        ),
                         SizedBox(width: 6.w),
                         CustomText(
                           text: "124",
@@ -157,7 +178,11 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
                           fontWeight: FontWeight.bold,
                         ),
                         SizedBox(width: 18.w),
-                        Icon(Icons.chat_bubble_outline_rounded, color: Colors.white70, size: 15.sp),
+                        Icon(
+                          Icons.chat_bubble_outline_rounded,
+                          color: Colors.white70,
+                          size: 15.sp,
+                        ),
                         SizedBox(width: 6.w),
                         CustomText(
                           text: "18",
@@ -166,7 +191,11 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
                           fontWeight: FontWeight.bold,
                         ),
                         SizedBox(width: 18.w),
-                        Icon(Icons.share_outlined, color: Colors.white70, size: 15.sp),
+                        Icon(
+                          Icons.share_outlined,
+                          color: Colors.white70,
+                          size: 15.sp,
+                        ),
                         SizedBox(width: 6.w),
                         CustomText(
                           text: "SHARE",
@@ -190,11 +219,23 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
                       ),
                       child: Column(
                         children: [
-                          _buildLogisticsItem(Icons.calendar_today_outlined, "DEPLOYMENT DATE", date),
+                          _buildLogisticsItem(
+                            Icons.calendar_today_outlined,
+                            "DEPLOYMENT DATE",
+                            date,
+                          ),
                           SizedBox(height: 14.h),
-                          _buildLogisticsItem(Icons.access_time_rounded, "TIME_WINDOW", time),
+                          _buildLogisticsItem(
+                            Icons.access_time_rounded,
+                            "TIME_WINDOW",
+                            time,
+                          ),
                           SizedBox(height: 14.h),
-                          _buildLogisticsItem(Icons.location_on_outlined, "LOCATION", location),
+                          _buildLogisticsItem(
+                            Icons.location_on_outlined,
+                            "LOCATION",
+                            location,
+                          ),
                         ],
                       ),
                     ),
@@ -203,9 +244,21 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
                     // Weather / Data Stream row
                     Row(
                       children: [
-                        Expanded(child: _buildDetailsMiniBox(Icons.wb_sunny_outlined, "WEATHER", weather)),
+                        Expanded(
+                          child: _buildDetailsMiniBox(
+                            Icons.wb_sunny_outlined,
+                            "WEATHER",
+                            weather,
+                          ),
+                        ),
                         SizedBox(width: 12.w),
-                        Expanded(child: _buildDetailsMiniBox(Icons.rss_feed_rounded, "DATA STREAM", dataStream)),
+                        Expanded(
+                          child: _buildDetailsMiniBox(
+                            Icons.rss_feed_rounded,
+                            "DATA STREAM",
+                            dataStream,
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(height: 20.h),
@@ -235,7 +288,9 @@ class _BusinessEventDetailsScreenState extends State<BusinessEventDetailsScreen>
                       child: LinearProgressIndicator(
                         value: capacity,
                         backgroundColor: const Color(0xff1E1E1E),
-                        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.yellow),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.yellow,
+                        ),
                         minHeight: 5.h,
                       ),
                     ),

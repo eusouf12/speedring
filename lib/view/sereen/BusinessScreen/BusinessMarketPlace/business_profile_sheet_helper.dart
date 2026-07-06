@@ -61,7 +61,11 @@ class BusinessProfileSheetHelper {
                             fontWeight: FontWeight.w900,
                           ),
                           SizedBox(width: 4.w),
-                          const Icon(Icons.verified, color: AppColors.yellow, size: 14),
+                          const Icon(
+                            Icons.verified,
+                            color: AppColors.yellow,
+                            size: 14,
+                          ),
                         ],
                       ),
                       SizedBox(height: 2.h),
@@ -84,7 +88,7 @@ class BusinessProfileSheetHelper {
               title: "Manage Events",
               subtitle: "Active racing sessions and briefings",
               onTap: () {
-                Get.back(); 
+                Get.back();
                 Get.offAllNamed(AppRoutes.businessEventsListScreen);
               },
             ),
@@ -146,10 +150,14 @@ class BusinessProfileSheetHelper {
                 color: const Color(0xff1E1E1E),
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Icon(icon, color: textColor == Colors.white ? Colors.white70 : textColor, size: 18.sp),
+              child: Icon(
+                icon,
+                color: textColor == Colors.white ? Colors.white70 : textColor,
+                size: 18.sp,
+              ),
             ),
             SizedBox(width: 14.w),
-            
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,7 +178,11 @@ class BusinessProfileSheetHelper {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded, color: Colors.white24, size: 18),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: Colors.white24,
+              size: 18,
+            ),
           ],
         ),
       ),

@@ -263,8 +263,6 @@ class SignupScreen extends StatelessWidget {
 
                 const SizedBox(height: 10),
 
-               
-
                 // ── CREATE ACCOUNT button ─────────────────────────────────
                 Obx(() {
                   return controller.isSignupLoading.value

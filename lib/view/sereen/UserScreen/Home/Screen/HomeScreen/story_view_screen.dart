@@ -59,12 +59,11 @@ class _StoryViewScreenState extends State<StoryViewScreen>
               child: Image.network(
                 widget.storyImageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Container(
-                  color: const Color(0xff1a1a1a),
-                ),
+                errorBuilder: (_, _, _) =>
+                    Container(color: const Color(0xff1a1a1a)),
               ),
             ),
-      
+
             /// Dark gradient overlay — top & bottom
             Positioned.fill(
               child: DecoratedBox(
@@ -83,7 +82,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                 ),
               ),
             ),
-      
+
             /// ── Progress bar ──────────────────────────────────────────────
             Positioned(
               top: MediaQuery.of(context).padding.top + 8,
@@ -96,14 +95,15 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                   child: LinearProgressIndicator(
                     value: _progressController.value,
                     backgroundColor: Colors.white30,
-                    valueColor:
-                        const AlwaysStoppedAnimation<Color>(AppColors.yellow),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.yellow,
+                    ),
                     minHeight: 2.5,
                   ),
                 ),
               ),
             ),
-      
+
             /// ── Top bar — avatar + name + close ──────────────────────────
             Positioned(
               top: MediaQuery.of(context).padding.top + 22,
@@ -128,9 +128,9 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                           : const Icon(Icons.person, color: Colors.white),
                     ),
                   ),
-      
+
                   const SizedBox(width: 10),
-      
+
                   /// Name + time
                   Expanded(
                     child: Column(
@@ -156,7 +156,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                       ],
                     ),
                   ),
-      
+
                   /// Close button
                   GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
@@ -177,9 +177,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                 ],
               ),
             ),
-      
-            
-           
+
             /// ── Bottom bar — message + actions ───────────────────────────
             Positioned(
               left: 0,
@@ -218,9 +216,9 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                         ),
                       ),
                     ),
-      
+
                     const SizedBox(width: 12),
-      
+
                     /// Like
                     GestureDetector(
                       onTap: () {},
@@ -230,9 +228,9 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                         size: 26,
                       ),
                     ),
-      
+
                     const SizedBox(width: 16),
-      
+
                     /// More
                     GestureDetector(
                       onTap: () {},

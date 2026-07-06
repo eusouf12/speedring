@@ -35,7 +35,7 @@ class ClubPostScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const SizedBox(height: 16),
-      
+
             /// ── TITLE Container ───────────────────────────────────────────
             Container(
               padding: const EdgeInsets.all(16),
@@ -58,7 +58,10 @@ class ClubPostScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -79,9 +82,9 @@ class ClubPostScreen extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             const SizedBox(height: 16),
-      
+
             /// ── ADD MEDIA Box ─────────────────────────────────────────────
             Container(
               height: 120,
@@ -116,9 +119,9 @@ class ClubPostScreen extends StatelessWidget {
                 ),
               ),
             ),
-      
+
             const SizedBox(height: 20),
-      
+
             /// ── POST DETAILS ──────────────────────────────────────────────
             const Text(
               "POST DETAILS",
@@ -140,23 +143,52 @@ class ClubPostScreen extends StatelessWidget {
                 children: [
                   /// Toolbar
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: const BoxDecoration(
                       border: Border(bottom: BorderSide(color: Colors.white10)),
                     ),
                     child: Row(
                       children: [
-                        const Text("B", style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 13)),
+                        const Text(
+                          "B",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
                         const SizedBox(width: 18),
-                        const Text("I", style: TextStyle(color: Colors.white70, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, fontSize: 13)),
+                        const Text(
+                          "I",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
                         const SizedBox(width: 18),
-                        const Text("#", style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 13)),
+                        const Text(
+                          "#",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
                         const SizedBox(width: 18),
                         const Icon(Icons.link, color: Colors.white70, size: 16),
                         const SizedBox(width: 14),
                         Container(width: 1, height: 16, color: Colors.white24),
                         const SizedBox(width: 14),
-                        const Icon(Icons.format_list_bulleted, color: Colors.white70, size: 16),
+                        const Icon(
+                          Icons.format_list_bulleted,
+                          color: Colors.white70,
+                          size: 16,
+                        ),
                       ],
                     ),
                   ),
@@ -164,10 +196,17 @@ class ClubPostScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(16),
                     child: TextFormField(
                       maxLines: 6,
-                      style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.5),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        height: 1.5,
+                      ),
                       decoration: const InputDecoration(
                         hintText: "Brief the club on the next stage...",
-                        hintStyle: TextStyle(color: Colors.white24, fontSize: 13),
+                        hintStyle: TextStyle(
+                          color: Colors.white24,
+                          fontSize: 13,
+                        ),
                         border: InputBorder.none,
                         isDense: true,
                         contentPadding: EdgeInsets.zero,
@@ -177,9 +216,9 @@ class ClubPostScreen extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             const SizedBox(height: 16),
-      
+
             /// ── PINNED ANNOUNCEMENT Box ────────────────────────────────────
             Container(
               padding: const EdgeInsets.all(16),
@@ -220,10 +259,7 @@ class ClubPostScreen extends StatelessWidget {
                         SizedBox(height: 2),
                         Text(
                           "Prioritize this post for all club members",
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontSize: 10,
-                          ),
+                          style: TextStyle(color: Colors.white38, fontSize: 10),
                         ),
                       ],
                     ),
@@ -234,7 +270,7 @@ class ClubPostScreen extends StatelessWidget {
                       value: false,
                       onChanged: (val) {},
                       activeThumbColor: AppColors.yellow,
-                      activeTrackColor: AppColors.yellow.withValues(alpha:0.5),
+                      activeTrackColor: AppColors.yellow.withValues(alpha: 0.5),
                       inactiveThumbColor: Colors.white60,
                       inactiveTrackColor: Colors.white10,
                     ),
@@ -242,9 +278,9 @@ class ClubPostScreen extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             const SizedBox(height: 40),
-      
+
             /// ── Publish button ───────────────────────────────────────────
             GestureDetector(
               onTap: () => Navigator.pop(context),
@@ -257,11 +293,7 @@ class ClubPostScreen extends StatelessWidget {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.publish,
-                      color: Colors.black,
-                      size: 18,
-                    ),
+                    Icon(Icons.publish, color: Colors.black, size: 18),
                     SizedBox(width: 8),
                     Text(
                       "PUBLISH SESSION",
@@ -276,7 +308,7 @@ class ClubPostScreen extends StatelessWidget {
                 ),
               ),
             ),
-      
+
             const SizedBox(height: 32),
           ],
         ),

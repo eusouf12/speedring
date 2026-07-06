@@ -35,9 +35,9 @@ class CustomAppBarStepped extends StatelessWidget
           children: [
             /// Left side: Back Button (Sudu showBackButton true hoile dekhabe)
             if (showBackButton) BackButton() else const SizedBox(width: 48),
-        
+
             const Spacer(),
-        
+
             /// Center side: Logo
             CustomImage(
               imageSrc: AppImages.logo,
@@ -46,9 +46,9 @@ class CustomAppBarStepped extends StatelessWidget
               width: 140,
               fit: BoxFit.contain,
             ),
-        
+
             const Spacer(),
-        
+
             /// Right side: Step Text
             Text(
               'STEP $currentStep OF $totalSteps'.toUpperCase(),

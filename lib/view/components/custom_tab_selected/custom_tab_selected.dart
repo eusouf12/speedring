@@ -12,7 +12,6 @@ class CustomTabSelector extends StatelessWidget {
   final bool? isTextColorActive;
   final bool? isPadding;
 
-
   const CustomTabSelector({
     super.key,
     required this.tabs,
@@ -22,19 +21,15 @@ class CustomTabSelector extends StatelessWidget {
     required this.unselectedColor,
     this.textColor,
     this.isTextColorActive = false,
-    this.isPadding = true, required this.numberList,
+    this.isPadding = true,
+    required this.numberList,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 0,
-            color: unselectedColor,
-          ),
-        ),
+        border: Border(bottom: BorderSide(width: 0, color: unselectedColor)),
       ),
       padding: isPadding!
           ? const EdgeInsets.symmetric(horizontal: 2)
@@ -77,8 +72,8 @@ class CustomTabSelector extends StatelessWidget {
                       color: selectedIndex == index
                           ? selectedColor
                           : isTextColorActive!
-                              ? textColor
-                              : unselectedColor,
+                          ? textColor
+                          : unselectedColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),

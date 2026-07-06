@@ -4,13 +4,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 void showCustomSnackBar(String? message, {bool isError = true}) {
   if (message != null && message.isNotEmpty) {
     Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.white,
-        textColor: isError ? Colors.red : Colors.green,
-     /* msg: message,
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.white,
+      textColor: isError ? Colors.red : Colors.green,
+      /* msg: message,
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.TOP, // Toast appears at the top
       timeInSecForIosWeb: 1,

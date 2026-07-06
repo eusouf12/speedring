@@ -40,9 +40,7 @@ class CustomNotificationCard extends StatelessWidget {
                     width: 50.h,
                     boxShape: BoxShape.circle,
                   ),
-                  SizedBox(
-                    width: 10.h,
-                  ),
+                  SizedBox(width: 10.h),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,17 +84,10 @@ class CustomNotificationCard extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
-          height: 12.h,
-        ),
+        SizedBox(height: 12.h),
         //======================== Divider ========================//
-        Divider(
-          height: 1,
-          color: AppColors.white.withValues(alpha: .2),
-        ),
-        SizedBox(
-          height: 16.h,
-        ),
+        Divider(height: 1, color: AppColors.white.withValues(alpha: .2)),
+        SizedBox(height: 16.h),
       ],
     );
   }

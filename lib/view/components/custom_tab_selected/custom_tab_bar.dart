@@ -11,7 +11,6 @@ class CustomTabBar extends StatelessWidget {
   final bool? isTextColorActive;
   final bool? isPadding;
 
-
   const CustomTabBar({
     super.key,
     required this.tabs,
@@ -28,12 +27,7 @@ class CustomTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 0,
-            color: unselectedColor,
-          ),
-        ),
+        border: Border(bottom: BorderSide(width: 0, color: unselectedColor)),
       ),
       padding: isPadding!
           ? const EdgeInsets.symmetric(horizontal: 22)

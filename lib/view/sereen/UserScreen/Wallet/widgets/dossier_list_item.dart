@@ -29,7 +29,7 @@ class DossierListItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff111111),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +51,11 @@ class DossierListItem extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: const Color(0xff1C1C1C),
-                      child: const Icon(Icons.person, color: Colors.white24, size: 20),
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white24,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),
@@ -89,11 +93,7 @@ class DossierListItem extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                   ),
                   SizedBox(height: 2.h),
-                  CustomText(
-                    text: date,
-                    color: Colors.white38,
-                    fontSize: 8.5,
-                  ),
+                  CustomText(text: date, color: Colors.white38, fontSize: 8.5),
                 ],
               ),
             ],
@@ -104,7 +104,7 @@ class DossierListItem extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha:0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(6.r),
             ),
             child: Text(

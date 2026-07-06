@@ -28,7 +28,8 @@ class HelpSupportController extends GetxController {
   }
 
   void submitTicket() {
-    if (ticketSubjectController.text.isEmpty || ticketMessageController.text.isEmpty) {
+    if (ticketSubjectController.text.isEmpty ||
+        ticketMessageController.text.isEmpty) {
       Get.snackbar(
         "Validation Error",
         "Subject and description are required to submit a ticket.",
@@ -65,15 +66,18 @@ class HelpSupportScreen extends StatelessWidget {
     final List<Map<String, String>> faqs = [
       {
         "q": "HOW DOES TELEMETRY LOGGING WORK?",
-        "a": "Speedring connects to your device's internal GPS sensor and maps coordinates, speed, and elevation in real time during a session. Ensure location services are set to 'Always Allow' for the best tracking performance."
+        "a":
+            "Speedring connects to your device's internal GPS sensor and maps coordinates, speed, and elevation in real time during a session. Ensure location services are set to 'Always Allow' for the best tracking performance.",
       },
       {
         "q": "HOW DO I UPGRADE TO PRO CERTIFIED STATUS?",
-        "a": "Pro status is granted when a driver completes a verification checklist including verified track session completions, slot occupancy, and positive driver rating metrics."
+        "a":
+            "Pro status is granted when a driver completes a verification checklist including verified track session completions, slot occupancy, and positive driver rating metrics.",
       },
       {
         "q": "CAN I EXPORT MY SESSION METRICS?",
-        "a": "Yes! Advanced analytics are exportable as CSV or JSON dossiers for integration with professional telemetry tools. This feature requires an active premium subscription."
+        "a":
+            "Yes! Advanced analytics are exportable as CSV or JSON dossiers for integration with professional telemetry tools. This feature requires an active premium subscription.",
       },
     ];
 
@@ -126,7 +130,9 @@ class HelpSupportScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: const Color(0xff111111),
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.08),
+                      ),
                     ),
                     child: Column(
                       children: [
@@ -139,25 +145,33 @@ class HelpSupportScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             textAlign: TextAlign.start,
                           ),
-                          trailing: Obx(() => Icon(
-                                controller.expandedFaqIndex.value == idx
-                                    ? Icons.keyboard_arrow_up
-                                    : Icons.keyboard_arrow_down,
-                                color: Colors.white60,
-                              )),
+                          trailing: Obx(
+                            () => Icon(
+                              controller.expandedFaqIndex.value == idx
+                                  ? Icons.keyboard_arrow_up
+                                  : Icons.keyboard_arrow_down,
+                              color: Colors.white60,
+                            ),
+                          ),
                         ),
-                        Obx(() => controller.expandedFaqIndex.value == idx
-                            ? Padding(
-                                padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 16.h),
-                                child: CustomText(
-                                  text: faq["a"]!,
-                                  color: Colors.white54,
-                                  fontSize: 11,
-                                  textAlign: TextAlign.start,
-                                  height: 1.5,
-                                ),
-                              )
-                            : const SizedBox.shrink()),
+                        Obx(
+                          () => controller.expandedFaqIndex.value == idx
+                              ? Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 16.w,
+                                    right: 16.w,
+                                    bottom: 16.h,
+                                  ),
+                                  child: CustomText(
+                                    text: faq["a"]!,
+                                    color: Colors.white54,
+                                    fontSize: 11,
+                                    textAlign: TextAlign.start,
+                                    height: 1.5,
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
                       ],
                     ),
                   ),
@@ -174,7 +188,9 @@ class HelpSupportScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.08),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,7 +255,10 @@ class HelpSupportScreen extends StatelessWidget {
     int maxLines = 1,
   }) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: maxLines > 1 ? 8.h : 4.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: 14.w,
+        vertical: maxLines > 1 ? 8.h : 4.h,
+      ),
       decoration: BoxDecoration(
         color: const Color(0xff1d1d1d),
         borderRadius: BorderRadius.circular(8.r),

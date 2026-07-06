@@ -11,7 +11,8 @@ class BusinessCreateEventScreen extends StatefulWidget {
   const BusinessCreateEventScreen({super.key});
 
   @override
-  State<BusinessCreateEventScreen> createState() => _BusinessCreateEventScreenState();
+  State<BusinessCreateEventScreen> createState() =>
+      _BusinessCreateEventScreenState();
 }
 
 class _BusinessCreateEventScreenState extends State<BusinessCreateEventScreen> {
@@ -82,13 +83,18 @@ class _BusinessCreateEventScreenState extends State<BusinessCreateEventScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFieldLabel("EVENT NAME"),
-                    _buildTextField(_eventNameController, "e.g. GT3 Technical Briefing"),
+                    _buildTextField(
+                      _eventNameController,
+                      "e.g. GT3 Technical Briefing",
+                    ),
                     SizedBox(height: 14.h),
                     _buildFieldLabel("EVENT CATEGORY"),
                     _buildDropdownField(
                       value: _selectedCategory,
                       items: ["Technical", "Social", "Qualifying", "Endurance"],
-                      onChanged: (val) => setState(() => _selectedCategory = val ?? "Technical"),
+                      onChanged: (val) => setState(
+                        () => _selectedCategory = val ?? "Technical",
+                      ),
                     ),
                   ],
                 ),
@@ -122,7 +128,11 @@ class _BusinessCreateEventScreenState extends State<BusinessCreateEventScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFieldLabel("ATTENDEE LIMIT"),
-                    _buildTextField(_limitController, "50", keyboardType: TextInputType.number),
+                    _buildTextField(
+                      _limitController,
+                      "50",
+                      keyboardType: TextInputType.number,
+                    ),
                     SizedBox(height: 14.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,10 +158,13 @@ class _BusinessCreateEventScreenState extends State<BusinessCreateEventScreen> {
                         Switch(
                           value: _isInviteOnly,
                           activeThumbColor: AppColors.yellow,
-                          activeTrackColor: AppColors.yellow.withValues(alpha: 0.3),
+                          activeTrackColor: AppColors.yellow.withValues(
+                            alpha: 0.3,
+                          ),
                           inactiveThumbColor: Colors.white38,
                           inactiveTrackColor: Colors.black26,
-                          onChanged: (val) => setState(() => _isInviteOnly = val),
+                          onChanged: (val) =>
+                              setState(() => _isInviteOnly = val),
                         ),
                       ],
                     ),
@@ -196,7 +209,12 @@ class _BusinessCreateEventScreenState extends State<BusinessCreateEventScreen> {
                   children: [
                     _buildFieldLabel("EVENT BANNER"),
                     CustomPaint(
-                      painter: DashedBorderPainter(color: Colors.white12, strokeWidth: 1.5, gap: 5, dashLength: 6),
+                      painter: DashedBorderPainter(
+                        color: Colors.white12,
+                        strokeWidth: 1.5,
+                        gap: 5,
+                        dashLength: 6,
+                      ),
                       child: Container(
                         height: 110.h,
                         width: double.infinity,
@@ -205,7 +223,11 @@ class _BusinessCreateEventScreenState extends State<BusinessCreateEventScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.add_photo_alternate_outlined, color: Colors.white38, size: 22),
+                              const Icon(
+                                Icons.add_photo_alternate_outlined,
+                                color: Colors.white38,
+                                size: 22,
+                              ),
                               SizedBox(height: 8.h),
                               CustomText(
                                 text: "UPLOAD ASSET (16:9)",
@@ -369,10 +391,7 @@ class _BusinessCreateEventScreenState extends State<BusinessCreateEventScreen> {
           icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white54),
           isExpanded: true,
           items: items.map((String item) {
-            return DropdownMenuItem<String>(
-              value: item,
-              child: Text(item),
-            );
+            return DropdownMenuItem<String>(value: item, child: Text(item));
           }).toList(),
           onChanged: onChanged,
         ),
@@ -390,7 +409,9 @@ class _BusinessCreateEventScreenState extends State<BusinessCreateEventScreen> {
           decoration: BoxDecoration(
             color: isSelected ? AppColors.yellow : Colors.black,
             borderRadius: BorderRadius.circular(6.r),
-            border: Border.all(color: isSelected ? Colors.transparent : Colors.white10),
+            border: Border.all(
+              color: isSelected ? Colors.transparent : Colors.white10,
+            ),
           ),
           child: Center(
             child: Text(
@@ -444,19 +465,29 @@ class DashedBorderPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     final path = Path();
-    path.addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(8.r),
-    ));
+    path.addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        Radius.circular(8.r),
+      ),
+    );
 
     // Dash paths manually
     for (double i = 0; i < size.width; i += dashLength + gap) {
       canvas.drawLine(Offset(i, 0), Offset(i + dashLength, 0), paint);
-      canvas.drawLine(Offset(i, size.height), Offset(i + dashLength, size.height), paint);
+      canvas.drawLine(
+        Offset(i, size.height),
+        Offset(i + dashLength, size.height),
+        paint,
+      );
     }
     for (double i = 0; i < size.height; i += dashLength + gap) {
       canvas.drawLine(Offset(0, i), Offset(0, i + dashLength), paint);
-      canvas.drawLine(Offset(size.width, i), Offset(size.width, i + dashLength), paint);
+      canvas.drawLine(
+        Offset(size.width, i),
+        Offset(size.width, i + dashLength),
+        paint,
+      );
     }
   }
 

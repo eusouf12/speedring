@@ -13,11 +13,14 @@ class BusinessClubDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Retrieve club info from arguments or use fallback defaults
-    final Map<String, dynamic> clubArgs = Get.arguments as Map<String, dynamic>? ?? {
-      'name': 'Porsche GT3 Collective',
-      'members': '1,240 ACTIVE MEMBERS',
-      'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
-    };
+    final Map<String, dynamic> clubArgs =
+        Get.arguments as Map<String, dynamic>? ??
+        {
+          'name': 'Porsche GT3 Collective',
+          'members': '1,240 ACTIVE MEMBERS',
+          'imageUrl':
+              'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
+        };
 
     // Joined state reactivity
     final RxBool isJoined = true.obs;
@@ -47,7 +50,10 @@ class BusinessClubDetailsScreen extends StatelessWidget {
               icon: const Icon(Icons.more_vert, color: Colors.white),
               onPressed: () {
                 // Navigate to edit club screen
-                Get.toNamed(AppRoutes.businessEditClubScreen, arguments: clubArgs);
+                Get.toNamed(
+                  AppRoutes.businessEditClubScreen,
+                  arguments: clubArgs,
+                );
               },
             ),
             SizedBox(width: 8.w),
@@ -77,15 +83,24 @@ class BusinessClubDetailsScreen extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 4.h,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xff1a1a00),
                             borderRadius: BorderRadius.circular(4.r),
-                            border: Border.all(color: AppColors.yellow.withValues(alpha: 0.3)),
+                            border: Border.all(
+                              color: AppColors.yellow.withValues(alpha: 0.3),
+                            ),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.verified, color: AppColors.yellow, size: 10),
+                              const Icon(
+                                Icons.verified,
+                                color: AppColors.yellow,
+                                size: 10,
+                              ),
                               SizedBox(width: 4.w),
                               Text(
                                 "VERIFIED MEMBER",
@@ -102,7 +117,8 @@ class BusinessClubDetailsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 10.h),
                     CustomText(
-                      text: "ACTIVE MEMBERS: ${clubArgs['members']?.toString().replaceAll(' ACTIVE MEMBERS', '') ?? '1,248'}",
+                      text:
+                          "ACTIVE MEMBERS: ${clubArgs['members']?.toString().replaceAll(' ACTIVE MEMBERS', '') ?? '1,248'}",
                       color: Colors.white38,
                       fontSize: 9.sp,
                       fontWeight: FontWeight.bold,
@@ -146,9 +162,7 @@ class BusinessClubDetailsScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Container(
-              color: Colors.black.withValues(alpha: 0.3),
-            ),
+            child: Container(color: Colors.black.withValues(alpha: 0.3)),
           ),
 
           // Circle Avatar Badge overlay
@@ -214,7 +228,10 @@ class BusinessClubDetailsScreen extends StatelessWidget {
             children: [
               // Group Chat Button
               GestureDetector(
-                onTap: () => _showMockSnackbar("Group Chat", "Connecting to encrypted radio channel..."),
+                onTap: () => _showMockSnackbar(
+                  "Group Chat",
+                  "Connecting to encrypted radio channel...",
+                ),
                 child: Container(
                   height: 44.h,
                   width: double.infinity,
@@ -225,7 +242,11 @@ class BusinessClubDetailsScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 14.w),
                   child: Row(
                     children: [
-                      const Icon(Icons.chat_bubble_outline_rounded, color: Colors.black, size: 16),
+                      const Icon(
+                        Icons.chat_bubble_outline_rounded,
+                        color: Colors.black,
+                        size: 16,
+                      ),
                       SizedBox(width: 10.w),
                       CustomText(
                         text: "GROUP CHAT",
@@ -235,7 +256,11 @@ class BusinessClubDetailsScreen extends StatelessWidget {
                         letterSpacing: 0.5,
                       ),
                       const Spacer(),
-                      const Icon(Icons.chevron_right, color: Colors.black, size: 18),
+                      const Icon(
+                        Icons.chevron_right,
+                        color: Colors.black,
+                        size: 18,
+                      ),
                     ],
                   ),
                 ),
@@ -254,7 +279,10 @@ class BusinessClubDetailsScreen extends StatelessWidget {
               _buildCenterOutlineButton(
                 icon: Icons.photo_outlined,
                 label: "SHARE MEDIA",
-                onTap: () => _showMockSnackbar("Share Media", "Initializing media capture device..."),
+                onTap: () => _showMockSnackbar(
+                  "Share Media",
+                  "Initializing media capture device...",
+                ),
               ),
             ],
           ),
@@ -286,8 +314,10 @@ class BusinessClubDetailsScreen extends StatelessWidget {
         _buildFeedCard(
           username: "MAXIMILLIAN_R",
           time: "84M AGO",
-          avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop",
-          content: "Shared a new MoTeC data log from Spa-Francorchamps. Optimization on Sector 2 seems solid.",
+          avatarUrl:
+              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop",
+          content:
+              "Shared a new MoTeC data log from Spa-Francorchamps. Optimization on Sector 2 seems solid.",
           likes: 24,
           comments: 8,
         ),
@@ -295,9 +325,12 @@ class BusinessClubDetailsScreen extends StatelessWidget {
         _buildFeedCard(
           username: "ELARA_GT3",
           time: "12M AGO",
-          avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&fit=crop",
-          content: "Uploaded onboard footage: Nordschleife Sunset Session. Bridge-to-Gantry: 7:02.",
-          videoUrl: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&fit=crop",
+          avatarUrl:
+              "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&fit=crop",
+          content:
+              "Uploaded onboard footage: Nordschleife Sunset Session. Bridge-to-Gantry: 7:02.",
+          videoUrl:
+              "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&fit=crop",
           likes: 56,
           comments: 14,
         ),
@@ -305,8 +338,10 @@ class BusinessClubDetailsScreen extends StatelessWidget {
         _buildFeedCard(
           username: "TECH_LEAD_SAM",
           time: "1H AGO",
-          avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&fit=crop",
-          content: "New guide posted: Dampening Adjustments for high-speed undulations at Portimão.",
+          avatarUrl:
+              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&fit=crop",
+          content:
+              "New guide posted: Dampening Adjustments for high-speed undulations at Portimão.",
           likes: 38,
           comments: 4,
         ),
@@ -384,7 +419,8 @@ class BusinessClubDetailsScreen extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               CustomText(
-                text: "The Porsche GT3 Collective is an elite alliance dedicated to the pursuit of mechanical perfection. We focus exclusively on the 911 GT3 lineage, prioritizing technical telemetry, precision driving, and structural engineering insights. Our mission is to bridge the gap between amateur enthusiasm and professional endurance standards, providing a sanctuary for those who view driving as a data-driven discipline rather than a casual leisure activity.",
+                text:
+                    "The Porsche GT3 Collective is an elite alliance dedicated to the pursuit of mechanical perfection. We focus exclusively on the 911 GT3 lineage, prioritizing technical telemetry, precision driving, and structural engineering insights. Our mission is to bridge the gap between amateur enthusiasm and professional endurance standards, providing a sanctuary for those who view driving as a data-driven discipline rather than a casual leisure activity.",
                 color: const Color(0xffB0B0B0),
                 fontSize: 11.sp,
                 textAlign: TextAlign.start,
@@ -505,7 +541,11 @@ class BusinessClubDetailsScreen extends StatelessWidget {
           // Content Text with highlighted keywords
           RichText(
             text: TextSpan(
-              style: TextStyle(color: const Color(0xffB0B0B0), fontSize: 10.5.sp, height: 1.4),
+              style: TextStyle(
+                color: const Color(0xffB0B0B0),
+                fontSize: 10.5.sp,
+                height: 1.4,
+              ),
               children: _parseContentWithHighlights(content),
             ),
           ),
@@ -532,7 +572,11 @@ class BusinessClubDetailsScreen extends StatelessWidget {
                     color: Colors.black54,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.play_arrow, color: AppColors.yellow, size: 20),
+                  child: const Icon(
+                    Icons.play_arrow,
+                    color: AppColors.yellow,
+                    size: 20,
+                  ),
                 ),
               ],
             ),
@@ -542,7 +586,11 @@ class BusinessClubDetailsScreen extends StatelessWidget {
           // Footer Row
           Row(
             children: [
-              const Icon(Icons.thumb_up_alt_outlined, color: Colors.white24, size: 13),
+              const Icon(
+                Icons.thumb_up_alt_outlined,
+                color: Colors.white24,
+                size: 13,
+              ),
               SizedBox(width: 4.w),
               CustomText(
                 text: likes.toString(),
@@ -551,7 +599,11 @@ class BusinessClubDetailsScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               SizedBox(width: 14.w),
-              const Icon(Icons.mode_comment_outlined, color: Colors.white24, size: 12),
+              const Icon(
+                Icons.mode_comment_outlined,
+                color: Colors.white24,
+                size: 12,
+              ),
               SizedBox(width: 4.w),
               CustomText(
                 text: comments.toString(),
@@ -571,7 +623,7 @@ class BusinessClubDetailsScreen extends StatelessWidget {
     final List<String> highlights = [
       "MoTeC data log",
       "Nordschleife Sunset Session",
-      "Dampening Adjustments"
+      "Dampening Adjustments",
     ];
 
     String current = content;
@@ -595,10 +647,15 @@ class BusinessClubDetailsScreen extends StatelessWidget {
         if (firstIndex > 0) {
           spans.add(TextSpan(text: current.substring(0, firstIndex)));
         }
-        spans.add(TextSpan(
-          text: firstMatch,
-          style: const TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
-        ));
+        spans.add(
+          TextSpan(
+            text: firstMatch,
+            style: const TextStyle(
+              color: AppColors.yellow,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
         current = current.substring(firstIndex + firstMatch.length);
       } else {
         spans.add(TextSpan(text: current));

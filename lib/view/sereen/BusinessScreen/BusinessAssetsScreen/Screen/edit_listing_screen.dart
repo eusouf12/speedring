@@ -20,9 +20,14 @@ class EditListingScreen extends StatelessWidget {
         body: Obx(() {
           final asset = controller.rxSelectedAsset.value;
           if (asset == null) {
-            return const Center(child: Text("NO ASSET SELECTED", style: TextStyle(color: Colors.white60)));
+            return const Center(
+              child: Text(
+                "NO ASSET SELECTED",
+                style: TextStyle(color: Colors.white60),
+              ),
+            );
           }
-      
+
           // Determine status tag color
           Color tagColor = AppColors.yellow;
           if (asset.status == "LIVE") {
@@ -34,7 +39,7 @@ class EditListingScreen extends StatelessWidget {
           } else if (asset.status == "SOLD") {
             tagColor = Colors.redAccent;
           }
-      
+
           return SingleChildScrollView(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -57,12 +62,16 @@ class EditListingScreen extends StatelessWidget {
                           width: 70.w,
                           height: 70.w,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            width: 70.w,
-                            height: 70.w,
-                            color: const Color(0xff222222),
-                            child: const Icon(Icons.broken_image, color: Colors.white24),
-                          ),
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                width: 70.w,
+                                height: 70.w,
+                                color: const Color(0xff222222),
+                                child: const Icon(
+                                  Icons.broken_image,
+                                  color: Colors.white24,
+                                ),
+                              ),
                         ),
                       ),
                       SizedBox(width: 14.w),
@@ -73,15 +82,25 @@ class EditListingScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 6.w,
+                                    vertical: 2.h,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.black,
                                     borderRadius: BorderRadius.circular(4.r),
-                                    border: Border.all(color: tagColor.withValues(alpha: 0.5), width: 1),
+                                    border: Border.all(
+                                      color: tagColor.withValues(alpha: 0.5),
+                                      width: 1,
+                                    ),
                                   ),
                                   child: Text(
                                     asset.status,
-                                    style: TextStyle(color: Colors.white, fontSize: 7.sp, fontWeight: FontWeight.w900),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 7.sp,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 8.w),
@@ -107,15 +126,21 @@ class EditListingScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 24.h),
-      
+
                 // Phase 01: Core Specifications
                 _buildSectionHeader("PHASE 01: CORE SPECIFICATIONS"),
                 _buildCardContainer([
                   _buildFieldLabel("Brand / Manufacturer"),
-                  _buildTextField(controller.manufacturerController, "Porsche, Ducati, etc."),
+                  _buildTextField(
+                    controller.manufacturerController,
+                    "Porsche, Ducati, etc.",
+                  ),
                   SizedBox(height: 12.h),
                   _buildFieldLabel("Model Designation"),
-                  _buildTextField(controller.modelController, "911 GT3 RS, Panigale V4 R"),
+                  _buildTextField(
+                    controller.modelController,
+                    "911 GT3 RS, Panigale V4 R",
+                  ),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
@@ -124,7 +149,11 @@ class EditListingScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildFieldLabel("Production Year"),
-                            _buildTextField(controller.productionYearController, "2024", keyboardType: TextInputType.number),
+                            _buildTextField(
+                              controller.productionYearController,
+                              "2024",
+                              keyboardType: TextInputType.number,
+                            ),
                           ],
                         ),
                       ),
@@ -134,7 +163,11 @@ class EditListingScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildFieldLabel(r"Asking Price ($)"),
-                            _buildTextField(controller.askingPriceController, "289500", keyboardType: TextInputType.number),
+                            _buildTextField(
+                              controller.askingPriceController,
+                              "289500",
+                              keyboardType: TextInputType.number,
+                            ),
                           ],
                         ),
                       ),
@@ -142,7 +175,7 @@ class EditListingScreen extends StatelessWidget {
                   ),
                 ]),
                 SizedBox(height: 20.h),
-      
+
                 // Phase 02: Telemetry & Metrics
                 _buildSectionHeader("PHASE 02: TELEMETRY & METRICS"),
                 _buildCardContainer([
@@ -153,7 +186,10 @@ class EditListingScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildFieldLabel("Power Output (HP)"),
-                            _buildTextField(controller.powerController, "518 HP"),
+                            _buildTextField(
+                              controller.powerController,
+                              "518 HP",
+                            ),
                           ],
                         ),
                       ),
@@ -163,7 +199,10 @@ class EditListingScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildFieldLabel("Torque (NM)"),
-                            _buildTextField(controller.torqueController, "465 NM"),
+                            _buildTextField(
+                              controller.torqueController,
+                              "465 NM",
+                            ),
                           ],
                         ),
                       ),
@@ -174,7 +213,7 @@ class EditListingScreen extends StatelessWidget {
                   _buildTextField(controller.zeroToSixtyController, "3.0 SEC"),
                 ]),
                 SizedBox(height: 20.h),
-      
+
                 // Phase 03: Engineering Design
                 _buildSectionHeader("PHASE 03: ENGINEERING DESIGN"),
                 _buildCardContainer([
@@ -183,16 +222,23 @@ class EditListingScreen extends StatelessWidget {
                     selectedValue: controller.selectedEngineConfig.value,
                     items: ["4.0L Flat-6", "3.8L Flat-6", "998cc V4", "N/A"],
                     onChanged: (val) {
-                      if (val != null) controller.selectedEngineConfig.value = val;
+                      if (val != null)
+                        controller.selectedEngineConfig.value = val;
                     },
                   ),
                   SizedBox(height: 12.h),
                   _buildFieldLabel("Transmission"),
                   _buildDropdownDirect(
                     selectedValue: controller.selectedTransmission.value,
-                    items: ["7-Speed PDK", "6-Speed Manual", "6-Speed Quickshift", "N/A"],
+                    items: [
+                      "7-Speed PDK",
+                      "6-Speed Manual",
+                      "6-Speed Quickshift",
+                      "N/A",
+                    ],
                     onChanged: (val) {
-                      if (val != null) controller.selectedTransmission.value = val;
+                      if (val != null)
+                        controller.selectedTransmission.value = val;
                     },
                   ),
                   SizedBox(height: 12.h),
@@ -218,15 +264,19 @@ class EditListingScreen extends StatelessWidget {
                   ),
                 ]),
                 SizedBox(height: 20.h),
-      
+
                 // Phase 04: Performance Narrative
                 _buildSectionHeader("PHASE 04: PERFORMANCE NARRATIVE"),
                 _buildCardContainer([
                   _buildFieldLabel("Listing Description"),
-                  _buildTextField(controller.descriptionController, "Description...", maxLines: 4),
+                  _buildTextField(
+                    controller.descriptionController,
+                    "Description...",
+                    maxLines: 4,
+                  ),
                 ]),
                 SizedBox(height: 20.h),
-      
+
                 // Phase 05: Visual Assets
                 _buildSectionHeader("PHASE 05: VISUAL ASSETS"),
                 _buildCardContainer([
@@ -244,7 +294,7 @@ class EditListingScreen extends StatelessWidget {
                   ),
                 ]),
                 SizedBox(height: 32.h),
-      
+
                 // Save & Discard Action Buttons
                 GestureDetector(
                   onTap: () {
@@ -391,7 +441,12 @@ class EditListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(TextEditingController textController, String hint, {int maxLines = 1, TextInputType? keyboardType}) {
+  Widget _buildTextField(
+    TextEditingController textController,
+    String hint, {
+    int maxLines = 1,
+    TextInputType? keyboardType,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -432,10 +487,7 @@ class EditListingScreen extends StatelessWidget {
           icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
           style: const TextStyle(color: Colors.white, fontSize: 13),
           items: items.map((val) {
-            return DropdownMenuItem<String>(
-              value: val,
-              child: Text(val),
-            );
+            return DropdownMenuItem<String>(value: val, child: Text(val));
           }).toList(),
           onChanged: onChanged,
         ),
@@ -443,7 +495,11 @@ class EditListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDrivetrainOption(BusinessDashboardController controller, String label, bool isSelected) {
+  Widget _buildDrivetrainOption(
+    BusinessDashboardController controller,
+    String label,
+    bool isSelected,
+  ) {
     return GestureDetector(
       onTap: () {
         controller.selectedDrivetrain.value = label;
@@ -487,7 +543,11 @@ class EditListingScreen extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
                 color: const Color(0xff222222),
-                child: const Icon(Icons.broken_image, color: Colors.white24, size: 20),
+                child: const Icon(
+                  Icons.broken_image,
+                  color: Colors.white24,
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -497,7 +557,10 @@ class EditListingScreen extends StatelessWidget {
           right: 4,
           child: Container(
             padding: const EdgeInsets.all(2),
-            decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+            decoration: const BoxDecoration(
+              color: Colors.black54,
+              shape: BoxShape.circle,
+            ),
             child: const Icon(Icons.close, color: Colors.white, size: 10),
           ),
         ),
@@ -524,7 +587,11 @@ class EditListingScreen extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: const Color(0xff222222),
-                  child: const Icon(Icons.broken_image, color: Colors.white24, size: 20),
+                  child: const Icon(
+                    Icons.broken_image,
+                    color: Colors.white24,
+                    size: 20,
+                  ),
                 ),
               ),
             ),
@@ -535,8 +602,18 @@ class EditListingScreen extends StatelessWidget {
           left: 4,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-            decoration: BoxDecoration(color: AppColors.yellow, borderRadius: BorderRadius.circular(4.r)),
-            child: const Text("VIDEO", style: TextStyle(color: Colors.black, fontSize: 6, fontWeight: FontWeight.bold)),
+            decoration: BoxDecoration(
+              color: AppColors.yellow,
+              borderRadius: BorderRadius.circular(4.r),
+            ),
+            child: const Text(
+              "VIDEO",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 6,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
         Positioned(
@@ -544,7 +621,10 @@ class EditListingScreen extends StatelessWidget {
           right: 4,
           child: Container(
             padding: const EdgeInsets.all(2),
-            decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+            decoration: const BoxDecoration(
+              color: Colors.black54,
+              shape: BoxShape.circle,
+            ),
             child: const Icon(Icons.close, color: Colors.white, size: 10),
           ),
         ),
@@ -564,7 +644,11 @@ class EditListingScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.add_a_photo_outlined, color: Colors.white38, size: 20),
+          const Icon(
+            Icons.add_a_photo_outlined,
+            color: Colors.white38,
+            size: 20,
+          ),
           SizedBox(height: 4.h),
           const CustomText(
             text: "ADD MEDIA",

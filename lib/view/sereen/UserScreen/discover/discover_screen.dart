@@ -268,7 +268,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha:0.8),
+                    color: Colors.black.withValues(alpha: 0.8),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -569,7 +569,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     vertical: 3,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha:0.8),
+                    color: Colors.black.withValues(alpha: 0.8),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -838,8 +838,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: isGoldBorder
-                            ? AppColors.yellow.withValues(alpha:0.15)
-                            : Colors.white.withValues(alpha:0.05),
+                            ? AppColors.yellow.withValues(alpha: 0.15)
+                            : Colors.white.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
                           color: isGoldBorder

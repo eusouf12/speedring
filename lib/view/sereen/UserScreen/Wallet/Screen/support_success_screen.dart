@@ -24,7 +24,10 @@ class SupportSuccessController extends GetxController {
         timer.cancel();
         // Redirect back to profile
         if (Get.currentRoute == AppRoutes.supportSuccessScreen) {
-          Get.until((route) => Get.currentRoute == AppRoutes.inboxScreen || route.isFirst);
+          Get.until(
+            (route) =>
+                Get.currentRoute == AppRoutes.inboxScreen || route.isFirst,
+          );
         }
       }
     });
@@ -43,11 +46,13 @@ class SupportSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SupportSuccessController());
-    final Map<String, dynamic> arguments = Get.arguments ?? {
-      "amount": "€10.00",
-      "recipient": "MAX VERSTAPPEN",
-      "txId": "SRX-928-883-M7"
-    };
+    final Map<String, dynamic> arguments =
+        Get.arguments ??
+        {
+          "amount": "€10.00",
+          "recipient": "MAX VERSTAPPEN",
+          "txId": "SRX-928-883-M7",
+        };
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -77,13 +82,16 @@ class SupportSuccessScreen extends StatelessWidget {
                           height: 140.w,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.yellow, width: 2.5),
+                            border: Border.all(
+                              color: AppColors.yellow,
+                              width: 2.5,
+                            ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.yellow.withValues(alpha:0.15),
+                                color: AppColors.yellow.withValues(alpha: 0.15),
                                 blurRadius: 30,
                                 spreadRadius: 5,
-                              )
+                              ),
                             ],
                           ),
                           child: ClipOval(
@@ -96,7 +104,10 @@ class SupportSuccessScreen extends StatelessWidget {
                         Positioned(
                           bottom: -6.h,
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 4.h,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.yellow,
                               borderRadius: BorderRadius.circular(4.r),
@@ -104,7 +115,11 @@ class SupportSuccessScreen extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.check, color: Colors.black, size: 10.w),
+                                Icon(
+                                  Icons.check,
+                                  color: Colors.black,
+                                  size: 10.w,
+                                ),
                                 SizedBox(width: 4.w),
                                 const Text(
                                   "VERIFIED",
@@ -144,7 +159,8 @@ class SupportSuccessScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: CustomText(
-                      text: "Elite performance telemetry transaction confirmed on the Speedring network.",
+                      text:
+                          "Elite performance telemetry transaction confirmed on the Speedring network.",
                       color: Colors.white70,
                       fontSize: 11,
                       height: 1.4,
@@ -160,7 +176,9 @@ class SupportSuccessScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: const Color(0xff111111),
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.05),
+                      ),
                     ),
                     child: Column(
                       children: [
@@ -195,7 +213,10 @@ class SupportSuccessScreen extends StatelessWidget {
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 12.h),
-                          child: Divider(color: Colors.white.withValues(alpha:0.05), height: 1),
+                          child: Divider(
+                            color: Colors.white.withValues(alpha: 0.05),
+                            height: 1,
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -231,7 +252,9 @@ class SupportSuccessScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 6.h),
                                 CustomText(
-                                  text: arguments["recipient"] ?? "MAX VERSTAPPEN",
+                                  text:
+                                      arguments["recipient"] ??
+                                      "MAX VERSTAPPEN",
                                   color: Colors.white,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w900,
@@ -247,36 +270,36 @@ class SupportSuccessScreen extends StatelessWidget {
                   const Spacer(flex: 3),
 
                   // Returning to dashboard indicator
-                  Obx(() => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 60.w,
-                            height: 3.h,
-                            decoration: BoxDecoration(
-                              color: Colors.white10,
-                              borderRadius: BorderRadius.circular(2.r),
-                            ),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: FractionallySizedBox(
-                                widthFactor: controller.progress.value,
-                                child: Container(
-                                  color: AppColors.yellow,
-                                ),
-                              ),
+                  Obx(
+                    () => Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 60.w,
+                          height: 3.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white10,
+                            borderRadius: BorderRadius.circular(2.r),
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: FractionallySizedBox(
+                              widthFactor: controller.progress.value,
+                              child: Container(color: AppColors.yellow),
                             ),
                           ),
-                          SizedBox(width: 10.w),
-                          CustomText(
-                            text: "RETURNING TO DASHBOARD",
-                            color: Colors.white38,
-                            fontSize: 8.5,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
-                        ],
-                      )),
+                        ),
+                        SizedBox(width: 10.w),
+                        CustomText(
+                          text: "RETURNING TO DASHBOARD",
+                          color: Colors.white38,
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                      ],
+                    ),
+                  ),
 
                   SizedBox(height: 24.h),
                 ],
@@ -310,7 +333,7 @@ class SupportSuccessScreen extends StatelessWidget {
             width: pos["size"]!.w,
             height: (pos["size"]! * 1.6).h,
             decoration: BoxDecoration(
-              color: AppColors.yellow.withValues(alpha:0.15),
+              color: AppColors.yellow.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(1.r),
             ),
           ),

@@ -11,10 +11,12 @@ class CreateMotorcycleListingScreen extends StatefulWidget {
   const CreateMotorcycleListingScreen({super.key});
 
   @override
-  State<CreateMotorcycleListingScreen> createState() => _CreateMotorcycleListingScreenState();
+  State<CreateMotorcycleListingScreen> createState() =>
+      _CreateMotorcycleListingScreenState();
 }
 
-class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingScreen> {
+class _CreateMotorcycleListingScreenState
+    extends State<CreateMotorcycleListingScreen> {
   final manufacturerController = TextEditingController(text: "Ducati");
   final modelController = TextEditingController(text: "Panigale V4 S");
   final productionYearController = TextEditingController(text: "2024");
@@ -78,19 +80,37 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
               _buildPhaseHeader("01 / BASIC IDENTIFICATION"),
               _buildSectionCard([
                 _buildFieldLabel("MANUFACTURER / BRAND"),
-                _buildOutlineIconField(manufacturerController, Icons.motorcycle_outlined, "e.g. Ducati"),
+                _buildOutlineIconField(
+                  manufacturerController,
+                  Icons.motorcycle_outlined,
+                  "e.g. Ducati",
+                ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("MODEL NAME"),
                 _buildOutlineField(modelController, "e.g. Panigale V4 S"),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("PRODUCTION YEAR"),
-                _buildOutlineIconField(productionYearController, Icons.calendar_today_outlined, "2024", keyboardType: TextInputType.number),
+                _buildOutlineIconField(
+                  productionYearController,
+                  Icons.calendar_today_outlined,
+                  "2024",
+                  keyboardType: TextInputType.number,
+                ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("ASKING PRICE (USD)"),
-                _buildOutlineIconField(priceController, Icons.payments_outlined, "32,000", keyboardType: TextInputType.number),
+                _buildOutlineIconField(
+                  priceController,
+                  Icons.payments_outlined,
+                  "32,000",
+                  keyboardType: TextInputType.number,
+                ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("VEHICLE LOCATION"),
-                _buildOutlineIconField(locationController, Icons.location_on_outlined, "City, State, Country"),
+                _buildOutlineIconField(
+                  locationController,
+                  Icons.location_on_outlined,
+                  "City, State, Country",
+                ),
               ]),
               SizedBox(height: 24.h),
 
@@ -117,10 +137,20 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
                 ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("MAX OUTPUT (HP)"),
-                _buildOutlineIconField(outputController, Icons.bolt_outlined, "215", keyboardType: TextInputType.number),
+                _buildOutlineIconField(
+                  outputController,
+                  Icons.bolt_outlined,
+                  "215",
+                  keyboardType: TextInputType.number,
+                ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("DISPLACEMENT (CC)"),
-                _buildOutlineIconField(displacementController, Icons.speed_outlined, "1103", keyboardType: TextInputType.number),
+                _buildOutlineIconField(
+                  displacementController,
+                  Icons.speed_outlined,
+                  "1103",
+                  keyboardType: TextInputType.number,
+                ),
               ]),
               SizedBox(height: 24.h),
 
@@ -146,14 +176,19 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
                           height: double.infinity,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (c, e, s) => Container(color: Colors.black),
+                          errorBuilder: (c, e, s) =>
+                              Container(color: Colors.black),
                         ),
                       ),
                       Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow, size: 24),
+                            const Icon(
+                              Icons.add_a_photo_outlined,
+                              color: AppColors.yellow,
+                              size: 24,
+                            ),
                             SizedBox(height: 6.h),
                             CustomText(
                               text: "MAIN VIEW",
@@ -190,7 +225,11 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.cancel_outlined, color: Colors.white60, size: 16),
+                          const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.white60,
+                            size: 16,
+                          ),
                           SizedBox(width: 6.w),
                           CustomText(
                             text: "CANCEL",
@@ -214,33 +253,45 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
                       textColor: Colors.black,
                       borderRadius: 8.r,
                       isImageRight: true,
-                      icon: const Icon(Icons.publish_rounded, color: Colors.black, size: 16),
+                      icon: const Icon(
+                        Icons.publish_rounded,
+                        color: Colors.black,
+                        size: 16,
+                      ),
                       onTap: () {
                         // Publish item to controller list
-                        String title = "${productionYearController.text} ${manufacturerController.text} ${modelController.text}".trim();
-                        if (title.trim().isEmpty) title = "2024 DUCATI PANIGALE V4 S";
+                        String title =
+                            "${productionYearController.text} ${manufacturerController.text} ${modelController.text}"
+                                .trim();
+                        if (title.trim().isEmpty)
+                          title = "2024 DUCATI PANIGALE V4 S";
                         String price = priceController.text.trim();
                         if (!price.startsWith(r"$")) price = r"$" + price;
 
-                        controller.rxAssets.insert(0, AssetModel(
-                          id: (controller.rxAssets.length + 1).toString(),
-                          title: title.toUpperCase(),
-                          status: "LIVE",
-                          code: "YA-DUC-PANV4",
-                          type: "MOTORCYCLES",
-                          price: price,
-                          views: "0",
-                          leads: "0",
-                          shipping: "YES",
-                          imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
-                          description: "Desmosedici Stradale performance superbike. Ready for track utilization.",
-                          power: "${outputController.text} HP",
-                          torque: "112 NM",
-                          zeroToSixty: "2.9 SEC",
-                          engineConfig: engineConfig,
-                          transmission: "6-Speed Quickshift",
-                          drivetrain: "RWD",
-                        ));
+                        controller.rxAssets.insert(
+                          0,
+                          AssetModel(
+                            id: (controller.rxAssets.length + 1).toString(),
+                            title: title.toUpperCase(),
+                            status: "LIVE",
+                            code: "YA-DUC-PANV4",
+                            type: "MOTORCYCLES",
+                            price: price,
+                            views: "0",
+                            leads: "0",
+                            shipping: "YES",
+                            imageUrl:
+                                "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
+                            description:
+                                "Desmosedici Stradale performance superbike. Ready for track utilization.",
+                            power: "${outputController.text} HP",
+                            torque: "112 NM",
+                            zeroToSixty: "2.9 SEC",
+                            engineConfig: engineConfig,
+                            transmission: "6-Speed Quickshift",
+                            drivetrain: "RWD",
+                          ),
+                        );
 
                         Get.back(); // Pop listing screen
                         Get.back(); // Pop Selector Screen
@@ -319,18 +370,31 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
       ),
       child: TextFormField(
         controller: textController,
-        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.white24, fontSize: 13, fontWeight: FontWeight.bold),
+          hintStyle: const TextStyle(
+            color: Colors.white24,
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
           isDense: true,
         ),
       ),
     );
   }
 
-  Widget _buildOutlineIconField(TextEditingController textController, IconData icon, String hint, {TextInputType? keyboardType}) {
+  Widget _buildOutlineIconField(
+    TextEditingController textController,
+    IconData icon,
+    String hint, {
+    TextInputType? keyboardType,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -346,11 +410,19 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
             child: TextFormField(
               controller: textController,
               keyboardType: keyboardType,
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
-                hintStyle: const TextStyle(color: Colors.white24, fontSize: 13, fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(
+                  color: Colors.white24,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 isDense: true,
               ),
             ),
@@ -381,15 +453,21 @@ class _CreateMotorcycleListingScreenState extends State<CreateMotorcycleListingS
           Expanded(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                value: items.contains(selectedValue) ? selectedValue : items.first,
+                value: items.contains(selectedValue)
+                    ? selectedValue
+                    : items.first,
                 dropdownColor: const Color(0xff111111),
-                icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.white60,
+                ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
                 items: items.map((val) {
-                  return DropdownMenuItem<String>(
-                    value: val,
-                    child: Text(val),
-                  );
+                  return DropdownMenuItem<String>(value: val, child: Text(val));
                 }).toList(),
                 onChanged: onChanged,
               ),

@@ -19,9 +19,7 @@ class CustomBusinessNavBar extends StatelessWidget {
           topLeft: Radius.circular(24.r),
           topRight: Radius.circular(24.r),
         ),
-        border: const Border(
-          top: BorderSide(color: Colors.white10, width: 1),
-        ),
+        border: const Border(top: BorderSide(color: Colors.white10, width: 1)),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -41,7 +39,9 @@ class CustomBusinessNavBar extends StatelessWidget {
 
   Widget _buildNavItem(int index, String label, IconData icon) {
     final bool isSelected = index == currentIndex;
-    final Color itemColor = isSelected ? AppColors.yellow : const Color(0xffD1C5AB);
+    final Color itemColor = isSelected
+        ? AppColors.yellow
+        : const Color(0xffD1C5AB);
 
     return GestureDetector(
       onTap: () => _onTap(index),
@@ -52,11 +52,7 @@ class CustomBusinessNavBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 22.sp,
-              color: itemColor,
-            ),
+            Icon(icon, size: 22.sp, color: itemColor),
             SizedBox(height: 4.h),
             Text(
               label,

@@ -50,7 +50,11 @@ class EndExpeditionScreen extends StatelessWidget {
                       const SizedBox(width: 6),
                       const Text(
                         "SESSION LIVE",
-                        style: TextStyle(color: Colors.white70, fontSize: 8, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -112,9 +116,23 @@ class EndExpeditionScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
-                              Text("DISTANCE", style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold)),
+                              Text(
+                                "DISTANCE",
+                                style: TextStyle(
+                                  color: Colors.white38,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               SizedBox(height: 4),
-                              Text("42.8 KM", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900)),
+                              Text(
+                                "42.8 KM",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -122,9 +140,23 @@ class EndExpeditionScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
-                              Text("DURATION", style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold)),
+                              Text(
+                                "DURATION",
+                                style: TextStyle(
+                                  color: Colors.white38,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               SizedBox(height: 4),
-                              Text("00:42:10", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900)),
+                              Text(
+                                "00:42:10",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -139,9 +171,23 @@ class EndExpeditionScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
-                              Text("PARTICIPANTS", style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold)),
+                              Text(
+                                "PARTICIPANTS",
+                                style: TextStyle(
+                                  color: Colors.white38,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               SizedBox(height: 4),
-                              Text("12 OPS", style: TextStyle(color: AppColors.yellow, fontSize: 18, fontWeight: FontWeight.w900)),
+                              Text(
+                                "12 OPS",
+                                style: TextStyle(
+                                  color: AppColors.yellow,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -149,9 +195,23 @@ class EndExpeditionScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
-                              Text("AVG SPEED", style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold)),
+                              Text(
+                                "AVG SPEED",
+                                style: TextStyle(
+                                  color: Colors.white38,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               SizedBox(height: 4),
-                              Text("107 KM/H", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900)),
+                              Text(
+                                "107 KM/H",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -167,11 +227,19 @@ class EndExpeditionScreen extends StatelessWidget {
                       children: const [
                         Text(
                           "ENCRYPTION  AES-256 SECURE",
-                          style: TextStyle(color: AppColors.yellow, fontSize: 7, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: AppColors.yellow,
+                            fontSize: 7,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text(
                           "LOG ID #SR-9921-X",
-                          style: TextStyle(color: Colors.white38, fontSize: 7, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 7,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
@@ -200,7 +268,11 @@ class EndExpeditionScreen extends StatelessWidget {
                     children: const [
                       Text(
                         "CONFIRM END TRIP",
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Icon(Icons.arrow_forward, size: 16),
@@ -222,7 +294,12 @@ class EndExpeditionScreen extends StatelessWidget {
                   onPressed: () => Get.back(),
                   child: const Text(
                     "CANCEL",
-                    style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
               ),

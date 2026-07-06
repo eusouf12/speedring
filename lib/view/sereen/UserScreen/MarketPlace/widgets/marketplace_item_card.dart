@@ -49,7 +49,11 @@ class MarketplaceItemCard extends StatelessWidget {
                   height: 190.h,
                   color: const Color(0xff222222),
                   child: const Center(
-                    child: Icon(Icons.image_not_supported_outlined, color: Colors.white24, size: 40),
+                    child: Icon(
+                      Icons.image_not_supported_outlined,
+                      color: Colors.white24,
+                      size: 40,
+                    ),
                   ),
                 ),
               ),
@@ -57,7 +61,10 @@ class MarketplaceItemCard extends StatelessWidget {
                 top: 12.h,
                 left: 12.w,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 4.h,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.yellow,
                     borderRadius: BorderRadius.circular(6.r),
@@ -122,7 +129,11 @@ class MarketplaceItemCard extends StatelessWidget {
                         fontSize: 12,
                         borderRadius: 8.r,
                         onTap: onViewDetails,
-                        icon: const Icon(Icons.remove_red_eye_outlined, color: Colors.black, size: 16),
+                        icon: const Icon(
+                          Icons.remove_red_eye_outlined,
+                          color: Colors.black,
+                          size: 16,
+                        ),
                       ),
                     ),
                     SizedBox(width: 12.w),
@@ -136,7 +147,11 @@ class MarketplaceItemCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(color: Colors.white10),
                         ),
-                        child: const Icon(Icons.chat_bubble_outline, color: Colors.white70, size: 18),
+                        child: const Icon(
+                          Icons.chat_bubble_outline,
+                          color: Colors.white70,
+                          size: 18,
+                        ),
                       ),
                     ),
                   ],

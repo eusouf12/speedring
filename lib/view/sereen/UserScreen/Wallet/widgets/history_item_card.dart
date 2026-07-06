@@ -29,7 +29,7 @@ class HistoryItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff111111),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
@@ -40,7 +40,7 @@ class HistoryItemCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: const Color(0xff1C1C1C),
               borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: Colors.white.withValues(alpha:0.03)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.03)),
             ),
             child: Icon(
               icon,

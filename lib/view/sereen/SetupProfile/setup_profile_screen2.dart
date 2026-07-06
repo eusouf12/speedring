@@ -53,6 +53,20 @@ class SetupProfileScreen2 extends StatelessWidget {
         'icon': Icons.directions_car_filled_outlined,
         'bgImage': AppImages.oldtimerBg,
       },
+      {
+        'id': 'spotters',
+        'title': 'Spotters',
+        'subtitle': 'SPOTTERS INSIGHTS',
+        'icon': Icons.camera_alt,
+        'bgImage': AppImages.spotters,
+      },
+      {
+        'id': 'others',
+        'title': 'Others',
+        'subtitle': 'CUSTOM TELEMETRY',
+        'icon': Icons.stars,
+        'bgImage': AppImages.others,
+      },
     ];
 
     return CustomGradient(
@@ -78,7 +92,7 @@ class SetupProfileScreen2 extends StatelessWidget {
                 ),
               ),
             ),
-        
+
             /// ── Motorsport Interests Cards ────────────────────────
             Expanded(
               child: ListView.builder(
@@ -86,13 +100,13 @@ class SetupProfileScreen2 extends StatelessWidget {
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
                   final item = categories[index];
-        
+
                   return Obx(() {
                     // Multi-selection er jonno dynamic check
                     final isSelected = controller.selectedInterests.contains(
                       item['id'],
                     );
-        
+
                     return GestureDetector(
                       onTap: () {
                         if (isSelected) {
@@ -130,7 +144,7 @@ class SetupProfileScreen2 extends StatelessWidget {
                                 ),
                               ),
                             ),
-        
+
                             /// Content Structure
                             Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -154,7 +168,7 @@ class SetupProfileScreen2 extends StatelessWidget {
                                       size: 20,
                                     ),
                                   ),
-        
+
                                   /// Bottom Content: Titles
                                   Column(
                                     crossAxisAlignment:
@@ -192,7 +206,7 @@ class SetupProfileScreen2 extends StatelessWidget {
                 },
               ),
             ),
-        
+
             /// ── Bottom Continue Button Fixed ──────────────────────
             Padding(
               padding: const EdgeInsets.all(20.0),

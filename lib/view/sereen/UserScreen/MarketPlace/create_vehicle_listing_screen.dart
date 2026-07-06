@@ -43,7 +43,10 @@ class CreateVehicleListingScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Basic Specifications Section
-              _buildSectionHeader("BASIC SPECIFICATIONS", "Core identity parameters for the vehicle record."),
+              _buildSectionHeader(
+                "BASIC SPECIFICATIONS",
+                "Core identity parameters for the vehicle record.",
+              ),
               SizedBox(height: 12.h),
               _buildFormCard([
                 _buildFieldLabel("BRAND / MANUFACTURER"),
@@ -53,7 +56,10 @@ class CreateVehicleListingScreen extends StatelessWidget {
                 _buildWhiteTextField("e.g. 911 GT3 RS"),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("PRODUCTION YEAR"),
-                _buildWhiteTextField("2024", keyboardType: TextInputType.number),
+                _buildWhiteTextField(
+                  "2024",
+                  keyboardType: TextInputType.number,
+                ),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("LISTING PRICE (USD)"),
                 _buildWhitePriceField("0.00"),
@@ -64,13 +70,19 @@ class CreateVehicleListingScreen extends StatelessWidget {
               SizedBox(height: 28.h),
 
               // Performance Telemetry Section
-              _buildSectionHeader("PERFORMANCE TELEMETRY", "Precision engineering data points for verified enthusiasts."),
+              _buildSectionHeader(
+                "PERFORMANCE TELEMETRY",
+                "Precision engineering data points for verified enthusiasts.",
+              ),
               SizedBox(height: 12.h),
               _buildTelemetryCard(),
               SizedBox(height: 28.h),
 
               // Media Assets Section
-              _buildSectionHeader("MEDIA ASSETS", "High-fidelity imagery and kinematic content."),
+              _buildSectionHeader(
+                "MEDIA ASSETS",
+                "High-fidelity imagery and kinematic content.",
+              ),
               SizedBox(height: 12.h),
               _buildMediaAssetsCard(),
               SizedBox(height: 32.h),
@@ -85,7 +97,11 @@ class CreateVehicleListingScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.cancel_outlined, color: Colors.white60, size: 16),
+                          const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.white60,
+                            size: 16,
+                          ),
                           SizedBox(width: 6.w),
                           CustomText(
                             text: "CANCEL",
@@ -109,7 +125,11 @@ class CreateVehicleListingScreen extends StatelessWidget {
                       textColor: Colors.black,
                       borderRadius: 8.r,
                       isImageRight: true,
-                      icon: const Icon(Icons.publish_rounded, color: Colors.black, size: 16),
+                      icon: const Icon(
+                        Icons.publish_rounded,
+                        color: Colors.black,
+                        size: 16,
+                      ),
                       onTap: () {
                         // Navigate to asset configuration flow
                         Get.toNamed(AppRoutes.configureAssetScreen);
@@ -144,11 +164,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
         SizedBox(height: 6.h),
-        Container(
-          height: 2.h,
-          width: 40.w,
-          color: AppColors.yellow,
-        ),
+        Container(height: 2.h, width: 40.w, color: AppColors.yellow),
       ],
     );
   }
@@ -191,11 +207,19 @@ class CreateVehicleListingScreen extends StatelessWidget {
       ),
       child: TextFormField(
         keyboardType: keyboardType,
-        style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.bold),
+          hintStyle: const TextStyle(
+            color: Colors.black38,
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
           isDense: true,
         ),
       ),
@@ -211,15 +235,30 @@ class CreateVehicleListingScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Text("\$ ", style: TextStyle(color: AppColors.yellow, fontSize: 13, fontWeight: FontWeight.bold)),
+          const Text(
+            "\$ ",
+            style: TextStyle(
+              color: AppColors.yellow,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Expanded(
             child: TextFormField(
               keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
-                hintStyle: const TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(
+                  color: Colors.black38,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 isDense: true,
               ),
             ),
@@ -238,15 +277,27 @@ class CreateVehicleListingScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.location_on_outlined, color: Colors.black38, size: 16),
+          const Icon(
+            Icons.location_on_outlined,
+            color: Colors.black38,
+            size: 16,
+          ),
           SizedBox(width: 8.w),
           Expanded(
             child: TextFormField(
-              style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
-                hintStyle: const TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(
+                  color: Colors.black38,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 isDense: true,
               ),
             ),
@@ -326,12 +377,19 @@ class CreateVehicleListingScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: Colors.white10, style: BorderStyle.solid),
+              border: Border.all(
+                color: Colors.white10,
+                style: BorderStyle.solid,
+              ),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow, size: 28),
+                const Icon(
+                  Icons.add_a_photo_outlined,
+                  color: AppColors.yellow,
+                  size: 28,
+                ),
                 SizedBox(height: 8.h),
                 CustomText(
                   text: "MAIN STUDIO SHOT",
@@ -373,7 +431,11 @@ class CreateVehicleListingScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.upload_file_outlined, color: Colors.white24, size: 16),
+          const Icon(
+            Icons.upload_file_outlined,
+            color: Colors.white24,
+            size: 16,
+          ),
           SizedBox(height: 4.h),
           CustomText(
             text: label,

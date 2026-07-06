@@ -108,17 +108,31 @@ class BusinessCreateMotorcycleListingScreen extends StatelessWidget {
                                   value: selectedYear.value,
                                   isExpanded: true,
                                   dropdownColor: Colors.black,
-                                  icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: Colors.white60,
+                                  ),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
                                   onChanged: (newValue) {
-                                    if (newValue != null) selectedYear.value = newValue;
+                                    if (newValue != null)
+                                      selectedYear.value = newValue;
                                   },
-                                  items: ["2026", "2025", "2024", "2023", "2022"].map((year) {
-                                    return DropdownMenuItem<String>(
-                                      value: year,
-                                      child: Text(year),
-                                    );
-                                  }).toList(),
+                                  items:
+                                      [
+                                        "2026",
+                                        "2025",
+                                        "2024",
+                                        "2023",
+                                        "2022",
+                                      ].map((year) {
+                                        return DropdownMenuItem<String>(
+                                          value: year,
+                                          child: Text(year),
+                                        );
+                                      }).toList(),
                                 ),
                               ),
                             ),
@@ -175,17 +189,30 @@ class BusinessCreateMotorcycleListingScreen extends StatelessWidget {
                         value: selectedEngineType.value,
                         isExpanded: true,
                         dropdownColor: Colors.black,
-                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white60,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         onChanged: (newValue) {
-                          if (newValue != null) selectedEngineType.value = newValue;
+                          if (newValue != null)
+                            selectedEngineType.value = newValue;
                         },
-                        items: ["V4 engine", "L-Twin engine", "Parallel-Twin", "Inline-Four"].map((type) {
-                          return DropdownMenuItem<String>(
-                            value: type,
-                            child: Text(type),
-                          );
-                        }).toList(),
+                        items:
+                            [
+                              "V4 engine",
+                              "L-Twin engine",
+                              "Parallel-Twin",
+                              "Inline-Four",
+                            ].map((type) {
+                              return DropdownMenuItem<String>(
+                                value: type,
+                                child: Text(type),
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),
@@ -298,17 +325,26 @@ class BusinessCreateMotorcycleListingScreen extends StatelessWidget {
                         value: selectedTransmission.value,
                         isExpanded: true,
                         dropdownColor: Colors.black,
-                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white60,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         onChanged: (newValue) {
-                          if (newValue != null) selectedTransmission.value = newValue;
+                          if (newValue != null)
+                            selectedTransmission.value = newValue;
                         },
-                        items: ["6-Speed Quickshift", "6-Speed Manual", "CVT"].map((trans) {
-                          return DropdownMenuItem<String>(
-                            value: trans,
-                            child: Text(trans),
-                          );
-                        }).toList(),
+                        items: ["6-Speed Quickshift", "6-Speed Manual", "CVT"]
+                            .map((trans) {
+                              return DropdownMenuItem<String>(
+                                value: trans,
+                                child: Text(trans),
+                              );
+                            })
+                            .toList(),
                       ),
                     ),
                   ),
@@ -342,7 +378,8 @@ class BusinessCreateMotorcycleListingScreen extends StatelessWidget {
                 _buildFieldLabel("DETAILED DESCRIPTION & PROVENANCE"),
                 CustomTextField(
                   textEditingController: descController,
-                  hintText: "Describe the vehicle's racing history, maintenance records, and unique modifications...",
+                  hintText:
+                      "Describe the vehicle's racing history, maintenance records, and unique modifications...",
                   maxLines: 4,
                   fillColor: const Color(0xff111111),
                   fieldBorderColor: Colors.white10,
@@ -376,7 +413,10 @@ class BusinessCreateMotorcycleListingScreen extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow),
+                              const Icon(
+                                Icons.add_a_photo_outlined,
+                                color: AppColors.yellow,
+                              ),
                               SizedBox(height: 6.h),
                               CustomText(
                                 text: "ADD MEDIA",
@@ -416,7 +456,11 @@ class BusinessCreateMotorcycleListingScreen extends StatelessWidget {
                                   color: Colors.black54,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.close, color: Colors.white, size: 14),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
                               ),
                             ),
                           ),

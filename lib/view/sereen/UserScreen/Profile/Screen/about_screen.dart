@@ -52,20 +52,23 @@ class AboutScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.08),
+                  ),
                 ),
                 child: Center(
                   child: Image.network(
                     "https://picsum.photos/seed/speedringlogo/260/80",
                     height: 50.h,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => const CustomText(
-                      text: "SPEEDRING",
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2.0,
-                    ),
+                    errorBuilder: (context, error, stackTrace) =>
+                        const CustomText(
+                          text: "SPEEDRING",
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 2.0,
+                        ),
                   ),
                 ),
               ),
@@ -77,7 +80,9 @@ class AboutScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.08),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +114,10 @@ class AboutScreen extends StatelessWidget {
                     _buildDetailRow("APPLICATION NAME", "SPEEDRING"),
                     _buildDetailRow("SYSTEM VERSION", "V4.2.8"),
                     _buildDetailRow("BUILD HASH", "88A92X"),
-                    _buildDetailRow("PLATFORM ENVIRONMENT", "STAGING / PRODUCTION"),
+                    _buildDetailRow(
+                      "PLATFORM ENVIRONMENT",
+                      "STAGING / PRODUCTION",
+                    ),
                   ],
                 ),
               ),

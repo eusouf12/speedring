@@ -30,7 +30,10 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.notifications_none_outlined, color: Color(0xffD1C5AB)),
+              icon: const Icon(
+                Icons.notifications_none_outlined,
+                color: Color(0xffD1C5AB),
+              ),
               onPressed: () {},
             ),
             Padding(
@@ -43,7 +46,9 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                     shape: BoxShape.circle,
                     border: Border.all(color: AppColors.yellow, width: 1.5),
                     image: const DecorationImage(
-                      image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop"),
+                      image: NetworkImage(
+                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -57,7 +62,7 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-      
+
               /// Title Finder Header
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -72,12 +77,15 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-      
+
               /// Search Input
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xff111111),
                     borderRadius: BorderRadius.circular(8),
@@ -93,7 +101,10 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Search for a track...",
-                            hintStyle: TextStyle(color: Colors.white24, fontSize: 13),
+                            hintStyle: TextStyle(
+                              color: Colors.white24,
+                              fontSize: 13,
+                            ),
                             isDense: true,
                           ),
                         ),
@@ -103,22 +114,33 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-      
+
               /// Filters Row
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
-                  children: ["ALL TRACKS", "NEARBY", "PRO CIRCUITS"].map((filter) {
+                  children: ["ALL TRACKS", "NEARBY", "PRO CIRCUITS"].map((
+                    filter,
+                  ) {
                     final bool isSelected = filter == selectedFilter;
                     return GestureDetector(
                       onTap: () => setState(() => selectedFilter = filter),
                       child: Container(
                         margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.yellow : const Color(0xff111111),
+                          color: isSelected
+                              ? AppColors.yellow
+                              : const Color(0xff111111),
                           borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: isSelected ? Colors.transparent : Colors.white10),
+                          border: Border.all(
+                            color: isSelected
+                                ? Colors.transparent
+                                : Colors.white10,
+                          ),
                         ),
                         child: Text(
                           filter,
@@ -134,14 +156,15 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-      
+
               /// Tracks List
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   children: [
                     _buildTrackCard(
-                      imageUrl: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&auto=format&fit=crop",
+                      imageUrl:
+                          "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&auto=format&fit=crop",
                       status: "OPEN",
                       isOpened: true,
                       country: "BELGIUM",
@@ -152,7 +175,8 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                       ctaLabel: "GO TO TRACK",
                     ),
                     _buildTrackCard(
-                      imageUrl: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=600&auto=format&fit=crop",
+                      imageUrl:
+                          "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=600&auto=format&fit=crop",
                       status: "CLOSED",
                       isOpened: false,
                       country: "JAPAN",
@@ -163,24 +187,28 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                       ctaLabel: "VIEW DETAILS",
                     ),
                     _buildDescTrackCard(
-                      imageUrl: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&auto=format&fit=crop",
+                      imageUrl:
+                          "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&auto=format&fit=crop",
                       country: "GERMANY",
                       name: "NÜRBURGRING",
-                      description: "The ultimate test of man and machine. 20.8 KM of pure adrenaline through the Eifel...",
+                      description:
+                          "The ultimate test of man and machine. 20.8 KM of pure adrenaline through the Eifel...",
                       statsLabel: "20.8 KM",
                     ),
                     _buildDescTrackCard(
-                      imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&auto=format&fit=crop",
+                      imageUrl:
+                          "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&auto=format&fit=crop",
                       country: "ITALY",
                       name: "MONZA ENI",
-                      description: "The Temple of Speed. Long straights and historic banked curves in a royal park...",
+                      description:
+                          "The Temple of Speed. Long straights and historic banked curves in a royal park...",
                       statsLabel: "5.7 KM",
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 24),
-      
+
               /// Live Global Stats Footer Card
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -207,15 +235,27 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          Expanded(child: _buildFooterStat("TRACKS ACTIVE", "142")),
-                          Expanded(child: _buildFooterStat("DRIVERS ONLINE", "2.4K")),
+                          Expanded(
+                            child: _buildFooterStat("TRACKS ACTIVE", "142"),
+                          ),
+                          Expanded(
+                            child: _buildFooterStat("DRIVERS ONLINE", "2.4K"),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          Expanded(child: _buildFooterStat("WEATHER ALERTS", "03", isAlert: true)),
-                          Expanded(child: _buildFooterStat("AVG LAP TEMP", "24°C")),
+                          Expanded(
+                            child: _buildFooterStat(
+                              "WEATHER ALERTS",
+                              "03",
+                              isAlert: true,
+                            ),
+                          ),
+                          Expanded(
+                            child: _buildFooterStat("AVG LAP TEMP", "24°C"),
+                          ),
                         ],
                       ),
                     ],
@@ -256,14 +296,24 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
           /// Card Image
           Stack(
             children: [
-              Image.network(imageUrl, height: 140, width: double.infinity, fit: BoxFit.cover),
+              Image.network(
+                imageUrl,
+                height: 140,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
               Positioned(
                 top: 12,
                 left: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: isOpened ? AppColors.yellow : const Color(0xff222222),
+                    color: isOpened
+                        ? AppColors.yellow
+                        : const Color(0xff222222),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -309,7 +359,10 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                   children: [
                     _buildTrackSpec("LENGTH", length),
                     _buildTrackSpec("CORNERS", corners),
-                    _buildTrackSpec(country == "JAPAN" ? "TYPE" : "ELEVATION CHANGE", elevation),
+                    _buildTrackSpec(
+                      country == "JAPAN" ? "TYPE" : "ELEVATION CHANGE",
+                      elevation,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -320,11 +373,15 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                   height: 40,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isOpened ? AppColors.yellow : Colors.transparent,
+                      backgroundColor: isOpened
+                          ? AppColors.yellow
+                          : Colors.transparent,
                       foregroundColor: isOpened ? Colors.black : Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: isOpened ? BorderSide.none : const BorderSide(color: Colors.white24),
+                        side: isOpened
+                            ? BorderSide.none
+                            : const BorderSide(color: Colors.white24),
                       ),
                       elevation: 0,
                     ),
@@ -367,7 +424,12 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(imageUrl, height: 140, width: double.infinity, fit: BoxFit.cover),
+          Image.network(
+            imageUrl,
+            height: 140,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -414,7 +476,11 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    const Icon(Icons.arrow_forward, color: Colors.white38, size: 16),
+                    const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white38,
+                      size: 16,
+                    ),
                   ],
                 ),
               ],
@@ -455,7 +521,11 @@ class _FindTrackScreenState extends State<FindTrackScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white38,
+            fontSize: 8,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8),
         Text(

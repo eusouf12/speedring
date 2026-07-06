@@ -9,6 +9,7 @@ import 'package:mime/mime.dart';
 import '../helper/shared_prefe/shared_prefe.dart';
 import '../utils/app_const/app_const.dart';
 import 'api_url.dart';
+
 class ApiClient extends GetxService {
   static var client = http.Client();
 
@@ -132,7 +133,12 @@ class ApiClient extends GetxService {
     }
   }
 
-  static Future<Response> postMultipartData(String uri, dynamic body, {List<MultipartBody>? multipartBody, Map<String, String>? headers,}) async {
+  static Future<Response> postMultipartData(
+    String uri,
+    dynamic body, {
+    List<MultipartBody>? multipartBody,
+    Map<String, String>? headers,
+  }) async {
     try {
       bearerToken = await SharePrefsHelper.getString(AppConstants.bearerToken);
 

@@ -18,14 +18,28 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
   String selectedDriveType = "RWD";
   String selectedYear = "2024";
 
-  final TextEditingController _modelController = TextEditingController(text: "PORSCHE 911 GT3 RS (992)");
-  final TextEditingController _manufacturerController = TextEditingController(text: "PORSCHE");
-  final TextEditingController _designationController = TextEditingController(text: "911 GT3 RS");
-  final TextEditingController _plateController = TextEditingController(text: "911 GT3 RS");
+  final TextEditingController _modelController = TextEditingController(
+    text: "PORSCHE 911 GT3 RS (992)",
+  );
+  final TextEditingController _manufacturerController = TextEditingController(
+    text: "PORSCHE",
+  );
+  final TextEditingController _designationController = TextEditingController(
+    text: "911 GT3 RS",
+  );
+  final TextEditingController _plateController = TextEditingController(
+    text: "911 GT3 RS",
+  );
 
-  final TextEditingController _hpController = TextEditingController(text: "525");
-  final TextEditingController _weightController = TextEditingController(text: "1435");
-  final TextEditingController _displacementController = TextEditingController(text: "3996");
+  final TextEditingController _hpController = TextEditingController(
+    text: "525",
+  );
+  final TextEditingController _weightController = TextEditingController(
+    text: "1435",
+  );
+  final TextEditingController _displacementController = TextEditingController(
+    text: "3996",
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +74,9 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                     shape: BoxShape.circle,
                     border: Border.all(color: AppColors.yellow, width: 1.5),
                     image: const DecorationImage(
-                      image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop"),
+                      image: NetworkImage(
+                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -85,7 +101,9 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                     borderRadius: BorderRadius.circular(16.r),
                     border: Border.all(color: Colors.white10),
                     image: const DecorationImage(
-                      image: NetworkImage("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop"),
+                      image: NetworkImage(
+                        "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
+                      ),
                       fit: BoxFit.cover,
                       opacity: 0.6,
                     ),
@@ -93,7 +111,11 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow, size: 28),
+                      const Icon(
+                        Icons.add_a_photo_outlined,
+                        color: AppColors.yellow,
+                        size: 28,
+                      ),
                       SizedBox(height: 8.h),
                       CustomText(
                         text: "CHANGE VEHICLE MEDIA",
@@ -107,7 +129,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                 ),
               ),
               SizedBox(height: 24.h),
-      
+
               /// PHASE 01 // IDENTITY
               _buildSectionHeader("PHASE 01 // IDENTITY"),
               _buildCardContainer([
@@ -127,7 +149,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                 _buildDropdown(["2024", "2023", "2022", "2021", "2020"]),
               ]),
               SizedBox(height: 20.h),
-      
+
               /// TRIM / CONFIGURATION (Section divider)
               const CustomText(
                 text: "TRIM / CONFIGURATION",
@@ -137,7 +159,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                 letterSpacing: 0.5,
               ),
               SizedBox(height: 12.h),
-      
+
               /// PHASE 02 // TELEMETRY DATA
               _buildSectionHeader("PHASE 02 // TELEMETRY DATA"),
               _buildCardContainer([
@@ -151,13 +173,20 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                   children: [
                     _buildTelemetryField("HORSEPOWER (HP)", _hpController),
                     _buildTelemetryField("WEIGHT (KG)", _weightController),
-                    _buildTelemetryField("DISPLACEMENT (CC)", _displacementController),
-                    _buildTelemetryDropdown("DRIVE TYPE", ["RWD", "AWD", "FWD"]),
+                    _buildTelemetryField(
+                      "DISPLACEMENT (CC)",
+                      _displacementController,
+                    ),
+                    _buildTelemetryDropdown("DRIVE TYPE", [
+                      "RWD",
+                      "AWD",
+                      "FWD",
+                    ]),
                   ],
                 ),
               ]),
               SizedBox(height: 24.h),
-      
+
               /// PROPULSION SYSTEM
               _buildSectionHeader("PROPULSION SYSTEM"),
               Row(
@@ -170,7 +199,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                 ],
               ),
               SizedBox(height: 32.h),
-      
+
               /// Save button
               CustomButton(
                 height: 50.h,
@@ -190,7 +219,11 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                   );
                 },
                 isImageRight: true,
-                icon: const Icon(Icons.chevron_right, color: Colors.black, size: 18),
+                icon: const Icon(
+                  Icons.chevron_right,
+                  color: Colors.black,
+                  size: 18,
+                ),
               ),
               SizedBox(height: 20.h),
             ],
@@ -274,10 +307,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
           icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
           style: const TextStyle(color: Colors.white, fontSize: 13),
           items: items.map((val) {
-            return DropdownMenuItem<String>(
-              value: val,
-              child: Text(val),
-            );
+            return DropdownMenuItem<String>(value: val, child: Text(val));
           }).toList(),
           onChanged: (v) {
             if (v != null) {
@@ -297,7 +327,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
       decoration: BoxDecoration(
         color: const Color(0xff181818),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +342,11 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
           Expanded(
             child: TextFormField(
               controller: controller,
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 isDense: true,
@@ -330,7 +364,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
       decoration: BoxDecoration(
         color: const Color(0xff181818),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,13 +381,18 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
               child: DropdownButton<String>(
                 value: selectedDriveType,
                 dropdownColor: const Color(0xff181818),
-                icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60, size: 14),
-                style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.white60,
+                  size: 14,
+                ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 items: items.map((val) {
-                  return DropdownMenuItem<String>(
-                    value: val,
-                    child: Text(val),
-                  );
+                  return DropdownMenuItem<String>(value: val, child: Text(val));
                 }).toList(),
                 onChanged: (v) {
                   if (v != null) {
@@ -383,7 +422,9 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.yellow : const Color(0xff111111),
           borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: isSelected ? AppColors.yellow : Colors.white10),
+          border: Border.all(
+            color: isSelected ? AppColors.yellow : Colors.white10,
+          ),
         ),
         child: Center(
           child: CustomText(

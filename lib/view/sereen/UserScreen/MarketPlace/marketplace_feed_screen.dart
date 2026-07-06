@@ -11,14 +11,16 @@ import 'widgets/marketplace_item_card.dart';
 class MarketplaceFeedController extends GetxController {
   final listings = <Map<String, String>>[
     {
-      "imageUrl": "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&fit=crop",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&fit=crop",
       "title": "APEX-7 TURBO S",
       "price": "\$245,000",
       "subtitle": "2024 PRODUCTION MODEL",
       "tag": "VEHICLE",
     },
     {
-      "imageUrl": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&fit=crop",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&fit=crop",
       "title": "V-CORE 1100R",
       "price": "\$42,900",
       "subtitle": "RACING SPECIFICATION",
@@ -32,14 +34,16 @@ class MarketplaceFeedController extends GetxController {
       "tag": "VEHICLE",
     },
     {
-      "imageUrl": "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&fit=crop",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&fit=crop",
       "title": "FORGED CARBON SET",
       "price": "\$18,500",
       "subtitle": "ULTRA-LIGHTWEIGHT COMPONENTS",
       "tag": "PARTS",
     },
     {
-      "imageUrl": "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&fit=crop",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&fit=crop",
       "title": "MASTER SUSPENSION TUNING",
       "price": "\$250/hr",
       "subtitle": "Pit Garage Service",
@@ -105,11 +109,17 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                     SizedBox(width: 10.w),
                     Expanded(
                       child: TextField(
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "What do you want to buy?",
-                          hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
+                          hintStyle: const TextStyle(
+                            color: Colors.white24,
+                            fontSize: 13,
+                          ),
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 8.h),
                         ),
@@ -119,7 +129,7 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                 ),
               ),
             ),
-      
+
             /// Listing + Category Selection Header buttons
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -131,7 +141,11 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                       title: "START LISTING",
                       fontSize: 12,
                       borderRadius: 8.r,
-                      icon: const Icon(Icons.add_circle_outline, color: Colors.black, size: 16),
+                      icon: const Icon(
+                        Icons.add_circle_outline,
+                        color: Colors.black,
+                        size: 16,
+                      ),
                       onTap: () => Get.toNamed(AppRoutes.selectCategoryScreen),
                     ),
                   ),
@@ -152,34 +166,41 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             /// Feed Items List
             Expanded(
-              child: Obx(() => ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                itemCount: controller.listings.length,
-                itemBuilder: (context, idx) {
-                  final item = controller.listings[idx];
-                  return MarketplaceItemCard(
-                    imageUrl: item["imageUrl"]!,
-                    title: item["title"]!,
-                    price: item["price"]!,
-                    subtitle: item["subtitle"]!,
-                    tag: item["tag"]!,
-                    onViewDetails: () => Get.toNamed(AppRoutes.itemDetailScreen),
-                    onChatTap: () {
-                      Get.toNamed(
-                        AppRoutes.inboxScreen,
-                        arguments: {
-                          "userName": "Anderson Racing",
-                          "avatarUrl": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                          "isOnline": true,
-                        },
-                      );
-                    },
-                  );
-                },
-              )),
+              child: Obx(
+                () => ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
+                  itemCount: controller.listings.length,
+                  itemBuilder: (context, idx) {
+                    final item = controller.listings[idx];
+                    return MarketplaceItemCard(
+                      imageUrl: item["imageUrl"]!,
+                      title: item["title"]!,
+                      price: item["price"]!,
+                      subtitle: item["subtitle"]!,
+                      tag: item["tag"]!,
+                      onViewDetails: () =>
+                          Get.toNamed(AppRoutes.itemDetailScreen),
+                      onChatTap: () {
+                        Get.toNamed(
+                          AppRoutes.inboxScreen,
+                          arguments: {
+                            "userName": "Anderson Racing",
+                            "avatarUrl":
+                                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                            "isOnline": true,
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),

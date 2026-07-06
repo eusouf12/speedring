@@ -4,13 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 class CustomSlider extends StatefulWidget {
-  const CustomSlider(
-      {super.key,
-      this.min,
-      this.max,
-      this.currentValue,
-      this.height,
-      this.currentWidth});
+  const CustomSlider({
+    super.key,
+    this.min,
+    this.max,
+    this.currentValue,
+    this.height,
+    this.currentWidth,
+  });
 
   final double? min;
   final double? max;
@@ -46,7 +47,9 @@ class _CustomSliderState extends State<CustomSlider> {
                 ? AppColors.white
                 : AppColors.red,
             borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10), topLeft: Radius.circular(10)),
+              bottomLeft: Radius.circular(10),
+              topLeft: Radius.circular(10),
+            ),
           ),
         ),
       ],

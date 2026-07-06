@@ -34,8 +34,12 @@ class BusinessAnalyticsScreen extends StatelessWidget {
           centerTitle: true,
           actions: [
             IconButton(
-              icon: const Icon(Icons.account_circle_outlined, color: Colors.white),
-              onPressed: () => Get.toNamed(AppRoutes.businessAccountSettingsScreen),
+              icon: const Icon(
+                Icons.account_circle_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () =>
+                  Get.toNamed(AppRoutes.businessAccountSettingsScreen),
             ),
             SizedBox(width: 8.w),
           ],
@@ -92,7 +96,9 @@ class BusinessAnalyticsScreen extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: 0.75,
                         backgroundColor: Colors.white12,
-                        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.yellow),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.yellow,
+                        ),
                         minHeight: 6.h,
                       ),
                     ),
@@ -314,12 +320,16 @@ class BusinessAnalyticsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: List.generate(barHeights.length, (index) {
                 final double val = barHeights[index];
-                final bool isHighlighted = index == 3 || index == 6; // Image highlights some bars in yellow
+                final bool isHighlighted =
+                    index == 3 ||
+                    index == 6; // Image highlights some bars in yellow
                 return Container(
                   width: 22.w,
                   height: val.h,
                   decoration: BoxDecoration(
-                    color: isHighlighted ? AppColors.yellow : const Color(0xff222222),
+                    color: isHighlighted
+                        ? AppColors.yellow
+                        : const Color(0xff222222),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(4.r),
                       topRight: Radius.circular(4.r),
@@ -351,17 +361,20 @@ class BusinessAnalyticsScreen extends StatelessWidget {
       {
         'title': 'GT-R SPEC-V',
         'views': '8.4K VIEWS',
-        'imageUrl': 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=100&fit=crop',
+        'imageUrl':
+            'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=100&fit=crop',
       },
       {
         'title': '911 GT3 RS',
         'views': '6.2K VIEWS',
-        'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop',
+        'imageUrl':
+            'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop',
       },
       {
         'title': 'MODEL S PLAID',
         'views': '5.7K VIEWS',
-        'imageUrl': 'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=100&fit=crop',
+        'imageUrl':
+            'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=100&fit=crop',
       },
     ];
 
@@ -378,7 +391,9 @@ class BusinessAnalyticsScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 8.h),
             decoration: BoxDecoration(
               border: Border(
-                bottom: asset == assets.last ? BorderSide.none : const BorderSide(color: Colors.white10, width: 0.8),
+                bottom: asset == assets.last
+                    ? BorderSide.none
+                    : const BorderSide(color: Colors.white10, width: 0.8),
               ),
             ),
             child: Row(
@@ -488,10 +503,7 @@ class BusinessAnalyticsScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(5, (index) {
-                    return Container(
-                      width: 1.5.w,
-                      color: Colors.white12,
-                    );
+                    return Container(width: 1.5.w, color: Colors.white12);
                   }),
                 ),
               ),

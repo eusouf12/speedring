@@ -48,7 +48,11 @@ class BusinessMyListingsScreen extends StatelessWidget {
           // Calculate valuation dynamically
           double totalVal = 0;
           for (var asset in controller.rxAssets) {
-            String priceStr = asset.price.replaceAll(r"$", "").replaceAll(",", "").split("/")[0].trim();
+            String priceStr = asset.price
+                .replaceAll(r"$", "")
+                .replaceAll(",", "")
+                .split("/")[0]
+                .trim();
             double? p = double.tryParse(priceStr);
             if (p != null) {
               totalVal += p;
@@ -90,7 +94,9 @@ class BusinessMyListingsScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 4.h),
                             CustomText(
-                              text: controller.rxAssets.length.toString().padLeft(2, '0'),
+                              text: controller.rxAssets.length
+                                  .toString()
+                                  .padLeft(2, '0'),
                               color: AppColors.yellow,
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w900,
@@ -137,7 +143,11 @@ class BusinessMyListingsScreen extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _buildCategoryChip(activeCategory, "ALL", "ALL (${controller.rxAssets.length})"),
+                      _buildCategoryChip(
+                        activeCategory,
+                        "ALL",
+                        "ALL (${controller.rxAssets.length})",
+                      ),
                       SizedBox(width: 8.w),
                       _buildCategoryChip(
                         activeCategory,
@@ -168,50 +178,53 @@ class BusinessMyListingsScreen extends StatelessWidget {
                 SizedBox(height: 20.h),
 
                 // Listings list
-                ...controller.rxAssets.where((a) {
-                  if (activeCategory.value == "ALL") return true;
-                  return a.type == activeCategory.value;
-                }).map((asset) {
-                  // Setup specs map
-                  Map<String, String> specs = {};
-                  if (asset.type == "VEHICLES" || asset.type == "MOTORCYCLES") {
-                    specs = {
-                      "ENGINE OUTPUT": asset.power,
-                      "DISPLACEMENT": asset.engineConfig,
-                    };
-                  } else {
-                    specs = {
-                      "SPECIFICATION": asset.description.length > 20
-                          ? "${asset.description.substring(0, 20)}..."
-                          : asset.description,
-                    };
-                  }
+                ...controller.rxAssets
+                    .where((a) {
+                      if (activeCategory.value == "ALL") return true;
+                      return a.type == activeCategory.value;
+                    })
+                    .map((asset) {
+                      // Setup specs map
+                      Map<String, String> specs = {};
+                      if (asset.type == "VEHICLES" ||
+                          asset.type == "MOTORCYCLES") {
+                        specs = {
+                          "ENGINE OUTPUT": asset.power,
+                          "DISPLACEMENT": asset.engineConfig,
+                        };
+                      } else {
+                        specs = {
+                          "SPECIFICATION": asset.description.length > 20
+                              ? "${asset.description.substring(0, 20)}..."
+                              : asset.description,
+                        };
+                      }
 
-                  Color tagColor = AppColors.yellow;
-                  Color tagTextColor = Colors.black;
-                  if (asset.status == "LIVE") {
-                    tagColor = AppColors.green;
-                    tagTextColor = Colors.black;
-                  } else if (asset.status == "RESERVED") {
-                    tagColor = Colors.orange;
-                    tagTextColor = Colors.white;
-                  } else if (asset.status == "SOLD") {
-                    tagColor = Colors.white24;
-                    tagTextColor = Colors.white60;
-                  }
+                      Color tagColor = AppColors.yellow;
+                      Color tagTextColor = Colors.black;
+                      if (asset.status == "LIVE") {
+                        tagColor = AppColors.green;
+                        tagTextColor = Colors.black;
+                      } else if (asset.status == "RESERVED") {
+                        tagColor = Colors.orange;
+                        tagTextColor = Colors.white;
+                      } else if (asset.status == "SOLD") {
+                        tagColor = Colors.white24;
+                        tagTextColor = Colors.white60;
+                      }
 
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 16.h),
-                    child: _buildListingCard(
-                      context: context,
-                      controller: controller,
-                      asset: asset,
-                      tagColor: tagColor,
-                      tagTextColor: tagTextColor,
-                      specs: specs,
-                    ),
-                  );
-                }),
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 16.h),
+                        child: _buildListingCard(
+                          context: context,
+                          controller: controller,
+                          asset: asset,
+                          tagColor: tagColor,
+                          tagTextColor: tagTextColor,
+                          specs: specs,
+                        ),
+                      );
+                    }),
               ],
             ),
           );
@@ -221,7 +234,11 @@ class BusinessMyListingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryChip(RxString activeCategory, String categoryId, String label) {
+  Widget _buildCategoryChip(
+    RxString activeCategory,
+    String categoryId,
+    String label,
+  ) {
     return GestureDetector(
       onTap: () => activeCategory.value = categoryId,
       child: Obx(() {
@@ -231,7 +248,9 @@ class BusinessMyListingsScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected ? AppColors.yellow : const Color(0xff111111),
             borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(color: isSelected ? AppColors.yellow : Colors.white10),
+            border: Border.all(
+              color: isSelected ? AppColors.yellow : Colors.white10,
+            ),
           ),
           child: CustomText(
             text: label,
@@ -275,7 +294,11 @@ class BusinessMyListingsScreen extends StatelessWidget {
                     height: 180.h,
                     color: const Color(0xff222222),
                     child: const Center(
-                      child: Icon(Icons.broken_image_outlined, color: Colors.white24, size: 36),
+                      child: Icon(
+                        Icons.broken_image_outlined,
+                        color: Colors.white24,
+                        size: 36,
+                      ),
                     ),
                   ),
                 ),
@@ -332,7 +355,9 @@ class BusinessMyListingsScreen extends StatelessWidget {
                     ),
                     CustomText(
                       text: asset.price,
-                      color: asset.status == "SOLD" ? Colors.white54 : AppColors.yellow,
+                      color: asset.status == "SOLD"
+                          ? Colors.white54
+                          : AppColors.yellow,
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w900,
                     ),
@@ -416,24 +441,44 @@ class BusinessMyListingsScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: const Color(0xff1d1717),
                         borderRadius: BorderRadius.circular(6.r),
-                        border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
+                        border: Border.all(
+                          color: Colors.red.withValues(alpha: 0.2),
+                        ),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.redAccent,
+                          size: 18,
+                        ),
                         onPressed: () {
                           Get.dialog(
                             AlertDialog(
                               backgroundColor: const Color(0xff111111),
-                              title: const Text("Terminate Listing?", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                              content: const Text("Are you sure you want to permanently remove this listing from active inventory?", style: TextStyle(color: Colors.white70)),
+                              title: const Text(
+                                "Terminate Listing?",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              content: const Text(
+                                "Are you sure you want to permanently remove this listing from active inventory?",
+                                style: TextStyle(color: Colors.white70),
+                              ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Get.back(),
-                                  child: const Text("CANCEL", style: TextStyle(color: Colors.white54)),
+                                  child: const Text(
+                                    "CANCEL",
+                                    style: TextStyle(color: Colors.white54),
+                                  ),
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    controller.rxAssets.removeWhere((a) => a.id == asset.id);
+                                    controller.rxAssets.removeWhere(
+                                      (a) => a.id == asset.id,
+                                    );
                                     Get.back();
                                     Get.snackbar(
                                       "Listing Terminated",
@@ -445,7 +490,13 @@ class BusinessMyListingsScreen extends StatelessWidget {
                                       borderWidth: 1,
                                     );
                                   },
-                                  child: const Text("TERMINATE", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                                  child: const Text(
+                                    "TERMINATE",
+                                    style: TextStyle(
+                                      color: Colors.redAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

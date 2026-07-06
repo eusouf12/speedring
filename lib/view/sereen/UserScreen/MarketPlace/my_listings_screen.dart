@@ -114,7 +114,7 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                 ],
               ),
               SizedBox(height: 16.h),
-      
+
               /// Categories chips
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -131,11 +131,12 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                 ),
               ),
               SizedBox(height: 20.h),
-      
+
               /// Listings items list
               if (activeCategory == "ALL" || activeCategory == "VEHICLES") ...[
                 _buildListingCard(
-                  imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
+                  imageUrl:
+                      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
                   statusLabel: "ACTIVE",
                   statusColor: AppColors.yellow,
                   statusTextColor: Colors.black,
@@ -143,17 +144,16 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                   idLabel: "VEHICLE ID: #GT3-992-04",
                   price: "\$285,000",
                   priceColor: AppColors.yellow,
-                  specs: {
-                    "ENGINE OUTPUT": "525 HP",
-                    "DISPLACEMENT": "3996 CC",
-                  },
+                  specs: {"ENGINE OUTPUT": "525 HP", "DISPLACEMENT": "3996 CC"},
                   isEditButton: true,
                 ),
                 SizedBox(height: 16.h),
               ],
-              if (activeCategory == "ALL" || activeCategory == "MOTORCYCLES") ...[
+              if (activeCategory == "ALL" ||
+                  activeCategory == "MOTORCYCLES") ...[
                 _buildListingCard(
-                  imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500&fit=crop",
+                  imageUrl:
+                      "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500&fit=crop",
                   statusLabel: "PENDING VERIFICATION",
                   statusColor: Colors.orange,
                   statusTextColor: Colors.white,
@@ -161,17 +161,15 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                   idLabel: "MOTO ID: #V4R-DU-01",
                   price: "\$45,000",
                   priceColor: Colors.white,
-                  specs: {
-                    "MAX POWER": "240 HP",
-                    "CAPACITY": "998 CC",
-                  },
+                  specs: {"MAX POWER": "240 HP", "CAPACITY": "998 CC"},
                   isEditButton: false,
                 ),
                 SizedBox(height: 16.h),
               ],
               if (activeCategory == "ALL" || activeCategory == "PARTS") ...[
                 _buildListingCard(
-                  imageUrl: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=500&fit=crop",
+                  imageUrl:
+                      "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=500&fit=crop",
                   statusLabel: "SOLD",
                   statusColor: Colors.white24,
                   statusTextColor: Colors.white60,
@@ -179,9 +177,7 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                   idLabel: "PART ID: #B-GTR-092",
                   price: "\$12,500",
                   priceColor: Colors.white54,
-                  specs: {
-                    "SPECIFICATION": "6-Piston Front",
-                  },
+                  specs: {"SPECIFICATION": "6-Piston Front"},
                   isEditButton: false,
                 ),
                 SizedBox(height: 16.h),
@@ -206,7 +202,9 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.yellow : const Color(0xff111111),
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: isSelected ? AppColors.yellow : Colors.white10),
+          border: Border.all(
+            color: isSelected ? AppColors.yellow : Colors.white10,
+          ),
         ),
         child: CustomText(
           text: label,
@@ -379,10 +377,16 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                       decoration: BoxDecoration(
                         color: const Color(0xff1d1717),
                         borderRadius: BorderRadius.circular(6.r),
-                        border: Border.all(color: Colors.red.withValues(alpha:0.2)),
+                        border: Border.all(
+                          color: Colors.red.withValues(alpha: 0.2),
+                        ),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.redAccent,
+                          size: 18,
+                        ),
                         onPressed: () {},
                       ),
                     ),

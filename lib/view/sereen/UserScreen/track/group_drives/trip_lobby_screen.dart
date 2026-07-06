@@ -38,14 +38,20 @@ class TripLobbyScreen extends StatelessWidget {
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage("https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=800&auto=format&fit=crop"),
+                      image: NetworkImage(
+                        "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=800&auto=format&fit=crop",
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
                   child: Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.black, Colors.transparent, Colors.black87],
+                        colors: [
+                          Colors.black,
+                          Colors.transparent,
+                          Colors.black87,
+                        ],
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
                       ),
@@ -79,10 +85,7 @@ class TripLobbyScreen extends StatelessWidget {
                               fontWeight: FontWeight.w900,
                               letterSpacing: 2,
                               shadows: [
-                                Shadow(
-                                  color: Colors.black,
-                                  blurRadius: 10,
-                                ),
+                                Shadow(color: Colors.black, blurRadius: 10),
                               ],
                             ),
                           ),
@@ -139,11 +142,19 @@ class TripLobbyScreen extends StatelessWidget {
                             SizedBox(width: 4),
                             Text(
                               "HOST: ",
-                              style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                color: Colors.white38,
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text(
                               "@COMMANDER_ALPHA",
-                              style: TextStyle(color: AppColors.yellow, fontSize: 9, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                color: AppColors.yellow,
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -187,18 +198,28 @@ class TripLobbyScreen extends StatelessWidget {
                           children: [
                             const Text(
                               "CONVOY STATUS",
-                              style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text.rich(
                               TextSpan(
                                 children: const [
                                   TextSpan(
                                     text: "12 / 28 ",
-                                    style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      color: AppColors.yellow,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   TextSpan(
                                     text: "DRIVERS JOINED",
-                                    style: TextStyle(color: Colors.white38, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      color: Colors.white38,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -211,13 +232,21 @@ class TripLobbyScreen extends StatelessWidget {
                         /// Joined Drivers Avatars
                         Row(
                           children: [
-                            _buildAvatar("https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop"),
+                            _buildAvatar(
+                              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop",
+                            ),
                             const SizedBox(width: 6),
-                            _buildAvatar("https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&fit=crop"),
+                            _buildAvatar(
+                              "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&fit=crop",
+                            ),
                             const SizedBox(width: 6),
-                            _buildAvatar("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop"),
+                            _buildAvatar(
+                              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop",
+                            ),
                             const SizedBox(width: 6),
-                            _buildAvatar("https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&fit=crop"),
+                            _buildAvatar(
+                              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&fit=crop",
+                            ),
                             const SizedBox(width: 6),
                             Container(
                               width: 32,
@@ -229,7 +258,11 @@ class TripLobbyScreen extends StatelessWidget {
                               alignment: Alignment.center,
                               child: const Text(
                                 "+8",
-                                style: TextStyle(color: Colors.white60, fontSize: 10, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: Colors.white60,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ],
@@ -237,7 +270,11 @@ class TripLobbyScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         const Text(
                           "PENDING INVITATIONS (2)",
-                          style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 10),
                         _buildPendingInvite("@GHOST_RIDER_99"),
@@ -265,15 +302,27 @@ class TripLobbyScreen extends StatelessWidget {
                           children: const [
                             Text(
                               "TACTICAL ROUTE MAP",
-                              style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            Icon(Icons.fullscreen, color: Colors.white70, size: 20),
+                            Icon(
+                              Icons.fullscreen,
+                              color: Colors.white70,
+                              size: 20,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 2),
                         const Text(
                           "PACIFIC COAST HIGHWAY | SECTOR 04",
-                          style: TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 12),
 
@@ -284,9 +333,13 @@ class TripLobbyScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.black26,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.05),
+                            ),
                             image: const DecorationImage(
-                              image: NetworkImage("https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&fit=crop"),
+                              image: NetworkImage(
+                                "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&fit=crop",
+                              ),
                               fit: BoxFit.cover,
                               opacity: 0.3,
                             ),
@@ -301,20 +354,36 @@ class TripLobbyScreen extends StatelessWidget {
                                   children: const [
                                     Text(
                                       "WAYPOINT 01",
-                                      style: TextStyle(color: AppColors.yellow, fontSize: 7, fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        color: AppColors.yellow,
+                                        fontSize: 7,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     Text(
                                       "34.0259° N, 118.7797° W",
-                                      style: TextStyle(color: Colors.white70, fontSize: 8, fontFamily: "monospace"),
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 8,
+                                        fontFamily: "monospace",
+                                      ),
                                     ),
                                     SizedBox(height: 4),
                                     Text(
                                       "ELEVATION",
-                                      style: TextStyle(color: Colors.white38, fontSize: 7, fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        color: Colors.white38,
+                                        fontSize: 7,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     Text(
                                       "1520 MSL",
-                                      style: TextStyle(color: Colors.white70, fontSize: 8, fontFamily: "monospace"),
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 8,
+                                        fontFamily: "monospace",
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -352,18 +421,28 @@ class TripLobbyScreen extends StatelessWidget {
                           SizedBox(width: 8),
                           Text(
                             "START TRIP",
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _buildCommandButton("INVITE MEMBERS", Icons.person_add_alt_1_outlined),
+                  _buildCommandButton(
+                    "INVITE MEMBERS",
+                    Icons.person_add_alt_1_outlined,
+                  ),
                   const SizedBox(height: 10),
                   _buildCommandButton("EDIT TRIP DETAILS", Icons.edit_outlined),
                   const SizedBox(height: 10),
-                  _buildCommandButton("SHARE INVITE LINK", Icons.share_outlined),
+                  _buildCommandButton(
+                    "SHARE INVITE LINK",
+                    Icons.share_outlined,
+                  ),
                   const SizedBox(height: 24),
                   Center(
                     child: TextButton(
@@ -417,12 +496,20 @@ class TripLobbyScreen extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white38,
+              fontSize: 8,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             val,
-            style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -447,7 +534,11 @@ class TripLobbyScreen extends StatelessWidget {
       children: [
         Text(
           user,
-          style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -457,7 +548,11 @@ class TripLobbyScreen extends StatelessWidget {
           ),
           child: const Text(
             "AWAITING",
-            style: TextStyle(color: Colors.white30, fontSize: 8, fontWeight: FontWeight.w900),
+            style: TextStyle(
+              color: Colors.white30,
+              fontSize: 8,
+              fontWeight: FontWeight.w900,
+            ),
           ),
         ),
       ],
@@ -498,7 +593,7 @@ class _WireframePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withValues(alpha:0.05)
+      ..color = Colors.white.withValues(alpha: 0.05)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 

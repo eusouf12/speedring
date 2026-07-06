@@ -17,7 +17,7 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
     final modelController = TextEditingController();
     final priceController = TextEditingController();
     final locationController = TextEditingController();
-    
+
     final powerController = TextEditingController();
     final zeroToSixtyController = TextEditingController();
     final topSpeedController = TextEditingController();
@@ -107,17 +107,31 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                                   value: selectedYear.value,
                                   isExpanded: true,
                                   dropdownColor: Colors.black,
-                                  icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: Colors.white60,
+                                  ),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
                                   onChanged: (newValue) {
-                                    if (newValue != null) selectedYear.value = newValue;
+                                    if (newValue != null)
+                                      selectedYear.value = newValue;
                                   },
-                                  items: ["2026", "2025", "2024", "2023", "2022"].map((year) {
-                                    return DropdownMenuItem<String>(
-                                      value: year,
-                                      child: Text(year),
-                                    );
-                                  }).toList(),
+                                  items:
+                                      [
+                                        "2026",
+                                        "2025",
+                                        "2024",
+                                        "2023",
+                                        "2022",
+                                      ].map((year) {
+                                        return DropdownMenuItem<String>(
+                                          value: year,
+                                          child: Text(year),
+                                        );
+                                      }).toList(),
                                 ),
                               ),
                             ),
@@ -150,7 +164,11 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                 CustomTextField(
                   textEditingController: locationController,
                   hintText: "City, Country",
-                  prefixIcon: const Icon(Icons.location_on_outlined, color: Colors.white30, size: 18),
+                  prefixIcon: const Icon(
+                    Icons.location_on_outlined,
+                    color: Colors.white30,
+                    size: 18,
+                  ),
                   fillColor: const Color(0xff111111),
                   fieldBorderColor: Colors.white10,
                   fieldBorderRadius: 10.r,
@@ -274,23 +292,33 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => selectedTransmission.value = "PDK / AUTOMATIC",
+                            onTap: () =>
+                                selectedTransmission.value = "PDK / AUTOMATIC",
                             child: Container(
                               height: 38.h,
                               decoration: BoxDecoration(
-                                color: selectedTransmission.value == "PDK / AUTOMATIC"
+                                color:
+                                    selectedTransmission.value ==
+                                        "PDK / AUTOMATIC"
                                     ? AppColors.yellow.withValues(alpha: 0.15)
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(8.r),
-                                border: selectedTransmission.value == "PDK / AUTOMATIC"
-                                    ? Border.all(color: AppColors.yellow, width: 1)
+                                border:
+                                    selectedTransmission.value ==
+                                        "PDK / AUTOMATIC"
+                                    ? Border.all(
+                                        color: AppColors.yellow,
+                                        width: 1,
+                                      )
                                     : null,
                               ),
                               child: Center(
                                 child: Text(
                                   "PDK / AUTOMATIC",
                                   style: TextStyle(
-                                    color: selectedTransmission.value == "PDK / AUTOMATIC"
+                                    color:
+                                        selectedTransmission.value ==
+                                            "PDK / AUTOMATIC"
                                         ? AppColors.yellow
                                         : Colors.white60,
                                     fontSize: 10.sp,
@@ -312,14 +340,18 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(8.r),
                                 border: selectedTransmission.value == "MANUAL"
-                                    ? Border.all(color: AppColors.yellow, width: 1)
+                                    ? Border.all(
+                                        color: AppColors.yellow,
+                                        width: 1,
+                                      )
                                     : null,
                               ),
                               child: Center(
                                 child: Text(
                                   "MANUAL",
                                   style: TextStyle(
-                                    color: selectedTransmission.value == "MANUAL"
+                                    color:
+                                        selectedTransmission.value == "MANUAL"
                                         ? AppColors.yellow
                                         : Colors.white60,
                                     fontSize: 10.sp,
@@ -350,21 +382,29 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                         value: selectedDrivetrain.value,
                         isExpanded: true,
                         dropdownColor: Colors.black,
-                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white60,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         onChanged: (newValue) {
-                          if (newValue != null) selectedDrivetrain.value = newValue;
+                          if (newValue != null)
+                            selectedDrivetrain.value = newValue;
                         },
-                        items: [
-                          "Rear-Wheel Drive (RWD)",
-                          "All-Wheel Drive (AWD)",
-                          "Front-Wheel Drive (FWD)"
-                        ].map((drivetrain) {
-                          return DropdownMenuItem<String>(
-                            value: drivetrain,
-                            child: Text(drivetrain),
-                          );
-                        }).toList(),
+                        items:
+                            [
+                              "Rear-Wheel Drive (RWD)",
+                              "All-Wheel Drive (AWD)",
+                              "Front-Wheel Drive (FWD)",
+                            ].map((drivetrain) {
+                              return DropdownMenuItem<String>(
+                                value: drivetrain,
+                                child: Text(drivetrain),
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),
@@ -388,7 +428,8 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                 _buildFieldLabel("DETAILED DESCRIPTION & PROVENANCE"),
                 CustomTextField(
                   textEditingController: descController,
-                  hintText: "Describe the vehicle's track history, maintenance record, and unique modifications...",
+                  hintText:
+                      "Describe the vehicle's track history, maintenance record, and unique modifications...",
                   maxLines: 4,
                   fillColor: const Color(0xff111111),
                   fieldBorderColor: Colors.white10,
@@ -422,7 +463,10 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow),
+                              const Icon(
+                                Icons.add_a_photo_outlined,
+                                color: AppColors.yellow,
+                              ),
                               SizedBox(height: 6.h),
                               CustomText(
                                 text: "ADD MEDIA",
@@ -462,7 +506,11 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                                   color: Colors.black54,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.close, color: Colors.white, size: 14),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
                               ),
                             ),
                           ),
@@ -473,7 +521,8 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 CustomText(
-                  text: "RECOMMENDED: 1920X1080 PX | MAX 10MB PER FILE | SUPPORTED: JPG, PNG, MP4",
+                  text:
+                      "RECOMMENDED: 1920X1080 PX | MAX 10MB PER FILE | SUPPORTED: JPG, PNG, MP4",
                   color: Colors.white24,
                   fontSize: 7.5.sp,
                   textAlign: TextAlign.start,

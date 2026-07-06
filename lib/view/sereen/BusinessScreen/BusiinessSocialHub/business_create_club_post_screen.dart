@@ -10,10 +10,12 @@ class BusinessCreateClubPostScreen extends StatefulWidget {
   const BusinessCreateClubPostScreen({super.key});
 
   @override
-  State<BusinessCreateClubPostScreen> createState() => _BusinessCreateClubPostScreenState();
+  State<BusinessCreateClubPostScreen> createState() =>
+      _BusinessCreateClubPostScreenState();
 }
 
-class _BusinessCreateClubPostScreenState extends State<BusinessCreateClubPostScreen> {
+class _BusinessCreateClubPostScreenState
+    extends State<BusinessCreateClubPostScreen> {
   final contentController = TextEditingController();
   bool isPinned = false;
   String selectedClub = "Apex Racing League";
@@ -64,9 +66,11 @@ class _BusinessCreateClubPostScreenState extends State<BusinessCreateClubPostScr
                     child: _buildClubSelectCard(
                       name: "Apex Racing League",
                       drivers: "1,248 Drivers",
-                      imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
+                      imageUrl:
+                          "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
                       isSelected: selectedClub == "Apex Racing League",
-                      onTap: () => setState(() => selectedClub = "Apex Racing League"),
+                      onTap: () =>
+                          setState(() => selectedClub = "Apex Racing League"),
                     ),
                   ),
                   SizedBox(width: 12.w),
@@ -74,9 +78,11 @@ class _BusinessCreateClubPostScreenState extends State<BusinessCreateClubPostScr
                     child: _buildClubSelectCard(
                       name: "Nürburgring Locals",
                       drivers: "856 Drivers",
-                      imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=100&fit=crop",
+                      imageUrl:
+                          "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=100&fit=crop",
                       isSelected: selectedClub == "Nürburgring Locals",
-                      onTap: () => setState(() => selectedClub = "Nürburgring Locals"),
+                      onTap: () =>
+                          setState(() => selectedClub = "Nürburgring Locals"),
                     ),
                   ),
                 ],
@@ -167,7 +173,11 @@ class _BusinessCreateClubPostScreenState extends State<BusinessCreateClubPostScr
                   backgroundImage: NetworkImage(imageUrl),
                 ),
                 if (isSelected)
-                  const Icon(Icons.check_circle_rounded, color: AppColors.yellow, size: 16),
+                  const Icon(
+                    Icons.check_circle_rounded,
+                    color: AppColors.yellow,
+                    size: 16,
+                  ),
               ],
             ),
             SizedBox(height: 16.h),
@@ -243,13 +253,20 @@ class _BusinessCreateClubPostScreenState extends State<BusinessCreateClubPostScr
             decoration: BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: Colors.white10, style: BorderStyle.solid),
+              border: Border.all(
+                color: Colors.white10,
+                style: BorderStyle.solid,
+              ),
             ),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow, size: 24),
+                  const Icon(
+                    Icons.add_a_photo_outlined,
+                    color: AppColors.yellow,
+                    size: 24,
+                  ),
                   SizedBox(height: 8.h),
                   CustomText(
                     text: "Add Media (Max 50MB)",
@@ -290,7 +307,11 @@ class _BusinessCreateClubPostScreenState extends State<BusinessCreateClubPostScr
               color: Colors.white.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.campaign_outlined, color: AppColors.yellow, size: 18),
+            child: const Icon(
+              Icons.campaign_outlined,
+              color: AppColors.yellow,
+              size: 18,
+            ),
           ),
           SizedBox(width: 12.w),
           Expanded(
@@ -349,7 +370,9 @@ class _BusinessCreateClubPostScreenState extends State<BusinessCreateClubPostScr
                 topRight: Radius.circular(16.r),
               ),
               image: const DecorationImage(
-                image: NetworkImage("https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&fit=crop"),
+                image: NetworkImage(
+                  "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&fit=crop",
+                ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -362,7 +385,10 @@ class _BusinessCreateClubPostScreenState extends State<BusinessCreateClubPostScr
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 4.h,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.black.withValues(alpha: 0.6),
                         borderRadius: BorderRadius.circular(4.r),
@@ -377,7 +403,10 @@ class _BusinessCreateClubPostScreenState extends State<BusinessCreateClubPostScr
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 6.h,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.black.withValues(alpha: 0.6),
                         borderRadius: BorderRadius.circular(6.r),

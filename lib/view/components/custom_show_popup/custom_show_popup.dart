@@ -57,24 +57,26 @@ class CustomShowDialog extends StatelessWidget {
   final bool? showColumnButton;
   final bool? showCloseButton;
   final Color? textColor;
-  const CustomShowDialog(
-      {super.key,
-        required this.title,
-        required this.discription,
-        this.leftOnTap,
-        this.rightOnTap,
-        this.leftTextButton,
-        this.rightTextButton,
-        this.showRowButton = false,
-        this.showColumnButton = false,
-        this.textColor = Colors.black,
-        this.showCloseButton = true, this.dateTime});
+  const CustomShowDialog({
+    super.key,
+    required this.title,
+    required this.discription,
+    this.leftOnTap,
+    this.rightOnTap,
+    this.leftTextButton,
+    this.rightTextButton,
+    this.showRowButton = false,
+    this.showColumnButton = false,
+    this.textColor = Colors.black,
+    this.showCloseButton = true,
+    this.dateTime,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-     //   color: AppColors.white,
+        //   color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -82,16 +84,18 @@ class CustomShowDialog extends StatelessWidget {
         children: [
           showCloseButton == true
               ? Padding(
-            padding: EdgeInsets.only(right: 10.0, top: 0.h),
-            child: Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Icon(
-                      Icons.close,
-                      color: textColor ?? AppColors.black,
-                    ))),
-          )
+                  padding: EdgeInsets.only(right: 10.0, top: 0.h),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Icon(
+                        Icons.close,
+                        color: textColor ?? AppColors.black,
+                      ),
+                    ),
+                  ),
+                )
               : SizedBox(),
           CustomText(
             top: 10.h,
@@ -110,7 +114,7 @@ class CustomShowDialog extends StatelessWidget {
             bottom: 10.h,
             maxLines: 10,
           ),
-        /*  CustomText(
+          /*  CustomText(
             text: "$dateTime",
             fontSize: 16.h,
             fontWeight: FontWeight.w400,
@@ -120,66 +124,62 @@ class CustomShowDialog extends StatelessWidget {
           ),*/
           showRowButton == true
               ? Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
-              children: [
-                Flexible(
-                  child: CustomButton(
-                    onTap: leftOnTap ?? () => Navigator.of(context).pop(),
-                    title: leftTextButton ?? "Yes",
-                    height: 50.h,
-                    textColor: textColor ?? AppColors.black_80,
-                    // fillColor:  widget.textColor ?? AppColors.black_80,
-                  ),
-                ),
-                SizedBox(
-                  width: 12.w,
-                ),
-                Flexible(
-                  child: CustomButton(
-                    onTap:
-                    rightOnTap ?? () => Navigator.of(context).pop(),
-                    title: rightTextButton ?? "No",
-                    height: 50.h,
-                    fillColor: AppColors.white,
-                    textColor: AppColors.primary,
-                    isBorder: true,
-                    borderWidth: 1,
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: CustomButton(
+                          onTap: leftOnTap ?? () => Navigator.of(context).pop(),
+                          title: leftTextButton ?? "Yes",
+                          height: 50.h,
+                          textColor: textColor ?? AppColors.black_80,
+                          // fillColor:  widget.textColor ?? AppColors.black_80,
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Flexible(
+                        child: CustomButton(
+                          onTap:
+                              rightOnTap ?? () => Navigator.of(context).pop(),
+                          title: rightTextButton ?? "No",
+                          height: 50.h,
+                          fillColor: AppColors.white,
+                          textColor: AppColors.primary,
+                          isBorder: true,
+                          borderWidth: 1,
+                        ),
+                      ),
+                    ],
                   ),
                 )
-              ],
-            ),
-          )
               : SizedBox(),
           showColumnButton == true
               ? Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              children: [
-                CustomButton(
-                  onTap: leftOnTap ?? () => Navigator.of(context).pop(),
-                  title: leftTextButton ?? "Yes",
-                  height: 45.h,
-                  textColor: AppColors.primary,
-                  fillColor: AppColors.white,
-                  isBorder: true,
-                  borderWidth: 1,
-                ),
-                SizedBox(
-                  height: 12.h,
-                ),
-                CustomButton(
-                  onTap: rightOnTap ?? () => Navigator.of(context).pop(),
-                  title: rightTextButton ?? "No",
-                  height: 45.h,
-                  fillColor: AppColors.white,
-                  textColor: AppColors.red,
-                  isBorder: true,
-                  borderWidth: 1,
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Column(
+                    children: [
+                      CustomButton(
+                        onTap: leftOnTap ?? () => Navigator.of(context).pop(),
+                        title: leftTextButton ?? "Yes",
+                        height: 45.h,
+                        textColor: AppColors.primary,
+                        fillColor: AppColors.white,
+                        isBorder: true,
+                        borderWidth: 1,
+                      ),
+                      SizedBox(height: 12.h),
+                      CustomButton(
+                        onTap: rightOnTap ?? () => Navigator.of(context).pop(),
+                        title: rightTextButton ?? "No",
+                        height: 45.h,
+                        fillColor: AppColors.white,
+                        textColor: AppColors.red,
+                        isBorder: true,
+                        borderWidth: 1,
+                      ),
+                    ],
+                  ),
                 )
-              ],
-            ),
-          )
               : SizedBox(),
         ],
       ),

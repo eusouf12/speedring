@@ -6,16 +6,23 @@ import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 // ─── Controller ────────────────────────────────────────────────
 class EditClubController extends GetxController {
   final RxString selectedSecurity = "PRIVATE".obs;
-  final TextEditingController designationController =
-      TextEditingController(text: "Porsche GT3 Collective");
+  final TextEditingController designationController = TextEditingController(
+    text: "Porsche GT3 Collective",
+  );
   final TextEditingController aboutController = TextEditingController(
-    text: "The Porsche GT3 Collective is dedicated to the purist pursuit of "
+    text:
+        "The Porsche GT3 Collective is dedicated to the purist pursuit of "
         "naturally aspirated performance. We focus on the intersection of driver "
         "mechanical empathy and track-optimized engineering. Members are expected "
         "to maintain technical telemetry data records.",
   );
 
-  final RxList<String> tags = ["GT3", "Nürburgring", "Flat-Six", "9000-RPM"].obs;
+  final RxList<String> tags = [
+    "GT3",
+    "Nürburgring",
+    "Flat-Six",
+    "9000-RPM",
+  ].obs;
 
   @override
   void onClose() {
@@ -41,7 +48,11 @@ class EditClubScreen extends StatelessWidget {
           elevation: 0,
           centerTitle: true,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.yellow, size: 24),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColors.yellow,
+              size: 24,
+            ),
             onPressed: () => Get.back(),
           ),
           title: const Text(
@@ -84,7 +95,10 @@ class EditClubScreen extends StatelessWidget {
                     right: 16,
                     child: GestureDetector(
                       onTap: () {
-                        Get.snackbar("Cover Image", "Change cover photo selected.");
+                        Get.snackbar(
+                          "Cover Image",
+                          "Change cover photo selected.",
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -99,7 +113,11 @@ class EditClubScreen extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: const [
-                            Icon(Icons.edit_outlined, color: Colors.white, size: 12),
+                            Icon(
+                              Icons.edit_outlined,
+                              color: Colors.white,
+                              size: 12,
+                            ),
                             SizedBox(width: 4),
                             Text(
                               "EDIT COVER",
@@ -117,7 +135,7 @@ class EditClubScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-      
+
               /// 2. Identity Logo / Profile Badge Box
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -138,13 +156,16 @@ class EditClubScreen extends StatelessWidget {
                           height: 160,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.yellow, width: 2),
+                            border: Border.all(
+                              color: AppColors.yellow,
+                              width: 2,
+                            ),
                             gradient: const RadialGradient(
                               colors: [Color(0xff222222), Colors.black],
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.yellow.withValues(alpha:0.15),
+                                color: AppColors.yellow.withValues(alpha: 0.15),
                                 blurRadius: 15,
                                 spreadRadius: 2,
                               ),
@@ -194,7 +215,10 @@ class EditClubScreen extends StatelessWidget {
                       right: 12,
                       child: GestureDetector(
                         onTap: () {
-                          Get.snackbar("Profile Image", "Change profile avatar selected.");
+                          Get.snackbar(
+                            "Profile Image",
+                            "Change profile avatar selected.",
+                          );
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -209,7 +233,11 @@ class EditClubScreen extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: const [
-                              Icon(Icons.edit_outlined, color: Colors.white, size: 10),
+                              Icon(
+                                Icons.edit_outlined,
+                                color: Colors.white,
+                                size: 10,
+                              ),
                               SizedBox(width: 4),
                               Text(
                                 "EDIT Profile",
@@ -228,14 +256,14 @@ class EditClubScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-      
+
               /// 3. Core Identity Section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: _buildSectionHeader("CORE IDENTITY"),
               ),
               const SizedBox(height: 8),
-      
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Container(
@@ -257,7 +285,7 @@ class EditClubScreen extends StatelessWidget {
                       const SizedBox(height: 8),
                       _buildDesignationField(controller),
                       const SizedBox(height: 20),
-      
+
                       const Text(
                         "SECURITY PROTOCOL",
                         style: TextStyle(
@@ -268,30 +296,44 @@ class EditClubScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-      
+
                       /// Security options
-                      Obx(() => Column(
-                        children: [
-                          _buildSecurityOption(controller, "PUBLIC", "OPEN ENTRY"),
-                          const SizedBox(height: 8),
-                          _buildSecurityOption(controller, "PRIVATE", "APPROVAL REQ."),
-                          const SizedBox(height: 8),
-                          _buildSecurityOption(controller, "INVITE ONLY", "STEALTH MODE"),
-                        ],
-                      )),
+                      Obx(
+                        () => Column(
+                          children: [
+                            _buildSecurityOption(
+                              controller,
+                              "PUBLIC",
+                              "OPEN ENTRY",
+                            ),
+                            const SizedBox(height: 8),
+                            _buildSecurityOption(
+                              controller,
+                              "PRIVATE",
+                              "APPROVAL REQ.",
+                            ),
+                            const SizedBox(height: 8),
+                            _buildSecurityOption(
+                              controller,
+                              "INVITE ONLY",
+                              "STEALTH MODE",
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-      
+
               /// 4. About Section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: _buildSectionHeader("ABOUT"),
               ),
               const SizedBox(height: 8),
-      
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Container(
@@ -313,7 +355,7 @@ class EditClubScreen extends StatelessWidget {
                       const SizedBox(height: 8),
                       _buildTextField(controller.aboutController, maxLines: 4),
                       const SizedBox(height: 20),
-      
+
                       const Text(
                         "TECHNICAL TAGS",
                         style: TextStyle(
@@ -324,21 +366,25 @@ class EditClubScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-      
-                      Obx(() => Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          ...controller.tags.map((tag) => _buildTag(controller, tag)),
-                          _buildAddParameterButton(controller),
-                        ],
-                      )),
+
+                      Obx(
+                        () => Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            ...controller.tags.map(
+                              (tag) => _buildTag(controller, tag),
+                            ),
+                            _buildAddParameterButton(controller),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-      
+
               /// 5. System Decommission Box
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -401,7 +447,7 @@ class EditClubScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32),
-      
+
               /// 6. Save / Discard Row
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -413,7 +459,10 @@ class EditClubScreen extends StatelessWidget {
                         height: 48,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.white24, width: 1),
+                            side: const BorderSide(
+                              color: Colors.white24,
+                              width: 1,
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -485,7 +534,7 @@ class EditClubScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff181818),
         borderRadius: BorderRadius.circular(2),
-        border: Border.all(color: AppColors.yellow.withValues(alpha:0.3)),
+        border: Border.all(color: AppColors.yellow.withValues(alpha: 0.3)),
       ),
       child: Text(
         title,
@@ -558,7 +607,11 @@ class EditClubScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSecurityOption(EditClubController controller, String title, String subtitle) {
+  Widget _buildSecurityOption(
+    EditClubController controller,
+    String title,
+    String subtitle,
+  ) {
     final bool isSelected = title == controller.selectedSecurity.value;
     return GestureDetector(
       onTap: () {
@@ -614,10 +667,7 @@ class EditClubScreen extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    color: Colors.white38,
-                    fontSize: 9,
-                  ),
+                  style: const TextStyle(color: Colors.white38, fontSize: 9),
                 ),
               ],
             ),
@@ -633,7 +683,7 @@ class EditClubScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: AppColors.yellow.withValues(alpha:0.4)),
+        border: Border.all(color: AppColors.yellow.withValues(alpha: 0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -651,11 +701,7 @@ class EditClubScreen extends StatelessWidget {
             onTap: () {
               controller.tags.remove(tag);
             },
-            child: const Icon(
-              Icons.close,
-              color: AppColors.yellow,
-              size: 10,
-            ),
+            child: const Icon(Icons.close, color: AppColors.yellow, size: 10),
           ),
         ],
       ),
@@ -672,10 +718,7 @@ class EditClubScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.black,
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(
-            color: Colors.white24,
-            style: BorderStyle.solid,
-          ),
+          border: Border.all(color: Colors.white24, style: BorderStyle.solid),
         ),
         child: const Text(
           "+ ADD PARAMETER",
@@ -696,7 +739,11 @@ class EditClubScreen extends StatelessWidget {
         backgroundColor: const Color(0xff181818),
         title: const Text(
           "Add Technical Tag",
-          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         content: TextField(
           controller: tagController,
@@ -713,7 +760,10 @@ class EditClubScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text("CANCEL", style: TextStyle(color: Colors.white54)),
+            child: const Text(
+              "CANCEL",
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -744,7 +794,10 @@ class EditClubScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text("CANCEL", style: TextStyle(color: Colors.white54)),
+            child: const Text(
+              "CANCEL",
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           TextButton(
             onPressed: () {

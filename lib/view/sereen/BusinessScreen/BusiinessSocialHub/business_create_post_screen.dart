@@ -12,7 +12,8 @@ class BusinessCreatePostScreen extends StatefulWidget {
   const BusinessCreatePostScreen({super.key});
 
   @override
-  State<BusinessCreatePostScreen> createState() => _BusinessCreatePostScreenState();
+  State<BusinessCreatePostScreen> createState() =>
+      _BusinessCreatePostScreenState();
 }
 
 class _BusinessCreatePostScreenState extends State<BusinessCreatePostScreen> {
@@ -92,7 +93,10 @@ class _BusinessCreatePostScreenState extends State<BusinessCreatePostScreen> {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       margin: EdgeInsets.only(bottom: 12.h),
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 16.h,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xff111111),
                         borderRadius: BorderRadius.circular(16.r),
@@ -113,7 +117,9 @@ class _BusinessCreatePostScreenState extends State<BusinessCreatePostScreen> {
                             ),
                             child: Icon(
                               type['icon'] as IconData,
-                              color: isSelected ? AppColors.yellow : Colors.white70,
+                              color: isSelected
+                                  ? AppColors.yellow
+                                  : Colors.white70,
                               size: 20.sp,
                             ),
                           ),
@@ -126,7 +132,9 @@ class _BusinessCreatePostScreenState extends State<BusinessCreatePostScreen> {
                               children: [
                                 CustomText(
                                   text: type['title'] as String,
-                                  color: isSelected ? AppColors.yellow : Colors.white,
+                                  color: isSelected
+                                      ? AppColors.yellow
+                                      : Colors.white,
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w900,
                                   textAlign: TextAlign.start,
@@ -147,7 +155,9 @@ class _BusinessCreatePostScreenState extends State<BusinessCreatePostScreen> {
                           SizedBox(width: 8.w),
                           Icon(
                             Icons.chevron_right_rounded,
-                            color: isSelected ? AppColors.yellow : Colors.white24,
+                            color: isSelected
+                                ? AppColors.yellow
+                                : Colors.white24,
                             size: 18.sp,
                           ),
                         ],
@@ -160,7 +170,12 @@ class _BusinessCreatePostScreenState extends State<BusinessCreatePostScreen> {
 
             // Bottom Continue section
             Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, MediaQuery.of(context).padding.bottom + 16.h),
+              padding: EdgeInsets.fromLTRB(
+                20.w,
+                12.h,
+                20.w,
+                MediaQuery.of(context).padding.bottom + 16.h,
+              ),
               child: Column(
                 children: [
                   GestureDetector(
@@ -170,14 +185,18 @@ class _BusinessCreatePostScreenState extends State<BusinessCreatePostScreen> {
                       height: 50.h,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: _selectedIndex != null ? AppColors.yellow : const Color(0xff2A2A2A),
+                        color: _selectedIndex != null
+                            ? AppColors.yellow
+                            : const Color(0xff2A2A2A),
                         borderRadius: BorderRadius.circular(25.r),
                       ),
                       child: Center(
                         child: Text(
                           "CONTINUE →",
                           style: TextStyle(
-                            color: _selectedIndex != null ? Colors.black : Colors.white24,
+                            color: _selectedIndex != null
+                                ? Colors.black
+                                : Colors.white24,
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 2.0,

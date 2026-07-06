@@ -50,7 +50,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     shape: BoxShape.circle,
                     border: Border.all(color: AppColors.yellow, width: 1.5),
                     image: const DecorationImage(
-                      image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop"),
+                      image: NetworkImage(
+                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -78,7 +80,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.add_a_photo_outlined, color: AppColors.yellow, size: 28),
+                      const Icon(
+                        Icons.add_a_photo_outlined,
+                        color: AppColors.yellow,
+                        size: 28,
+                      ),
                       SizedBox(height: 8.h),
                       CustomText(
                         text: "UPLOAD VEHICLE MEDIA",
@@ -92,7 +98,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 ),
               ),
               SizedBox(height: 24.h),
-      
+
               /// PHASE 01 // IDENTITY
               _buildSectionHeader("PHASE 01 // IDENTITY"),
               _buildCardContainer([
@@ -112,7 +118,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 _buildDropdown(["2024", "2023", "2022", "2021", "2020"]),
               ]),
               SizedBox(height: 20.h),
-      
+
               /// TRIM / CONFIGURATION (Section divider)
               const CustomText(
                 text: "TRIM / CONFIGURATION",
@@ -122,7 +128,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 letterSpacing: 0.5,
               ),
               SizedBox(height: 12.h),
-      
+
               /// PHASE 02 // TELEMETRY DATA
               _buildSectionHeader("PHASE 02 // TELEMETRY DATA"),
               _buildCardContainer([
@@ -137,12 +143,16 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     _buildTelemetryField("HORSEPOWER (HP)", "888"),
                     _buildTelemetryField("WEIGHT (KG)", "8888"),
                     _buildTelemetryField("DISPLACEMENT (CC)", "8888"),
-                    _buildTelemetryDropdown("DRIVE TYPE", ["RWD", "AWD", "FWD"]),
+                    _buildTelemetryDropdown("DRIVE TYPE", [
+                      "RWD",
+                      "AWD",
+                      "FWD",
+                    ]),
                   ],
                 ),
               ]),
               SizedBox(height: 24.h),
-      
+
               /// PROPULSION SYSTEM
               _buildSectionHeader("PROPULSION SYSTEM"),
               Row(
@@ -155,7 +165,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 ],
               ),
               SizedBox(height: 32.h),
-      
+
               /// Save button
               CustomButton(
                 height: 50.h,
@@ -175,7 +185,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   );
                 },
                 isImageRight: true,
-                icon: const Icon(Icons.chevron_right, color: Colors.black, size: 18),
+                icon: const Icon(
+                  Icons.chevron_right,
+                  color: Colors.black,
+                  size: 18,
+                ),
               ),
               SizedBox(height: 20.h),
             ],
@@ -260,10 +274,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
           style: const TextStyle(color: Colors.white, fontSize: 13),
           items: items.map((val) {
-            return DropdownMenuItem<String>(
-              value: val,
-              child: Text(val),
-            );
+            return DropdownMenuItem<String>(value: val, child: Text(val));
           }).toList(),
           onChanged: (v) {},
         ),
@@ -277,7 +288,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       decoration: BoxDecoration(
         color: const Color(0xff181818),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,7 +302,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           SizedBox(height: 4.h),
           Expanded(
             child: TextFormField(
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
@@ -311,7 +326,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       decoration: BoxDecoration(
         color: const Color(0xff181818),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,13 +343,18 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
               child: DropdownButton<String>(
                 value: selectedDriveType,
                 dropdownColor: const Color(0xff181818),
-                icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60, size: 14),
-                style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.white60,
+                  size: 14,
+                ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 items: items.map((val) {
-                  return DropdownMenuItem<String>(
-                    value: val,
-                    child: Text(val),
-                  );
+                  return DropdownMenuItem<String>(value: val, child: Text(val));
                 }).toList(),
                 onChanged: (v) {
                   if (v != null) {
@@ -364,7 +384,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.yellow : const Color(0xff111111),
           borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: isSelected ? AppColors.yellow : Colors.white10),
+          border: Border.all(
+            color: isSelected ? AppColors.yellow : Colors.white10,
+          ),
         ),
         child: Center(
           child: CustomText(

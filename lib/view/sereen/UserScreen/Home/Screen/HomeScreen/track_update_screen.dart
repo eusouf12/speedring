@@ -19,7 +19,8 @@ class TrackUpdateScreen extends StatelessWidget {
     };
 
     final notesCtrl = TextEditingController(
-      text: "Light rain starting to fall around Copse. Kerbs are getting very slippery. Recommend caution on Turn 9 exit.",
+      text:
+          "Light rain starting to fall around Copse. Kerbs are getting very slippery. Recommend caution on Turn 9 exit.",
     );
 
     const String visibility = "Public";
@@ -66,9 +67,9 @@ class TrackUpdateScreen extends StatelessWidget {
             const _FieldLabel("SELECT CIRCUIT"),
             const SizedBox(height: 6),
             const _SelectorRow(value: selectedCircuit),
-      
+
             const SizedBox(height: 16),
-      
+
             /// ── Surface Conditions ─────────────────────────────────────────
             const _FieldLabel("SURFACE CONDITION"),
             const SizedBox(height: 8),
@@ -90,18 +91,20 @@ class TrackUpdateScreen extends StatelessWidget {
                       return AppColors.yellow;
                   }
                 }
-      
+
                 return Expanded(
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? getConditionColor().withValues(alpha:0.2)
+                          ? getConditionColor().withValues(alpha: 0.2)
                           : const Color(0xff1A1A1A),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: isSelected ? getConditionColor() : Colors.transparent,
+                        color: isSelected
+                            ? getConditionColor()
+                            : Colors.transparent,
                         width: 1.5,
                       ),
                     ),
@@ -109,7 +112,9 @@ class TrackUpdateScreen extends StatelessWidget {
                       child: Text(
                         condition,
                         style: TextStyle(
-                          color: isSelected ? getConditionColor() : Colors.white60,
+                          color: isSelected
+                              ? getConditionColor()
+                              : Colors.white60,
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
                         ),
@@ -119,9 +124,9 @@ class TrackUpdateScreen extends StatelessWidget {
                 );
               }).toList(),
             ),
-      
+
             const SizedBox(height: 20),
-      
+
             /// ── Active Flags & Hazards ────────────────────────────────────
             const _FieldLabel("ACTIVE FLAGS & HAZARDS"),
             const SizedBox(height: 8),
@@ -137,7 +142,11 @@ class TrackUpdateScreen extends StatelessWidget {
                   return CheckboxListTile(
                     title: Text(
                       hazard,
-                      style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     value: isChecked,
                     activeColor: AppColors.yellow,
@@ -148,9 +157,9 @@ class TrackUpdateScreen extends StatelessWidget {
                 }).toList(),
               ),
             ),
-      
+
             const SizedBox(height: 20),
-      
+
             /// ── Live Media Attachment ────────────────────────────────────
             const _FieldLabel("LIVE PHOTO / VIDEO (OPTIONAL)"),
             const SizedBox(height: 8),
@@ -159,25 +168,37 @@ class TrackUpdateScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: const Color(0xff1A1A1A),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white10, style: BorderStyle.solid),
+                border: Border.all(
+                  color: Colors.white10,
+                  style: BorderStyle.solid,
+                ),
               ),
               child: const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.add_photo_alternate_outlined, color: Colors.white38, size: 32),
+                    Icon(
+                      Icons.add_photo_alternate_outlined,
+                      color: Colors.white38,
+                      size: 32,
+                    ),
                     SizedBox(height: 6),
                     Text(
                       "ATTACH CURRENT TRACK IMAGE",
-                      style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1),
+                      style: TextStyle(
+                        color: Colors.white38,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-      
+
             const SizedBox(height: 20),
-      
+
             /// ── Details/Notes ─────────────────────────────────────────────
             const _FieldLabel("DETAILS / NOTES"),
             const SizedBox(height: 6),
@@ -190,18 +211,23 @@ class TrackUpdateScreen extends StatelessWidget {
               child: TextFormField(
                 controller: notesCtrl,
                 maxLines: 3,
-                style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.5),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  height: 1.5,
+                ),
                 decoration: const InputDecoration(
-                  hintText: "Add specific location, advice, or flag information...",
+                  hintText:
+                      "Add specific location, advice, or flag information...",
                   hintStyle: TextStyle(color: Colors.white38),
                   border: InputBorder.none,
                   isDense: true,
                 ),
               ),
             ),
-      
+
             const SizedBox(height: 20),
-      
+
             /// ── Visibility ───────────────────────────────────────────────
             const _FieldLabel("UPDATE VISIBILITY"),
             const SizedBox(height: 8),
@@ -230,9 +256,9 @@ class TrackUpdateScreen extends StatelessWidget {
                 );
               }).toList(),
             ),
-      
+
             const SizedBox(height: 32),
-      
+
             /// ── Publish button ───────────────────────────────────────────
             GestureDetector(
               onTap: () => Navigator.pop(context),
@@ -255,7 +281,7 @@ class TrackUpdateScreen extends StatelessWidget {
                 ),
               ),
             ),
-      
+
             const SizedBox(height: 32),
           ],
         ),
@@ -270,14 +296,14 @@ class _FieldLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white38,
-          fontSize: 9,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 1.2,
-        ),
-      );
+    text,
+    style: const TextStyle(
+      color: Colors.white38,
+      fontSize: 9,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 1.2,
+    ),
+  );
 }
 
 class _SelectorRow extends StatelessWidget {
@@ -286,25 +312,25 @@ class _SelectorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        decoration: BoxDecoration(
-          color: const Color(0xff1A1A1A),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+    decoration: BoxDecoration(
+      color: const Color(0xff1A1A1A),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
             ),
-            const Icon(Icons.chevron_right, color: Colors.white38, size: 18),
-          ],
+          ),
         ),
-      );
+        const Icon(Icons.chevron_right, color: Colors.white38, size: 18),
+      ],
+    ),
+  );
 }

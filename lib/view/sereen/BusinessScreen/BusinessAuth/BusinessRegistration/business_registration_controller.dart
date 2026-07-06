@@ -26,10 +26,12 @@ class DashedBorderPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     final path = Path()
-      ..addRRect(RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, 0, size.width, size.height),
-        Radius.circular(borderRadius),
-      ));
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+          Radius.circular(borderRadius),
+        ),
+      );
 
     final dashPath = _buildDashedPath(path, dashLength, gap);
     canvas.drawPath(dashPath, paint);
@@ -44,10 +46,7 @@ class DashedBorderPainter extends CustomPainter {
         final double len = draw ? dashLength : gap;
         final double end = (distance + len).clamp(0.0, metric.length);
         if (draw) {
-          dest.addPath(
-            metric.extractPath(distance, end),
-            Offset.zero,
-          );
+          dest.addPath(metric.extractPath(distance, end), Offset.zero);
         }
         distance = end;
         draw = !draw;
@@ -103,7 +102,8 @@ class BusinessRegistrationController extends GetxController {
   final facebookCtrl = TextEditingController();
 
   // Step 4: Asset Class selection
-  final RxInt selectedAssetClass = 0.obs; // 0: Vehicle, 1: Motorcycle, 2: Technical Part, 3: Expert Service
+  final RxInt selectedAssetClass =
+      0.obs; // 0: Vehicle, 1: Motorcycle, 2: Technical Part, 3: Expert Service
 
   // Simulating document uploads with artificial delay
   void uploadLicense() {

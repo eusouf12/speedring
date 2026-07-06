@@ -10,18 +10,23 @@ class BusinessCreateTrackUpdateScreen extends StatefulWidget {
   const BusinessCreateTrackUpdateScreen({super.key});
 
   @override
-  State<BusinessCreateTrackUpdateScreen> createState() => _BusinessCreateTrackUpdateScreenState();
+  State<BusinessCreateTrackUpdateScreen> createState() =>
+      _BusinessCreateTrackUpdateScreenState();
 }
 
-class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpdateScreen> {
+class _BusinessCreateTrackUpdateScreenState
+    extends State<BusinessCreateTrackUpdateScreen> {
   final detailsController = TextEditingController(
-    text: "Turn 3 exit kerb is loose. Standing water at Copse. Track temperature dropping rapidly..."
+    text:
+        "Turn 3 exit kerb is loose. Standing water at Copse. Track temperature dropping rapidly...",
   );
 
   String selectedCircuit = "Silverstone Circuit";
   String surfaceCondition = "DRY"; // DRY, DAMP, WET, FLOODED
-  
-  final List<String> activeHazards = ["Yellow Flag"]; // Yellow Flag, Red Flag, Oil on Track, Debris
+
+  final List<String> activeHazards = [
+    "Yellow Flag",
+  ]; // Yellow Flag, Red Flag, Oil on Track, Debris
   String visibility = "Public"; // Public, Followers, Club Only
 
   @override
@@ -57,7 +62,10 @@ class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpd
               onPressed: _onPublish,
               child: const Text(
                 "PUBLISH",
-                style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppColors.yellow,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -76,17 +84,28 @@ class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpd
               _buildFieldLabel("SURFACE CONDITIONS"),
               Row(
                 children: [
-                  Expanded(child: _buildSurfaceButton("DRY", Icons.wb_sunny_outlined)),
+                  Expanded(
+                    child: _buildSurfaceButton("DRY", Icons.wb_sunny_outlined),
+                  ),
                   SizedBox(width: 8.w),
-                  Expanded(child: _buildSurfaceButton("DAMP", Icons.water_drop_outlined)),
+                  Expanded(
+                    child: _buildSurfaceButton(
+                      "DAMP",
+                      Icons.water_drop_outlined,
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 8.h),
               Row(
                 children: [
-                  Expanded(child: _buildSurfaceButton("WET", Icons.cloudy_snowing)),
+                  Expanded(
+                    child: _buildSurfaceButton("WET", Icons.cloudy_snowing),
+                  ),
                   SizedBox(width: 8.w),
-                  Expanded(child: _buildSurfaceButton("FLOODED", Icons.home_outlined)),
+                  Expanded(
+                    child: _buildSurfaceButton("FLOODED", Icons.home_outlined),
+                  ),
                 ],
               ),
               SizedBox(height: 18.h),
@@ -95,17 +114,41 @@ class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpd
               _buildFieldLabel("ACTIVE FLAGS & HAZARDS"),
               Row(
                 children: [
-                  Expanded(child: _buildHazardButton("Yellow Flag", Icons.outlined_flag, Colors.yellow)),
+                  Expanded(
+                    child: _buildHazardButton(
+                      "Yellow Flag",
+                      Icons.outlined_flag,
+                      Colors.yellow,
+                    ),
+                  ),
                   SizedBox(width: 8.w),
-                  Expanded(child: _buildHazardButton("Red Flag", Icons.error_outline, Colors.red)),
+                  Expanded(
+                    child: _buildHazardButton(
+                      "Red Flag",
+                      Icons.error_outline,
+                      Colors.red,
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 8.h),
               Row(
                 children: [
-                  Expanded(child: _buildHazardButton("Oil on Track", Icons.opacity, Colors.orange)),
+                  Expanded(
+                    child: _buildHazardButton(
+                      "Oil on Track",
+                      Icons.opacity,
+                      Colors.orange,
+                    ),
+                  ),
                   SizedBox(width: 8.w),
-                  Expanded(child: _buildHazardButton("Debris", Icons.warning_amber_rounded, Colors.blue)),
+                  Expanded(
+                    child: _buildHazardButton(
+                      "Debris",
+                      Icons.warning_amber_rounded,
+                      Colors.blue,
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 18.h),
@@ -173,7 +216,9 @@ class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpd
               color: Colors.black,
               borderRadius: BorderRadius.circular(6.r),
               image: const DecorationImage(
-                image: NetworkImage("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop"),
+                image: NetworkImage(
+                  "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
+                ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -215,12 +260,18 @@ class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpd
         decoration: BoxDecoration(
           color: isSelected ? AppColors.yellow : const Color(0xff111111),
           borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: isSelected ? Colors.transparent : Colors.white10),
+          border: Border.all(
+            color: isSelected ? Colors.transparent : Colors.white10,
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: isSelected ? Colors.black : Colors.white60, size: 14.sp),
+            Icon(
+              icon,
+              color: isSelected ? Colors.black : Colors.white60,
+              size: 14.sp,
+            ),
             SizedBox(width: 6.w),
             Text(
               label,
@@ -253,7 +304,10 @@ class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpd
         decoration: BoxDecoration(
           color: const Color(0xff111111),
           borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: isSelected ? color : Colors.white10, width: isSelected ? 1.5 : 1.0),
+          border: Border.all(
+            color: isSelected ? color : Colors.white10,
+            width: isSelected ? 1.5 : 1.0,
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -287,7 +341,11 @@ class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpd
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.add_a_photo_outlined, color: Colors.white24, size: 24),
+            const Icon(
+              Icons.add_a_photo_outlined,
+              color: Colors.white24,
+              size: 24,
+            ),
             SizedBox(height: 8.h),
             CustomText(
               text: "Add Live Photo/Video",
@@ -351,7 +409,9 @@ class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpd
 
   Widget _buildVisibilityOption(String label, bool isSelected) {
     return GestureDetector(
-      onTap: () => setState(() => visibility = label == "Club Only(VIP)" ? "Club Only" : label),
+      onTap: () => setState(
+        () => visibility = label == "Club Only(VIP)" ? "Club Only" : label,
+      ),
       child: Row(
         children: [
           const Icon(Icons.public_rounded, color: Colors.white60, size: 16),
@@ -368,12 +428,18 @@ class _BusinessCreateTrackUpdateScreenState extends State<BusinessCreateTrackUpd
             height: 14.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: isSelected ? AppColors.yellow : Colors.white30, width: 2),
+              border: Border.all(
+                color: isSelected ? AppColors.yellow : Colors.white30,
+                width: 2,
+              ),
             ),
             padding: EdgeInsets.all(2.r),
             child: isSelected
                 ? Container(
-                    decoration: const BoxDecoration(color: AppColors.yellow, shape: BoxShape.circle),
+                    decoration: const BoxDecoration(
+                      color: AppColors.yellow,
+                      shape: BoxShape.circle,
+                    ),
                   )
                 : null,
           ),

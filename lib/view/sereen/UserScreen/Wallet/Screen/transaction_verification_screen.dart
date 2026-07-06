@@ -62,7 +62,9 @@ class TransactionVerificationScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.05),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -74,7 +76,10 @@ class TransactionVerificationScreen extends StatelessWidget {
                           height: 56.w,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.yellow, width: 1.5),
+                            border: Border.all(
+                              color: AppColors.yellow,
+                              width: 1.5,
+                            ),
                           ),
                           child: ClipOval(
                             child: Image.network(
@@ -87,7 +92,10 @@ class TransactionVerificationScreen extends StatelessWidget {
                           bottom: -4.h,
                           right: -4.w,
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 4.w,
+                              vertical: 1.h,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.yellow,
                               borderRadius: BorderRadius.circular(2.r),
@@ -147,7 +155,9 @@ class TransactionVerificationScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.05),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -158,9 +168,12 @@ class TransactionVerificationScreen extends StatelessWidget {
                     _buildRow("SPEEDRING_REVENUE", "€5.00"),
                     SizedBox(height: 16.h),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 12.h,
+                      ),
                       decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha:0.4),
+                        color: Colors.black.withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(6.r),
                         border: Border.all(color: Colors.white10),
                       ),
@@ -202,7 +215,7 @@ class TransactionVerificationScreen extends StatelessWidget {
                     arguments: {
                       "amount": "€10.00",
                       "recipient": "MAX VERSTAPPEN",
-                      "txId": "SRX-928-883-M7"
+                      "txId": "SRX-928-883-M7",
                     },
                   );
                 },

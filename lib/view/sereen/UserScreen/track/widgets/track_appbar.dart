@@ -22,10 +22,12 @@ class TrackAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: true,
-      leading: leading ?? IconButton(
-        icon: const Icon(Icons.menu, color: AppColors.yellow),
-        onPressed: () {},
-      ),
+      leading:
+          leading ??
+          IconButton(
+            icon: const Icon(Icons.menu, color: AppColors.yellow),
+            onPressed: () {},
+          ),
       title: showLogo
           ? Column(
               mainAxisSize: MainAxisSize.min,
@@ -56,7 +58,7 @@ class TrackAppBar extends StatelessWidget implements PreferredSizeWidget {
                       letterSpacing: 1.0,
                     ),
                   ),
-                ]
+                ],
               ],
             )
           : Text(
@@ -68,25 +70,29 @@ class TrackAppBar extends StatelessWidget implements PreferredSizeWidget {
                 letterSpacing: 1.0,
               ),
             ),
-      actions: actions ?? [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: Center(
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.yellow, width: 1.5),
-                image: const DecorationImage(
-                  image: NetworkImage("https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop"),
-                  fit: BoxFit.cover,
+      actions:
+          actions ??
+          [
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Center(
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.yellow, width: 1.5),
+                    image: const DecorationImage(
+                      image: NetworkImage(
+                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
     );
   }
 

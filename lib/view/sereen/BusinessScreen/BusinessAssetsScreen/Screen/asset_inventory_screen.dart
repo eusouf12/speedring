@@ -48,11 +48,11 @@ class AssetInventoryScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16.h),
-      
+
             // Horizontal Category Tabs
             _buildCategoryTabs(controller),
             SizedBox(height: 16.h),
-      
+
             // Scrollable List of Assets
             Expanded(
               child: Obx(() {
@@ -61,13 +61,17 @@ class AssetInventoryScreen extends StatelessWidget {
                   if (activeTab == "ALL") return true;
                   return asset.type == activeTab;
                 }).toList();
-      
+
                 if (filteredAssets.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.inventory_2_outlined, color: Colors.white24, size: 48.r),
+                        Icon(
+                          Icons.inventory_2_outlined,
+                          color: Colors.white24,
+                          size: 48.r,
+                        ),
                         SizedBox(height: 12.h),
                         CustomText(
                           text: "NO ASSETS RECORDED",
@@ -80,9 +84,12 @@ class AssetInventoryScreen extends StatelessWidget {
                     ),
                   );
                 }
-      
+
                 return ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 4.h,
+                  ),
                   itemCount: filteredAssets.length,
                   itemBuilder: (context, index) {
                     final asset = filteredAssets[index];
@@ -96,7 +103,9 @@ class AssetInventoryScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () => Get.toNamed(AppRoutes.addAssetCategoryScreen),
           backgroundColor: AppColors.yellow,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
           child: const Icon(Icons.add, color: Colors.black, size: 28),
         ),
         bottomNavigationBar: const CustomBusinessNavBar(currentIndex: 1),
@@ -124,11 +133,19 @@ class AssetInventoryScreen extends StatelessWidget {
       centerTitle: true,
       actions: [
         IconButton(
-          icon: const Icon(Icons.mail_outline_rounded, color: Colors.white, size: 22),
+          icon: const Icon(
+            Icons.mail_outline_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
           onPressed: () => Get.toNamed(AppRoutes.messageScreen),
         ),
         IconButton(
-          icon: const Icon(Icons.notifications_none_rounded, color: Colors.white, size: 22),
+          icon: const Icon(
+            Icons.notifications_none_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
           onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
         ),
         SizedBox(width: 8.w),
@@ -157,7 +174,9 @@ class AssetInventoryScreen extends StatelessWidget {
                 margin: EdgeInsets.symmetric(horizontal: 4.w),
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.yellow : const Color(0xff111111),
+                  color: isSelected
+                      ? AppColors.yellow
+                      : const Color(0xff111111),
                   borderRadius: BorderRadius.circular(8.r),
                   border: Border.all(
                     color: isSelected ? AppColors.yellow : Colors.white10,
@@ -180,7 +199,10 @@ class AssetInventoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAssetCard(AssetModel asset, BusinessDashboardController controller) {
+  Widget _buildAssetCard(
+    AssetModel asset,
+    BusinessDashboardController controller,
+  ) {
     // Determine header code label (Chassis, VIN, Part, Service)
     String codeLabel = "CHASSIS";
     if (asset.type == "MOTORCYCLES") {
@@ -226,7 +248,11 @@ class AssetInventoryScreen extends StatelessWidget {
                   height: 160.h,
                   color: const Color(0xff222222),
                   child: Center(
-                    child: Icon(Icons.broken_image_outlined, color: Colors.white24, size: 36.r),
+                    child: Icon(
+                      Icons.broken_image_outlined,
+                      color: Colors.white24,
+                      size: 36.r,
+                    ),
                   ),
                 ),
               ),
@@ -234,18 +260,27 @@ class AssetInventoryScreen extends StatelessWidget {
                 top: 12.h,
                 left: 12.w,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 4.h,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.75),
                     borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(color: tagColor.withValues(alpha: 0.5), width: 1),
+                    border: Border.all(
+                      color: tagColor.withValues(alpha: 0.5),
+                      width: 1,
+                    ),
                   ),
                   child: Row(
                     children: [
                       Container(
                         width: 6.r,
                         height: 6.r,
-                        decoration: BoxDecoration(color: tagColor, shape: BoxShape.circle),
+                        decoration: BoxDecoration(
+                          color: tagColor,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                       SizedBox(width: 6.w),
                       Text(
@@ -299,7 +334,9 @@ class AssetInventoryScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _buildMatrixColumn(
-                        label: asset.type == "PARTS" ? "EST. VALUE" : "ASKING PRICE",
+                        label: asset.type == "PARTS"
+                            ? "EST. VALUE"
+                            : "ASKING PRICE",
                         value: asset.price,
                         valueColor: AppColors.yellow,
                       ),

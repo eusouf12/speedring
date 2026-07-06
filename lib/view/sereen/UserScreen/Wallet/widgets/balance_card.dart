@@ -6,10 +6,7 @@ import '../../../../components/custom_text/custom_text.dart';
 class BalanceCard extends StatelessWidget {
   final String balance;
 
-  const BalanceCard({
-    super.key,
-    required this.balance,
-  });
+  const BalanceCard({super.key, required this.balance});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +16,7 @@ class BalanceCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff111111),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

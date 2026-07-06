@@ -112,58 +112,66 @@ class ChangePasswordScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.08),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFieldLabel("CURRENT PASSWORD"),
-                    Obx(() => _buildTextField(
-                          controller: controller.currentPasswordController,
-                          obscureText: controller.obscureCurrent.value,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              controller.obscureCurrent.value
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color: Colors.white38,
-                              size: 18,
-                            ),
-                            onPressed: () => controller.obscureCurrent.toggle(),
+                    Obx(
+                      () => _buildTextField(
+                        controller: controller.currentPasswordController,
+                        obscureText: controller.obscureCurrent.value,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.obscureCurrent.value
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: Colors.white38,
+                            size: 18,
                           ),
-                        )),
+                          onPressed: () => controller.obscureCurrent.toggle(),
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 16.h),
                     _buildFieldLabel("NEW PASSWORD"),
-                    Obx(() => _buildTextField(
-                          controller: controller.newPasswordController,
-                          obscureText: controller.obscureNew.value,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              controller.obscureNew.value
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color: Colors.white38,
-                              size: 18,
-                            ),
-                            onPressed: () => controller.obscureNew.toggle(),
+                    Obx(
+                      () => _buildTextField(
+                        controller: controller.newPasswordController,
+                        obscureText: controller.obscureNew.value,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.obscureNew.value
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: Colors.white38,
+                            size: 18,
                           ),
-                        )),
+                          onPressed: () => controller.obscureNew.toggle(),
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 16.h),
                     _buildFieldLabel("CONFIRM PASSWORD"),
-                    Obx(() => _buildTextField(
-                          controller: controller.confirmPasswordController,
-                          obscureText: controller.obscureConfirm.value,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              controller.obscureConfirm.value
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color: Colors.white38,
-                              size: 18,
-                            ),
-                            onPressed: () => controller.obscureConfirm.toggle(),
+                    Obx(
+                      () => _buildTextField(
+                        controller: controller.confirmPasswordController,
+                        obscureText: controller.obscureConfirm.value,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.obscureConfirm.value
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: Colors.white38,
+                            size: 18,
                           ),
-                        )),
+                          onPressed: () => controller.obscureConfirm.toggle(),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

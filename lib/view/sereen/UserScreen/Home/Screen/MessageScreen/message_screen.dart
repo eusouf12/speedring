@@ -18,34 +18,37 @@ class MessageScreen extends StatelessWidget {
         "time": "12m ago",
         "unreadCount": 2,
         "isOnline": true,
-        "avatarUrl": "https://picsum.photos/seed/alex/100/100"
+        "avatarUrl": "https://picsum.photos/seed/alex/100/100",
       },
       {
         "name": "Speed Master",
         "username": "@speedmaster",
-        "lastMsg": "That lap time was absolutely insane! How did you optimize Copse?",
+        "lastMsg":
+            "That lap time was absolutely insane! How did you optimize Copse?",
         "time": "1h ago",
         "unreadCount": 0,
         "isOnline": true,
-        "avatarUrl": "https://picsum.photos/seed/speedmaster/100/100"
+        "avatarUrl": "https://picsum.photos/seed/speedmaster/100/100",
       },
       {
         "name": "Clara Ferrari",
         "username": "@clara_f",
-        "lastMsg": "Just posted the specifications for the new suspension setup.",
+        "lastMsg":
+            "Just posted the specifications for the new suspension setup.",
         "time": "4h ago",
         "unreadCount": 0,
         "isOnline": false,
-        "avatarUrl": "https://picsum.photos/seed/clara/100/100"
+        "avatarUrl": "https://picsum.photos/seed/clara/100/100",
       },
       {
         "name": "Track King",
         "username": "@track_king",
-        "lastMsg": "We need to check the tyre pressures before the next session.",
+        "lastMsg":
+            "We need to check the tyre pressures before the next session.",
         "time": "Yesterday",
         "unreadCount": 0,
         "isOnline": false,
-        "avatarUrl": "https://picsum.photos/seed/trackking/100/100"
+        "avatarUrl": "https://picsum.photos/seed/trackking/100/100",
       },
     ];
 
@@ -72,7 +75,11 @@ class MessageScreen extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () {},
-              icon: const Icon(Icons.edit_note, color: AppColors.yellow, size: 24),
+              icon: const Icon(
+                Icons.edit_note,
+                color: AppColors.yellow,
+                size: 24,
+              ),
             ),
           ],
         ),
@@ -82,7 +89,10 @@ class MessageScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 2,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xff151515),
                   borderRadius: BorderRadius.circular(12),
@@ -94,10 +104,16 @@ class MessageScreen extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextFormField(
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         decoration: const InputDecoration(
                           hintText: "Search drivers or chats...",
-                          hintStyle: TextStyle(color: Colors.white24, fontSize: 13),
+                          hintStyle: TextStyle(
+                            color: Colors.white24,
+                            fontSize: 13,
+                          ),
                           border: InputBorder.none,
                           isDense: true,
                         ),
@@ -107,18 +123,22 @@ class MessageScreen extends StatelessWidget {
                 ),
               ),
             ),
-      
+
             const SizedBox(height: 10),
-      
+
             /// Chats List
             Expanded(
               child: ListView.separated(
                 itemCount: chats.length,
-                separatorBuilder: (_, _) => const Divider(color: Colors.white10, height: 1, indent: 70),
+                separatorBuilder: (_, _) =>
+                    const Divider(color: Colors.white10, height: 1, indent: 70),
                 itemBuilder: (context, index) {
                   final chat = chats[index];
                   return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 6,
+                    ),
                     onTap: () {
                       Get.toNamed(
                         AppRoutes.inboxScreen,
@@ -146,7 +166,10 @@ class MessageScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: Colors.green,
                                 shape: BoxShape.circle,
-                                border: Border.all(color: Colors.black, width: 2),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
                               ),
                             ),
                           ),

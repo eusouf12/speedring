@@ -10,14 +10,17 @@ class BusinessCreateSessionPostScreen extends StatefulWidget {
   const BusinessCreateSessionPostScreen({super.key});
 
   @override
-  State<BusinessCreateSessionPostScreen> createState() => _BusinessCreateSessionPostScreenState();
+  State<BusinessCreateSessionPostScreen> createState() =>
+      _BusinessCreateSessionPostScreenState();
 }
 
-class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionPostScreen> {
+class _BusinessCreateSessionPostScreenState
+    extends State<BusinessCreateSessionPostScreen> {
   final trackNameController = TextEditingController(text: "Grand Prix Loop");
   final lapTimeController = TextEditingController(text: "01:28.442");
   final summaryController = TextEditingController(
-    text: "Perfect morning session. The SF90 felt incredibly planted through Maggotts and Becketts. Optimized tire pressures to 1.8 bar cold. Track surface was green but gripping up well by lap 12."
+    text:
+        "Perfect morning session. The SF90 felt incredibly planted through Maggotts and Becketts. Optimized tire pressures to 1.8 bar cold. Track surface was green but gripping up well by lap 12.",
   );
 
   String selectedVehicle = "Ferrari SF90 Stradale";
@@ -59,7 +62,10 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
               onPressed: _onPublish,
               child: const Text(
                 "PUBLISH",
-                style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppColors.yellow,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -74,9 +80,17 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
               SizedBox(height: 16.h),
 
               // Selectors
-              _buildSelectorCard("VEHICLE", selectedVehicle, Icons.directions_car_outlined),
+              _buildSelectorCard(
+                "VEHICLE",
+                selectedVehicle,
+                Icons.directions_car_outlined,
+              ),
               SizedBox(height: 12.h),
-              _buildSelectorCard("CIRCUIT", selectedCircuit, Icons.location_on_outlined),
+              _buildSelectorCard(
+                "CIRCUIT",
+                selectedCircuit,
+                Icons.location_on_outlined,
+              ),
               SizedBox(height: 16.h),
 
               // Inputs
@@ -85,7 +99,11 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
                 _buildOutlineField(trackNameController, "Grand Prix Loop"),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("BEST LAP TIME"),
-                _buildOutlineIconField(lapTimeController, Icons.timer_outlined, "01:28.442"),
+                _buildOutlineIconField(
+                  lapTimeController,
+                  Icons.timer_outlined,
+                  "01:28.442",
+                ),
               ]),
               SizedBox(height: 16.h),
 
@@ -107,9 +125,19 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
               // Add Music, Location actions
               Row(
                 children: [
-                  Expanded(child: _buildActionButton(Icons.music_note_outlined, "ADD MUSIC")),
+                  Expanded(
+                    child: _buildActionButton(
+                      Icons.music_note_outlined,
+                      "ADD MUSIC",
+                    ),
+                  ),
                   SizedBox(width: 12.w),
-                  Expanded(child: _buildActionButton(Icons.location_on_outlined, "LOCATION")),
+                  Expanded(
+                    child: _buildActionButton(
+                      Icons.location_on_outlined,
+                      "LOCATION",
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 24.h),
@@ -177,7 +205,10 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
                     color: AppColors.yellow,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.add_a_photo_outlined, color: Colors.black),
+                  child: const Icon(
+                    Icons.add_a_photo_outlined,
+                    color: Colors.black,
+                  ),
                 ),
                 SizedBox(height: 8.h),
                 CustomText(
@@ -229,7 +260,11 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
               ],
             ),
           ),
-          const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white24, size: 14),
+          const Icon(
+            Icons.arrow_forward_ios_rounded,
+            color: Colors.white24,
+            size: 14,
+          ),
         ],
       ),
     );
@@ -273,7 +308,11 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
       ),
       child: TextFormField(
         controller: controller,
-        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
@@ -284,7 +323,11 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
     );
   }
 
-  Widget _buildOutlineIconField(TextEditingController controller, IconData icon, String hint) {
+  Widget _buildOutlineIconField(
+    TextEditingController controller,
+    IconData icon,
+    String hint,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -299,7 +342,11 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
           Expanded(
             child: TextFormField(
               controller: controller,
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
@@ -406,20 +453,30 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
                   Container(
                     width: 4.w,
                     height: 4.w,
-                    decoration: const BoxDecoration(color: AppColors.yellow, shape: BoxShape.circle),
+                    decoration: const BoxDecoration(
+                      color: AppColors.yellow,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                   SizedBox(width: 4.w),
                   Container(
                     width: 4.w,
                     height: 4.w,
-                    decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
+                    decoration: const BoxDecoration(
+                      color: Colors.white24,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ],
               ),
             ],
           ),
           const Divider(color: Colors.white10, height: 24),
-          _buildTelemetryRow(Icons.playlist_add_check_rounded, "Total Laps", "18"),
+          _buildTelemetryRow(
+            Icons.playlist_add_check_rounded,
+            "Total Laps",
+            "18",
+          ),
           SizedBox(height: 10.h),
           _buildTelemetryRow(Icons.speed_outlined, "Avg Speed", "214 KM/H"),
           SizedBox(height: 10.h),
@@ -512,7 +569,9 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
               image: const DecorationImage(
-                image: NetworkImage("https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop"),
+                image: NetworkImage(
+                  "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
+                ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -527,11 +586,19 @@ class _BusinessCreateSessionPostScreenState extends State<BusinessCreateSessionP
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.timer_outlined, color: AppColors.yellow, size: 10),
+                  const Icon(
+                    Icons.timer_outlined,
+                    color: AppColors.yellow,
+                    size: 10,
+                  ),
                   SizedBox(width: 4.w),
                   Text(
                     "01:28.442",
-                    style: TextStyle(color: Colors.white, fontSize: 8.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 8.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),

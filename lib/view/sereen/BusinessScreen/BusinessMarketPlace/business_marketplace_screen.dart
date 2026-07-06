@@ -12,7 +12,8 @@ class BusinessMarketplaceScreen extends StatefulWidget {
   const BusinessMarketplaceScreen({super.key});
 
   @override
-  State<BusinessMarketplaceScreen> createState() => _BusinessMarketplaceScreenState();
+  State<BusinessMarketplaceScreen> createState() =>
+      _BusinessMarketplaceScreenState();
 }
 
 class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
@@ -25,7 +26,8 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
       'title': 'APEX-7 TURBO S',
       'subtitle': '2024 PRODUCTION MODEL',
       'price': r'$245,000',
-      'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop',
     },
     {
       'id': '2',
@@ -33,7 +35,8 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
       'title': 'V-CORE 1100R',
       'subtitle': 'RACING SPECIFICATION',
       'price': r'$42,900',
-      'imageUrl': 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop',
     },
     {
       'id': '3',
@@ -41,7 +44,8 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
       'title': 'STRATOS GT3',
       'subtitle': 'TRACK ONLY EDITION',
       'price': r'$510,000',
-      'imageUrl': 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop',
     },
     {
       'id': '4',
@@ -49,7 +53,8 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
       'title': 'FORGED CARBON SET',
       'subtitle': 'ULTRA-LIGHTWEIGHT COMPONENTS',
       'price': r'$18,500',
-      'imageUrl': 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&fit=crop',
     },
     {
       'id': '5',
@@ -57,7 +62,8 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
       'title': 'MASTER SUSPENSION TUNING',
       'subtitle': 'Pit Garage Service',
       'price': r'$250/hr',
-      'imageUrl': 'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop',
     },
   ];
 
@@ -79,11 +85,7 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
             icon: const Icon(Icons.menu, color: Colors.white),
             onPressed: () {},
           ),
-          title: Image.asset(
-            AppImages.logo,
-            height: 26.h,
-            fit: BoxFit.contain,
-          ),
+          title: Image.asset(AppImages.logo, height: 26.h, fit: BoxFit.contain),
           centerTitle: true,
           actions: [
             IconButton(
@@ -114,11 +116,17 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
                     Expanded(
                       child: TextField(
                         controller: _searchController,
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: "What do you want to buy?",
-                          hintStyle: TextStyle(color: Colors.white30, fontSize: 13),
+                          hintStyle: TextStyle(
+                            color: Colors.white30,
+                            fontSize: 13,
+                          ),
                           isDense: true,
                         ),
                       ),
@@ -145,7 +153,8 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
                         ),
                         minimumSize: Size(double.infinity, 38.h),
                       ),
-                      onPressed: () => Get.toNamed(AppRoutes.addAssetCategoryScreen),
+                      onPressed: () =>
+                          Get.toNamed(AppRoutes.addAssetCategoryScreen),
                       icon: const Icon(Icons.add_circle_outline, size: 16),
                       label: Text(
                         "START LISTING",
@@ -173,7 +182,11 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
                       onPressed: () {
                         // Select category action
                       },
-                      icon: const Icon(Icons.tune_rounded, size: 16, color: Colors.white38),
+                      icon: const Icon(
+                        Icons.tune_rounded,
+                        size: 16,
+                        color: Colors.white38,
+                      ),
                       label: Text(
                         "SELECT CATEGORY",
                         style: TextStyle(
@@ -220,7 +233,9 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: NetworkImage(item['imageUrl'] as String),
+                                    image: NetworkImage(
+                                      item['imageUrl'] as String,
+                                    ),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -231,7 +246,10 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
                               top: 12.h,
                               left: 12.w,
                               child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w,
+                                  vertical: 5.h,
+                                ),
                                 decoration: BoxDecoration(
                                   color: AppColors.yellow,
                                   borderRadius: BorderRadius.circular(4.r),
@@ -257,12 +275,14 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         CustomText(
                                           text: item['title'] as String,
@@ -302,15 +322,23 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
                                         foregroundColor: Colors.black,
                                         elevation: 0,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.r),
+                                          borderRadius: BorderRadius.circular(
+                                            10.r,
+                                          ),
                                         ),
-                                        minimumSize: Size(double.infinity, 38.h),
+                                        minimumSize: Size(
+                                          double.infinity,
+                                          38.h,
+                                        ),
                                       ),
                                       onPressed: () => Get.toNamed(
                                         AppRoutes.itemDetailScreen,
                                         arguments: {'title': item['title']},
                                       ),
-                                      icon: const Icon(Icons.remove_red_eye_outlined, size: 15),
+                                      icon: const Icon(
+                                        Icons.remove_red_eye_outlined,
+                                        size: 15,
+                                      ),
                                       label: Text(
                                         "VIEW DETAILS",
                                         style: TextStyle(
@@ -336,8 +364,12 @@ class _BusinessMarketplaceScreenState extends State<BusinessMarketplaceScreen> {
                                       height: 38.h,
                                       decoration: BoxDecoration(
                                         color: const Color(0xff1E1E1E),
-                                        borderRadius: BorderRadius.circular(10.r),
-                                        border: Border.all(color: Colors.white10),
+                                        borderRadius: BorderRadius.circular(
+                                          10.r,
+                                        ),
+                                        border: Border.all(
+                                          color: Colors.white10,
+                                        ),
                                       ),
                                       child: const Icon(
                                         Icons.chat_bubble_outline_rounded,

@@ -23,7 +23,11 @@ class ClubDetailsScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.yellow, size: 24),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColors.yellow,
+              size: 24,
+            ),
             onPressed: () => Get.back(),
           ),
           title: const Text(
@@ -64,11 +68,14 @@ class ClubDetailsScreen extends StatelessWidget {
                           height: 160,
                           decoration: const BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage("https://picsum.photos/seed/porschegt3/800/400"),
+                              image: NetworkImage(
+                                "https://picsum.photos/seed/porschegt3/800/400",
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),
                         ),
+
                         /// Logo Overlap
                         Positioned(
                           bottom: 0,
@@ -80,14 +87,21 @@ class ClubDetailsScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white24, width: 2),
+                              border: Border.all(
+                                color: Colors.white24,
+                                width: 2,
+                              ),
                             ),
                             child: Center(
                               child: Image.network(
                                 "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=porsche_shield",
                                 width: 60,
                                 height: 60,
-                                errorBuilder: (context, _, _) => const Icon(Icons.directions_car, color: AppColors.yellow, size: 40),
+                                errorBuilder: (context, _, _) => const Icon(
+                                  Icons.directions_car,
+                                  color: AppColors.yellow,
+                                  size: 40,
+                                ),
                               ),
                             ),
                           ),
@@ -96,7 +110,7 @@ class ClubDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-      
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Column(
@@ -113,7 +127,7 @@ class ClubDetailsScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-      
+
                         /// JOIN CLUB Button
                         SizedBox(
                           width: double.infinity,
@@ -150,7 +164,7 @@ class ClubDetailsScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 24),
-      
+
                         /// Info Card row (MEMBERS, GLOBAL RANK, ACCESS)
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -170,14 +184,19 @@ class ClubDetailsScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 24),
-      
+
                         /// About card
                         Stack(
                           clipBehavior: Clip.none,
                           children: [
                             Container(
                               width: double.infinity,
-                              padding: const EdgeInsets.fromLTRB(16, 24, 16, 20),
+                              padding: const EdgeInsets.fromLTRB(
+                                16,
+                                24,
+                                16,
+                                20,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xff181818),
                                 borderRadius: BorderRadius.circular(4),
@@ -192,13 +211,16 @@ class ClubDetailsScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-      
+
                             /// About Tag
                             Positioned(
                               top: -10,
                               left: 12,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 3,
+                                ),
                                 color: Colors.black,
                                 child: const Text(
                                   "About",
@@ -239,11 +261,14 @@ class ClubDetailsScreen extends StatelessWidget {
                           height: 160,
                           decoration: const BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage("https://picsum.photos/seed/porschegt3/800/400"),
+                              image: NetworkImage(
+                                "https://picsum.photos/seed/porschegt3/800/400",
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),
                         ),
+
                         /// Logo Overlap
                         Positioned(
                           bottom: 0,
@@ -255,14 +280,21 @@ class ClubDetailsScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white24, width: 2),
+                              border: Border.all(
+                                color: Colors.white24,
+                                width: 2,
+                              ),
                             ),
                             child: Center(
                               child: Image.network(
                                 "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=porsche_shield",
                                 width: 60,
                                 height: 60,
-                                errorBuilder: (context, _, _) => const Icon(Icons.directions_car, color: AppColors.yellow, size: 40),
+                                errorBuilder: (context, _, _) => const Icon(
+                                  Icons.directions_car,
+                                  color: AppColors.yellow,
+                                  size: 40,
+                                ),
                               ),
                             ),
                           ),
@@ -271,7 +303,7 @@ class ClubDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-      
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Column(
@@ -288,20 +320,30 @@ class ClubDetailsScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 6),
-      
+
                         /// Verified Member Badge Row
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.yellow.withValues(alpha:0.15),
+                                color: AppColors.yellow.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(4),
-                                border: Border.all(color: AppColors.yellow, width: 1),
+                                border: Border.all(
+                                  color: AppColors.yellow,
+                                  width: 1,
+                                ),
                               ),
                               child: Row(
                                 children: const [
-                                  Icon(Icons.verified, color: AppColors.yellow, size: 10),
+                                  Icon(
+                                    Icons.verified,
+                                    color: AppColors.yellow,
+                                    size: 10,
+                                  ),
                                   SizedBox(width: 4),
                                   Text(
                                     "VERIFIED MEMBER",
@@ -326,7 +368,7 @@ class ClubDetailsScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 24),
-      
+
                         /// Command Center
                         Stack(
                           clipBehavior: Clip.none,
@@ -347,11 +389,14 @@ class ClubDetailsScreen extends StatelessWidget {
                                     icon: Icons.chat_bubble_outline,
                                     isYellow: true,
                                     onPressed: () {
-                                      Get.snackbar("Chat", "Opening Group Chat room...");
+                                      Get.snackbar(
+                                        "Chat",
+                                        "Opening Group Chat room...",
+                                      );
                                     },
                                   ),
                                   const SizedBox(height: 12),
-      
+
                                   /// Create Post Button
                                   _buildCommandButton(
                                     label: "CREATE POST",
@@ -362,26 +407,32 @@ class ClubDetailsScreen extends StatelessWidget {
                                     },
                                   ),
                                   const SizedBox(height: 12),
-      
+
                                   /// Share Media Button
                                   _buildCommandButton(
                                     label: "SHARE MEDIA",
                                     icon: Icons.photo_library_outlined,
                                     isYellow: false,
                                     onPressed: () {
-                                      Get.snackbar("Media", "Select media to upload...");
+                                      Get.snackbar(
+                                        "Media",
+                                        "Select media to upload...",
+                                      );
                                     },
                                   ),
                                 ],
                               ),
                             ),
-      
+
                             /// Command Center Badge Tag
                             Positioned(
                               top: -10,
                               left: 12,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 3,
+                                ),
                                 color: Colors.black,
                                 child: const Text(
                                   "COMMAND CENTER",
@@ -397,7 +448,7 @@ class ClubDetailsScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 28),
-      
+
                         /// Collective Feed Header
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -423,12 +474,13 @@ class ClubDetailsScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 16),
-      
+
                         /// Collective Feed List
                         _buildFeedItem(
                           author: "MAXIMILLIAN_R",
                           time: "84m AGO",
-                          content: "Shared a new MoTeC data log from Spa-Francorchamps. Optimization on Sector 2 seems solid.",
+                          content:
+                              "Shared a new MoTeC data log from Spa-Francorchamps. Optimization on Sector 2 seems solid.",
                           likes: 24,
                           comments: 8,
                           avatar: "https://picsum.photos/seed/driver1/100/100",
@@ -436,16 +488,19 @@ class ClubDetailsScreen extends StatelessWidget {
                         _buildFeedItem(
                           author: "ELARA_GT3",
                           time: "12m AGO",
-                          content: "Uploaded onboard footage: Nordschleife Sunset Session. Bridge-to-Gantry: 7:02.",
+                          content:
+                              "Uploaded onboard footage: Nordschleife Sunset Session. Bridge-to-Gantry: 7:02.",
                           likes: 42,
                           comments: 15,
                           avatar: "https://picsum.photos/seed/driver2/100/100",
-                          mediaUrl: "https://picsum.photos/seed/porsche_cockpit/600/300",
+                          mediaUrl:
+                              "https://picsum.photos/seed/porsche_cockpit/600/300",
                         ),
                         _buildFeedItem(
                           author: "TECH_LEAD_SAM",
                           time: "1h AGO",
-                          content: "New guide posted: Dampening Adjustments for high-speed undulations at Portimão.",
+                          content:
+                              "New guide posted: Dampening Adjustments for high-speed undulations at Portimão.",
                           likes: 18,
                           comments: 3,
                           avatar: "https://picsum.photos/seed/driver3/100/100",
@@ -491,11 +546,7 @@ class ClubDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildVerticalDivider() {
-    return Container(
-      width: 1,
-      height: 32,
-      color: Colors.white10,
-    );
+    return Container(width: 1, height: 32, color: Colors.white10);
   }
 
   Widget _buildCommandButton({
@@ -509,11 +560,15 @@ class ClubDetailsScreen extends StatelessWidget {
       height: 48,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: isYellow ? AppColors.yellow : const Color(0xff1d1d1d),
+          backgroundColor: isYellow
+              ? AppColors.yellow
+              : const Color(0xff1d1d1d),
           foregroundColor: isYellow ? Colors.black : Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
-            side: isYellow ? BorderSide.none : const BorderSide(color: Colors.white10),
+            side: isYellow
+                ? BorderSide.none
+                : const BorderSide(color: Colors.white10),
           ),
           elevation: 0,
         ),
@@ -564,10 +619,7 @@ class ClubDetailsScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 16,
-                backgroundImage: NetworkImage(avatar),
-              ),
+              CircleAvatar(radius: 16, backgroundImage: NetworkImage(avatar)),
               const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -583,10 +635,7 @@ class ClubDetailsScreen extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     time,
-                    style: const TextStyle(
-                      color: Colors.white38,
-                      fontSize: 9,
-                    ),
+                    style: const TextStyle(color: Colors.white38, fontSize: 9),
                   ),
                 ],
               ),
@@ -620,7 +669,11 @@ class ClubDetailsScreen extends StatelessWidget {
                     color: Colors.black54,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.play_arrow, color: Colors.white, size: 24),
+                  child: const Icon(
+                    Icons.play_arrow,
+                    color: Colors.white,
+                    size: 24,
+                  ),
                 ),
               ),
             ),
@@ -628,14 +681,22 @@ class ClubDetailsScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              const Icon(Icons.thumb_up_alt_outlined, color: Colors.white38, size: 14),
+              const Icon(
+                Icons.thumb_up_alt_outlined,
+                color: Colors.white38,
+                size: 14,
+              ),
               const SizedBox(width: 4),
               Text(
                 "$likes",
                 style: const TextStyle(color: Colors.white38, fontSize: 10),
               ),
               const SizedBox(width: 16),
-              const Icon(Icons.chat_bubble_outline, color: Colors.white38, size: 14),
+              const Icon(
+                Icons.chat_bubble_outline,
+                color: Colors.white38,
+                size: 14,
+              ),
               const SizedBox(width: 4),
               Text(
                 "$comments",

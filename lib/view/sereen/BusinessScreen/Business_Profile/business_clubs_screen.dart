@@ -21,15 +21,18 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
   final List<Map<String, dynamic>> _myClubs = [
     {
       'name': 'GT3 COLL.',
-      'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=200&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=200&fit=crop',
     },
     {
       'name': 'NUR ENDO',
-      'imageUrl': 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=200&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=200&fit=crop',
     },
     {
       'name': 'APEX PREP',
-      'imageUrl': 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=200&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=200&fit=crop',
     },
   ];
 
@@ -37,17 +40,20 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
     {
       'name': 'Porsche GT3 Collective',
       'members': '1,240 ACTIVE MEMBERS',
-      'imageUrl': 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=200&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=200&fit=crop',
     },
     {
       'name': 'Nürburgring Endurance Group',
       'members': '856 ACTIVE MEMBERS',
-      'imageUrl': 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=200&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=200&fit=crop',
     },
     {
       'name': 'Apex Strategy Masters',
       'members': '412 ACTIVE MEMBERS',
-      'imageUrl': 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=200&fit=crop',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=200&fit=crop',
     },
   ];
 
@@ -69,15 +75,14 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
             icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
             onPressed: () => Get.back(),
           ),
-          title: Image.asset(
-            AppImages.logo,
-            height: 26.h,
-            fit: BoxFit.contain,
-          ),
+          title: Image.asset(AppImages.logo, height: 26.h, fit: BoxFit.contain),
           centerTitle: true,
           actions: [
             IconButton(
-              icon: const Icon(Icons.notifications_none_rounded, color: Colors.white),
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                color: Colors.white,
+              ),
               onPressed: () {},
             ),
           ],
@@ -105,11 +110,17 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
                     Expanded(
                       child: TextField(
                         controller: _searchController,
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: "Search Clubs",
-                          hintStyle: TextStyle(color: Colors.white30, fontSize: 13),
+                          hintStyle: TextStyle(
+                            color: Colors.white30,
+                            fontSize: 13,
+                          ),
                           isDense: true,
                         ),
                       ),
@@ -147,11 +158,17 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
                     return Padding(
                       padding: EdgeInsets.only(right: 12.w),
                       child: GestureDetector(
-                        onTap: () => Get.toNamed(AppRoutes.businessCreateClubScreen),
+                        onTap: () =>
+                            Get.toNamed(AppRoutes.businessCreateClubScreen),
                         child: Column(
                           children: [
                             CustomPaint(
-                              painter: CircleDashedBorderPainter(color: AppColors.yellow, strokeWidth: 1.5, gap: 4, dashLength: 4),
+                              painter: CircleDashedBorderPainter(
+                                color: AppColors.yellow,
+                                strokeWidth: 1.5,
+                                gap: 4,
+                                dashLength: 4,
+                              ),
                               child: Container(
                                 width: 58.w,
                                 height: 58.w,
@@ -160,7 +177,11 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
                                   color: Colors.black,
                                 ),
                                 child: const Center(
-                                  child: Icon(Icons.add, color: AppColors.yellow, size: 18),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: AppColors.yellow,
+                                    size: 18,
+                                  ),
                                 ),
                               ),
                             ),
@@ -184,7 +205,9 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
                       onTap: () => Get.toNamed(
                         AppRoutes.businessClubDetailsScreen,
                         arguments: {
-                          'name': club['name'] == 'GT3 COLL.' ? 'Porsche GT3 Collective' : club['name'],
+                          'name': club['name'] == 'GT3 COLL.'
+                              ? 'Porsche GT3 Collective'
+                              : club['name'],
                           'members': '1,240 ACTIVE MEMBERS',
                           'imageUrl': club['imageUrl'],
                         },
@@ -196,7 +219,10 @@ class _BusinessClubsScreenState extends State<BusinessClubsScreen> {
                             height: 58.w,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: AppColors.yellow, width: 1.2),
+                              border: Border.all(
+                                color: AppColors.yellow,
+                                width: 1.2,
+                              ),
                               image: DecorationImage(
                                 image: NetworkImage(club['imageUrl'] as String),
                                 fit: BoxFit.cover,

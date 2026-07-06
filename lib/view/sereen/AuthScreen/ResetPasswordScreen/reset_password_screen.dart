@@ -120,7 +120,8 @@ class ResetPasswordScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 CustomTextField(
-                  textEditingController: controller.confirmNewPasswordController,
+                  textEditingController:
+                      controller.confirmNewPasswordController,
                   hintText: '•••••••',
                   isPassword: true,
                   textInputAction: TextInputAction.done,
@@ -155,25 +156,18 @@ class ResetPasswordScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        _strengthRow(
-                          'Minimum 8 characters',
-                          pwd.length >= 8,
-                        ),
+                        _strengthRow('Minimum 8 characters', pwd.length >= 8),
                         const SizedBox(height: 10),
                         _strengthRow(
                           'Uppercase letter',
                           pwd.contains(RegExp(r'[A-Z]')),
                         ),
                         const SizedBox(height: 10),
-                        _strengthRow(
-                          'Number',
-                          pwd.contains(RegExp(r'[0-9]')),
-                        ),
+                        _strengthRow('Number', pwd.contains(RegExp(r'[0-9]'))),
                         const SizedBox(height: 10),
                         _strengthRow(
                           'Special character',
-                          pwd.contains(
-                              RegExp(r'[!@#\$%^&*(),.?":{}|<>]')),
+                          pwd.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]')),
                         ),
                       ],
                     ),
@@ -204,8 +198,11 @@ class ResetPasswordScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.lock_outline,
-                          color: Colors.white24, size: 12),
+                      const Icon(
+                        Icons.lock_outline,
+                        color: Colors.white24,
+                        size: 12,
+                      ),
                       const SizedBox(width: 6),
                       CustomText(
                         text: 'END-TO-END ENCRYPTED SYSTEM UPDATE',

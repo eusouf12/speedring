@@ -52,7 +52,6 @@ class AuthController extends GetxController {
     await Future.delayed(const Duration(seconds: 2));
     isSignupLoading.value = false;
     Get.toNamed(AppRoutes.setupProfileScreen1);
-    
   }
 
   // ── Forgot Password ──────────────────────────────────────────────────────
@@ -67,14 +66,14 @@ class AuthController extends GetxController {
     isForgotLoading.value = false;
     _startResendCountdown();
     Get.toNamed(AppRoutes.verifyOtpScreen);
-   
   }
 
   // ── Verify OTP ───────────────────────────────────────────────────────────
-  final List<TextEditingController> otpControllers =
-      List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> otpFocusNodes =
-      List.generate(6, (_) => FocusNode());
+  final List<TextEditingController> otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
+  final List<FocusNode> otpFocusNodes = List.generate(6, (_) => FocusNode());
 
   final RxBool isOtpLoading = false.obs;
   final RxInt resendCountdown = 0.obs;
@@ -97,7 +96,6 @@ class AuthController extends GetxController {
     await Future.delayed(const Duration(seconds: 1));
     isForgotLoading.value = false;
     _startResendCountdown();
-   
   }
 
   Future<void> verifyOtp() async {
@@ -107,7 +105,6 @@ class AuthController extends GetxController {
     await Future.delayed(const Duration(seconds: 2));
     isOtpLoading.value = false;
     Get.toNamed(AppRoutes.resetPasswordScreen);
-    
   }
 
   // ── Reset Password ───────────────────────────────────────────────────────
@@ -122,7 +119,7 @@ class AuthController extends GetxController {
     isResetLoading.value = true;
     await Future.delayed(const Duration(seconds: 2));
     isResetLoading.value = false;
-   
+
     Get.offAllNamed(AppRoutes.loginScreen);
   }
 

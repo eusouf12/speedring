@@ -14,4 +14,6 @@ class AppImages {
   static const String kartingBg = "$basePath/karting.png";
   static const String oldtimerBg = "$basePath/old_timer.png";
   static const String helmed2 = "$basePath/helmed2.png";
+  static const String spotters = "$basePath/spotters.png";
+  static const String others = "$basePath/others.png";
 }

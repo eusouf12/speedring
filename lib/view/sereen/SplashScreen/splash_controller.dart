@@ -4,8 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../core/app_routes/app_routes.dart';
 
-class SplashController extends GetxController
-    with GetTickerProviderStateMixin {
+class SplashController extends GetxController with GetTickerProviderStateMixin {
   // ── Observable state ──
   final RxDouble progress = 0.0.obs;
   final RxInt statusIndex = 0.obs;
@@ -77,14 +76,12 @@ class SplashController extends GetxController
       duration: const Duration(milliseconds: 3200),
     );
 
-    progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: progressController,
-        curve: Curves.easeInOut,
-      ),
-    )..addListener(() {
-        progress.value = progressAnimation.value;
-      });
+    progressAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(
+          CurvedAnimation(parent: progressController, curve: Curves.easeInOut),
+        )..addListener(() {
+          progress.value = progressAnimation.value;
+        });
 
     Future.delayed(const Duration(milliseconds: 600), () {
       progressController.forward();
@@ -105,7 +102,6 @@ class SplashController extends GetxController
 
   void _navigateAfterDelay() {
     Future.delayed(const Duration(milliseconds: 4000), () {
-     
       Get.offAllNamed(AppRoutes.onboardingScreen);
     });
   }

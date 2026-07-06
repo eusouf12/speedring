@@ -1,7 +1,8 @@
-class   AppStrings {
+class AppStrings {
   static RegExp passRegexp = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.{8,}$)');
   static RegExp emailRegexp = RegExp(
-      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+  );
   static const String fieldCantBeEmpty = "Field can't be empty";
   static const String emailFieldCantBeEmpty = "Please enter your email";
   static const String passwordFieldCantBeEmpty = "Please enter your password";
@@ -41,7 +42,8 @@ class   AppStrings {
   static const String continueText = "Continue";
   static const String saveChanges = "Save Changes";
   static const String chooseYourRole = "Choose Your Role";
-  static const String chooseYourRoleTitle = "What type of account you want?\nWho are you? Select an option\nto continue";
+  static const String chooseYourRoleTitle =
+      "What type of account you want?\nWho are you? Select an option\nto continue";
 
   ///============================ Common Auth =========================//
 
@@ -51,7 +53,6 @@ class   AppStrings {
   static const String createAStory = "Create a Story";
   static const String messageList = "Message List";
   static const String typeYourDate = "typeYourDate";
-  static const String forgotTitle = "Enter your email account to reset  your password";
-
-
+  static const String forgotTitle =
+      "Enter your email account to reset  your password";
 }

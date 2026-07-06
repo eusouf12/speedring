@@ -4,25 +4,26 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CustomImageAddSendController extends GetxController {
-  RxList<XFile> images = <XFile>[].obs; 
-  
-   // Rx List for image files
- 
+  RxList<XFile> images = <XFile>[].obs;
+
+  // Rx List for image files
 
   Future<void> pickImage() async {
-    final XFile? pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
     if (pickedFile != null) {
-      images.add(pickedFile);   
+      images.add(pickedFile);
       images.refresh();
-      refresh(); 
-      
-      debugPrint('============Image Length=================>> ${images.length}');// Add image to the Rx List
+      refresh();
+
+      debugPrint(
+        '============Image Length=================>> ${images.length}',
+      ); // Add image to the Rx List
     }
-  } 
+  }
 
-
- //final TextEditingController messageController = TextEditingController();
+  //final TextEditingController messageController = TextEditingController();
   void removeImage(int index) {
     images.removeAt(index); // Remove image from the Rx List
   }
@@ -34,8 +35,5 @@ class CustomImageAddSendController extends GetxController {
   //   }
   //   messageController.clear();
   //   images.clear(); // Clear images after sending
-  // } 
-
-    
-                 
+  // }
 }

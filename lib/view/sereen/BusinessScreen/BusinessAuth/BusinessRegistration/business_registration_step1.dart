@@ -31,7 +31,11 @@ class BusinessRegistrationStep1 extends StatelessWidget {
           titleSpacing: 0,
           title: Row(
             children: [
-              const Icon(Icons.speed_outlined, color: AppColors.yellow, size: 22),
+              const Icon(
+                Icons.speed_outlined,
+                color: AppColors.yellow,
+                size: 22,
+              ),
               SizedBox(width: 8.w),
               CustomText(
                 text: "REGISTRATION",
@@ -100,10 +104,15 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 4.h,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.black,
-                        border: Border.all(color: AppColors.yellow.withValues(alpha: 0.3)),
+                        border: Border.all(
+                          color: AppColors.yellow.withValues(alpha: 0.3),
+                        ),
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                       child: CustomText(
@@ -125,7 +134,8 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     ),
                     SizedBox(height: 8.h),
                     CustomText(
-                      text: "Enter your professional telemetry data to initiate the onboarding sequence.",
+                      text:
+                          "Enter your professional telemetry data to initiate the onboarding sequence.",
                       color: Colors.white60,
                       fontSize: 12.sp,
                       textAlign: TextAlign.start,
@@ -137,9 +147,13 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     CustomTextField(
                       textEditingController: controller.businessNameCtrl,
                       hintText: "e.g. Apex Performance Gmbh",
-                      prefixIcon: const Icon(Icons.business_outlined, color: Colors.white38),
+                      prefixIcon: const Icon(
+                        Icons.business_outlined,
+                        color: Colors.white38,
+                      ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return "Enter business name";
+                        if (v == null || v.isEmpty)
+                          return "Enter business name";
                         return null;
                       },
                     ),
@@ -149,7 +163,10 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     CustomTextField(
                       textEditingController: controller.ownerRepCtrl,
                       hintText: "Full legal name",
-                      prefixIcon: const Icon(Icons.person_outline, color: Colors.white38),
+                      prefixIcon: const Icon(
+                        Icons.person_outline,
+                        color: Colors.white38,
+                      ),
                       validator: (v) {
                         if (v == null || v.isEmpty) return "Enter owner name";
                         return null;
@@ -162,10 +179,15 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                       textEditingController: controller.emailCtrl,
                       hintText: "name@company.com",
                       keyboardType: TextInputType.emailAddress,
-                      prefixIcon: const Icon(Icons.alternate_email_outlined, color: Colors.white38),
+                      prefixIcon: const Icon(
+                        Icons.alternate_email_outlined,
+                        color: Colors.white38,
+                      ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return "Enter email address";
-                        if (!GetUtils.isEmail(v)) return "Enter valid email address";
+                        if (v == null || v.isEmpty)
+                          return "Enter email address";
+                        if (!GetUtils.isEmail(v))
+                          return "Enter valid email address";
                         return null;
                       },
                     ),
@@ -176,45 +198,61 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                       textEditingController: controller.contactCtrl,
                       hintText: "+49 -- -----",
                       keyboardType: TextInputType.phone,
-                      prefixIcon: const Icon(Icons.phone_outlined, color: Colors.white38),
+                      prefixIcon: const Icon(
+                        Icons.phone_outlined,
+                        color: Colors.white38,
+                      ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return "Enter contact number";
+                        if (v == null || v.isEmpty)
+                          return "Enter contact number";
                         return null;
                       },
                     ),
                     SizedBox(height: 16.h),
 
                     _buildFieldLabel("BUSINESS CATEGORY"),
-                    Obx(() => GestureDetector(
-                      onTap: () => _showCategoryDropdown(context, controller),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                        decoration: BoxDecoration(
-                          color: AppColors.black_80,
-                          borderRadius: BorderRadius.circular(16.r),
-                          border: Border.all(color: Colors.white10),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.category_outlined, color: Colors.white38, size: 20),
-                            SizedBox(width: 14.w),
-                            Expanded(
-                              child: CustomText(
-                                text: controller.category.value.isEmpty
-                                    ? "Select Category"
-                                    : controller.category.value,
-                                color: controller.category.value.isEmpty
-                                    ? AppColors.grey
-                                    : Colors.white,
-                                fontSize: 16,
-                                textAlign: TextAlign.start,
+                    Obx(
+                      () => GestureDetector(
+                        onTap: () => _showCategoryDropdown(context, controller),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 14.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.black_80,
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(color: Colors.white10),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.category_outlined,
+                                color: Colors.white38,
+                                size: 20,
                               ),
-                            ),
-                            const Icon(Icons.keyboard_arrow_down, color: Colors.white38),
-                          ],
+                              SizedBox(width: 14.w),
+                              Expanded(
+                                child: CustomText(
+                                  text: controller.category.value.isEmpty
+                                      ? "Select Category"
+                                      : controller.category.value,
+                                  color: controller.category.value.isEmpty
+                                      ? AppColors.grey
+                                      : Colors.white,
+                                  fontSize: 16,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                              const Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Colors.white38,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    )),
+                    ),
                     SizedBox(height: 16.h),
 
                     _buildFieldLabel("DIGITAL PRESENCE (URL)"),
@@ -222,7 +260,10 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                       textEditingController: controller.websiteCtrl,
                       hintText: "https://www.company.com",
                       keyboardType: TextInputType.url,
-                      prefixIcon: const Icon(Icons.language_outlined, color: Colors.white38),
+                      prefixIcon: const Icon(
+                        Icons.language_outlined,
+                        color: Colors.white38,
+                      ),
                       validator: (v) {
                         if (v == null || v.isEmpty) return "Enter website URL";
                         return null;
@@ -235,7 +276,10 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                       textEditingController: controller.passwordCtrl,
                       hintText: "••••••••",
                       isPassword: true,
-                      prefixIcon: const Icon(Icons.lock_outline_rounded, color: Colors.white38),
+                      prefixIcon: const Icon(
+                        Icons.lock_outline_rounded,
+                        color: Colors.white38,
+                      ),
                       validator: (v) {
                         if (v == null || v.isEmpty) return "Enter password";
                         if (v.length < 6) return "Minimum 6 characters";
@@ -255,7 +299,9 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                             height: 1.4,
                           ),
                           children: [
-                            const TextSpan(text: "BY CONTINUING YOU AGREE TO OUR\n"),
+                            const TextSpan(
+                              text: "BY CONTINUING YOU AGREE TO OUR\n",
+                            ),
                             TextSpan(
                               text: "COMMERCIAL TERMS OF SERVICE",
                               style: const TextStyle(
@@ -264,7 +310,8 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                                 decoration: TextDecoration.underline,
                               ),
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () => Get.toNamed(AppRoutes.termsScreen),
+                                ..onTap = () =>
+                                    Get.toNamed(AppRoutes.termsScreen),
                             ),
                           ],
                         ),
@@ -300,7 +347,10 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     Center(
                       child: RichText(
                         text: TextSpan(
-                          style: GoogleFonts.manrope(fontSize: 12.sp, color: Colors.white60),
+                          style: GoogleFonts.manrope(
+                            fontSize: 12.sp,
+                            color: Colors.white60,
+                          ),
                           children: [
                             const TextSpan(text: "Already have an account? "),
                             TextSpan(
@@ -310,7 +360,8 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () => Get.offAllNamed(AppRoutes.loginScreen),
+                                ..onTap = () =>
+                                    Get.offAllNamed(AppRoutes.loginScreen),
                             ),
                           ],
                         ),
@@ -342,7 +393,9 @@ class BusinessRegistrationStep1 extends StatelessWidget {
   }
 
   void _showCategoryDropdown(
-      BuildContext context, BusinessRegistrationController controller) {
+    BuildContext context,
+    BusinessRegistrationController controller,
+  ) {
     Get.bottomSheet(
       Container(
         padding: EdgeInsets.all(20.w),
@@ -365,7 +418,14 @@ class BusinessRegistrationStep1 extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
             SizedBox(height: 20.h),
-            ...["Tuning Shop", "Race Team", "Parts Distributor", "Custom Garage"].map((cat) {
+            ...[
+              "Tuning Shop",
+              "Car Dealer",
+              "Services",
+              "Race Team",
+              "Parts Distributor",
+              "Custom Garage",
+            ].map((cat) {
               return ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: CustomText(
@@ -374,9 +434,11 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                   fontSize: 15.sp,
                   textAlign: TextAlign.start,
                 ),
-                trailing: Obx(() => controller.category.value == cat
-                    ? const Icon(Icons.check, color: AppColors.yellow)
-                    : const SizedBox.shrink()),
+                trailing: Obx(
+                  () => controller.category.value == cat
+                      ? const Icon(Icons.check, color: AppColors.yellow)
+                      : const SizedBox.shrink(),
+                ),
                 onTap: () {
                   controller.category.value = cat;
                   Get.back();

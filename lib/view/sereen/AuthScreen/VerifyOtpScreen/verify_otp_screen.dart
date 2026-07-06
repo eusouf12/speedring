@@ -33,7 +33,6 @@ class VerifyOtpScreen extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
 
-          
               const SizedBox(height: 24),
 
               // ── Heading ──────────────────────────────────────────────────
@@ -114,7 +113,9 @@ class VerifyOtpScreen extends StatelessWidget {
                       ? RichText(
                           text: TextSpan(
                             style: const TextStyle(
-                                color: Colors.white54, fontSize: 14),
+                              color: Colors.white54,
+                              fontSize: 14,
+                            ),
                             children: [
                               const TextSpan(text: 'Resend code in '),
                               TextSpan(
@@ -132,7 +133,9 @@ class VerifyOtpScreen extends StatelessWidget {
                           child: RichText(
                             text: const TextSpan(
                               style: TextStyle(
-                                  color: Colors.white54, fontSize: 14),
+                                color: Colors.white54,
+                                fontSize: 14,
+                              ),
                               children: [
                                 TextSpan(text: "Didn't receive a code? "),
                                 TextSpan(
@@ -203,8 +206,7 @@ class _OtpBox extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide:
-                const BorderSide(color: Color(0xffF5C400), width: 1.5),
+            borderSide: const BorderSide(color: Color(0xffF5C400), width: 1.5),
           ),
         ),
         onChanged: (v) {

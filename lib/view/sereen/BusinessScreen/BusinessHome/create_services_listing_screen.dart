@@ -11,17 +11,26 @@ class CreateServicesListingScreen extends StatefulWidget {
   const CreateServicesListingScreen({super.key});
 
   @override
-  State<CreateServicesListingScreen> createState() => _CreateServicesListingScreenState();
+  State<CreateServicesListingScreen> createState() =>
+      _CreateServicesListingScreenState();
 }
 
-class _CreateServicesListingScreenState extends State<CreateServicesListingScreen> {
-  final serviceNameController = TextEditingController(text: "Pro Coaching & ECU Calibration");
-  final providerController = TextEditingController(text: "SpeedRing Performance");
+class _CreateServicesListingScreenState
+    extends State<CreateServicesListingScreen> {
+  final serviceNameController = TextEditingController(
+    text: "Pro Coaching & ECU Calibration",
+  );
+  final providerController = TextEditingController(
+    text: "SpeedRing Performance",
+  );
   final priceController = TextEditingController(text: "1,200 / Day");
-  
-  final turnaroundController = TextEditingController(text: "Booking required 7 days prior");
+
+  final turnaroundController = TextEditingController(
+    text: "Booking required 7 days prior",
+  );
   final scopeController = TextEditingController(
-    text: "Complete 1-on-1 trackside coaching with comprehensive telemetry analysis and custom ECU maps tailored to track conditions."
+    text:
+        "Complete 1-on-1 trackside coaching with comprehensive telemetry analysis and custom ECU maps tailored to track conditions.",
   );
 
   String locationCoverage = "Trackside / On-site";
@@ -81,13 +90,23 @@ class _CreateServicesListingScreenState extends State<CreateServicesListingScree
               _buildPhaseHeader("01 / SERVICE DEFINITION"),
               _buildSectionCard([
                 _buildFieldLabel("NOMENCLATURE / SERVICE NAME"),
-                _buildOutlineField(serviceNameController, "e.g. Pro Coaching & ECU Calibration"),
+                _buildOutlineField(
+                  serviceNameController,
+                  "e.g. Pro Coaching & ECU Calibration",
+                ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("PROVIDER / WORKSHOP NAME"),
-                _buildOutlineField(providerController, "e.g. SpeedRing Performance"),
+                _buildOutlineField(
+                  providerController,
+                  "e.g. SpeedRing Performance",
+                ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("VALUATION (USD)"),
-                _buildOutlineIconField(priceController, Icons.payments_outlined, "e.g. 1,200 / Day"),
+                _buildOutlineIconField(
+                  priceController,
+                  Icons.payments_outlined,
+                  "e.g. 1,200 / Day",
+                ),
               ]),
               SizedBox(height: 24.h),
 
@@ -114,7 +133,11 @@ class _CreateServicesListingScreenState extends State<CreateServicesListingScree
                 ),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("TURNAROUND TIME / ACCESSIBILITY"),
-                _buildOutlineIconField(turnaroundController, Icons.hourglass_bottom_outlined, "e.g. 2-3 business days"),
+                _buildOutlineIconField(
+                  turnaroundController,
+                  Icons.hourglass_bottom_outlined,
+                  "e.g. 2-3 business days",
+                ),
               ]),
               SizedBox(height: 24.h),
 
@@ -130,7 +153,9 @@ class _CreateServicesListingScreenState extends State<CreateServicesListingScree
                       child: Text(
                         "$characterCount / 500 characters",
                         style: TextStyle(
-                          color: characterCount > 500 ? Colors.red : Colors.white38,
+                          color: characterCount > 500
+                              ? Colors.red
+                              : Colors.white38,
                           fontSize: 9.sp,
                           fontWeight: FontWeight.bold,
                         ),
@@ -155,7 +180,11 @@ class _CreateServicesListingScreenState extends State<CreateServicesListingScree
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.cancel_outlined, color: Colors.white60, size: 16),
+                          const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.white60,
+                            size: 16,
+                          ),
                           SizedBox(width: 6.w),
                           CustomText(
                             text: "CANCEL",
@@ -179,35 +208,45 @@ class _CreateServicesListingScreenState extends State<CreateServicesListingScree
                       textColor: Colors.black,
                       borderRadius: 8.r,
                       isImageRight: true,
-                      icon: const Icon(Icons.publish_rounded, color: Colors.black, size: 16),
+                      icon: const Icon(
+                        Icons.publish_rounded,
+                        color: Colors.black,
+                        size: 16,
+                      ),
                       onTap: () {
                         // Publish item to controller list
                         String title = serviceNameController.text.trim();
-                        if (title.isEmpty) title = "Pro Coaching & ECU Calibration";
+                        if (title.isEmpty)
+                          title = "Pro Coaching & ECU Calibration";
                         String price = priceController.text.trim();
                         if (!price.startsWith(r"$") && !price.contains("/ ")) {
                           price = r"$" + price;
                         }
 
-                        controller.rxAssets.insert(0, AssetModel(
-                          id: (controller.rxAssets.length + 1).toString(),
-                          title: title.toUpperCase(),
-                          status: "LIVE",
-                          code: "SR-SRV-ECU",
-                          type: "SERVICES",
-                          price: price,
-                          views: "0",
-                          leads: "0",
-                          shipping: "NO",
-                          imageUrl: "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop",
-                          description: "${scopeController.text}\nCoverage: $locationCoverage. Provider: ${providerController.text}.",
-                          power: "N/A",
-                          torque: "N/A",
-                          zeroToSixty: "N/A",
-                          engineConfig: "N/A",
-                          transmission: "N/A",
-                          drivetrain: "N/A",
-                        ));
+                        controller.rxAssets.insert(
+                          0,
+                          AssetModel(
+                            id: (controller.rxAssets.length + 1).toString(),
+                            title: title.toUpperCase(),
+                            status: "LIVE",
+                            code: "SR-SRV-ECU",
+                            type: "SERVICES",
+                            price: price,
+                            views: "0",
+                            leads: "0",
+                            shipping: "NO",
+                            imageUrl:
+                                "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=800&fit=crop",
+                            description:
+                                "${scopeController.text}\nCoverage: $locationCoverage. Provider: ${providerController.text}.",
+                            power: "N/A",
+                            torque: "N/A",
+                            zeroToSixty: "N/A",
+                            engineConfig: "N/A",
+                            transmission: "N/A",
+                            drivetrain: "N/A",
+                          ),
+                        );
 
                         Get.back(); // Pop listing screen
                         Get.back(); // Pop Selector Screen
@@ -288,18 +327,31 @@ class _CreateServicesListingScreenState extends State<CreateServicesListingScree
       ),
       child: TextFormField(
         controller: textController,
-        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.white24, fontSize: 13, fontWeight: FontWeight.bold),
+          hintStyle: const TextStyle(
+            color: Colors.white24,
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
           isDense: true,
         ),
       ),
     );
   }
 
-  Widget _buildOutlineIconField(TextEditingController textController, IconData icon, String hint, {TextInputType? keyboardType}) {
+  Widget _buildOutlineIconField(
+    TextEditingController textController,
+    IconData icon,
+    String hint, {
+    TextInputType? keyboardType,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -315,11 +367,19 @@ class _CreateServicesListingScreenState extends State<CreateServicesListingScree
             child: TextFormField(
               controller: textController,
               keyboardType: keyboardType,
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hint,
-                hintStyle: const TextStyle(color: Colors.white24, fontSize: 13, fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(
+                  color: Colors.white24,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 isDense: true,
               ),
             ),
@@ -350,15 +410,21 @@ class _CreateServicesListingScreenState extends State<CreateServicesListingScree
           Expanded(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                value: items.contains(selectedValue) ? selectedValue : items.first,
+                value: items.contains(selectedValue)
+                    ? selectedValue
+                    : items.first,
                 dropdownColor: const Color(0xff111111),
-                icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.white60,
+                ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
                 items: items.map((val) {
-                  return DropdownMenuItem<String>(
-                    value: val,
-                    child: Text(val),
-                  );
+                  return DropdownMenuItem<String>(value: val, child: Text(val));
                 }).toList(),
                 onChanged: onChanged,
               ),
@@ -409,7 +475,11 @@ class _CreateServicesListingScreenState extends State<CreateServicesListingScree
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.upload_file_outlined, color: AppColors.yellow, size: 28),
+            const Icon(
+              Icons.upload_file_outlined,
+              color: AppColors.yellow,
+              size: 28,
+            ),
             SizedBox(height: 8.h),
             CustomText(
               text: "UPLOAD SCHEMATIC / TECHNICAL DOCS (PDF)",

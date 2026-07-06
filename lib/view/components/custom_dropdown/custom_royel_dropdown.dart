@@ -13,7 +13,8 @@ class CustomRoyelDropdown extends StatefulWidget {
     this.fillColor,
     this.popupColor,
     this.hintText,
-    this.controller, this.validator,
+    this.controller,
+    this.validator,
   });
 
   final List<String> items;
@@ -25,10 +26,8 @@ class CustomRoyelDropdown extends StatefulWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
 
-
   @override
-  CustomRoyelDropdownState createState() =>
-      CustomRoyelDropdownState();
+  CustomRoyelDropdownState createState() => CustomRoyelDropdownState();
 }
 
 class CustomRoyelDropdownState extends State<CustomRoyelDropdown> {
@@ -51,7 +50,7 @@ class CustomRoyelDropdownState extends State<CustomRoyelDropdown> {
           validator: widget.validator,
           fillColor: widget.fillColor ?? AppColors.white_50,
           hintText: widget.hintText ?? "Select",
-          hintStyle: TextStyle(color: AppColors.black_80,),
+          hintStyle: TextStyle(color: AppColors.black_80),
           textEditingController: widget.controller,
           fieldBorderColor: Color(0xff96C9B8),
           readOnly: true,

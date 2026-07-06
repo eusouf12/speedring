@@ -53,7 +53,11 @@ class BusinessCreateClubScreen extends StatelessWidget {
                 _buildOutlineField(nameController, "e.g., SYNDICATE RACING"),
                 SizedBox(height: 14.h),
                 _buildFieldLabel("INPUT DETAILS"),
-                _buildOutlineField(aboutController, "Describe About Club", maxLines: 3),
+                _buildOutlineField(
+                  aboutController,
+                  "Describe About Club",
+                  maxLines: 3,
+                ),
               ]),
               SizedBox(height: 24.h),
 
@@ -64,10 +68,26 @@ class BusinessCreateClubScreen extends StatelessWidget {
                   spacing: 10.w,
                   runSpacing: 10.h,
                   children: [
-                    _buildClassificationChip(selectedClassification, "GT3 SERIES", Icons.emoji_events_outlined),
-                    _buildClassificationChip(selectedClassification, "ENDURANCE", Icons.access_time_rounded),
-                    _buildClassificationChip(selectedClassification, "STRATEGY", Icons.analytics_outlined),
-                    _buildClassificationChip(selectedClassification, "TUNING", Icons.tune_rounded),
+                    _buildClassificationChip(
+                      selectedClassification,
+                      "GT3 SERIES",
+                      Icons.emoji_events_outlined,
+                    ),
+                    _buildClassificationChip(
+                      selectedClassification,
+                      "ENDURANCE",
+                      Icons.access_time_rounded,
+                    ),
+                    _buildClassificationChip(
+                      selectedClassification,
+                      "STRATEGY",
+                      Icons.analytics_outlined,
+                    ),
+                    _buildClassificationChip(
+                      selectedClassification,
+                      "TUNING",
+                      Icons.tune_rounded,
+                    ),
                   ],
                 ),
               ]),
@@ -87,11 +107,26 @@ class BusinessCreateClubScreen extends StatelessWidget {
                 SizedBox(height: 10.h),
                 Row(
                   children: [
-                    Expanded(child: _buildVisibilityButton(selectedVisibility, "PUBLIC")),
+                    Expanded(
+                      child: _buildVisibilityButton(
+                        selectedVisibility,
+                        "PUBLIC",
+                      ),
+                    ),
                     SizedBox(width: 8.w),
-                    Expanded(child: _buildVisibilityButton(selectedVisibility, "APPROVAL")),
+                    Expanded(
+                      child: _buildVisibilityButton(
+                        selectedVisibility,
+                        "APPROVAL",
+                      ),
+                    ),
                     SizedBox(width: 8.w),
-                    Expanded(child: _buildVisibilityButton(selectedVisibility, "INVITE")),
+                    Expanded(
+                      child: _buildVisibilityButton(
+                        selectedVisibility,
+                        "INVITE",
+                      ),
+                    ),
                   ],
                 ),
                 const Divider(color: Colors.white10, height: 28),
@@ -122,7 +157,9 @@ class BusinessCreateClubScreen extends StatelessWidget {
                       return Switch(
                         value: isTelemetryVerified.value,
                         activeThumbColor: AppColors.yellow,
-                        activeTrackColor: AppColors.yellow.withValues(alpha: 0.3),
+                        activeTrackColor: AppColors.yellow.withValues(
+                          alpha: 0.3,
+                        ),
                         inactiveThumbColor: Colors.grey,
                         inactiveTrackColor: const Color(0xff222222),
                         onChanged: (val) {
@@ -150,7 +187,8 @@ class BusinessCreateClubScreen extends StatelessWidget {
                   height: 120.h,
                   label: "DEPLOY BANNER ASSET",
                   icon: Icons.add_photo_alternate_outlined,
-                  bgUrl: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?w=400&fit=crop",
+                  bgUrl:
+                      "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?w=400&fit=crop",
                 ),
               ]),
               SizedBox(height: 32.h),
@@ -241,7 +279,11 @@ class BusinessCreateClubScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOutlineField(TextEditingController textController, String hint, {int maxLines = 1}) {
+  Widget _buildOutlineField(
+    TextEditingController textController,
+    String hint, {
+    int maxLines = 1,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -252,18 +294,30 @@ class BusinessCreateClubScreen extends StatelessWidget {
       child: TextFormField(
         controller: textController,
         maxLines: maxLines,
-        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.white24, fontSize: 13, fontWeight: FontWeight.bold),
+          hintStyle: const TextStyle(
+            color: Colors.white24,
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
           isDense: true,
         ),
       ),
     );
   }
 
-  Widget _buildClassificationChip(RxString selected, String label, IconData icon) {
+  Widget _buildClassificationChip(
+    RxString selected,
+    String label,
+    IconData icon,
+  ) {
     return Obx(() {
       final bool isSelected = selected.value == label;
       return GestureDetector(
@@ -281,7 +335,11 @@ class BusinessCreateClubScreen extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: isSelected ? AppColors.yellow : Colors.white38, size: 14.sp),
+              Icon(
+                icon,
+                color: isSelected ? AppColors.yellow : Colors.white38,
+                size: 14.sp,
+              ),
               SizedBox(width: 6.w),
               CustomText(
                 text: label,
@@ -341,7 +399,10 @@ class BusinessCreateClubScreen extends StatelessWidget {
             ? DecorationImage(
                 image: NetworkImage(bgUrl),
                 fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: 0.5), BlendMode.dstATop),
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withValues(alpha: 0.5),
+                  BlendMode.dstATop,
+                ),
               )
             : null,
       ),

@@ -16,7 +16,8 @@ class BusinessSocialHubScreen extends StatefulWidget {
   const BusinessSocialHubScreen({super.key});
 
   @override
-  State<BusinessSocialHubScreen> createState() => _BusinessSocialHubScreenState();
+  State<BusinessSocialHubScreen> createState() =>
+      _BusinessSocialHubScreenState();
 }
 
 class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
@@ -78,11 +79,13 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                       if (story['isMe'] == true) {
                         Get.toNamed(AppRoutes.businessCreatePostScreen);
                       } else {
-                        Get.to(() => StoryViewScreen(
-                          userName: story['name'],
-                          timeAgo: '14M AGO',
-                          storyImageUrl: 'https://picsum.photos/400/800',
-                        ));
+                        Get.to(
+                          () => StoryViewScreen(
+                            userName: story['name'],
+                            timeAgo: '14M AGO',
+                            storyImageUrl: 'https://picsum.photos/400/800',
+                          ),
+                        );
                       }
                     },
                     child: StoryItem(
@@ -141,7 +144,9 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.yellow : const Color(0xff181818),
           borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(color: isSelected ? Colors.transparent : Colors.white10),
+          border: Border.all(
+            color: isSelected ? Colors.transparent : Colors.white10,
+          ),
         ),
         child: Text(
           label,
@@ -168,12 +173,14 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
         _buildTelemetryPostCard(
           username: "CHASE_PERFORMANCE",
           location: "SILVERSTONE CIRCUIT • 2H AGO",
-          imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
+          imageUrl:
+              "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
           lapTime: "07:12.45",
           topSpeed: "284 KM/H",
           vehicle: "SF90",
           gForce: "1.82 G",
-          caption: "Dialing in the aero today. The SF90 feels planted through Maggotts and Becketts. New personal best! #TrackLife #Ferrari #Speedring",
+          caption:
+              "Dialing in the aero today. The SF90 feels planted through Maggotts and Becketts. New personal best! #TrackLife #Ferrari #Speedring",
           likes: "1.2k",
           comments: "48",
         ),
@@ -183,9 +190,11 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
         _buildSpotPostCard(
           username: "EURO_SPOTTER",
           location: "MONACO, MC",
-          imageUrl: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop",
+          imageUrl:
+              "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&fit=crop",
           tagLabel: "RARE SPOT",
-          caption: "Spotted this rare beast in the wild. #SupercarSpotting #Monaco #Bugatti",
+          caption:
+              "Spotted this rare beast in the wild. #SupercarSpotting #Monaco #Bugatti",
           likes: "956",
           comments: "12",
         ),
@@ -214,7 +223,11 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.add_circle_outline_rounded, color: Colors.black, size: 18),
+            const Icon(
+              Icons.add_circle_outline_rounded,
+              color: Colors.black,
+              size: 18,
+            ),
             SizedBox(width: 8.w),
             Text(
               "ADD POST",
@@ -281,7 +294,10 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 12.h,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(12.r),
@@ -315,7 +331,12 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
           ),
 
           // Actions Bar & Content
-          _buildPostFooter(username: username, caption: caption, likes: likes, comments: comments),
+          _buildPostFooter(
+            username: username,
+            caption: caption,
+            likes: likes,
+            comments: comments,
+          ),
         ],
       ),
     );
@@ -362,7 +383,10 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                   top: 12.h,
                   left: 12.w,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 4.h,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(4.r),
@@ -384,13 +408,21 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
           ),
 
           // Footer Row
-          _buildPostFooter(username: username, caption: caption, likes: likes, comments: comments),
+          _buildPostFooter(
+            username: username,
+            caption: caption,
+            likes: likes,
+            comments: comments,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildPostHeader({required String username, required String subtitle}) {
+  Widget _buildPostHeader({
+    required String username,
+    required String subtitle,
+  }) {
     return Padding(
       padding: EdgeInsets.all(12.w),
       child: Row(
@@ -446,7 +478,11 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
           // Action Icons
           Row(
             children: [
-              const Icon(Icons.favorite_border_rounded, color: Colors.white, size: 20),
+              const Icon(
+                Icons.favorite_border_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
               SizedBox(width: 4.w),
               CustomText(
                 text: likes,
@@ -455,7 +491,11 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                 fontWeight: FontWeight.bold,
               ),
               SizedBox(width: 16.w),
-              const Icon(Icons.chat_bubble_outline_rounded, color: Colors.white, size: 18),
+              const Icon(
+                Icons.chat_bubble_outline_rounded,
+                color: Colors.white,
+                size: 18,
+              ),
               SizedBox(width: 4.w),
               CustomText(
                 text: comments,
@@ -466,7 +506,11 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
               SizedBox(width: 16.w),
               const Icon(Icons.share_outlined, color: Colors.white, size: 18),
               const Spacer(),
-              const Icon(Icons.bookmark_border_rounded, color: Colors.white, size: 18),
+              const Icon(
+                Icons.bookmark_border_rounded,
+                color: Colors.white,
+                size: 18,
+              ),
             ],
           ),
           SizedBox(height: 12.h),
@@ -532,7 +576,8 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
       children: [
         SizedBox(height: 8.h),
         _buildMockEventCard(
-          imageUrl: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
+          imageUrl:
+              "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
           organizer: "ANDRUIA RACING",
           title: "SILVERSTONE PERFORMANCE PADDOCK",
           date: "OCT 24",
@@ -545,7 +590,8 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
         ),
         SizedBox(height: 16.h),
         _buildMockEventCard(
-          imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
+          imageUrl:
+              "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&fit=crop",
           organizer: "SPEEDRING ELITE",
           title: "NÜRBURGRING ENDURANCE SERIES",
           date: "NOV 11",
@@ -604,7 +650,10 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                   top: 12.h,
                   left: 12.w,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 4.h,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(4.r),
@@ -653,7 +702,11 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                 // Bottom row: Actions & Likes
                 Row(
                   children: [
-                    const Icon(Icons.favorite_border_rounded, color: Colors.white24, size: 16),
+                    const Icon(
+                      Icons.favorite_border_rounded,
+                      color: Colors.white24,
+                      size: 16,
+                    ),
                     SizedBox(width: 4.w),
                     CustomText(
                       text: likes,
@@ -662,7 +715,11 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                     SizedBox(width: 16.w),
-                    const Icon(Icons.chat_bubble_outline_rounded, color: Colors.white24, size: 16),
+                    const Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      color: Colors.white24,
+                      size: 16,
+                    ),
                     SizedBox(width: 4.w),
                     CustomText(
                       text: comments,
@@ -674,9 +731,14 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
 
                     // JOIN / WAITLIST button
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 8.h,
+                      ),
                       decoration: BoxDecoration(
-                        color: isJoin ? AppColors.yellow : const Color(0xff222222),
+                        color: isJoin
+                            ? AppColors.yellow
+                            : const Color(0xff222222),
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
@@ -731,11 +793,20 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
         // Clubs list
         Row(
           children: [
-            _buildClubCircle("GT3 COLL.", "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=200&fit=crop"),
+            _buildClubCircle(
+              "GT3 COLL.",
+              "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=200&fit=crop",
+            ),
             SizedBox(width: 14.w),
-            _buildClubCircle("CUP RACERS", "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=200&fit=crop"),
+            _buildClubCircle(
+              "CUP RACERS",
+              "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=200&fit=crop",
+            ),
             SizedBox(width: 14.w),
-            _buildClubCircle("V4 OWNERS", "https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=200&fit=crop"),
+            _buildClubCircle(
+              "V4 OWNERS",
+              "https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=200&fit=crop",
+            ),
           ],
         ),
 
@@ -751,9 +822,17 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
         ),
         SizedBox(height: 16.h),
 
-        _buildPopularClubRow("PORSCHE GT3 COLLECTIVE", "1,248 members", "GT3 TRACK DRIVERS"),
+        _buildPopularClubRow(
+          "PORSCHE GT3 COLLECTIVE",
+          "1,248 members",
+          "GT3 TRACK DRIVERS",
+        ),
         SizedBox(height: 12.h),
-        _buildPopularClubRow("DESMOSEDICI OWNER CLUB", "852 members", "DUCATI SPORTBIKES"),
+        _buildPopularClubRow(
+          "DESMOSEDICI OWNER CLUB",
+          "852 members",
+          "DUCATI SPORTBIKES",
+        ),
         SizedBox(height: 24.h),
       ],
     );
@@ -825,7 +904,10 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                     Container(
                       width: 3.w,
                       height: 3.w,
-                      decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
+                      decoration: const BoxDecoration(
+                        color: Colors.white24,
+                        shape: BoxShape.circle,
+                      ),
                     ),
                     SizedBox(width: 8.w),
                     CustomText(
@@ -839,7 +921,11 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
               ],
             ),
           ),
-          const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white24, size: 14),
+          const Icon(
+            Icons.arrow_forward_ios_rounded,
+            color: Colors.white24,
+            size: 14,
+          ),
         ],
       ),
     );

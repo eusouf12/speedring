@@ -52,11 +52,37 @@ class _CustomNavBarState extends State<CustomNavBar> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(child: _buildNormalNavItem(0, "HOME", Icons.home_outlined)),
-                    Expanded(child: _buildNormalNavItem(1, "DISCOVER", Icons.explore_outlined)),
-                    const Expanded(child: SizedBox.shrink()), // Space for the center Track item
-                    Expanded(child: _buildNormalNavItem(3, "MARKET", Icons.shopping_cart_outlined)),
-                    Expanded(child: _buildNormalNavItem(4, "PROFILE", Icons.person_outline)),
+                    Expanded(
+                      child: _buildNormalNavItem(
+                        0,
+                        "HOME",
+                        Icons.home_outlined,
+                      ),
+                    ),
+                    Expanded(
+                      child: _buildNormalNavItem(
+                        1,
+                        "DISCOVER",
+                        Icons.explore_outlined,
+                      ),
+                    ),
+                    const Expanded(
+                      child: SizedBox.shrink(),
+                    ), // Space for the center Track item
+                    Expanded(
+                      child: _buildNormalNavItem(
+                        3,
+                        "MARKET",
+                        Icons.shopping_cart_outlined,
+                      ),
+                    ),
+                    Expanded(
+                      child: _buildNormalNavItem(
+                        4,
+                        "PROFILE",
+                        Icons.person_outline,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -117,7 +143,9 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
   Widget _buildNormalNavItem(int index, String label, IconData icon) {
     final bool isSelected = index == bottomNavIndex;
-    final Color itemColor = isSelected ? AppColors.yellow : const Color(0xffD1C5AB);
+    final Color itemColor = isSelected
+        ? AppColors.yellow
+        : const Color(0xffD1C5AB);
 
     return GestureDetector(
       onTap: () => onTap(index),
@@ -126,11 +154,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 22.sp,
-            color: itemColor,
-          ),
+          Icon(icon, size: 22.sp, color: itemColor),
           SizedBox(height: 4.h),
           Text(
             label,

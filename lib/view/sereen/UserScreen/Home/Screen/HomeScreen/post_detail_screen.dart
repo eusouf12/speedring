@@ -70,16 +70,16 @@ class PostDetailScreen extends StatelessWidget {
               ),
               centerTitle: true,
             ),
-      
+
             SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// ── Image Carousel ───────────────────────────────────
                   const _ImageCarousel(imageUrls: _imageUrls),
-      
+
                   const SizedBox(height: 16),
-      
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
@@ -103,9 +103,9 @@ class PostDetailScreen extends StatelessWidget {
                                 child: Icon(Icons.person, color: Colors.white),
                               ),
                             ),
-      
+
                             const SizedBox(width: 10),
-      
+
                             /// Name + subtitle
                             const Expanded(
                               child: Column(
@@ -143,7 +143,7 @@ class PostDetailScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-      
+
                             /// More options
                             IconButton(
                               onPressed: () {},
@@ -154,14 +154,14 @@ class PostDetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-      
+
                         const SizedBox(height: 14),
-      
+
                         /// ── Caption ──────────────────────────────────
                         const _CaptionText(caption: _caption),
-      
+
                         const SizedBox(height: 14),
-      
+
                         /// ── Location + Spec pills ────────────────────
                         // const Row(
                         //   children: [
@@ -176,16 +176,16 @@ class PostDetailScreen extends StatelessWidget {
                         //     ),
                         //   ],
                         // ),
-      
+
                         // const SizedBox(height: 16),
-      
+
                         /// ── Engagement row ───────────────────────────
                         Row(
                           children: [
                             const _LikeButton(likeCount: _likeCount),
-      
+
                             const SizedBox(width: 20),
-      
+
                             GestureDetector(
                               onTap: () => showCommentSheet(context),
                               child: const Row(
@@ -207,9 +207,9 @@ class PostDetailScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-      
+
                             const Spacer(),
-      
+
                             GestureDetector(
                               onTap: () {},
                               child: const Icon(
@@ -220,9 +220,9 @@ class PostDetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-      
+
                         const SizedBox(height: 24),
-      
+
                         /// ── Similar Profiles ─────────────────────────
                         const Text(
                           "SIMILAR PROFILES",
@@ -241,8 +241,9 @@ class PostDetailScreen extends StatelessWidget {
                             itemCount: _similarProfiles.length,
                             separatorBuilder: (_, _) =>
                                 const SizedBox(width: 12),
-                            itemBuilder: (_, i) =>
-                                _SimilarProfileCard(profile: _similarProfiles[i]),
+                            itemBuilder: (_, i) => _SimilarProfileCard(
+                              profile: _similarProfiles[i],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 32),
@@ -330,24 +331,26 @@ class _ImageCarousel extends StatelessWidget {
             bottom: 12,
             left: 0,
             right: 0,
-            child: Obx(() => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                imageUrls.length,
-                (i) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  width: i == controller.currentIndex.value ? 22 : 7,
-                  height: 7,
-                  decoration: BoxDecoration(
-                    color: i == controller.currentIndex.value
-                        ? AppColors.yellow
-                        : Colors.white38,
-                    borderRadius: BorderRadius.circular(4),
+            child: Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  imageUrls.length,
+                  (i) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    width: i == controller.currentIndex.value ? 22 : 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: i == controller.currentIndex.value
+                          ? AppColors.yellow
+                          : Colors.white38,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                 ),
               ),
-            )),
+            ),
           ),
       ],
     );
@@ -372,15 +375,19 @@ class _LikeButton extends StatelessWidget {
       onTap: () => controller.isLiked.value = !controller.isLiked.value,
       child: Row(
         children: [
-          Obx(() => AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: Icon(
-              controller.isLiked.value ? Icons.favorite : Icons.favorite_border,
-              key: ValueKey(controller.isLiked.value),
-              color: controller.isLiked.value ? Colors.red : Colors.white,
-              size: 22,
+          Obx(
+            () => AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Icon(
+                controller.isLiked.value
+                    ? Icons.favorite
+                    : Icons.favorite_border,
+                key: ValueKey(controller.isLiked.value),
+                color: controller.isLiked.value ? Colors.red : Colors.white,
+                size: 22,
+              ),
             ),
-          )),
+          ),
           const SizedBox(width: 6),
           Text(
             likeCount,
@@ -505,27 +512,34 @@ class _SimilarProfileCard extends StatelessWidget {
 
           /// Follow button
           GestureDetector(
-            onTap: () => controller.following.value = !controller.following.value,
-            child: Obx(() => AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 100,
-              height: 30,
-              decoration: BoxDecoration(
-                color: controller.following.value ? Colors.white12 : AppColors.yellow,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text(
-                  controller.following.value ? "FOLLOWING" : "FOLLOW",
-                  style: TextStyle(
-                    color: controller.following.value ? Colors.white60 : Colors.black,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
+            onTap: () =>
+                controller.following.value = !controller.following.value,
+            child: Obx(
+              () => AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 100,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: controller.following.value
+                      ? Colors.white12
+                      : AppColors.yellow,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: Text(
+                    controller.following.value ? "FOLLOWING" : "FOLLOW",
+                    style: TextStyle(
+                      color: controller.following.value
+                          ? Colors.white60
+                          : Colors.black,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                    ),
                   ),
                 ),
               ),
-            )),
+            ),
           ),
         ],
       ),

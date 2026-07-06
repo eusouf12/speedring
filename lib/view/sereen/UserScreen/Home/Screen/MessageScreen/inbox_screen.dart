@@ -37,7 +37,8 @@ class _InboxScreenState extends State<InboxScreen> {
         "isLoved": false,
       },
       {
-        "text": "Yeah, your line through Maggotts was spot on. Very smooth transition.",
+        "text":
+            "Yeah, your line through Maggotts was spot on. Very smooth transition.",
         "isMe": true,
         "time": "10:32 AM",
         "likes": 0,
@@ -46,7 +47,8 @@ class _InboxScreenState extends State<InboxScreen> {
         "isLoved": false,
       },
       {
-        "text": "Thanks! I've been experimenting with the rebound settings on the front damper.",
+        "text":
+            "Thanks! I've been experimenting with the rebound settings on the front damper.",
         "isMe": false,
         "time": "10:35 AM",
         "likes": 0,
@@ -55,7 +57,8 @@ class _InboxScreenState extends State<InboxScreen> {
         "isLoved": false,
       },
       {
-        "text": "Are you experiencing higher thermal deg in the Bus Stop chicane?",
+        "text":
+            "Are you experiencing higher thermal deg in the Bus Stop chicane?",
         "isMe": false,
         "time": "10:36 AM",
         "likes": 2,
@@ -64,7 +67,8 @@ class _InboxScreenState extends State<InboxScreen> {
         "isLoved": false,
       },
       {
-        "text": "Definitely! I'll register my session on the app. Let's compare telemetry data after the run.",
+        "text":
+            "Definitely! I'll register my session on the app. Let's compare telemetry data after the run.",
         "isMe": true,
         "time": "10:38 AM",
         "likes": 0,
@@ -80,7 +84,7 @@ class _InboxScreenState extends State<InboxScreen> {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-      
+
         /// ── AppBar ─────────────────────────────────────────────────────────
         appBar: AppBar(
           backgroundColor: Colors.black,
@@ -148,31 +152,41 @@ class _InboxScreenState extends State<InboxScreen> {
             ),
           ],
         ),
-      
+
         /// ── Body ───────────────────────────────────────────────────────────
         body: Column(
           children: [
             const Divider(color: Colors.white10, height: 1),
-      
+
             /// Message List
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
                   final msg = _messages[index];
                   final isMe = msg["isMe"] == true;
-      
+
                   return Align(
-                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: isMe
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
                       constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.8,
                       ),
                       decoration: BoxDecoration(
-                        color: isMe ? AppColors.yellow : const Color(0xff1A1A1A),
+                        color: isMe
+                            ? AppColors.yellow
+                            : const Color(0xff1A1A1A),
                         borderRadius: BorderRadius.only(
                           topLeft: const Radius.circular(16),
                           topRight: const Radius.circular(16),
@@ -182,15 +196,18 @@ class _InboxScreenState extends State<InboxScreen> {
                         border: isMe ? null : Border.all(color: Colors.white10),
                       ),
                       child: Column(
-                        crossAxisAlignment:
-                            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                        crossAxisAlignment: isMe
+                            ? CrossAxisAlignment.end
+                            : CrossAxisAlignment.start,
                         children: [
                           Text(
                             msg["text"],
                             style: TextStyle(
                               color: isMe ? Colors.black : Colors.white,
                               fontSize: 12.5,
-                              fontWeight: isMe ? FontWeight.w700 : FontWeight.w500,
+                              fontWeight: isMe
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
                               height: 1.45,
                             ),
                           ),
@@ -210,7 +227,10 @@ class _InboxScreenState extends State<InboxScreen> {
                                 children: [
                                   if (msg["likes"] > 0) ...[
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: const Color(0xff2A2A2A),
                                         borderRadius: BorderRadius.circular(12),
@@ -218,7 +238,11 @@ class _InboxScreenState extends State<InboxScreen> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          const Icon(Icons.thumb_up, color: Colors.white70, size: 12),
+                                          const Icon(
+                                            Icons.thumb_up,
+                                            color: Colors.white70,
+                                            size: 12,
+                                          ),
                                           const SizedBox(width: 4),
                                           Text(
                                             "${msg["likes"]}",
@@ -235,7 +259,10 @@ class _InboxScreenState extends State<InboxScreen> {
                                   ],
                                   if (msg["loves"] > 0) ...[
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: const Color(0xff2A2A2A),
                                         borderRadius: BorderRadius.circular(12),
@@ -243,7 +270,11 @@ class _InboxScreenState extends State<InboxScreen> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          const Icon(Icons.favorite, color: Colors.white70, size: 12),
+                                          const Icon(
+                                            Icons.favorite,
+                                            color: Colors.white70,
+                                            size: 12,
+                                          ),
                                           const SizedBox(width: 4),
                                           Text(
                                             "${msg["loves"]}",
@@ -281,15 +312,21 @@ class _InboxScreenState extends State<InboxScreen> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(
-                                        msg["isLiked"] ? Icons.thumb_up : Icons.thumb_up_outlined,
-                                        color: msg["isLiked"] ? AppColors.yellow : Colors.white70,
+                                        msg["isLiked"]
+                                            ? Icons.thumb_up
+                                            : Icons.thumb_up_outlined,
+                                        color: msg["isLiked"]
+                                            ? AppColors.yellow
+                                            : Colors.white70,
                                         size: 13,
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
                                         "LIKE",
                                         style: TextStyle(
-                                          color: msg["isLiked"] ? AppColors.yellow : Colors.white70,
+                                          color: msg["isLiked"]
+                                              ? AppColors.yellow
+                                              : Colors.white70,
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -312,15 +349,21 @@ class _InboxScreenState extends State<InboxScreen> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(
-                                        msg["isLoved"] ? Icons.favorite : Icons.favorite_border,
-                                        color: msg["isLoved"] ? Colors.red : Colors.white70,
+                                        msg["isLoved"]
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: msg["isLoved"]
+                                            ? Colors.red
+                                            : Colors.white70,
                                         size: 13,
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
                                         "LOVE",
                                         style: TextStyle(
-                                          color: msg["isLoved"] ? Colors.red : Colors.white70,
+                                          color: msg["isLoved"]
+                                              ? Colors.red
+                                              : Colors.white70,
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -339,9 +382,15 @@ class _InboxScreenState extends State<InboxScreen> {
                                     );
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
                                     decoration: BoxDecoration(
-                                      border: Border.all(color: AppColors.yellow, width: 1),
+                                      border: Border.all(
+                                        color: AppColors.yellow,
+                                        width: 1,
+                                      ),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Row(
@@ -382,7 +431,7 @@ class _InboxScreenState extends State<InboxScreen> {
                 },
               ),
             ),
-      
+
             /// Input field bar
             Container(
               padding: EdgeInsets.fromLTRB(
@@ -406,25 +455,38 @@ class _InboxScreenState extends State<InboxScreen> {
                         color: Color(0xff151515),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.add, color: Colors.white70, size: 20),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white70,
+                        size: 20,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
-      
+
                   /// Text Field Box
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xff151515),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(color: Colors.white10),
                       ),
                       child: TextFormField(
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         decoration: const InputDecoration(
                           hintText: "Type a message...",
-                          hintStyle: TextStyle(color: Colors.white24, fontSize: 13),
+                          hintStyle: TextStyle(
+                            color: Colors.white24,
+                            fontSize: 13,
+                          ),
                           border: InputBorder.none,
                           isDense: true,
                         ),
@@ -432,7 +494,7 @@ class _InboxScreenState extends State<InboxScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-      
+
                   /// Send Button
                   GestureDetector(
                     onTap: () {},
@@ -442,7 +504,11 @@ class _InboxScreenState extends State<InboxScreen> {
                         color: AppColors.yellow,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.send, color: Colors.black, size: 20),
+                      child: const Icon(
+                        Icons.send,
+                        color: Colors.black,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ],
