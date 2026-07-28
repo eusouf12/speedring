@@ -64,29 +64,41 @@ class SetupProfileScreen1 extends StatelessWidget {
                         ),
                       ),
                       child: ClipOval(
-                        child: CustomImage(
-                          imageSrc: AppImages.helmet,
-                          imageType: ImageType.png,
-                          fit: BoxFit.cover,
-                          height: 110,
-                          width: 110,
-                        ),
+                        child: Obx(() {
+                          return controller.profileImage.value != null
+                              ? Image.file(
+                                  controller.profileImage.value!,
+                                  fit: BoxFit.cover,
+                                  height: 110,
+                                  width: 110,
+                                )
+                              : CustomImage(
+                                  imageSrc: AppImages.helmet,
+                                  imageType: ImageType.png,
+                                  fit: BoxFit.cover,
+                                  height: 110,
+                                  width: 110,
+                                );
+                        }),
                       ),
                     ),
                     Positioned(
                       bottom: 2,
                       right: 2,
-                      child: Container(
-                        width: 28,
-                        height: 28,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.yellow,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.black,
-                          size: 18,
+                      child: GestureDetector(
+                        onTap: controller.pickProfileImage,
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.yellow,
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.black,
+                            size: 18,
+                          ),
                         ),
                       ),
                     ),

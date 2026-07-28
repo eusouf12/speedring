@@ -1,6 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../core/app_routes/app_routes.dart';
+import '../../../service/api_client.dart';
+import '../../../service/api_url.dart';
+import '../../../utils/ToastMsg/toast_message.dart';
 import '../../../utils/app_images/app_images.dart';
 
 class SetupProfileController extends GetxController {
@@ -18,11 +25,10 @@ class SetupProfileController extends GetxController {
   final modelCtrl = TextEditingController();
   final yearCtrl = TextEditingController();
   final hpCtrl = TextEditingController();
-
+  
   final RxBool displayRolePublicly = true.obs;
   final RxString nationality = 'Germany'.obs;
-  final RxInt selectedCategory =
-      0.obs; // 0=Combustion, 1=Electric, 2=Motorcycle, 3=Karting, 4=Old Timer
+  final RxInt selectedCategory = 0.obs; 
   final RxList<String> selectedInterests = <String>[].obs;
   final RxList<String> selectedNotifications = <String>[].obs;
   final RxString engineType = 'combustion'.obs;
@@ -35,6 +41,13 @@ class SetupProfileController extends GetxController {
     AppImages.electricBg,
   ];
   Timer? _previewTimer;
+
+  // Profile and Vehicle Images
+  final Rx<File?> profileImage = Rx<File?>(null);
+  final Rx<File?> vehicleImage = Rx<File?>(null);
+  final ImagePicker _picker = ImagePicker();
+
+  final RxBool isLoading = false.obs;
 
   @override
   void onInit() {
@@ -52,6 +65,106 @@ class SetupProfileController extends GetxController {
 
   void stopPreviewTimer() {
     _previewTimer?.cancel();
+  }
+  
+  Future<void> pickProfileImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        profileImage.value = File(pickedFile.path);
+      }
+    } catch (e) {
+      debugPrint("Error picking profile image: $e");
+    }
+  }
+
+  Future<void> pickVehicleImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        vehicleImage.value = File(pickedFile.path);
+      }
+    } catch (e) {
+      debugPrint("Error picking vehicle image: $e");
+    }
+  }
+
+  Future<void> setupUserProfile() async {
+    isLoading.value = true;
+    
+    // Prepare nested data object according to user requirements
+    Map<String, dynamic> data = {
+      "displayName": displayNameCtrl.text.isNotEmpty ? displayNameCtrl.text : "Sebastian V.",
+      "bio": bioCtrl.text,
+      "driverRole": roleCtrl.text.isNotEmpty ? roleCtrl.text : "Racer",
+      "isRolePublic": displayRolePublicly.value,
+      "nationality": nationality.value,
+      "socialLinks": {
+        if (instagramCtrl.text.isNotEmpty) "instagram": instagramCtrl.text,
+        if (youtubeCtrl.text.isNotEmpty) "youtube": youtubeCtrl.text,
+        if (tiktokCtrl.text.isNotEmpty) "tiktok": tiktokCtrl.text,
+        if (facebookCtrl.text.isNotEmpty) "facebook": facebookCtrl.text
+      },
+      "favoriteVehicles": [
+        "Combustion",
+        "Electric",
+        "Motorcycle"
+      ],
+      "vehicles": [],
+      "notificationPreferences": {
+        "liveTelemetry": selectedNotifications.contains('track_alerts'),
+        "social": selectedNotifications.contains('new_followers'),
+        "locationBased": selectedNotifications.contains('live_sessions'),
+        "marketplace": selectedNotifications.contains('marketplace'),
+        "proTour": selectedNotifications.contains('event_updates')
+      }
+    };
+
+    // If vehicle form was partially filled, add it
+    if (vehicleNameCtrl.text.isNotEmpty || brandCtrl.text.isNotEmpty || modelCtrl.text.isNotEmpty) {
+      data["vehicles"] = [
+        {
+          "vehicleName": vehicleNameCtrl.text,
+          "brand": brandCtrl.text,
+          "model": modelCtrl.text,
+          "year": yearCtrl.text,
+          "hp": hpCtrl.text,
+          "engineType": engineType.value.capitalizeFirst
+        }
+      ];
+    }
+
+    List<MultipartBody> multipartData = [];
+    if (profileImage.value != null) {
+      multipartData.add(MultipartBody('profileImage', profileImage.value!));
+    }
+    if (vehicleImage.value != null) {
+      multipartData.add(MultipartBody('vehicleImage', vehicleImage.value!));
+    }
+
+    try {
+      Map<String, String> body = {
+        'data': jsonEncode(data),
+      };
+
+      var response = await ApiClient.postMultipartData(
+        ApiUrl.setupUserProfile,
+        body,
+        multipartBody: multipartData,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Profile setup complete!", isError: false);
+        Get.offAllNamed(AppRoutes.preview); // Or navigate to dashboard
+      } else {
+        showCustomSnackBar("Failed to setup profile.", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Setup profile error: $e");
+      showCustomSnackBar("Something went wrong", isError: true);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   @override

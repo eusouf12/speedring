@@ -129,7 +129,7 @@ class VerifyOtpScreen extends StatelessWidget {
                           ),
                         )
                       : GestureDetector(
-                          onTap: () => controller.resendOtp(),
+                          onTap: () => (),
                           child: RichText(
                             text: const TextSpan(
                               style: TextStyle(

@@ -176,19 +176,18 @@ class SetupProfileScreen4 extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
                 child: Column(
                   children: [
-                    CustomButton(
-                      title: 'ENABLE NOTIFICATIONS',
-                      height: 54,
-                      borderRadius: 30,
-                      fillColor: AppColors.yellow,
-                      textColor: Colors.black,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 14,
-                      onTap: () {
-                        // Request notification permissions code here
-                        _navigateToDashboard();
-                      },
-                    ),
+                    Obx(() => CustomButton(
+                          title: controller.isLoading.value ? 'SAVING...' : 'COMPLETE SETUP',
+                          height: 54,
+                          borderRadius: 30,
+                          fillColor: AppColors.yellow,
+                          textColor: Colors.black,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14,
+                          onTap: controller.isLoading.value ? null : () {
+                            controller.setupUserProfile();
+                          },
+                        )),
                     const SizedBox(height: 16),
                     GestureDetector(
                       onTap: () => _navigateToDashboard(),

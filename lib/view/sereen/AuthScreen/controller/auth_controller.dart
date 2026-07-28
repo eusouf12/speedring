@@ -1,13 +1,21 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
+import 'package:speedring/service/api_client.dart';
+import 'package:speedring/service/api_url.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
 
 class AuthController extends GetxController {
   // ── Login ────────────────────────────────────────────────────────────────
   final formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController(text: "test@speedring.com");
-  final passwordController = TextEditingController(text: "Test@1234");
+  final emailController = TextEditingController(
+    text: "ahteshamulhasan18@gmail.com",
+  );
+  final passwordController = TextEditingController(text: "SecurePassword123");
 
   final RxBool isPasswordVisible = false.obs;
   final RxBool isLoading = false.obs;
@@ -19,9 +27,53 @@ class AuthController extends GetxController {
   Future<void> loginValidator() async {
     if (!formKey.currentState!.validate()) return;
     isLoading.value = true;
-    await Future.delayed(const Duration(seconds: 2));
-    isLoading.value = false;
-    Get.toNamed(AppRoutes.setupProfileScreen1);
+
+    Map<String, String> body = {
+      'email': emailController.text.trim(),
+      'password': passwordController.text,
+    };
+
+    try {
+      var response = await ApiClient.postData(ApiUrl.signIn, jsonEncode(body));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> jsonResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          jsonResponse['message'] ?? "Login successful",
+          isError: false,
+        );
+
+        var dataMap = jsonResponse['data'] as Map<String, dynamic>? ?? {};
+        String accessToken = dataMap['token']?.toString() ?? dataMap['accessToken']?.toString() ?? "";
+
+        var userMap = dataMap['user'] as Map<String, dynamic>? ?? {};
+        String role = userMap['role']?.toString() ?? "";
+        bool isProfileSetup = userMap['isProfileSetup'] == true;
+
+        await SharePrefsHelper.setString(AppConstants.bearerToken, accessToken);
+
+        if (role == 'driver') {
+          if (isProfileSetup) {
+            Get.offAllNamed(AppRoutes.userHomeScreen);
+          } else {
+            Get.toNamed(AppRoutes.setupProfileScreen1);
+          }
+        } else {
+          Get.toNamed(AppRoutes.businessRegistrationStep1);
+        }
+      } else {
+        Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          errorResponse['message'] ?? 'Login failed. Please try again.',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      debugPrint("Login error: $e");
+      showCustomSnackBar("Something went wrong", isError: true);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   // ── Signup ───────────────────────────────────────────────────────────────
@@ -36,7 +88,7 @@ class AuthController extends GetxController {
   final RxBool isConfirmPasswordVisible = false.obs;
   final RxBool isSignupLoading = false.obs;
   final RxBool isTermsAgreed = false.obs;
-  final RxBool isAgeConfirmed = false.obs;
+  final RxBool isAgeConfirmed = false.obs; // Will map to ageGroup
 
   void toggleSignupPasswordVisibility() {
     isSignupPasswordVisible.value = !isSignupPasswordVisible.value;
@@ -48,10 +100,56 @@ class AuthController extends GetxController {
 
   Future<void> signupValidator() async {
     if (!signupFormKey.currentState!.validate()) return;
+    if (!isTermsAgreed.value) {
+      showCustomSnackBar(
+        "You must agree to the Terms of Service",
+        isError: true,
+      );
+      return;
+    }
+
     isSignupLoading.value = true;
-    await Future.delayed(const Duration(seconds: 2));
-    isSignupLoading.value = false;
-    Get.toNamed(AppRoutes.setupProfileScreen1);
+
+    Map<String, dynamic> body = {
+      'name': nameController.text.trim(),
+      'userName': usernameController.text.trim(),
+      'email': signupEmailController.text.trim(),
+      'password': signupPasswordController.text,
+      'confirmPassword': confirmPasswordController.text,
+      'ageGroup': isAgeConfirmed.value ? '18+' : '16+',
+      'agreedToTerms': isTermsAgreed.value,
+    };
+
+    try {
+      var response = await ApiClient.postData(ApiUrl.signUp, jsonEncode(body));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> jsonResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          jsonResponse['message'] ?? "Signup successful",
+          isError: false,
+        );
+
+        Get.toNamed(
+          AppRoutes.verifyOtpScreen,
+          arguments: {
+            'email': signupEmailController.text.trim(),
+            'isSignup': true,
+          },
+        );
+      } else {
+        Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          errorResponse['message'] ?? 'Signup failed',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      debugPrint("Signup error: $e");
+      showCustomSnackBar("Something went wrong", isError: true);
+    } finally {
+      isSignupLoading.value = false;
+    }
   }
 
   // ── Forgot Password ──────────────────────────────────────────────────────
@@ -62,10 +160,43 @@ class AuthController extends GetxController {
   Future<void> sendOtp() async {
     if (!forgotFormKey.currentState!.validate()) return;
     isForgotLoading.value = true;
-    await Future.delayed(const Duration(seconds: 2));
-    isForgotLoading.value = false;
-    _startResendCountdown();
-    Get.toNamed(AppRoutes.verifyOtpScreen);
+
+    Map<String, String> body = {'email': forgotEmailController.text.trim()};
+
+    try {
+      var response = await ApiClient.postData(
+        ApiUrl.forgotPassword,
+        jsonEncode(body),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> jsonResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          jsonResponse['message'] ?? "OTP sent to your email",
+          isError: false,
+        );
+
+        _startResendCountdown();
+        Get.toNamed(
+          AppRoutes.verifyOtpScreen,
+          arguments: {
+            'email': forgotEmailController.text.trim(),
+            'isSignup': false,
+          },
+        );
+      } else {
+        Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          errorResponse['message'] ?? 'Request failed',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      debugPrint("Forgot password error: $e");
+      showCustomSnackBar("Something went wrong", isError: true);
+    } finally {
+      isForgotLoading.value = false;
+    }
   }
 
   // ── Verify OTP ───────────────────────────────────────────────────────────
@@ -79,6 +210,9 @@ class AuthController extends GetxController {
   final RxInt resendCountdown = 0.obs;
   Timer? _resendTimer;
 
+  // Track reset token from forgot password OTP
+  String _resetToken = '';
+
   void _startResendCountdown({int seconds = 60}) {
     resendCountdown.value = seconds;
     _resendTimer?.cancel();
@@ -91,20 +225,88 @@ class AuthController extends GetxController {
     });
   }
 
-  Future<void> resendOtp() async {
-    isForgotLoading.value = true;
-    await Future.delayed(const Duration(seconds: 1));
-    isForgotLoading.value = false;
-    _startResendCountdown();
-  }
+  // Future<void> resendOtp() async
+  //{
+  //   String email = Get.arguments?['email'] ?? forgotEmailController.text.trim();
+  //   if (email.isEmpty) {
+  //     email = signupEmailController.text.trim();
+  //   }
+
+  //   if (email.isEmpty) {
+  //      showCustomSnackBar("Email is missing", isError: true);
+  //      return;
+  //   }
+
+  //   isForgotLoading.value = true;
+  //   Map<String, String> body = {
+  //     'email': email,
+  //   };
+
+  //   try {
+  //     var response = await ApiClient.postData(ApiUrl.resendOtp, jsonEncode(body));
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       showCustomSnackBar("OTP resent successfully", isError: false);
+  //       _startResendCountdown();
+  //     } else {
+  //       Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
+  //       showCustomSnackBar(errorResponse['message'] ?? 'Failed to resend OTP', isError: true);
+  //     }
+  //   } catch (e) {
+  //     showCustomSnackBar("Something went wrong", isError: true);
+  //   } finally {
+  //     isForgotLoading.value = false;
+  //   }
+  // }
 
   Future<void> verifyOtp() async {
     final otp = otpControllers.map((c) => c.text).join();
-    if (otp.length < 6) return;
+    if (otp.length < 4) {
+      showCustomSnackBar("Please enter a valid OTP", isError: true);
+      return;
+    }
+
     isOtpLoading.value = true;
-    await Future.delayed(const Duration(seconds: 2));
-    isOtpLoading.value = false;
-    Get.toNamed(AppRoutes.resetPasswordScreen);
+
+    bool isSignup = Get.arguments?['isSignup'] ?? false;
+    String email = Get.arguments?['email'] ?? '';
+
+    Map<String, dynamic> body = {'email': email, 'otp': otp};
+
+    try {
+      String url = isSignup
+          ? ApiUrl.verificationOtp
+          : ApiUrl.verificationOtpForgetPass;
+      var response = await ApiClient.postData(url, jsonEncode(body));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> jsonResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          jsonResponse['message'] ?? "Account verified successfully!",
+          isError: false,
+        );
+
+        if (!isSignup) {
+          // For forgot password, we get a reset token
+          if (jsonResponse['data'] != null) {
+            _resetToken = jsonResponse['data'].toString();
+          }
+          Get.toNamed(AppRoutes.resetPasswordScreen);
+        } else {
+          Get.offAllNamed(AppRoutes.loginScreen);
+        }
+      } else {
+        Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          errorResponse['message'] ?? 'Verification failed',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      debugPrint("Verify OTP error: $e");
+      showCustomSnackBar("Something went wrong", isError: true);
+    } finally {
+      isOtpLoading.value = false;
+    }
   }
 
   // ── Reset Password ───────────────────────────────────────────────────────
@@ -117,26 +319,71 @@ class AuthController extends GetxController {
   Future<void> resetPassword() async {
     if (!resetFormKey.currentState!.validate()) return;
     isResetLoading.value = true;
-    await Future.delayed(const Duration(seconds: 2));
-    isResetLoading.value = false;
 
-    Get.offAllNamed(AppRoutes.loginScreen);
+    Map<String, dynamic> body = {
+      'newPassword': newPasswordController.text,
+      'confirmPassword': confirmNewPasswordController.text,
+    };
+
+    try {
+      // Temporarily set bearer token to reset token to pass auth if needed
+      await SharePrefsHelper.setString(AppConstants.bearerToken, _resetToken);
+
+      var response = await ApiClient.postData(
+        ApiUrl.newPassword,
+        jsonEncode(body),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> jsonResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          jsonResponse['message'] ?? "Password reset successfully.",
+          isError: false,
+        );
+
+        // Remove reset token after success
+        await SharePrefsHelper.remove(AppConstants.bearerToken);
+
+        Get.offAllNamed(AppRoutes.loginScreen);
+      } else {
+        Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          errorResponse['message'] ?? 'Password reset failed',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      debugPrint("Reset password error: $e");
+      showCustomSnackBar("Something went wrong", isError: true);
+    } finally {
+      isResetLoading.value = false;
+    }
+  }
+
+  Map<String, dynamic> _parseResponseBody(dynamic body) {
+    if (body == null) return {};
+    if (body is Map) return Map<String, dynamic>.from(body);
+    if (body is String && body.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(body);
+        if (decoded is Map) {
+          return Map<String, dynamic>.from(decoded);
+        }
+      } catch (_) {}
+    }
+    return {};
   }
 
   @override
   void onClose() {
-    // Login
     emailController.dispose();
     passwordController.dispose();
-    // Signup
     nameController.dispose();
     usernameController.dispose();
     signupEmailController.dispose();
     signupPasswordController.dispose();
     confirmPasswordController.dispose();
-    // Forgot
     forgotEmailController.dispose();
-    // OTP
     for (final c in otpControllers) {
       c.dispose();
     }
@@ -144,7 +391,6 @@ class AuthController extends GetxController {
       f.dispose();
     }
     _resendTimer?.cancel();
-    // Reset
     newPasswordController.dispose();
     confirmNewPasswordController.dispose();
     super.onClose();

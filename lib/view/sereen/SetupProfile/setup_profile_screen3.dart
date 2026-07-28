@@ -195,42 +195,50 @@ class SetupProfileScreen3 extends StatelessWidget {
               /// ── Vehicle Image Upload ──────────────────────────────
               _SectionLabel(label: 'VEHICLE IMAGE'),
               const SizedBox(height: 12),
-              GestureDetector(
-                onTap: () {
-                  // Add Image Picker Logic
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: _cardBg,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.white10, width: 1),
+              Obx(() {
+                return GestureDetector(
+                  onTap: controller.pickVehicleImage,
+                  child: Container(
+                    width: double.infinity,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: _cardBg,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white10, width: 1),
+                      image: controller.vehicleImage.value != null
+                          ? DecorationImage(
+                              image: FileImage(controller.vehicleImage.value!),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+                    child: controller.vehicleImage.value == null
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_a_photo_outlined,
+                                color: AppColors.yellow,
+                                size: 32,
+                              ),
+                              const SizedBox(height: 8),
+                              const CustomText(
+                                text: 'UPLOAD VEHICLE PHOTO',
+                                color: Colors.white70,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              const CustomText(
+                                text: 'High resolution PNG, JPG, or JPEG',
+                                color: Colors.white24,
+                                fontSize: 9,
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.add_a_photo_outlined,
-                        color: AppColors.yellow,
-                        size: 32,
-                      ),
-                      const SizedBox(height: 8),
-                      const CustomText(
-                        text: 'UPLOAD VEHICLE PHOTO',
-                        color: Colors.white70,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      const CustomText(
-                        text: 'High resolution PNG, JPG, or JPEG',
-                        color: Colors.white24,
-                        fontSize: 9,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                );
+              }),
 
               const SizedBox(height: 40),
 
