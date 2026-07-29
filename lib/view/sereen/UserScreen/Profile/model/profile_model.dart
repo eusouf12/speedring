@@ -275,6 +275,7 @@ class Vehicle {
   final String? year;
   final String? hp;
   final String? engineType;
+  final String? vehicleImage;
   final String? id;
 
   Vehicle({
@@ -284,6 +285,7 @@ class Vehicle {
     this.year,
     this.hp,
     this.engineType,
+    this.vehicleImage,
     this.id,
   });
 
@@ -295,6 +297,7 @@ class Vehicle {
       year: json['year'],
       hp: json['hp'],
       engineType: json['engineType'],
+      vehicleImage: json['vehicleImage'],
       id: json['_id'],
     );
   }
@@ -307,7 +310,8 @@ class Vehicle {
       'year': year,
       'hp': hp,
       'engineType': engineType,
-      '_id': id,
+      if (vehicleImage != null) 'vehicleImage': vehicleImage,
+      if (id != null) '_id': id,
     };
   }
 }

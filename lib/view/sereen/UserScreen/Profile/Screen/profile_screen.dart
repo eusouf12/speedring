@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../../../../utils/app_images/app_images.dart';
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../components/custom_nav_bar/navbar.dart';
@@ -11,7 +13,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../controller/profile_controller.dart';
 import '../widgets/profile_post_card.dart';
 import '../widgets/garage_vehicle_card.dart';
-import '../model/profile_model.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -26,20 +27,11 @@ class ProfileScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
 
-          title: Image.network(
-            "https://picsum.photos/seed/speedringlogo/130/40",
-            height: 30,
-            width: 100,
+          title: Image.asset(
+            AppImages.splashLogo,
+            height: 150,
+            width: 350,
             fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) => const Text(
-              "SPEEDRING",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.0,
-              ),
-            ),
           ),
           centerTitle: true,
           actions: [
@@ -86,7 +78,7 @@ class ProfileScreen extends StatelessWidget {
                         right: 0,
                         height: 180.h,
                         child: Image.network(
-                          "https://picsum.photos/seed/profilecover/800/400",
+                          profile?.profileBanner ?? "",
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               Container(
@@ -105,10 +97,15 @@ class ProfileScreen extends StatelessWidget {
                         top: 12.h,
                         right: 12.w,
                         child: GestureDetector(
-                          onTap: () => Get.toNamed(
-                            AppRoutes.editProfileScreen,
-                            arguments: profile,
-                          ),
+                          onTap: () {
+                            if (profile != null) {
+                              controller.initEditProfile(profile);
+                            }
+                            Get.toNamed(
+                              AppRoutes.editProfileScreen,
+                              arguments: profile,
+                            );
+                          },
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 8.w,
@@ -162,7 +159,7 @@ class ProfileScreen extends StatelessWidget {
                               child: ClipOval(
                                 child: Image.network(
                                   profile?.profileImage ??
-                                      "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop",
+                                      AppConstants.profileImage,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) =>
                                       Container(
@@ -417,7 +414,10 @@ class ProfileScreen extends StatelessWidget {
           url.startsWith('http') ? url : 'https://$url',
         );
         try {
-          bool launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+          bool launched = await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+          );
           if (!launched) {
             await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
           }
