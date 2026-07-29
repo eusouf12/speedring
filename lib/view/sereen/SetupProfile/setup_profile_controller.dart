@@ -126,7 +126,7 @@ class SetupProfileController extends GetxController {
       data["vehicles"] = [
         {
           "vehicleName": vehicleNameCtrl.text,
-          "vehicleNumberPlate": vehicleNumberPlate.text,
+          "numberPlate": vehicleNumberPlate.text,
           "brand": brandCtrl.text,
           "model": modelCtrl.text,
           "year": yearCtrl.text,

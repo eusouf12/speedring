@@ -10,19 +10,20 @@ class ApiUrl {
   static const String forgotPassword = "/auth/forgot-password";
   static const String verificationOtpForgetPass =
       "/auth/verify-forgot-password-otp";
-
   static const String resendOtp = "/auth/resend-otp";
-  static const String newPassword = "/auth/reset-password";
   static const String setupUserProfile = "/users/driver/setup-profile";
 
+  static const String newPassword = "/auth/reset-password";
+
   // =================== my profile =====================================
+  static const String myProfile = "/users/my-profile";
+  static const String updateProfile = "/users/update-profile";
+
   static const String privacyPolicy = "/legal-docs/privacy-policy";
   static const String termsCondition = "/legal-docs/terms-conditions";
   static const String aboutUs = "/legal-docs/about-us";
   static const String contactUs = "/contact";
   static const String changePassword = "/auth/change-password";
-  static const String myProfile = "/auth/me";
-  static const String updateProfile = "/users/update-user";
 
   ///========================= User =========================
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";

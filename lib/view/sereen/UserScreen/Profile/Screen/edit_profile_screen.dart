@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -5,21 +6,92 @@ import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
+import '../model/profile_model.dart';
+import '../../../../../service/api_client.dart';
+import '../../../../../service/api_url.dart';
+import '../controller/profile_controller.dart';
 
 class EditProfileController extends GetxController {
-  final nameController = TextEditingController(text: "MAX VERSTAPPEN");
-  final handleController = TextEditingController(text: "max_verstappen_33");
-  final bioController = TextEditingController(
-    text:
-        "3-time World Champion. Pushing the limits of engineering and performance.",
-  );
-
-  final instagramController = TextEditingController(
-    text: "instagram.com/maxverstappen1",
-  );
+  final nameController = TextEditingController();
+  final handleController = TextEditingController();
+  final bioController = TextEditingController();
+  final instagramController = TextEditingController();
   final tiktokController = TextEditingController();
   final youtubeController = TextEditingController();
   final facebookController = TextEditingController();
+
+  final RxBool isUpdating = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    if (Get.arguments != null && Get.arguments is ProfileData) {
+      final profile = Get.arguments as ProfileData;
+      nameController.text = profile.driverInfo?.displayName ?? profile.name ?? '';
+      handleController.text = profile.name?.replaceAll(' ', '_').toLowerCase() ?? '';
+      bioController.text = profile.driverInfo?.bio ?? '';
+      instagramController.text = profile.driverInfo?.socialLinks?.instagram ?? '';
+      tiktokController.text = profile.driverInfo?.socialLinks?.tiktok ?? '';
+      youtubeController.text = profile.driverInfo?.socialLinks?.youtube ?? '';
+      facebookController.text = profile.driverInfo?.socialLinks?.facebook ?? '';
+    }
+  }
+
+  Future<void> updateUserProfile() async {
+    isUpdating.value = true;
+    try {
+      // Structure the data as expected by backend's payload flattening
+      Map<String, dynamic> data = {
+        "name": nameController.text,
+        "driverInfo": {
+          "displayName": nameController.text,
+          "bio": bioController.text,
+          "socialLinks": {
+            if (instagramController.text.isNotEmpty) "instagram": instagramController.text,
+            if (youtubeController.text.isNotEmpty) "youtube": youtubeController.text,
+            if (tiktokController.text.isNotEmpty) "tiktok": tiktokController.text,
+            if (facebookController.text.isNotEmpty) "facebook": facebookController.text,
+          },
+        }
+      };
+
+      Map<String, String> body = {'data': jsonEncode(data)};
+
+      var response = await ApiClient.postMultipartData(
+        ApiUrl.updateProfile,
+        body,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Get.back();
+        // Refresh profile data
+        if (Get.isRegistered<ProfileScreenController>()) {
+          Get.find<ProfileScreenController>().getMyProfile();
+        }
+        Get.snackbar(
+          "Profile Updated",
+          "Your profile changes have been successfully saved.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: const Color(0xff181818),
+          colorText: Colors.white,
+          borderColor: AppColors.yellow,
+          borderWidth: 1,
+        );
+      } else {
+        Get.snackbar(
+          "Error",
+          "Failed to update profile",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      debugPrint("Update Profile error: $e");
+    } finally {
+      isUpdating.value = false;
+    }
+  }
 
   @override
   void onClose() {
@@ -255,24 +327,21 @@ class EditProfileScreen extends StatelessWidget {
                     SizedBox(height: 16.h),
 
                     /// Save changes button
-                    CustomButton(
-                      height: 50.h,
-                      title: "SAVE CHANGES",
-                      fontSize: 13,
-                      borderRadius: 8.r,
-                      onTap: () {
-                        Get.back();
-                        Get.snackbar(
-                          "Profile Updated",
-                          "Your profile changes have been successfully saved.",
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: const Color(0xff181818),
-                          colorText: Colors.white,
-                          borderColor: AppColors.yellow,
-                          borderWidth: 1,
-                        );
-                      },
-                    ),
+                    Obx(() => controller.isUpdating.value
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.yellow,
+                            ),
+                          )
+                        : CustomButton(
+                            height: 50.h,
+                            title: "SAVE CHANGES",
+                            fontSize: 13,
+                            borderRadius: 8.r,
+                            onTap: () {
+                              controller.updateUserProfile();
+                            },
+                          )),
                     SizedBox(height: 30.h),
                   ],
                 ),

@@ -7,21 +7,18 @@ import '../../../../components/custom_text/custom_text.dart';
 import '../../../../components/custom_nav_bar/navbar.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
 import '../../../../../core/app_routes/app_routes.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../controller/profile_controller.dart';
 import '../widgets/profile_post_card.dart';
 import '../widgets/garage_vehicle_card.dart';
-
-class ProfileScreenController extends GetxController {
-  final _activeTab = 0.obs;
-  int get activeTab => _activeTab.value;
-  set activeTab(int val) => _activeTab.value = val;
-}
+import '../model/profile_model.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProfileScreenController());
+    final controller = Get.find<ProfileScreenController>();
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -62,320 +59,381 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Banner & Avatar Stack
-              SizedBox(
-                height: 220.h,
-                width: double.infinity,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    /// Banner Image
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: 180.h,
-                      child: Image.network(
-                        "https://picsum.photos/seed/profilecover/800/400",
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: const Color(0xff1C1C1C),
-                          child: const Center(
-                            child: Icon(
-                              Icons.image,
-                              color: Colors.white24,
-                              size: 48,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 12.h,
-                      right: 12.w,
-                      child: GestureDetector(
-                        onTap: () => Get.toNamed(AppRoutes.editProfileScreen),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 4.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius: BorderRadius.circular(6.r),
-                            border: Border.all(color: Colors.white24),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.edit,
-                                color: Colors.white70,
-                                size: 12,
-                              ),
-                              SizedBox(width: 4.w),
-                              const Text(
-                                "EDIT",
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.yellow),
+            );
+          }
+          final profile = controller.profileData.value;
+          final driverInfo = profile?.driverInfo;
 
-                    /// Profile Avatar
-                    Positioned(
-                      bottom: 0,
-                      left: 16.w,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            width: 80.w,
-                            height: 80.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.black, width: 3),
-                            ),
-                            child: ClipOval(
-                              child: Image.network(
-                                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop",
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Container(
-                                      color: const Color(0xff1C1C1C),
-                                      child: const Icon(
-                                        Icons.person,
-                                        color: Colors.white24,
-                                        size: 40,
-                                      ),
-                                    ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: const BoxDecoration(
-                                color: AppColors.yellow,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.check,
-                                color: Colors.black,
-                                size: 12,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    /// Coins indicator
-                    Positioned(
-                      bottom: 4.h,
-                      right: 16.w,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () => Get.toNamed(AppRoutes.walletScreen),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.w,
-                                vertical: 4.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xff161616),
-                                borderRadius: BorderRadius.circular(8.r),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.05),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.wallet,
-                                    color: AppColors.yellow,
-                                    size: 14,
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Banner & Avatar Stack
+                SizedBox(
+                  height: 220.h,
+                  width: double.infinity,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      /// Banner Image
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: 180.h,
+                        child: Image.network(
+                          "https://picsum.photos/seed/profilecover/800/400",
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                color: const Color(0xff1C1C1C),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.image,
+                                    color: Colors.white24,
+                                    size: 48,
                                   ),
-                                  SizedBox(width: 4.w),
-                                  CustomText(
-                                    text: "12,450 COINS",
-                                    color: AppColors.yellow1,
-                                    fontSize: 9,
+                                ),
+                              ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 12.h,
+                        right: 12.w,
+                        child: GestureDetector(
+                          onTap: () => Get.toNamed(
+                            AppRoutes.editProfileScreen,
+                            arguments: profile,
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 4.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              borderRadius: BorderRadius.circular(6.r),
+                              border: Border.all(color: Colors.white24),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.edit,
+                                  color: Colors.white70,
+                                  size: 12,
+                                ),
+                                SizedBox(width: 4.w),
+                                const Text(
+                                  "EDIT",
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 8,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      /// Profile Avatar
+                      Positioned(
+                        bottom: 0,
+                        left: 16.w,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              width: 80.w,
+                              height: 80.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 3,
+                                ),
+                              ),
+                              child: ClipOval(
+                                child: Image.network(
+                                  profile?.profileImage ??
+                                      "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&fit=crop",
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                        color: const Color(0xff1C1C1C),
+                                        child: const Icon(
+                                          Icons.person,
+                                          color: Colors.white24,
+                                          size: 40,
+                                        ),
+                                      ),
+                                ),
                               ),
                             ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: const BoxDecoration(
+                                  color: AppColors.yellow,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.check,
+                                  color: Colors.black,
+                                  size: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      /// Coins indicator
+                      Positioned(
+                        bottom: 4.h,
+                        right: 16.w,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () => Get.toNamed(AppRoutes.walletScreen),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8.w,
+                                  vertical: 4.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff161616),
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.05),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.wallet,
+                                      color: AppColors.yellow,
+                                      size: 14,
+                                    ),
+                                    SizedBox(width: 4.w),
+                                    CustomText(
+                                      text: "12,450 COINS",
+                                      color: AppColors.yellow1,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8.h),
+
+                /// Profile Identity Details
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: profile?.name?.toUpperCase() ?? "",
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                      ),
+                      SizedBox(height: 4.h),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.flag,
+                            color: Colors.blue,
+                            size: 14,
+                          ), // Dutch flag placeholder
+                          SizedBox(width: 6.w),
+                          CustomText(
+                            text:
+                                "@${profile?.userName?.replaceAll(' ', '_').toLowerCase() ?? 'unknown username'}",
+                            color: AppColors.yellow,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 8.h),
+                      SizedBox(height: 10.h),
+                      CustomText(
+                        text:
+                            driverInfo?.bio ??
+                            "No biography provided. Pushing the limits of engineering and performance.",
+                        color: Colors.white70,
+                        fontSize: 11,
+                        textAlign: TextAlign.start,
+                        height: 1.4,
+                      ),
+                      SizedBox(height: 16.h),
 
-              /// Profile Identity Details
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: "MAX VERSTAPPEN",
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.5,
-                    ),
-                    SizedBox(height: 4.h),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.flag,
-                          color: Colors.blue,
-                          size: 14,
-                        ), // Dutch flag placeholder
-                        SizedBox(width: 6.w),
-                        CustomText(
-                          text: "@max_verstappen_33   da",
-                          color: AppColors.yellow,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h),
-                    CustomText(
-                      text:
-                          "3-time World Champion. Pushing the limits of engineering and performance.",
-                      color: Colors.white70,
-                      fontSize: 11,
-                      textAlign: TextAlign.start,
-                      height: 1.4,
-                    ),
-                    SizedBox(height: 16.h),
-
-                    /// Social Toggles and Support button
-                    Row(
-                      children: [
-                        _buildSocialIcon(Icons.camera_alt_outlined),
-                        SizedBox(width: 10.w),
-                        _buildSocialIcon(Icons.music_note_outlined),
-                        SizedBox(width: 10.w),
-                        _buildSocialIcon(Icons.play_circle_outline),
-                        SizedBox(width: 10.w),
-                        _buildSocialIcon(Icons.facebook_outlined),
-                        const Spacer(),
-                        CustomButton(
-                          height: 34.h,
-                          width: 110.w,
-                          title: "SUPPORT",
-                          fontSize: 10,
-                          borderRadius: 18.r,
-                          icon: const Icon(
-                            Icons.sell_outlined,
-                            color: Colors.black,
-                            size: 12,
+                      /// Social Toggles and Support button
+                      Row(
+                        children: [
+                          if (driverInfo?.socialLinks?.instagram?.isNotEmpty ??
+                              false) ...[
+                            _buildSocialIcon(
+                              Icons.camera_alt_outlined,
+                              driverInfo!.socialLinks!.instagram!,
+                            ),
+                            SizedBox(width: 10.w),
+                          ],
+                          if (driverInfo?.socialLinks?.tiktok?.isNotEmpty ??
+                              false) ...[
+                            _buildSocialIcon(
+                              Icons.music_note_outlined,
+                              driverInfo!.socialLinks!.tiktok!,
+                            ),
+                            SizedBox(width: 10.w),
+                          ],
+                          if (driverInfo?.socialLinks?.youtube?.isNotEmpty ??
+                              false) ...[
+                            _buildSocialIcon(
+                              Icons.play_circle_outline,
+                              driverInfo!.socialLinks!.youtube!,
+                            ),
+                            SizedBox(width: 10.w),
+                          ],
+                          if (driverInfo?.socialLinks?.facebook?.isNotEmpty ??
+                              false) ...[
+                            _buildSocialIcon(
+                              Icons.facebook_outlined,
+                              driverInfo!.socialLinks!.facebook!,
+                            ),
+                          ],
+                          const Spacer(),
+                          CustomButton(
+                            height: 34.h,
+                            width: 110.w,
+                            title: "SUPPORT",
+                            fontSize: 10,
+                            borderRadius: 18.r,
+                            icon: const Icon(
+                              Icons.sell_outlined,
+                              color: Colors.black,
+                              size: 12,
+                            ),
+                            onTap: () {
+                              controller.activeTab = 3;
+                            },
                           ),
-                          onTap: () {
-                            controller.activeTab = 3;
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 20.h),
+                SizedBox(height: 20.h),
 
-              /// Stats section
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.w),
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                decoration: BoxDecoration(
-                  color: const Color(0xff111111),
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white10),
+                /// Stats section
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16.w),
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff111111),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: Colors.white10),
+                  ),
+                  child: Row(
+                    children: [
+                      _buildStatItem("POSTS", "0"),
+                      _buildStatDivider(),
+                      _buildStatItem(
+                        "FOLLOWERS",
+                        "${profile?.followerCount ?? 0}",
+                      ),
+                      _buildStatDivider(),
+                      _buildStatItem("SESSIONS", "0"),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    _buildStatItem("POSTS", "1.2K"),
-                    _buildStatDivider(),
-                    _buildStatItem("FOLLOWERS", "32M"),
-                    _buildStatDivider(),
-                    _buildStatItem("SESSIONS", "8.4K"),
-                  ],
+                SizedBox(height: 20.h),
+
+                /// Scrollable quick actions / highlights
+                SizedBox(
+                  height: 70.h,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    children: [
+                      _buildQuickActionCircle(
+                        Icons.add,
+                        "CREATE",
+                        isYellowBg: true,
+                      ),
+                      _buildQuickThumb(
+                        "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
+                        "MY DRIVE",
+                      ),
+                      _buildQuickThumb(
+                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                        "TELEMETRY",
+                      ),
+                      _buildQuickThumb(
+                        "https://picsum.photos/seed/spalaps/100/100",
+                        "SPA LAPS",
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 20.h),
+                SizedBox(height: 24.h),
 
-              /// Scrollable quick actions / highlights
-              SizedBox(
-                height: 70.h,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  children: [
-                    _buildQuickActionCircle(
-                      Icons.add,
-                      "CREATE",
-                      isYellowBg: true,
-                    ),
-                    _buildQuickThumb(
-                      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
-                      "MY DRIVE",
-                    ),
-                    _buildQuickThumb(
-                      "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                      "TELEMETRY",
-                    ),
-                    _buildQuickThumb(
-                      "https://picsum.photos/seed/spalaps/100/100",
-                      "SPA LAPS",
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 24.h),
+                /// Nested Tab Navigation
+                _buildTabSelector(),
 
-              /// Nested Tab Navigation
-              _buildTabSelector(),
-
-              /// Active Tab Body
-              _buildActiveTabBody(),
-            ],
-          ),
-        ),
+                _buildActiveTabBody(),
+              ],
+            ),
+          );
+        }),
         bottomNavigationBar: const CustomNavBar(currentIndex: 4),
       ),
     );
   }
 
-  Widget _buildSocialIcon(IconData icon) {
-    return Container(
-      width: 32.w,
-      height: 32.w,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white24),
+  Widget _buildSocialIcon(IconData icon, String url) {
+    return GestureDetector(
+      onTap: () async {
+        final Uri uri = Uri.parse(
+          url.startsWith('http') ? url : 'https://$url',
+        );
+        try {
+          bool launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+          if (!launched) {
+            await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+          }
+        } catch (e) {
+          debugPrint("Could not launch $url: $e");
+        }
+      },
+      child: Container(
+        width: 32.w,
+        height: 32.w,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white24),
+        ),
+        child: Icon(icon, color: Colors.white70, size: 16),
       ),
-      child: Icon(icon, color: Colors.white70, size: 16),
     );
   }
 

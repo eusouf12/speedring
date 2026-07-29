@@ -11,7 +11,7 @@ import 'package:speedring/utils/app_const/app_const.dart';
 
 class AuthController extends GetxController {
   // ── Login ────────────────────────────────────────────────────────────────
-  final formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final emailController = TextEditingController(
     text: "ahteshamulhasan18@gmail.com",
   );
@@ -296,10 +296,15 @@ class AuthController extends GetxController {
         if (!isSignup) {
           // For forgot password, we get a reset token
           if (jsonResponse['data'] != null) {
-            _resetToken = jsonResponse['data'].toString();
+            if (jsonResponse['data'] is Map) {
+              _resetToken = jsonResponse['data']['resetToken']?.toString() ?? '';
+            } else {
+              _resetToken = jsonResponse['data'].toString();
+            }
           }
           Get.toNamed(AppRoutes.resetPasswordScreen);
         } else {
+          formKey = GlobalKey<FormState>();
           Get.offAllNamed(AppRoutes.loginScreen);
         }
       } else {
@@ -352,6 +357,7 @@ class AuthController extends GetxController {
         // Remove reset token after success
         await SharePrefsHelper.remove(AppConstants.bearerToken);
 
+        formKey = GlobalKey<FormState>();
         Get.offAllNamed(AppRoutes.loginScreen);
       } else {
         Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
