@@ -21,14 +21,15 @@ class SetupProfileController extends GetxController {
 
   // Vehicle details (Step 3)
   final vehicleNameCtrl = TextEditingController();
+  final vehicleNumberPlate = TextEditingController();
   final brandCtrl = TextEditingController();
   final modelCtrl = TextEditingController();
   final yearCtrl = TextEditingController();
   final hpCtrl = TextEditingController();
-  
+
   final RxBool displayRolePublicly = true.obs;
   final RxString nationality = 'Germany'.obs;
-  final RxInt selectedCategory = 0.obs; 
+  final RxInt selectedCategory = 0.obs;
   final RxList<String> selectedInterests = <String>[].obs;
   final RxList<String> selectedNotifications = <String>[].obs;
   final RxString engineType = 'combustion'.obs;
@@ -66,7 +67,7 @@ class SetupProfileController extends GetxController {
   void stopPreviewTimer() {
     _previewTimer?.cancel();
   }
-  
+
   Future<void> pickProfileImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -91,10 +92,12 @@ class SetupProfileController extends GetxController {
 
   Future<void> setupUserProfile() async {
     isLoading.value = true;
-    
+
     // Prepare nested data object according to user requirements
     Map<String, dynamic> data = {
-      "displayName": displayNameCtrl.text.isNotEmpty ? displayNameCtrl.text : "Sebastian V.",
+      "displayName": displayNameCtrl.text.isNotEmpty
+          ? displayNameCtrl.text
+          : "Sebastian V.",
       "bio": bioCtrl.text,
       "driverRole": roleCtrl.text.isNotEmpty ? roleCtrl.text : "Racer",
       "isRolePublic": displayRolePublicly.value,
@@ -103,34 +106,33 @@ class SetupProfileController extends GetxController {
         if (instagramCtrl.text.isNotEmpty) "instagram": instagramCtrl.text,
         if (youtubeCtrl.text.isNotEmpty) "youtube": youtubeCtrl.text,
         if (tiktokCtrl.text.isNotEmpty) "tiktok": tiktokCtrl.text,
-        if (facebookCtrl.text.isNotEmpty) "facebook": facebookCtrl.text
+        if (facebookCtrl.text.isNotEmpty) "facebook": facebookCtrl.text,
       },
-      "favoriteVehicles": [
-        "Combustion",
-        "Electric",
-        "Motorcycle"
-      ],
+      "favoriteVehicles": ["Combustion", "Electric", "Motorcycle"],
       "vehicles": [],
       "notificationPreferences": {
         "liveTelemetry": selectedNotifications.contains('track_alerts'),
         "social": selectedNotifications.contains('new_followers'),
         "locationBased": selectedNotifications.contains('live_sessions'),
         "marketplace": selectedNotifications.contains('marketplace'),
-        "proTour": selectedNotifications.contains('event_updates')
-      }
+        "proTour": selectedNotifications.contains('event_updates'),
+      },
     };
 
     // If vehicle form was partially filled, add it
-    if (vehicleNameCtrl.text.isNotEmpty || brandCtrl.text.isNotEmpty || modelCtrl.text.isNotEmpty) {
+    if (vehicleNameCtrl.text.isNotEmpty ||
+        brandCtrl.text.isNotEmpty ||
+        modelCtrl.text.isNotEmpty) {
       data["vehicles"] = [
         {
           "vehicleName": vehicleNameCtrl.text,
+          "vehicleNumberPlate": vehicleNumberPlate.text,
           "brand": brandCtrl.text,
           "model": modelCtrl.text,
           "year": yearCtrl.text,
           "hp": hpCtrl.text,
-          "engineType": engineType.value.capitalizeFirst
-        }
+          "engineType": engineType.value.capitalizeFirst,
+        },
       ];
     }
 
@@ -143,9 +145,7 @@ class SetupProfileController extends GetxController {
     }
 
     try {
-      Map<String, String> body = {
-        'data': jsonEncode(data),
-      };
+      Map<String, String> body = {'data': jsonEncode(data)};
 
       var response = await ApiClient.postMultipartData(
         ApiUrl.setupUserProfile,

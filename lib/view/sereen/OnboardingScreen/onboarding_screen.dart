@@ -176,7 +176,7 @@ class OnboardingScreen extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Get.toNamed(AppRoutes.codeRequest);
+                        Get.toNamed(AppRoutes.ageVerifyScreen);
                       },
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,

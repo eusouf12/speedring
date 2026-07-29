@@ -71,7 +71,7 @@ class SetupProfileScreen3 extends StatelessWidget {
               _SectionLabel(label: 'PLATE NUMBER'),
               const SizedBox(height: 6),
               CustomTextField(
-                textEditingController: controller.vehicleNameCtrl,
+                textEditingController: controller.vehicleNumberPlate,
                 hintText: 'SR1-20334-DR-22',
                 fillColor: _cardBg,
               ),

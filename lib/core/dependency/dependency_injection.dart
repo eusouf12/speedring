@@ -9,7 +9,7 @@ class DependencyInjection extends Bindings {
   void dependencies() {
     ///========================== Default Custom Controller ==================
     Get.lazyPut(() => OnboardingController(), fenix: true);
-    Get.lazyPut(() => AuthController(), fenix: true);
+    Get.put(AuthController(), permanent: true);
     Get.lazyPut(() => SetupProfileController(), fenix: true);
     Get.put(BusinessDashboardController(), permanent: true);
   }

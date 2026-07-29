@@ -56,7 +56,7 @@ class VerifyOtpScreen extends StatelessWidget {
                       fontFamily: 'Barlow',
                     ),
                     children: [
-                      const TextSpan(text: 'We sent a 6-digit code to\n'),
+                      const TextSpan(text: 'We sent a 4-digit code to\n'),
                       TextSpan(
                         text: controller.forgotEmailController.text.isEmpty
                             ? 'your email'
@@ -75,8 +75,8 @@ class VerifyOtpScreen extends StatelessWidget {
 
               // ── OTP boxes ────────────────────────────────────────────────
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(6, (i) {
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(4, (i) {
                   return _OtpBox(
                     controller: controller.otpControllers[i],
                     focusNode: controller.otpFocusNodes[i],
@@ -129,7 +129,12 @@ class VerifyOtpScreen extends StatelessWidget {
                           ),
                         )
                       : GestureDetector(
-                          onTap: () => (),
+                          onTap: () {
+                            controller.resendOtp();
+                            for (var c in controller.otpControllers) {
+                              c.clear();
+                            }
+                          },
                           child: RichText(
                             text: const TextSpan(
                               style: TextStyle(

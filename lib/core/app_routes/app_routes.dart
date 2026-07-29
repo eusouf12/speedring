@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import '../../view/sereen/OnboardingScreen/age_verify_screen.dart';
-import '../../view/sereen/OnboardingScreen/code_request.dart';
 import '../../view/sereen/SetupProfile/preview.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen2.dart';
@@ -116,7 +115,6 @@ class AppRoutes {
   static const String verifyOtpScreen = "/VerifyOtpScreen";
   static const String choosePlanScreen = "/ChoosePlanScreen";
   static const String resetPasswordScreen = "/ResetPasswordScreen";
-  static const String codeRequest = "/CodeRequest";
   static const String ageVerifyScreen = "/AgeVerifyScreen";
   static const String setupProfileScreen1 = "/SetupProfileScreen1";
   static const String setupProfileScreen2 = "/SetupProfileScreen2";
@@ -237,7 +235,6 @@ class AppRoutes {
 
     ///============== User part ==================
     GetPage(name: onboardingScreen, page: () => OnboardingScreen()),
-    GetPage(name: codeRequest, page: () => const CodeRequest()),
     GetPage(name: ageVerifyScreen, page: () => const AgeVerifyScreen()),
     GetPage(name: setupProfileScreen1, page: () => const SetupProfileScreen1()),
     GetPage(name: setupProfileScreen2, page: () => const SetupProfileScreen2()),

@@ -4,11 +4,14 @@ class ApiUrl {
   static String socketUrl = baseUrl;
 
   ///========================= Authentication =========================
-  static const String signUp = "/auth/signup";
+  static const String signUp = "/auth/register";
   static const String signIn = "/auth/login";
-  static const String verificationOtp = "/auth/verify-signup-otp";
+  static const String verificationOtp = "/auth/verify-otp";
   static const String forgotPassword = "/auth/forgot-password";
-  static const String verificationOtpForgetPass = "/auth/verify-reset-otp";
+  static const String verificationOtpForgetPass =
+      "/auth/verify-forgot-password-otp";
+
+  static const String resendOtp = "/auth/resend-otp";
   static const String newPassword = "/auth/reset-password";
   static const String setupUserProfile = "/users/driver/setup-profile";
 

@@ -44,7 +44,10 @@ class AuthController extends GetxController {
         );
 
         var dataMap = jsonResponse['data'] as Map<String, dynamic>? ?? {};
-        String accessToken = dataMap['token']?.toString() ?? dataMap['accessToken']?.toString() ?? "";
+        String accessToken =
+            dataMap['token']?.toString() ??
+            dataMap['accessToken']?.toString() ??
+            "";
 
         var userMap = dataMap['user'] as Map<String, dynamic>? ?? {};
         String role = userMap['role']?.toString() ?? "";
@@ -83,6 +86,7 @@ class AuthController extends GetxController {
   final signupEmailController = TextEditingController();
   final signupPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final signupRole = 'driver'.obs;
 
   final RxBool isSignupPasswordVisible = false.obs;
   final RxBool isConfirmPasswordVisible = false.obs;
@@ -118,6 +122,7 @@ class AuthController extends GetxController {
       'confirmPassword': confirmPasswordController.text,
       'ageGroup': isAgeConfirmed.value ? '18+' : '16+',
       'agreedToTerms': isTermsAgreed.value,
+      'role': signupRole.value,
     };
 
     try {
@@ -225,38 +230,41 @@ class AuthController extends GetxController {
     });
   }
 
-  // Future<void> resendOtp() async
-  //{
-  //   String email = Get.arguments?['email'] ?? forgotEmailController.text.trim();
-  //   if (email.isEmpty) {
-  //     email = signupEmailController.text.trim();
-  //   }
+  Future<void> resendOtp() async {
+    String email = Get.arguments?['email'] ?? forgotEmailController.text.trim();
+    if (email.isEmpty) {
+      email = signupEmailController.text.trim();
+    }
 
-  //   if (email.isEmpty) {
-  //      showCustomSnackBar("Email is missing", isError: true);
-  //      return;
-  //   }
+    if (email.isEmpty) {
+      showCustomSnackBar("Email is missing", isError: true);
+      return;
+    }
 
-  //   isForgotLoading.value = true;
-  //   Map<String, String> body = {
-  //     'email': email,
-  //   };
+    isForgotLoading.value = true;
+    Map<String, String> body = {'email': email};
 
-  //   try {
-  //     var response = await ApiClient.postData(ApiUrl.resendOtp, jsonEncode(body));
-  //     if (response.statusCode == 200 || response.statusCode == 201) {
-  //       showCustomSnackBar("OTP resent successfully", isError: false);
-  //       _startResendCountdown();
-  //     } else {
-  //       Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
-  //       showCustomSnackBar(errorResponse['message'] ?? 'Failed to resend OTP', isError: true);
-  //     }
-  //   } catch (e) {
-  //     showCustomSnackBar("Something went wrong", isError: true);
-  //   } finally {
-  //     isForgotLoading.value = false;
-  //   }
-  // }
+    try {
+      var response = await ApiClient.postData(
+        ApiUrl.resendOtp,
+        jsonEncode(body),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("OTP resent successfully", isError: false);
+        _startResendCountdown();
+      } else {
+        Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
+        showCustomSnackBar(
+          errorResponse['message'] ?? 'Failed to resend OTP',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      showCustomSnackBar("Something went wrong", isError: true);
+    } finally {
+      isForgotLoading.value = false;
+    }
+  }
 
   Future<void> verifyOtp() async {
     final otp = otpControllers.map((c) => c.text).join();

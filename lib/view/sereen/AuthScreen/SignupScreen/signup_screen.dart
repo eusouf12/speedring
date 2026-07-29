@@ -267,34 +267,39 @@ class SignupScreen extends StatelessWidget {
                 Obx(() {
                   return controller.isSignupLoading.value
                       ? const CustomLoader()
-                      : CustomButton(
-                          onTap: () {
-                            controller.signupValidator();
-                          },
-                          title: 'CREATE ACCOUNT',
-                          fillColor: const Color(0xffF5C400),
-                          textColor: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          borderRadius: 16,
+                      : Column(
+                          children: [
+                            CustomButton(
+                              onTap: () {
+                                controller.signupRole.value = 'driver';
+                                controller.signupValidator();
+                              },
+                              title: 'CREATE ACCOUNT',
+                              fillColor: const Color(0xffF5C400),
+                              textColor: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              borderRadius: 16,
+                            ),
+                            const SizedBox(height: 12),
+                            CustomButton(
+                              onTap: () {
+                                controller.signupRole.value = 'business';
+                                controller.signupValidator();
+                              },
+                              title: 'CREATE BUSINESS ACCOUNT',
+                              fillColor: Colors.black,
+                              textColor: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              borderRadius: 16,
+                              isBorder: true,
+                              borderWidth: 1,
+                              borderColor: Colors.white,
+                            ),
+                          ],
                         );
                 }),
-
-                const SizedBox(height: 12),
-
-                // ── CREATE BUSINESS ACCOUNT button ────────────────────────
-                CustomButton(
-                  onTap: () => Get.toNamed(AppRoutes.businessRegistrationStep1),
-                  title: 'CREATE BUSINESS ACCOUNT',
-                  fillColor: Colors.black,
-                  textColor: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  borderRadius: 16,
-                  isBorder: true,
-                  borderWidth: 1,
-                  borderColor: Colors.white,
-                ),
 
                 const SizedBox(height: 32),
 
