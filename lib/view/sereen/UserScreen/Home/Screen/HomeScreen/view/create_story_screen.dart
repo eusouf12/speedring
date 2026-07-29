@@ -1,33 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-
-// ─── Controller ────────────────────────────────────────────────
-class CreateStoryController extends GetxController {
-  final Rxn<File> selectedFile = Rxn<File>();
-  final RxBool isVideo = false.obs;
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> pickMedia({required bool isVideoVal}) async {
-    final XFile? picked = isVideoVal
-        ? await _picker.pickVideo(source: ImageSource.gallery)
-        : await _picker.pickImage(source: ImageSource.gallery);
-
-    if (picked != null) {
-      selectedFile.value = File(picked.path);
-      isVideo.value = isVideoVal;
-    }
-  }
-
-  void reset() {
-    selectedFile.value = null;
-    isVideo.value = false;
-  }
-}
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 
 // ─── Screen ────────────────────────────────────────────────────
 class CreateStoryScreen extends StatelessWidget {
@@ -36,10 +13,7 @@ class CreateStoryScreen extends StatelessWidget {
   final String? profileImageUrl;
   final String? userName;
 
-  void _showPickerSheet(
-    BuildContext context,
-    CreateStoryController controller,
-  ) {
+  void _showPickerSheet(BuildContext context, HomeController controller) {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xff1C1C1C),
@@ -88,7 +62,7 @@ class CreateStoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CreateStoryController());
+    final controller = Get.put(HomeController());
 
     return Obx(
       () => Scaffold(
@@ -101,10 +75,11 @@ class CreateStoryScreen extends StatelessWidget {
                 file: controller.selectedFile.value!,
                 isVideo: controller.isVideo.value,
                 profileImageUrl: profileImageUrl,
-                onClose: () => controller.reset(),
+                onClose: () => controller.resetStory(),
                 onShare: () {
-                  Navigator.pop(context);
+                  controller.createStory();
                 },
+                isCreating: controller.isStoryCreating.value,
               ),
       ),
     );
@@ -196,6 +171,7 @@ class PreviewView extends StatelessWidget {
   final String? profileImageUrl;
   final VoidCallback onClose;
   final VoidCallback onShare;
+  final bool isCreating;
 
   const PreviewView({
     super.key,
@@ -204,10 +180,12 @@ class PreviewView extends StatelessWidget {
     required this.onClose,
     required this.onShare,
     this.profileImageUrl,
+    this.isCreating = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
     return CustomGradient(
       child: Scaffold(
         extendBodyBehindAppBar: true,
@@ -241,7 +219,7 @@ class PreviewView extends StatelessWidget {
           ),
         ),
 
-        body: Stack(
+        body: Obx(() => Stack(
           children: [
             /// Full Screen Media
             Positioned.fill(
@@ -256,7 +234,7 @@ class PreviewView extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Image.file(file, fit: BoxFit.cover),
+                  : Image.file(file, fit: BoxFit.contain),
             ),
 
             /// Overlay
@@ -278,21 +256,214 @@ class PreviewView extends StatelessWidget {
               ),
             ),
 
+            /// Music Sticker
+            if (controller.selectedMusic.value != null)
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 60,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 10, spreadRadius: 2),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.music_note, color: Colors.black, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          controller.selectedMusic.value!,
+                          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+            /// Location Sticker
+            if (controller.selectedLocation.value != null)
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 110,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(colors: [Color(0xffE1306C), Color(0xffF77737)]),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 10, spreadRadius: 2),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.location_on, color: Colors.white, size: 16),
+                        const SizedBox(width: 8),
+                        Text(
+                          controller.selectedLocation.value!.toUpperCase(),
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+            /// Floating Icons (Music & Location)
+            Positioned(
+              top: 100,
+              right: 16,
+              child: Column(
+                children: [
+                  _StoryIconButton(
+                    icon: Icons.music_note,
+                    onTap: () {
+                      _showMusicSelectionSheet(context, controller);
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _StoryIconButton(
+                    icon: Icons.location_on_outlined,
+                    onTap: () {
+                      _showLocationSelectionSheet(context, controller);
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            /// Video Trimmer UI (mock for longer videos)
+            if (isVideo)
+              Positioned(
+                left: 16,
+                right: 16,
+                bottom: MediaQuery.of(context).padding.bottom + 90,
+                child: Column(
+                  children: [
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "VIDEO TRIMMER",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "00:15 / 00:30",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white12,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.yellow, width: 2),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(width: 10, color: AppColors.yellow),
+                          Container(width: 10, color: AppColors.yellow),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white12,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.equalizer,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                "AUDIO MIXER",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
             /// Share Button
             Positioned(
               left: 16,
               right: 16,
               bottom: MediaQuery.of(context).padding.bottom + 24,
               child: CustomButton(
-                onTap: () {
-                  Get.back();
-                },
-                title: "SHARE STORY",
+                onTap: isCreating ? () {} : onShare,
+                title: isCreating ? "SHARING..." : "SHARE STORY",
                 borderRadius: 30,
               ),
             ),
           ],
+        )),
+      ),
+    );
+  }
+}
+
+class _StoryIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _StoryIconButton({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.2),
+          shape: BoxShape.circle,
         ),
+        child: Icon(icon, color: Colors.white, size: 24),
       ),
     );
   }
@@ -337,4 +508,176 @@ class _SheetOption extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showMusicSelectionSheet(BuildContext context, HomeController controller) {
+  // Clear previous search and load something initial if needed
+  controller.musicList.clear();
+  controller.searchMusic("top hits");
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: const Color(0xff1C1C1C),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) => Container(
+      height: MediaQuery.of(context).size.height * 0.7,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+          ),
+          const SizedBox(height: 16),
+          const Text("Music", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          TextField(
+            onChanged: (val) => controller.searchMusic(val),
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: "Search music",
+              hintStyle: const TextStyle(color: Colors.white54),
+              prefixIcon: const Icon(Icons.search, color: Colors.white54),
+              filled: true,
+              fillColor: Colors.white12,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: Obx(() {
+              if (controller.isSearchingMusic.value) {
+                return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
+              }
+              if (controller.musicList.isEmpty) {
+                return const Center(child: Text("No music found", style: TextStyle(color: Colors.white54)));
+              }
+              return ListView.builder(
+                itemCount: controller.musicList.length,
+                itemBuilder: (context, index) {
+                  final music = controller.musicList[index];
+                  final previewUrl = music["previewUrl"] ?? "";
+                  final isPlaying = controller.currentlyPlayingUrl.value == previewUrl && previewUrl.isNotEmpty && controller.audioPlayer.playing;
+
+                  return ListTile(
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(8)),
+                      child: const Icon(Icons.music_note, color: Colors.white),
+                    ),
+                    title: Text(music["title"] ?? "", style: const TextStyle(color: Colors.white)),
+                    subtitle: Text(music["artist"] ?? "", style: const TextStyle(color: Colors.white54)),
+                    trailing: previewUrl.isNotEmpty
+                        ? IconButton(
+                            icon: Icon(isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill),
+                            color: AppColors.yellow,
+                            iconSize: 30,
+                            onPressed: () {
+                              controller.togglePlay(previewUrl);
+                            },
+                          )
+                        : null,
+                    onTap: () {
+                      controller.stopAudio();
+                      controller.selectedMusic.value = music["title"];
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              );
+            }),
+          ),
+        ],
+      ),
+    ),
+  ).whenComplete(() => controller.stopAudio());
+}
+
+void _showLocationSelectionSheet(BuildContext context, HomeController controller) {
+  controller.locationList.clear();
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: const Color(0xff1C1C1C),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) => Container(
+      height: MediaQuery.of(context).size.height * 0.7,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+          ),
+          const SizedBox(height: 16),
+          const Text("Location", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          TextField(
+            onChanged: (val) => controller.searchLocation(val),
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: "Search location",
+              hintStyle: const TextStyle(color: Colors.white54),
+              prefixIcon: const Icon(Icons.search, color: Colors.white54),
+              filled: true,
+              fillColor: Colors.white12,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ListTile(
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(color: AppColors.yellow.withValues(alpha: 0.2), shape: BoxShape.circle),
+              child: const Icon(Icons.my_location, color: AppColors.yellow),
+            ),
+            title: const Text("Use Current Location", style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold)),
+            onTap: () {
+              controller.getCurrentLocation();
+            },
+          ),
+          const Divider(color: Colors.white24),
+          Expanded(
+            child: Obx(() {
+              if (controller.isSearchingLocation.value) {
+                return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
+              }
+              if (controller.locationList.isEmpty) {
+                return const Center(child: Text("Search for a location", style: TextStyle(color: Colors.white54)));
+              }
+              return ListView.builder(
+                itemCount: controller.locationList.length,
+                itemBuilder: (context, index) {
+                  final location = controller.locationList[index];
+                  return ListTile(
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
+                      child: const Icon(Icons.location_on, color: Colors.white),
+                    ),
+                    title: Text(location, style: const TextStyle(color: Colors.white), maxLines: 2, overflow: TextOverflow.ellipsis),
+                    onTap: () {
+                      controller.selectedLocation.value = location;
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              );
+            }),
+          ),
+        ],
+      ),
+    ),
+  );
 }

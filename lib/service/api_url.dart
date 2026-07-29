@@ -2,6 +2,7 @@ class ApiUrl {
   static const String baseUrl = "http://10.10.28.90:4050/api/v1";
   static const String imageUrl = "http://10.10.28.90:4050";
   static String socketUrl = baseUrl;
+  static String mapKey = "AIzaSyCHBKvR2Wgc4eF53nYTlGYxULSQuVpb9t4";
 
   ///========================= Authentication =========================
   static const String signUp = "/auth/register";
@@ -26,5 +27,6 @@ class ApiUrl {
   static const String changePassword = "/auth/change-password";
 
   ///========================= User =========================
+  static const String createStory = "/stories/create-story";
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
 }
