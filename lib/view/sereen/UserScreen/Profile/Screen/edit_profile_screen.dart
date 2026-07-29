@@ -393,7 +393,21 @@ class EditProfileScreen extends StatelessWidget {
                                   Row(
                                     children: [
                                       // Vehicle image thumbnail
-                                      if (vehicle.vehicleImage != null &&
+                                      if (vehicle.localImageFile != null)
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            8.r,
+                                          ),
+                                          child: Image.file(
+                                            vehicle.localImageFile!,
+                                            width: 56.w,
+                                            height: 56.w,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, _e) =>
+                                                _vehicleIconBox(),
+                                          ),
+                                        )
+                                      else if (vehicle.vehicleImage != null &&
                                           vehicle.vehicleImage!.isNotEmpty)
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(

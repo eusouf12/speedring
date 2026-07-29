@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class ProfileResponse {
   final int? statusCode;
   final bool? success;
@@ -277,6 +279,8 @@ class Vehicle {
   final String? engineType;
   final String? vehicleImage;
   final String? id;
+  final String? numberPlate;
+  final File? localImageFile;
 
   Vehicle({
     this.vehicleName,
@@ -287,6 +291,8 @@ class Vehicle {
     this.engineType,
     this.vehicleImage,
     this.id,
+    this.numberPlate,
+    this.localImageFile,
   });
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
@@ -299,6 +305,7 @@ class Vehicle {
       engineType: json['engineType'],
       vehicleImage: json['vehicleImage'],
       id: json['_id'],
+      numberPlate: json['numberPlate'],
     );
   }
 
@@ -312,6 +319,7 @@ class Vehicle {
       'engineType': engineType,
       if (vehicleImage != null) 'vehicleImage': vehicleImage,
       if (id != null) '_id': id,
+      if (numberPlate != null) 'numberPlate': numberPlate,
     };
   }
 }

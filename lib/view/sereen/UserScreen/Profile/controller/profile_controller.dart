@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../../../../../service/api_client.dart';
 import '../../../../../service/api_url.dart';
 import '../model/profile_model.dart';
+import '../../../../../utils/ToastMsg/toast_message.dart';
 
 class ProfileScreenController extends GetxController {
   final _activeTab = 0.obs;
@@ -135,7 +134,10 @@ class ProfileScreenController extends GetxController {
         colorText: Colors.white,
         mainButton: TextButton(
           onPressed: () => openAppSettings(),
-          child: const Text('SETTINGS', style: TextStyle(color: Color(0xffD4FB54))),
+          child: const Text(
+            'SETTINGS',
+            style: TextStyle(color: Color(0xffD4FB54)),
+          ),
         ),
       );
       return null;
@@ -238,6 +240,12 @@ class ProfileScreenController extends GetxController {
         files.add(MultipartBody('uploadBanner', selectedBannerImage.value!));
       }
 
+      for (int i = 0; i < vehicles.length; i++) {
+        if (vehicles[i].localImageFile != null) {
+          files.add(MultipartBody('vehicleImage$i', vehicles[i].localImageFile!));
+        }
+      }
+
       final response = await ApiClient.patchMultipartData(
         ApiUrl.updateProfile,
         {'data': jsonEncode(data)},
@@ -249,35 +257,21 @@ class ProfileScreenController extends GetxController {
 
         await getMyProfile();
 
-        Get.snackbar(
-          "Profile Updated",
+        showCustomSnackBar(
           "Your profile changes have been successfully saved.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: const Color(0xff181818),
-          colorText: Colors.white,
-          borderColor: const Color(0xffD4FB54),
-          borderWidth: 1,
+          isError: false,
         );
       } else {
         debugPrint('Update profile failed: ${response.body}');
 
-        Get.snackbar(
-          "Error",
-          "Failed to update profile",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
+        showCustomSnackBar("Failed to update profile", isError: true);
       }
     } catch (e) {
       debugPrint("Update Profile error: $e");
 
-      Get.snackbar(
-        "Error",
+      showCustomSnackBar(
         "Something went wrong while updating profile.",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
+        isError: true,
       );
     } finally {
       isUpdating.value = false;
@@ -294,16 +288,15 @@ class ProfileScreenController extends GetxController {
 
   void showVehicleDialog({Vehicle? vehicle, int? index}) {
     final vNameCtrl = TextEditingController(text: vehicle?.vehicleName ?? '');
-
     final vBrandCtrl = TextEditingController(text: vehicle?.brand ?? '');
-
     final vModelCtrl = TextEditingController(text: vehicle?.model ?? '');
-
     final vYearCtrl = TextEditingController(text: vehicle?.year ?? '');
-
     final vHpCtrl = TextEditingController(text: vehicle?.hp ?? '');
-
     final vEngineCtrl = TextEditingController(text: vehicle?.engineType ?? '');
+    final vNumberPlateCtrl = TextEditingController(
+      text: vehicle?.numberPlate ?? '',
+    );
+    final Rx<File?> localVehicleImage = Rx<File?>(vehicle?.localImageFile);
 
     Get.bottomSheet(
       Container(
@@ -323,6 +316,57 @@ class ProfileScreenController extends GetxController {
                   color: Color(0xffD4FB54),
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              Center(
+                child: GestureDetector(
+                  onTap: () async {
+                    final file = await _pickImageFromGallery();
+                    if (file != null) localVehicleImage.value = file;
+                  },
+                  child: Obx(() {
+                    return Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.white10,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white24),
+                      ),
+                      child: localVehicleImage.value != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.file(
+                                localVehicleImage.value!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : (vehicle?.vehicleImage != null &&
+                                vehicle!.vehicleImage!.isNotEmpty)
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.network(
+                                vehicle.vehicleImage!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white54,
+                              size: 40,
+                            ),
+                    );
+                  }),
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Center(
+                child: Text(
+                  "Tap to add/change photo",
+                  style: TextStyle(color: Colors.white54, fontSize: 12),
                 ),
               ),
 
@@ -420,6 +464,21 @@ class ProfileScreenController extends GetxController {
                 ),
               ),
 
+              TextField(
+                controller: vNumberPlateCtrl,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  labelText: "Number Plate",
+                  labelStyle: TextStyle(color: Colors.white54),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white24),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xffD4FB54)),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 30),
 
               ElevatedButton(
@@ -441,6 +500,8 @@ class ProfileScreenController extends GetxController {
                     hp: vHpCtrl.text.trim(),
                     engineType: vEngineCtrl.text.trim(),
                     vehicleImage: vehicle?.vehicleImage,
+                    numberPlate: vNumberPlateCtrl.text.trim(),
+                    localImageFile: localVehicleImage.value,
                   );
 
                   if (index != null) {
