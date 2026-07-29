@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 
-import '../../../../../../core/app_routes/app_routes.dart';
+import '../../../../../../../core/app_routes/app_routes.dart';
 
 class AccessGrantedScreen extends StatelessWidget {
   const AccessGrantedScreen({super.key});
