@@ -85,8 +85,8 @@ class EditProfileScreen extends StatelessWidget {
                       top: 12.h,
                       right: 12.w,
                       child: _editIconButton(onTap: () => controller.pickBannerImage()),
-                    ),    child: _editIconButton(onTap: () {}),
                     ),
+
                     // Avatar
                     Positioned(
                       bottom: -50.h,

@@ -229,9 +229,19 @@ class ProfileScreenController extends GetxController {
         },
       };
 
+      // Build multipart files list from any picked images
+      final List<MultipartBody> files = [];
+      if (selectedProfileImage.value != null) {
+        files.add(MultipartBody('profileImage', selectedProfileImage.value!));
+      }
+      if (selectedBannerImage.value != null) {
+        files.add(MultipartBody('uploadBanner', selectedBannerImage.value!));
+      }
+
       final response = await ApiClient.patchMultipartData(
         ApiUrl.updateProfile,
         {'data': jsonEncode(data)},
+        multipartBody: files,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
