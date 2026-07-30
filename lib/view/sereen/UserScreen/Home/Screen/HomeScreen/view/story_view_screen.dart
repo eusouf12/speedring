@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
@@ -101,11 +102,29 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                 onLongPressDown: (_) => _progressController.stop(),
                 onLongPressUp: () => _progressController.forward(),
                 child: storyImageUrl != null
-                    ? Image.network(
-                        storyImageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) =>
-                            Container(color: const Color(0xff1a1a1a)),
+                    ? Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          // Blurred background (fills the screen, hides black bars)
+                          ImageFiltered(
+                            imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                            child: Image.network(
+                              storyImageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) =>
+                                  Container(color: const Color(0xff1a1a1a)),
+                            ),
+                          ),
+                          // Dark dim over the blur
+                          Container(color: Colors.black.withValues(alpha: 0.35)),
+                          // Full image without cropping
+                          Image.network(
+                            storyImageUrl,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, _, _) =>
+                                Container(color: const Color(0xff1a1a1a)),
+                          ),
+                        ],
                       )
                     : Container(color: const Color(0xff1a1a1a)),
               ),
