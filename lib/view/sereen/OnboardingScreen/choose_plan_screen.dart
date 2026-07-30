@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'checkout_webview.dart';
 import '../UserScreen/Profile/Screen/user_parameters_screen.dart';
+import '../../../core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
@@ -189,15 +190,14 @@ class ChoosePlanScreen extends StatelessWidget {
                       if (checkoutUrl != null && checkoutUrl.isNotEmpty) {
                         try {
                           // Push to the CheckoutWebView
-                          // Push to the CheckoutWebView
-                          // ignore: unused_local_variable
-                          final result = await Get.to(
+                          await Get.to(
                             () => CheckoutWebView(url: checkoutUrl),
                           );
 
-                          // No matter if it was a success, cancel, or back button press:
-                          // Navigate to the UserParametersScreen as requested.
-                          Get.offAll(() => const UserParametersScreen());
+                          // Set ProfileScreen as the root, then push UserParametersScreen on top.
+                          // This ensures the back button correctly drops you back to ProfileScreen.
+                          Get.offAllNamed(AppRoutes.profileScreen);
+                          Get.to(() => const UserParametersScreen());
                         } catch (e) {
                           debugPrint("Error opening CheckoutWebView: $e");
                         }
