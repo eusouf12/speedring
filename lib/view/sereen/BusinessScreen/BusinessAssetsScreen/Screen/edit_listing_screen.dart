@@ -222,8 +222,9 @@ class EditListingScreen extends StatelessWidget {
                     selectedValue: controller.selectedEngineConfig.value,
                     items: ["4.0L Flat-6", "3.8L Flat-6", "998cc V4", "N/A"],
                     onChanged: (val) {
-                      if (val != null)
+                      if (val != null) {
                         controller.selectedEngineConfig.value = val;
+                      }
                     },
                   ),
                   SizedBox(height: 12.h),
@@ -237,8 +238,9 @@ class EditListingScreen extends StatelessWidget {
                       "N/A",
                     ],
                     onChanged: (val) {
-                      if (val != null)
+                      if (val != null) {
                         controller.selectedTransmission.value = val;
+                      }
                     },
                   ),
                   SizedBox(height: 12.h),

@@ -263,10 +263,13 @@ class _CreateMotorcycleListingScreenState
                         String title =
                             "${productionYearController.text} ${manufacturerController.text} ${modelController.text}"
                                 .trim();
-                        if (title.trim().isEmpty)
+                        if (title.trim().isEmpty) {
                           title = "2024 DUCATI PANIGALE V4 S";
+                        }
                         String price = priceController.text.trim();
-                        if (!price.startsWith(r"$")) price = r"$" + price;
+                        if (!price.startsWith(r"$")) {
+                          price = r"$" + price;
+                        }
 
                         controller.rxAssets.insert(
                           0,

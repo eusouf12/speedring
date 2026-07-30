@@ -90,8 +90,9 @@ class BusinessCreateServicesListingScreen extends StatelessWidget {
                           fontSize: 13,
                         ),
                         onChanged: (newValue) {
-                          if (newValue != null)
+                          if (newValue != null) {
                             selectedCategory.value = newValue;
+                          }
                         },
                         items:
                             [

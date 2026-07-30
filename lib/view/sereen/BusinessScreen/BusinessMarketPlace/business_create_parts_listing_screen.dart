@@ -92,8 +92,9 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                           fontSize: 13,
                         ),
                         onChanged: (newValue) {
-                          if (newValue != null)
+                          if (newValue != null) {
                             selectedCategory.value = newValue;
+                          }
                         },
                         items:
                             [
@@ -160,8 +161,9 @@ class BusinessCreatePartsListingScreen extends StatelessWidget {
                           fontSize: 13,
                         ),
                         onChanged: (newValue) {
-                          if (newValue != null)
+                          if (newValue != null) {
                             selectedCondition.value = newValue;
+                          }
                         },
                         items:
                             [

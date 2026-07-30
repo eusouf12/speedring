@@ -70,7 +70,7 @@ class EditProfileScreen extends StatelessWidget {
                             : Image.network(
                                 profile?.profileBanner ?? '',
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, _e) => Container(
+                                errorBuilder: (context, error, stackTrace) => Container(
                                   color: const Color(0xff1C1C1C),
                                   child: const Center(
                                     child: Icon(
@@ -109,7 +109,7 @@ class EditProfileScreen extends StatelessWidget {
                                     : Image.network(
                                         profile?.profileImage ?? AppConstants.profileImage,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (_, __, _e) => Container(
+                                        errorBuilder: (context, error, stackTrace) => Container(
                                           color: const Color(0xff222222),
                                           child: const Center(
                                             child: Icon(
@@ -388,9 +388,9 @@ class EditProfileScreen extends StatelessWidget {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: controller.vehicles.length,
-                              separatorBuilder: (_, __) =>
+                              separatorBuilder: (context, index) =>
                                   SizedBox(height: 10.h),
-                              itemBuilder: (_, index) {
+                              itemBuilder: (context, index) {
                                 final vehicle = controller.vehicles[index];
                                 return _card([
                                   Row(
@@ -406,7 +406,7 @@ class EditProfileScreen extends StatelessWidget {
                                             width: 56.w,
                                             height: 56.w,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (_, __, _e) =>
+                                            errorBuilder: (context, error, stackTrace) =>
                                                 _vehicleIconBox(),
                                           ),
                                         )
@@ -421,7 +421,7 @@ class EditProfileScreen extends StatelessWidget {
                                             width: 56.w,
                                             height: 56.w,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (_, __, _e) =>
+                                            errorBuilder: (context, error, stackTrace) =>
                                                 _vehicleIconBox(),
                                           ),
                                         )

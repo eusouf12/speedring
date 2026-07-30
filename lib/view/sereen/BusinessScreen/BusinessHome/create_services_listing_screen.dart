@@ -216,8 +216,9 @@ class _CreateServicesListingScreenState
                       onTap: () {
                         // Publish item to controller list
                         String title = serviceNameController.text.trim();
-                        if (title.isEmpty)
+                        if (title.isEmpty) {
                           title = "Pro Coaching & ECU Calibration";
+                        }
                         String price = priceController.text.trim();
                         if (!price.startsWith(r"$") && !price.contains("/ ")) {
                           price = r"$" + price;

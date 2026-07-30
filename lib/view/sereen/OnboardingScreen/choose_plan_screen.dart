@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'checkout_webview.dart';
 import '../UserScreen/Profile/Screen/user_parameters_screen.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
-import '../../../core/app_routes/app_routes.dart';
 import '../../components/custom_appbar_speedring/custom_appbar_speedring.dart';
 import '../SetupProfile/setup_profile_controller.dart';
 
@@ -24,7 +22,7 @@ class ChoosePlanController extends GetxController {
   void onInit() {
     super.onInit();
     _loadCurrentPlan();
-    
+
     // Listen to changes in both current plan and the plans list to handle all race conditions
     ever(currentPlanName, (_) => _tryAutoSelect());
     final setupCtrl = Get.put(SetupProfileController());
@@ -32,17 +30,21 @@ class ChoosePlanController extends GetxController {
   }
 
   Future<void> _loadCurrentPlan() async {
-    currentPlanName.value = await SharePrefsHelper.getString(AppConstants.subscriptionPlanName) ?? '';
-    debugPrint("========> Current Plan from Storage: '${currentPlanName.value}'");
+    currentPlanName.value = await SharePrefsHelper.getString(
+      AppConstants.subscriptionPlanName,
+    );
+    debugPrint(
+      "========> Current Plan from Storage: '${currentPlanName.value}'",
+    );
     _tryAutoSelect();
   }
 
   void _tryAutoSelect() {
     if (_hasAutoSelected) return;
-    
+
     String current = currentPlanName.value.trim();
     if (current.isEmpty) return;
-    
+
     try {
       final setupController = Get.find<SetupProfileController>();
       final plansList = setupController.plansList;
@@ -76,70 +78,68 @@ class ChoosePlanScreen extends StatelessWidget {
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Obx(
-              () {
-                if (setupController.isPlansLoading.value) {
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 100),
-                    child: Center(
-                      child: CircularProgressIndicator(color: AppColors.yellow),
-                    ),
-                  );
-                }
-
-                return Column(
-                  children: [
-                    const CustomText(
-                      text: 'Choose Your Plan',
-                      color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 4),
-                    const CustomText(
-                      text: 'Start your motorsport journey.',
-                      color: Colors.white54,
-                      fontSize: 13,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    
-                    if (setupController.plansList.isEmpty) ...[
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: CustomText(
-                          text: 'No plans available.',
-                          color: Colors.white54,
-                          fontSize: 14,
-                        ),
-                      )
-                    ] else ...[
-                      ...List.generate(setupController.plansList.length, (index) {
-                        final plan = setupController.plansList[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: _PlanCard(
-                            isSelected: controller.selectedPlan.value == index,
-                            onTap: () => controller.selectedPlan.value = index,
-                            tier: plan.tier,
-                            name: plan.name,
-                            price: plan.price,
-                            features: plan.features,
-                            badge: plan.badge,
-                            promoTag: plan.promoTag,
-                            proBadge: plan.isProBadge,
-                            highlighted: plan.isHighlighted,
-                          ),
-                        );
-                      }),
-                    ],
-
-                    const SizedBox(height: 20),
-                  ],
+            child: Obx(() {
+              if (setupController.isPlansLoading.value) {
+                return const Padding(
+                  padding: EdgeInsets.only(top: 100),
+                  child: Center(
+                    child: CircularProgressIndicator(color: AppColors.yellow),
+                  ),
                 );
-              },
-            ),
+              }
+
+              return Column(
+                children: [
+                  const CustomText(
+                    text: 'Choose Your Plan',
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  const CustomText(
+                    text: 'Start your motorsport journey.',
+                    color: Colors.white54,
+                    fontSize: 13,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+
+                  if (setupController.plansList.isEmpty) ...[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: CustomText(
+                        text: 'No plans available.',
+                        color: Colors.white54,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ] else ...[
+                    ...List.generate(setupController.plansList.length, (index) {
+                      final plan = setupController.plansList[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: _PlanCard(
+                          isSelected: controller.selectedPlan.value == index,
+                          onTap: () => controller.selectedPlan.value = index,
+                          tier: plan.tier,
+                          name: plan.name,
+                          price: plan.price,
+                          features: plan.features,
+                          badge: plan.badge,
+                          promoTag: plan.promoTag,
+                          proBadge: plan.isProBadge,
+                          highlighted: plan.isHighlighted,
+                        ),
+                      );
+                    }),
+                  ],
+
+                  const SizedBox(height: 20),
+                ],
+              );
+            }),
           ),
         ),
 
@@ -147,14 +147,18 @@ class ChoosePlanScreen extends StatelessWidget {
         Obx(() {
           bool isDisabled = false;
           String selectedRawName = '';
-          if (setupController.plansList.isNotEmpty && 
-              controller.selectedPlan.value >= 0 && 
-              controller.selectedPlan.value < setupController.plansList.length) {
-            selectedRawName = setupController.plansList[controller.selectedPlan.value].rawName;
+          if (setupController.plansList.isNotEmpty &&
+              controller.selectedPlan.value >= 0 &&
+              controller.selectedPlan.value <
+                  setupController.plansList.length) {
+            selectedRawName = setupController
+                .plansList[controller.selectedPlan.value]
+                .rawName;
             if (selectedRawName == 'PRIVATE' || selectedRawName == 'FREE') {
               isDisabled = true;
             }
-            if (controller.currentPlanName.value.isNotEmpty && selectedRawName == controller.currentPlanName.value) {
+            if (controller.currentPlanName.value.isNotEmpty &&
+                selectedRawName == controller.currentPlanName.value) {
               isDisabled = true;
             }
           }
@@ -170,26 +174,35 @@ class ChoosePlanScreen extends StatelessWidget {
               textColor: isDisabled ? Colors.white54 : Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 17,
-              onTap: isDisabled ? () {} : () async {
-                final selectedPlanId = setupController.plansList[controller.selectedPlan.value].id;
-                
-                // Call the API and get the checkout URL
-                String? checkoutUrl = await setupController.buyPlan(selectedPlanId);
-                
-                if (checkoutUrl != null && checkoutUrl.isNotEmpty) {
-                  try {
-                    // Push to the CheckoutWebView
-                    // Push to the CheckoutWebView
-                    final result = await Get.to(() => CheckoutWebView(url: checkoutUrl));
-                    
-                    // No matter if it was a success, cancel, or back button press:
-                    // Navigate to the UserParametersScreen as requested.
-                    Get.offAll(() => const UserParametersScreen());
-                  } catch (e) {
-                    debugPrint("Error opening CheckoutWebView: $e");
-                  }
-                }
-              },
+              onTap: isDisabled
+                  ? () {}
+                  : () async {
+                      final selectedPlanId = setupController
+                          .plansList[controller.selectedPlan.value]
+                          .id;
+
+                      // Call the API and get the checkout URL
+                      String? checkoutUrl = await setupController.buyPlan(
+                        selectedPlanId,
+                      );
+
+                      if (checkoutUrl != null && checkoutUrl.isNotEmpty) {
+                        try {
+                          // Push to the CheckoutWebView
+                          // Push to the CheckoutWebView
+                          // ignore: unused_local_variable
+                          final result = await Get.to(
+                            () => CheckoutWebView(url: checkoutUrl),
+                          );
+
+                          // No matter if it was a success, cancel, or back button press:
+                          // Navigate to the UserParametersScreen as requested.
+                          Get.offAll(() => const UserParametersScreen());
+                        } catch (e) {
+                          debugPrint("Error opening CheckoutWebView: $e");
+                        }
+                      }
+                    },
             ),
           );
         }),

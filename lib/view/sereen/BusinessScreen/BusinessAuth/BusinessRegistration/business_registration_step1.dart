@@ -152,8 +152,9 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                         color: Colors.white38,
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty)
+                        if (v == null || v.isEmpty) {
                           return "Enter business name";
+                        }
                         return null;
                       },
                     ),
@@ -184,10 +185,12 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                         color: Colors.white38,
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty)
+                        if (v == null || v.isEmpty) {
                           return "Enter email address";
-                        if (!GetUtils.isEmail(v))
+                        }
+                        if (!GetUtils.isEmail(v)) {
                           return "Enter valid email address";
+                        }
                         return null;
                       },
                     ),
@@ -203,8 +206,9 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                         color: Colors.white38,
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty)
+                        if (v == null || v.isEmpty) {
                           return "Enter contact number";
+                        }
                         return null;
                       },
                     ),

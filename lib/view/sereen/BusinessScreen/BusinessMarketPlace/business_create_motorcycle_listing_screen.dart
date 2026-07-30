@@ -117,8 +117,9 @@ class BusinessCreateMotorcycleListingScreen extends StatelessWidget {
                                     fontSize: 13,
                                   ),
                                   onChanged: (newValue) {
-                                    if (newValue != null)
+                                    if (newValue != null) {
                                       selectedYear.value = newValue;
+                                    }
                                   },
                                   items:
                                       [
@@ -198,8 +199,9 @@ class BusinessCreateMotorcycleListingScreen extends StatelessWidget {
                           fontSize: 13,
                         ),
                         onChanged: (newValue) {
-                          if (newValue != null)
+                          if (newValue != null) {
                             selectedEngineType.value = newValue;
+                          }
                         },
                         items:
                             [
@@ -334,8 +336,9 @@ class BusinessCreateMotorcycleListingScreen extends StatelessWidget {
                           fontSize: 13,
                         ),
                         onChanged: (newValue) {
-                          if (newValue != null)
+                          if (newValue != null) {
                             selectedTransmission.value = newValue;
+                          }
                         },
                         items: ["6-Speed Quickshift", "6-Speed Manual", "CVT"]
                             .map((trans) {

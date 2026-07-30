@@ -208,7 +208,7 @@ class SetupProfileController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         showCustomSnackBar("Checkout session created!", isError: false);
-        
+
         // Parse the URL from the response
         String? checkoutUrl;
         var body = response.body;

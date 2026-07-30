@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import '../UserScreen/Profile/Screen/user_parameters_screen.dart';
 
 class CheckoutWebView extends StatefulWidget {
   final String url;

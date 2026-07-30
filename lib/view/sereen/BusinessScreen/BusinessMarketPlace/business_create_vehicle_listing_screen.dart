@@ -116,8 +116,9 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                                     fontSize: 13,
                                   ),
                                   onChanged: (newValue) {
-                                    if (newValue != null)
+                                    if (newValue != null) {
                                       selectedYear.value = newValue;
+                                    }
                                   },
                                   items:
                                       [
@@ -391,8 +392,9 @@ class BusinessCreateVehicleListingScreen extends StatelessWidget {
                           fontSize: 13,
                         ),
                         onChanged: (newValue) {
-                          if (newValue != null)
+                          if (newValue != null) {
                             selectedDrivetrain.value = newValue;
+                          }
                         },
                         items:
                             [

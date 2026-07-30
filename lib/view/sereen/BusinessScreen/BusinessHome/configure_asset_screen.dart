@@ -271,12 +271,16 @@ class _ConfigureAssetScreenState extends State<ConfigureAssetScreen> {
                         String newTitle =
                             "${productionYearController.text} ${manufacturerController.text} ${modelController.text}"
                                 .trim();
-                        if (newTitle.trim().isEmpty)
+                        if (newTitle.trim().isEmpty) {
                           newTitle = "2024 PORSCHE 911 GT3 RS";
+                        }
                         String newPrice = priceController.text.trim();
-                        if (newPrice.isEmpty) newPrice = "284,500";
-                        if (!newPrice.startsWith(r"$"))
+                        if (newPrice.isEmpty) {
+                          newPrice = "284,500";
+                        }
+                        if (!newPrice.startsWith(r"$")) {
                           newPrice = r"$" + newPrice;
+                        }
 
                         // Mock addition
                         controller.rxAssets.insert(

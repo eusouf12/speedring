@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -74,7 +75,7 @@ class HomeController extends GetxController {
 
   final RxList<String> locationList = <String>[].obs;
   final RxBool isSearchingLocation = false.obs;
-  
+
   Timer? _debounce;
 
   void searchMusic(String query) {
@@ -87,7 +88,9 @@ class HomeController extends GetxController {
     _debounce = Timer(const Duration(milliseconds: 500), () async {
       isSearchingMusic.value = true;
       try {
-        final url = Uri.parse('https://itunes.apple.com/search?term=$query&entity=song&limit=15');
+        final url = Uri.parse(
+          'https://itunes.apple.com/search?term=$query&entity=song&limit=15',
+        );
         final response = await http.get(url);
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
@@ -101,7 +104,7 @@ class HomeController extends GetxController {
           }).toList();
         }
       } catch (e) {
-        print("Error searching music: $e");
+        debugPrint("Error searching music: $e");
       } finally {
         isSearchingMusic.value = false;
       }
@@ -119,7 +122,8 @@ class HomeController extends GetxController {
       isSearchingLocation.value = true;
       try {
         final url = Uri.parse(
-            'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=${ApiUrl.mapKey}');
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=${ApiUrl.mapKey}',
+        );
         final response = await http.get(url);
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
@@ -133,7 +137,7 @@ class HomeController extends GetxController {
           }
         }
       } catch (e) {
-        print("Error searching location: $e");
+        debugPrint("Error searching location: $e");
       } finally {
         isSearchingLocation.value = false;
       }
@@ -151,18 +155,24 @@ class HomeController extends GetxController {
           return;
         }
       }
-      
+
       if (permission == LocationPermission.deniedForever) {
         showCustomSnackBar("Location permissions are permanently denied.");
         return;
       }
 
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-      
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks.first;
-        String address = "${place.locality ?? place.subLocality ?? place.name}, ${place.country}";
+        String address =
+            "${place.locality ?? place.subLocality ?? place.name}, ${place.country}";
         selectedLocation.value = address;
         Get.back(); // close the bottom sheet
       }
@@ -194,7 +204,7 @@ class HomeController extends GetxController {
         await audioPlayer.play();
       }
     } catch (e) {
-      print("Error playing audio: $e");
+      debugPrint("Error playing audio: $e");
     }
   }
 
