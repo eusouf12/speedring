@@ -9,6 +9,7 @@ import '../../../service/api_client.dart';
 import '../../../service/api_url.dart';
 import '../../../utils/ToastMsg/toast_message.dart';
 import '../../../utils/app_images/app_images.dart';
+import 'model/plan_model.dart';
 
 class SetupProfileController extends GetxController {
   final displayNameCtrl = TextEditingController();
@@ -54,6 +55,7 @@ class SetupProfileController extends GetxController {
   void onInit() {
     super.onInit();
     startPreviewTimer();
+    getAllPlans();
   }
 
   void startPreviewTimer() {
@@ -164,6 +166,31 @@ class SetupProfileController extends GetxController {
       showCustomSnackBar("Something went wrong", isError: true);
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  //================== Get plan  controller ====================
+  final RxList<PlanModel> plansList = <PlanModel>[].obs;
+  final RxBool isPlansLoading = false.obs;
+
+  Future<void> getAllPlans() async {
+    isPlansLoading.value = true;
+    try {
+      var response = await ApiClient.getData(ApiUrl.allPlans);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var body = response.body;
+        if (body != null && body['data'] != null) {
+          plansList.value = (body['data'] as List)
+              .map((e) => PlanModel.fromJson(e))
+              .toList();
+        } else if (body != null && body is List) {
+          plansList.value = (body).map((e) => PlanModel.fromJson(e)).toList();
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching plans: $e");
+    } finally {
+      isPlansLoading.value = false;
     }
   }
 

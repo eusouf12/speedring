@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/app_routes/app_routes.dart' show AppRoutes;
 import '../../../utils/app_colors/app_colors.dart';
 import '../../components/custom_gradient/custom_gradient.dart';
 import '../../../utils/app_images/app_images.dart';
 import '../../components/custom_image/custom_image.dart';
+import '../OnboardingScreen/choose_plan_screen.dart';
 
 class GaragePreparationScreen extends StatelessWidget {
   const GaragePreparationScreen({super.key});
@@ -15,7 +15,23 @@ class GaragePreparationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // 3 second por layout automate vabe next onboarding layer (Step 4) e redirect hobe
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offAllNamed(AppRoutes.userHomeScreen);
+      showDialog(
+        context: Get.context!,
+        barrierDismissible: false,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.all(16),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: SizedBox(
+                height: Get.height * 0.85,
+                child: const ChoosePlanScreen(isModal: true),
+              ),
+            ),
+          );
+        },
+      );
     });
 
     return CustomGradient(

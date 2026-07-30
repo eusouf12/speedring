@@ -4,6 +4,7 @@ class AppConstants {
   static String userId = "UserId";
   static String userName = "UserName";
   static String role = "role";
+  static String subscriptionPlanName = "subscriptionPlanName";
   static String conversationId = "ConversationId";
   static String onBoard = "Onboard";
   static String name = "name";

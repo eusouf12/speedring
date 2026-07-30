@@ -107,7 +107,9 @@ class ProfileData {
       profileBanner: json['profileBanner'],
       status: json['status'],
       stripeCustomerId: json['stripeCustomerId'],
-      subscriptionPlan: json['subscriptionPlan'],
+      subscriptionPlan: json['subscriptionPlan'] is Map 
+          ? json['subscriptionPlan']['name'] 
+          : json['subscriptionPlan'],
       stripeSubscriptionId: json['stripeSubscriptionId'],
       following: json['following'] != null
           ? List<String>.from(json['following'])

@@ -55,88 +55,91 @@ class EditProfileScreen extends StatelessWidget {
                 final pickedBanner = controller.selectedBannerImage.value;
                 final pickedAvatar = controller.selectedProfileImage.value;
 
-                return Stack(
-                  clipBehavior: Clip.none,
-                  alignment: Alignment.center,
-                  children: [
-                    // Banner / Cover image
-                    SizedBox(
-                      height: 180.h,
-                      width: double.infinity,
-                      child: pickedBanner != null
-                          ? Image.file(pickedBanner, fit: BoxFit.cover)
-                          : Image.network(
-                              profile?.profileBanner ?? '',
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, _e) => Container(
-                                color: const Color(0xff1C1C1C),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.image,
-                                    color: Colors.white24,
-                                    size: 48,
+                return SizedBox(
+                  height: 180.h + 50.h,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.topCenter,
+                    children: [
+                      // Banner / Cover image
+                      SizedBox(
+                        height: 180.h,
+                        width: double.infinity,
+                        child: pickedBanner != null
+                            ? Image.file(pickedBanner, fit: BoxFit.cover)
+                            : Image.network(
+                                profile?.profileBanner ?? '',
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, _e) => Container(
+                                  color: const Color(0xff1C1C1C),
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.image,
+                                      color: Colors.white24,
+                                      size: 48,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                    ),
-                    // Edit banner icon
-                    Positioned(
-                      top: 12.h,
-                      right: 12.w,
-                      child: _editIconButton(onTap: () => controller.pickBannerImage()),
-                    ),
+                      ),
+                      // Edit banner icon
+                      Positioned(
+                        top: 12.h,
+                        right: 12.w,
+                        child: _editIconButton(onTap: () => controller.pickBannerImage()),
+                      ),
 
-                    // Avatar
-                    Positioned(
-                      bottom: -50.h,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            width: 100.w,
-                            height: 100.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.black, width: 4),
-                              color: Colors.black,
-                            ),
-                            child: ClipOval(
-                              child: pickedAvatar != null
-                                  ? Image.file(pickedAvatar, fit: BoxFit.cover)
-                                  : Image.network(
-                                      profile?.profileImage ?? AppConstants.profileImage,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, _e) => Container(
-                                        color: const Color(0xff222222),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.person,
-                                            color: Colors.white24,
-                                            size: 40,
+                      // Avatar
+                      Positioned(
+                        top: 180.h - 50.h,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              width: 100.w,
+                              height: 100.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.black, width: 4),
+                                color: Colors.black,
+                              ),
+                              child: ClipOval(
+                                child: pickedAvatar != null
+                                    ? Image.file(pickedAvatar, fit: BoxFit.cover)
+                                    : Image.network(
+                                        profile?.profileImage ?? AppConstants.profileImage,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, _e) => Container(
+                                          color: const Color(0xff222222),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.person,
+                                              color: Colors.white24,
+                                              size: 40,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
+                              ),
                             ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: _editIconButton(
-                              onTap: () => controller.pickProfileImage(),
-                              size: 14,
-                              padding: 6,
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: _editIconButton(
+                                onTap: () => controller.pickProfileImage(),
+                                size: 14,
+                                padding: 6,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               }),
 
-              SizedBox(height: 70.h),
+              SizedBox(height: 20.h),
 
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),

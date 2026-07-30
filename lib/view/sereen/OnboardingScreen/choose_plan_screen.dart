@@ -6,142 +6,211 @@ import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import '../../../core/app_routes/app_routes.dart';
 import '../../components/custom_appbar_speedring/custom_appbar_speedring.dart';
+import '../SetupProfile/setup_profile_controller.dart';
+
+import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
 
 // ─── Controller ────────────────────────────────────────────────
 class ChoosePlanController extends GetxController {
   final RxInt selectedPlan = 1.obs; // 0=Private, 1=Pro, 2=Business
+  final RxString currentPlanName = ''.obs;
+  bool _hasAutoSelected = false;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadCurrentPlan();
+    
+    // Listen to changes in both current plan and the plans list to handle all race conditions
+    ever(currentPlanName, (_) => _tryAutoSelect());
+    final setupCtrl = Get.put(SetupProfileController());
+    ever(setupCtrl.plansList, (_) => _tryAutoSelect());
+  }
+
+  Future<void> _loadCurrentPlan() async {
+    currentPlanName.value = await SharePrefsHelper.getString(AppConstants.subscriptionPlanName) ?? '';
+    debugPrint("========> Current Plan from Storage: '${currentPlanName.value}'");
+    _tryAutoSelect();
+  }
+
+  void _tryAutoSelect() {
+    if (_hasAutoSelected) return;
+    
+    String current = currentPlanName.value.trim();
+    if (current.isEmpty) return;
+    
+    try {
+      final setupController = Get.find<SetupProfileController>();
+      final plansList = setupController.plansList;
+      if (plansList.isEmpty) return;
+
+      for (int i = 0; i < plansList.length; i++) {
+        if (plansList[i].rawName.trim() == current) {
+          selectedPlan.value = i;
+          _hasAutoSelected = true;
+          break;
+        }
+      }
+    } catch (e) {
+      // Ignore if not initialized
+    }
+  }
 }
 
 class ChoosePlanScreen extends StatelessWidget {
-  const ChoosePlanScreen({super.key});
+  final bool isModal;
+  const ChoosePlanScreen({super.key, this.isModal = false});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ChoosePlanController());
+    final setupController = Get.put(SetupProfileController());
+
+    Widget content = Column(
+      children: [
+        /// ── Plan Cards ───────────────────────────────────
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Obx(
+              () {
+                if (setupController.isPlansLoading.value) {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 100),
+                    child: Center(
+                      child: CircularProgressIndicator(color: AppColors.yellow),
+                    ),
+                  );
+                }
+
+                return Column(
+                  children: [
+                    const CustomText(
+                      text: 'Choose Your Plan',
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    const CustomText(
+                      text: 'Start your motorsport journey.',
+                      color: Colors.white54,
+                      fontSize: 13,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    if (setupController.plansList.isEmpty) ...[
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: CustomText(
+                          text: 'No plans available.',
+                          color: Colors.white54,
+                          fontSize: 14,
+                        ),
+                      )
+                    ] else ...[
+                      ...List.generate(setupController.plansList.length, (index) {
+                        final plan = setupController.plansList[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: _PlanCard(
+                            isSelected: controller.selectedPlan.value == index,
+                            onTap: () => controller.selectedPlan.value = index,
+                            tier: plan.tier,
+                            name: plan.name,
+                            price: plan.price,
+                            features: plan.features,
+                            badge: plan.badge,
+                            promoTag: plan.promoTag,
+                            proBadge: plan.isProBadge,
+                            highlighted: plan.isHighlighted,
+                          ),
+                        );
+                      }),
+                    ],
+
+                    const SizedBox(height: 20),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+
+        /// ── Continue Button ──────────────────────────────
+        Obx(() {
+          bool isDisabled = false;
+          if (setupController.plansList.isNotEmpty && 
+              controller.selectedPlan.value >= 0 && 
+              controller.selectedPlan.value < setupController.plansList.length) {
+            final selectedRawName = setupController.plansList[controller.selectedPlan.value].rawName;
+            if (selectedRawName == 'FREE') {
+              isDisabled = true;
+            }
+            if (controller.currentPlanName.value.isNotEmpty && selectedRawName == controller.currentPlanName.value) {
+              isDisabled = true;
+            }
+          }
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: CustomButton(
+              title: 'Continue',
+              height: 56,
+              borderRadius: 30,
+              fillColor: isDisabled ? Colors.white24 : AppColors.yellow,
+              textColor: isDisabled ? Colors.white54 : Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 17,
+              onTap: isDisabled ? () {} : () {
+                if (isModal) {
+                  Get.back();
+                  Get.offAllNamed(AppRoutes.userHomeScreen);
+                } else {
+                  Get.toNamed(AppRoutes.loginScreen);
+                }
+              },
+            ),
+          );
+        }),
+
+        const SizedBox(height: 10),
+
+        const CustomText(
+          text: 'CHANGE ANYTIME IN SETTINGS',
+          color: Colors.white38,
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+          textAlign: TextAlign.center,
+        ),
+
+        const SizedBox(height: 14),
+      ],
+    );
+
+    if (isModal) {
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Container(
+          decoration: BoxDecoration(
+            color: AppColors.black,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white12, width: 1),
+          ),
+          padding: const EdgeInsets.only(top: 20),
+          child: content,
+        ),
+      );
+    }
 
     return CustomGradient(
       child: Scaffold(
         backgroundColor: AppColors.black,
         appBar: const CustomAppBarSpeedring(),
-        body: Column(
-          children: [
-            /// ── Plan Cards ───────────────────────────────────
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Obx(
-                  () => Column(
-                    children: [
-                      const CustomText(
-                        text: 'Choose Your Plan',
-                        color: Colors.white,
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      const CustomText(
-                        text: 'Start your motorsport journey.',
-                        color: Colors.white54,
-                        fontSize: 13,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-
-                      /// PRIVATE
-                      _PlanCard(
-                        isSelected: controller.selectedPlan.value == 0,
-                        onTap: () => controller.selectedPlan.value = 0,
-                        tier: 'ENTRY LEVEL',
-                        name: 'PRIVATE',
-                        price: 'Free Forever',
-                        features: const [
-                          'Community feed',
-                          'Stories',
-                          'Basic track mode',
-                          'Marketplace browsing',
-                          'Garage',
-                          'Events',
-                          'Free reactions 👍❤️',
-                        ],
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      /// PRIVATE PRO
-                      _PlanCard(
-                        isSelected: controller.selectedPlan.value == 1,
-                        onTap: () => controller.selectedPlan.value = 1,
-                        tier: 'PROFESSIONAL',
-                        name: 'PRIVATE PRO',
-                        price: '€4.99/month',
-                        badge: 'MOST POPULAR',
-                        promoTag: 'FIRST 3 MONTHS FREE!',
-                        proBadge: true,
-                        highlighted: true,
-                        features: const [
-                          'Advanced telemetry',
-                          'Unlimited tracks',
-                          'Offline track mode',
-                          'AI track analysis',
-                          'Data export',
-                          'Hobby Support Reactions 🏆🥇🏁',
-                        ],
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      /// BUSINESS
-                      _PlanCard(
-                        isSelected: controller.selectedPlan.value == 2,
-                        onTap: () => controller.selectedPlan.value = 2,
-                        tier: 'CORPORATE',
-                        name: 'BUSINESS',
-                        price: 'Start For Free',
-                        features: const [
-                          'Business profile',
-                          'Marketplace listings',
-                          'Ads promotion',
-                          'Event management',
-                          'Analytics dashboard',
-                        ],
-                      ),
-
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            /// ── Continue Button ──────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CustomButton(
-                title: 'Continue',
-                height: 56,
-                borderRadius: 30,
-                fillColor: AppColors.yellow,
-                textColor: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-                onTap: () => Get.toNamed(AppRoutes.loginScreen),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            const CustomText(
-              text: 'CHANGE ANYTIME IN SETTINGS',
-              color: Colors.white38,
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(height: 14),
-          ],
-        ),
+        body: content,
       ),
     );
   }

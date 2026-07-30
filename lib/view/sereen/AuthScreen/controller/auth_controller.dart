@@ -10,7 +10,7 @@ import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 
 class AuthController extends GetxController {
-  // ── Login ────────────────────────────────────────────────────────────────
+  // ──----------------- Login ───────────────────────────────
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final emailController = TextEditingController(
     text: "ahteshamulhasan18@gmail.com",
@@ -53,7 +53,14 @@ class AuthController extends GetxController {
         String role = userMap['role']?.toString() ?? "";
         bool isProfileSetup = userMap['isProfileSetup'] == true;
 
+        var subscriptionPlan = userMap['subscriptionPlan'] as Map<String, dynamic>? ?? {};
+        String planName = subscriptionPlan['name']?.toString() ?? "";
+
         await SharePrefsHelper.setString(AppConstants.bearerToken, accessToken);
+
+        if (planName.isNotEmpty) {
+          await SharePrefsHelper.setString(AppConstants.subscriptionPlanName, planName);
+        }
 
         if (role == 'driver') {
           if (isProfileSetup) {
@@ -230,6 +237,7 @@ class AuthController extends GetxController {
     });
   }
 
+  // ── Resend otp ───────────────────────────────────────────────────
   Future<void> resendOtp() async {
     String email = Get.arguments?['email'] ?? forgotEmailController.text.trim();
     if (email.isEmpty) {
@@ -297,7 +305,8 @@ class AuthController extends GetxController {
           // For forgot password, we get a reset token
           if (jsonResponse['data'] != null) {
             if (jsonResponse['data'] is Map) {
-              _resetToken = jsonResponse['data']['resetToken']?.toString() ?? '';
+              _resetToken =
+                  jsonResponse['data']['resetToken']?.toString() ?? '';
             } else {
               _resetToken = jsonResponse['data'].toString();
             }
@@ -322,7 +331,7 @@ class AuthController extends GetxController {
     }
   }
 
-  // ── Reset Password ───────────────────────────────────────────────────────
+  // ── Reset Password ────────────────────────────────────────────────────
   final resetFormKey = GlobalKey<FormState>();
   final newPasswordController = TextEditingController();
   final confirmNewPasswordController = TextEditingController();

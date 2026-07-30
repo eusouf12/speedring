@@ -19,6 +19,7 @@ class ApiUrl {
   // =================== my profile =====================================
   static const String myProfile = "/users/my-profile";
   static const String updateProfile = "/users/update-profile";
+  static const String allPlans = "/plans/all-plans";
 
   static const String privacyPolicy = "/legal-docs/privacy-policy";
   static const String termsCondition = "/legal-docs/terms-conditions";
