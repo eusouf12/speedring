@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:speedring/view/sereen/AuthScreen/controller/auth_controller.dart';
-import '../../view/sereen/OnboardingScreen/widget/on_bording_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 import '../../view/sereen/SetupProfile/setup_profile_controller.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/Controller/business_dashboard_controller.dart';
 import '../../view/sereen/UserScreen/Profile/controller/profile_controller.dart';
@@ -9,10 +9,10 @@ class DependencyInjection extends Bindings {
   @override
   void dependencies() {
     ///========================== Default Custom Controller ==================
-    Get.lazyPut(() => OnboardingController(), fenix: true);
     Get.put(AuthController(), permanent: true);
     Get.lazyPut(() => SetupProfileController(), fenix: true);
     Get.lazyPut(() => ProfileScreenController(), fenix: true);
+    Get.lazyPut(() => HomeController(), fenix: true);
     Get.put(BusinessDashboardController(), permanent: true);
   }
 }

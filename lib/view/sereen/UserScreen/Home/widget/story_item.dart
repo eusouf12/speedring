@@ -58,13 +58,31 @@ class StoryItem extends StatelessWidget {
               ),
               child: ClipOval(
                 child: imageSrc != null
-                    ? CustomImage(
-                        imageSrc: imageSrc!,
-                        imageType: ImageType.png,
-                        fit: BoxFit.cover,
-                        width: 66,
-                        height: 66,
-                      )
+                    ? (imageSrc!.startsWith('http')
+                          ? Image.network(
+                              imageSrc!,
+                              fit: BoxFit.cover,
+                              width: 66,
+                              height: 66,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                    color: const Color(0xff1C1C1C),
+                                    child: Center(
+                                      child: Icon(
+                                        icon ?? Icons.broken_image,
+                                        color: AppColors.yellow,
+                                        size: 22,
+                                      ),
+                                    ),
+                                  ),
+                            )
+                          : CustomImage(
+                              imageSrc: imageSrc!,
+                              imageType: ImageType.png,
+                              fit: BoxFit.cover,
+                              width: 66,
+                              height: 66,
+                            ))
                     : Container(
                         color: const Color(0xff1C1C1C),
                         child: Center(

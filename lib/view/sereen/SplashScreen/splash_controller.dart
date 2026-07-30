@@ -102,7 +102,9 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
 
   void _navigateAfterDelay() {
     Future.delayed(const Duration(milliseconds: 4000), () {
-      Get.offAllNamed(AppRoutes.onboardingScreen);
+      if (!isClosed) {
+        Get.offAllNamed(AppRoutes.onboardingScreen);
+      }
     });
   }
 

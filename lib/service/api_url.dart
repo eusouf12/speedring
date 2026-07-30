@@ -31,5 +31,6 @@ class ApiUrl {
 
   ///========================= User =========================
   static const String createStory = "/stories/create-story";
+  static const String getAllStory = "/stories/get-all-user-stories";
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
 }

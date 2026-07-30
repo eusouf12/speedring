@@ -11,25 +11,39 @@ import 'package:just_audio/just_audio.dart';
 import 'package:speedring/service/api_client.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
+import '../../../../../../../helper/shared_prefe/shared_prefe.dart';
+import '../model/story_model.dart';
 
 class HomeController extends GetxController {
   final rxActiveTab = 0.obs; // 0: ALL, 1: EVENTS, 2: CLUBS
   void changeTab(int index) => rxActiveTab.value = index;
 
-  // --- Story Creation ---
+  // ---Create  Story Creation -------------------------------
   final Rxn<File> selectedFile = Rxn<File>();
   final RxBool isVideo = false.obs;
   final RxBool isStoryCreating = false.obs;
   final ImagePicker _picker = ImagePicker();
 
-  Future<void> pickMedia({required bool isVideoVal}) async {
-    final XFile? picked = isVideoVal
-        ? await _picker.pickVideo(source: ImageSource.gallery)
-        : await _picker.pickImage(source: ImageSource.gallery);
+  bool _isPickingMedia = false;
 
-    if (picked != null) {
-      selectedFile.value = File(picked.path);
-      isVideo.value = isVideoVal;
+  Future<void> pickMedia({required bool isVideoVal}) async {
+    if (_isPickingMedia) return;
+    _isPickingMedia = true;
+
+    try {
+      final XFile? picked = isVideoVal
+          ? await _picker.pickVideo(source: ImageSource.gallery)
+          : await _picker.pickImage(source: ImageSource.gallery);
+
+      if (picked != null) {
+        selectedFile.value = File(picked.path);
+        isVideo.value = isVideoVal;
+      }
+    } catch (e) {
+      debugPrint("Error picking media: $e");
+    } finally {
+      _isPickingMedia = false;
     }
   }
 
@@ -49,18 +63,35 @@ class HomeController extends GetxController {
     isStoryCreating.value = true;
 
     try {
+      Map<String, dynamic> dataMap = {};
+
+      if (selectedLocation.value != null &&
+          selectedLocation.value!.isNotEmpty) {
+        dataMap["location"] = {"name": selectedLocation.value};
+      }
+
+      if (selectedMusic.value != null && selectedMusic.value!.isNotEmpty) {
+        dataMap["music"] = {"name": selectedMusic.value};
+      }
+
+      Map<String, String> body = {};
+      if (dataMap.isNotEmpty) {
+        body['data'] = jsonEncode(dataMap);
+      }
+
       final response = await ApiClient.postMultipartData(
         ApiUrl.createStory,
-        {},
+        body,
         multipartBody: [MultipartBody('media', selectedFile.value!)],
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        showCustomSnackBar("Story created successfully!");
+        showCustomSnackBar("Story created successfully!", isError: false);
         resetStory();
+        getStories(); // refresh the story list automatically
         Get.back(); // close the create story screen
       } else {
-        showCustomSnackBar("Failed to create story");
+        showCustomSnackBar("Failed to create story", isError: true);
       }
     } catch (e) {
       showCustomSnackBar("An error occurred: $e");
@@ -211,6 +242,69 @@ class HomeController extends GetxController {
   void stopAudio() {
     audioPlayer.stop();
     currentlyPlayingUrl.value = "";
+  }
+
+  // ---------------- Get Story Screction ==========================
+  final RxList<StoryUserGroup> allStories = <StoryUserGroup>[].obs;
+  final RxBool isStoriesLoading = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    getStories();
+  }
+
+  Future<void> getStories() async {
+    isStoriesLoading.value = true;
+    try {
+      var response = await ApiClient.getData(ApiUrl.getAllStory);
+      if (response.statusCode == 200) {
+        var storyResponse = StoryResponse.fromJson(
+          response.body is String ? jsonDecode(response.body) : response.body,
+        );
+
+        if (storyResponse.data != null) {
+          List<StoryUserGroup> stories = storyResponse.data!;
+
+          String token = await SharePrefsHelper.getString(
+            AppConstants.bearerToken,
+          );
+          String? myUserId = _getUserIdFromToken(token);
+
+          if (myUserId != null && myUserId.isNotEmpty) {
+            int myIndex = stories.indexWhere(
+              (element) => element.user?.id == myUserId,
+            );
+            if (myIndex != -1) {
+              var myStory = stories.removeAt(myIndex);
+              stories.insert(0, myStory);
+            }
+          }
+
+          allStories.value = stories;
+        }
+      } else {
+        debugPrint("Failed to fetch stories: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("Error fetching stories: $e");
+    } finally {
+      isStoriesLoading.value = false;
+    }
+  }
+
+  String? _getUserIdFromToken(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return null;
+      final payload = parts[1];
+      var normalized = base64Url.normalize(payload);
+      var resp = utf8.decode(base64Url.decode(normalized));
+      final decoded = json.decode(resp);
+      return decoded['userId'];
+    } catch (e) {
+      return null;
+    }
   }
 
   @override

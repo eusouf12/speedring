@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import '../../view/sereen/OnboardingScreen/age_verify_screen.dart';
+import '../../view/sereen/OnboardingScreen/widget/on_bording_controller.dart';
 import '../../view/sereen/SetupProfile/preview.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen.dart';
 import '../../view/sereen/SetupProfile/setup_profile_screen2.dart';
@@ -234,7 +235,13 @@ class AppRoutes {
     GetPage(name: splashScreen, page: () => const SplashScreen()),
 
     ///============== User part ==================
-    GetPage(name: onboardingScreen, page: () => OnboardingScreen()),
+    GetPage(
+      name: onboardingScreen,
+      page: () => OnboardingScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => OnboardingController(), fenix: true);
+      }),
+    ),
     GetPage(name: ageVerifyScreen, page: () => const AgeVerifyScreen()),
     GetPage(name: setupProfileScreen1, page: () => const SetupProfileScreen1()),
     GetPage(name: setupProfileScreen2, page: () => const SetupProfileScreen2()),

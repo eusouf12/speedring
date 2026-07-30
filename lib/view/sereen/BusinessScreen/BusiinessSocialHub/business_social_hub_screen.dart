@@ -79,13 +79,13 @@ class _BusinessSocialHubScreenState extends State<BusinessSocialHubScreen> {
                       if (story['isMe'] == true) {
                         Get.toNamed(AppRoutes.businessCreatePostScreen);
                       } else {
-                        Get.to(
-                          () => StoryViewScreen(
-                            userName: story['name'],
-                            timeAgo: '14M AGO',
-                            storyImageUrl: 'https://picsum.photos/400/800',
-                          ),
-                        );
+                        // Get.to(
+                        //   () => StoryViewScreen(
+                        //     userName: story['name'],
+                        //     timeAgo: '14M AGO',
+                        //     storyImageUrl: 'https://picsum.photos/400/800',
+                        //   ),
+                        // );
                       }
                     },
                     child: StoryItem(

@@ -21,36 +21,7 @@ class UserHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final HomeController controller = Get.put(HomeController());
-    final String userDisplayName = "CREATE";
-
-    final List<Map<String, dynamic>> stories = [
-      {'isMe': true, 'name': userDisplayName, 'image': null, 'icon': Icons.add},
-      {
-        'isMe': false,
-        'name': 'MY DRIVE',
-        'image': AppImages.helmet,
-        'icon': null,
-      },
-      {
-        'isMe': false,
-        'name': 'TELEMETRY',
-        'image': null,
-        'icon': Icons.speed_outlined,
-      },
-      {
-        'isMe': false,
-        'name': 'LAP 4',
-        'image': AppImages.electricBg,
-        'icon': null,
-      },
-      {
-        'isMe': false,
-        'name': 'NÜRBURG',
-        'image': AppImages.oldtimerBg,
-        'icon': null,
-      },
-    ];
+    final HomeController controller = Get.find<HomeController>();
 
     return CustomGradient(
       child: Scaffold(
@@ -71,43 +42,73 @@ class UserHomeScreen extends StatelessWidget {
             /// ── STORIES ──────────────────────────────────────────────────
             SizedBox(
               height: 110,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: stories.length,
-                itemBuilder: (context, index) {
-                  final story = stories[index];
-                  return GestureDetector(
-                    onTap: () {
-                      if (story['isMe'] == true) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const CreateStoryScreen(),
-                          ),
-                        );
-                      } else {
+              child: Obx(() {
+                if (controller.isStoriesLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.yellow),
+                  );
+                }
+
+                final storiesList = controller.allStories;
+
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: storiesList.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const CreateStoryScreen(),
+                            ),
+                          );
+                        },
+                        child: const StoryItem(
+                          isMe: true,
+                          name: 'CREATE',
+                          imageSrc: null,
+                          icon: Icons.add,
+                        ),
+                      );
+                    }
+
+                    final storyGroup = storiesList[index - 1];
+                    String? imageUrl;
+                    if (storyGroup.stories != null &&
+                        storyGroup.stories!.isNotEmpty) {
+                      final mediaList = storyGroup.stories!.last.media;
+                      if (mediaList != null && mediaList.isNotEmpty) {
+                        imageUrl = mediaList.first.url;
+                      }
+                    }
+                    if (imageUrl == null || imageUrl.isEmpty) {
+                      imageUrl = storyGroup.user?.profileImage;
+                    }
+
+                    return GestureDetector(
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => StoryViewScreen(
-                              userName: story['name'],
-                              timeAgo: '14M AGO',
-                              storyImageUrl: 'https://picsum.photos/400/800',
+                              storyGroup: storyGroup,
                             ),
                           ),
                         );
-                      }
-                    },
-                    child: StoryItem(
-                      isMe: story['isMe'],
-                      name: story['name'],
-                      imageSrc: story['image'],
-                      icon: story['icon'],
-                    ),
-                  );
-                },
-              ),
+                      },
+                      child: StoryItem(
+                        isMe: false,
+                        name: storyGroup.user?.name ?? 'Unknown',
+                        imageSrc: imageUrl,
+                        icon: null,
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
 
             const Divider(color: Colors.white24),

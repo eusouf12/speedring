@@ -8,10 +8,9 @@ import 'widget/on_bording_controller.dart';
 class OnboardingScreen extends StatelessWidget {
   OnboardingScreen({super.key});
 
-  final controller = Get.find<OnboardingController>();
-
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<OnboardingController>();
     return Scaffold(
       body: Stack(
         children: [

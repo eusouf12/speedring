@@ -2,19 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 
+import '../model/story_model.dart';
+
 class StoryViewScreen extends StatefulWidget {
   const StoryViewScreen({
     super.key,
-    required this.userName,
-    required this.timeAgo,
-    required this.storyImageUrl,
-    this.profileImageUrl,
+    required this.storyGroup,
   });
 
-  final String userName;
-  final String timeAgo;
-  final String storyImageUrl;
-  final String? profileImageUrl;
+  final StoryUserGroup storyGroup;
 
   @override
   State<StoryViewScreen> createState() => _StoryViewScreenState();
@@ -24,6 +20,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _progressController;
   final TextEditingController _messageCtrl = TextEditingController();
+  int currentIndex = 0;
 
   @override
   void initState() {
@@ -35,9 +32,32 @@ class _StoryViewScreenState extends State<StoryViewScreen>
 
     _progressController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Navigator.of(context).pop();
+        _nextStory();
       }
     });
+  }
+
+  void _nextStory() {
+    final stories = widget.storyGroup.stories ?? [];
+    if (currentIndex < stories.length - 1) {
+      setState(() {
+        currentIndex++;
+      });
+      _progressController.reset();
+      _progressController.forward();
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _previousStory() {
+    if (currentIndex > 0) {
+      setState(() {
+        currentIndex--;
+      });
+      _progressController.reset();
+      _progressController.forward();
+    }
   }
 
   @override
@@ -49,6 +69,19 @@ class _StoryViewScreenState extends State<StoryViewScreen>
 
   @override
   Widget build(BuildContext context) {
+    final stories = widget.storyGroup.stories ?? [];
+    final currentStory = stories.isNotEmpty ? stories[currentIndex] : null;
+    final user = widget.storyGroup.user;
+
+    String? storyImageUrl;
+    if (currentStory?.media != null && currentStory!.media!.isNotEmpty) {
+      storyImageUrl = currentStory.media!.first.url;
+    }
+
+    String userName = user?.name ?? 'User';
+    String? profileImageUrl = user?.profileImage;
+    String timeAgo = "14M AGO"; // You can calculate this from currentStory.createdAt if desired
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -56,28 +89,44 @@ class _StoryViewScreenState extends State<StoryViewScreen>
           children: [
             /// ── Full-screen story background ──────────────────────────────
             Positioned.fill(
-              child: Image.network(
-                widget.storyImageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) =>
-                    Container(color: const Color(0xff1a1a1a)),
+              child: GestureDetector(
+                onTapDown: (details) {
+                  final screenWidth = MediaQuery.of(context).size.width;
+                  if (details.globalPosition.dx < screenWidth / 3) {
+                    _previousStory();
+                  } else {
+                    _nextStory();
+                  }
+                },
+                onLongPressDown: (_) => _progressController.stop(),
+                onLongPressUp: () => _progressController.forward(),
+                child: storyImageUrl != null
+                    ? Image.network(
+                        storyImageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) =>
+                            Container(color: const Color(0xff1a1a1a)),
+                      )
+                    : Container(color: const Color(0xff1a1a1a)),
               ),
             ),
 
             /// Dark gradient overlay — top & bottom
             Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.55),
-                      Colors.transparent,
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.8),
-                    ],
-                    stops: const [0.0, 0.25, 0.65, 1.0],
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.55),
+                        Colors.transparent,
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.8),
+                      ],
+                      stops: const [0.0, 0.25, 0.65, 1.0],
+                    ),
                   ),
                 ),
               ),
@@ -88,19 +137,36 @@ class _StoryViewScreenState extends State<StoryViewScreen>
               top: MediaQuery.of(context).padding.top + 8,
               left: 12,
               right: 12,
-              child: AnimatedBuilder(
-                animation: _progressController,
-                builder: (_, _) => ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: _progressController.value,
-                    backgroundColor: Colors.white30,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.yellow,
+              child: Row(
+                children: List.generate(stories.length, (index) {
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: AnimatedBuilder(
+                        animation: _progressController,
+                        builder: (context, child) {
+                          double value = 0.0;
+                          if (index < currentIndex) {
+                            value = 1.0;
+                          } else if (index == currentIndex) {
+                            value = _progressController.value;
+                          }
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: value,
+                              backgroundColor: Colors.white30,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColors.yellow,
+                              ),
+                              minHeight: 2.5,
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                    minHeight: 2.5,
-                  ),
-                ),
+                  );
+                }),
               ),
             ),
 
@@ -120,9 +186,9 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                       border: Border.all(color: AppColors.yellow, width: 2),
                     ),
                     child: ClipOval(
-                      child: widget.profileImageUrl != null
+                      child: profileImageUrl != null
                           ? Image.network(
-                              widget.profileImageUrl!,
+                              profileImageUrl,
                               fit: BoxFit.cover,
                             )
                           : const Icon(Icons.person, color: Colors.white),
@@ -137,7 +203,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.userName.toUpperCase(),
+                          userName.toUpperCase(),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 13,
@@ -147,7 +213,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          widget.timeAgo,
+                          timeAgo,
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 11,
@@ -163,7 +229,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                     child: Container(
                       width: 34,
                       height: 34,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white12,
                         shape: BoxShape.circle,
                       ),
