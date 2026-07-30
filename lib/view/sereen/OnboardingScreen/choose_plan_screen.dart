@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'checkout_webview.dart';
+import '../UserScreen/Profile/Screen/user_parameters_screen.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
@@ -143,11 +146,12 @@ class ChoosePlanScreen extends StatelessWidget {
         /// ── Continue Button ──────────────────────────────
         Obx(() {
           bool isDisabled = false;
+          String selectedRawName = '';
           if (setupController.plansList.isNotEmpty && 
               controller.selectedPlan.value >= 0 && 
               controller.selectedPlan.value < setupController.plansList.length) {
-            final selectedRawName = setupController.plansList[controller.selectedPlan.value].rawName;
-            if (selectedRawName == 'FREE') {
+            selectedRawName = setupController.plansList[controller.selectedPlan.value].rawName;
+            if (selectedRawName == 'PRIVATE' || selectedRawName == 'FREE') {
               isDisabled = true;
             }
             if (controller.currentPlanName.value.isNotEmpty && selectedRawName == controller.currentPlanName.value) {
@@ -161,16 +165,29 @@ class ChoosePlanScreen extends StatelessWidget {
               title: 'Continue',
               height: 56,
               borderRadius: 30,
+              isLoading: setupController.isBuyPlanLoading.value,
               fillColor: isDisabled ? Colors.white24 : AppColors.yellow,
               textColor: isDisabled ? Colors.white54 : Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 17,
-              onTap: isDisabled ? () {} : () {
-                if (isModal) {
-                  Get.back();
-                  Get.offAllNamed(AppRoutes.userHomeScreen);
-                } else {
-                  Get.toNamed(AppRoutes.loginScreen);
+              onTap: isDisabled ? () {} : () async {
+                final selectedPlanId = setupController.plansList[controller.selectedPlan.value].id;
+                
+                // Call the API and get the checkout URL
+                String? checkoutUrl = await setupController.buyPlan(selectedPlanId);
+                
+                if (checkoutUrl != null && checkoutUrl.isNotEmpty) {
+                  try {
+                    // Push to the CheckoutWebView
+                    // Push to the CheckoutWebView
+                    final result = await Get.to(() => CheckoutWebView(url: checkoutUrl));
+                    
+                    // No matter if it was a success, cancel, or back button press:
+                    // Navigate to the UserParametersScreen as requested.
+                    Get.offAll(() => const UserParametersScreen());
+                  } catch (e) {
+                    debugPrint("Error opening CheckoutWebView: $e");
+                  }
                 }
               },
             ),

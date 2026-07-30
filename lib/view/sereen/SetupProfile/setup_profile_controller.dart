@@ -194,6 +194,44 @@ class SetupProfileController extends GetxController {
     }
   }
 
+  //================== Buy Plan ====================
+  final RxBool isBuyPlanLoading = false.obs;
+
+  Future<String?> buyPlan(String planId) async {
+    isBuyPlanLoading.value = true;
+    try {
+      // Typically empty body, but can be updated if the API needs extra fields
+      var response = await ApiClient.postData(
+        ApiUrl.buyPlan(planId: planId),
+        jsonEncode({}),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Checkout session created!", isError: false);
+        
+        // Parse the URL from the response
+        String? checkoutUrl;
+        var body = response.body;
+        if (body != null && body is Map && body['data'] != null) {
+          if (body['data'] is Map) {
+            checkoutUrl = body['data']['url']?.toString();
+          }
+        }
+        return checkoutUrl;
+      } else {
+        // You might want to parse response.body['message'] here
+        showCustomSnackBar("Failed to create checkout session.", isError: true);
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Buy plan error: $e");
+      showCustomSnackBar("Something went wrong", isError: true);
+      return null;
+    } finally {
+      isBuyPlanLoading.value = false;
+    }
+  }
+
   @override
   void onClose() {
     stopPreviewTimer();

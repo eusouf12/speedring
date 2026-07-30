@@ -25,7 +25,7 @@ class CustomButton extends StatelessWidget {
     this.fontWeight,
     this.icon,
     this.isImageRight = false,
-    //required bool isLoading,
+    this.isLoading = false,
   });
 
   final double height;
@@ -46,11 +46,12 @@ class CustomButton extends StatelessWidget {
   final Widget? icon;
   final FontWeight? fontWeight;
   final bool isImageRight;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isLoading ? null : onTap,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 0.0),
         margin: EdgeInsets.symmetric(
@@ -67,7 +68,16 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius ?? 12),
           color: fillColor,
         ),
-        child: showSocialButton
+        child: isLoading
+            ? SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  color: textColor,
+                  strokeWidth: 2.5,
+                ),
+              )
+            : showSocialButton
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
