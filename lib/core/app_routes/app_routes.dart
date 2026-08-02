@@ -38,7 +38,7 @@ import '../../view/sereen/UserScreen/track/group_drives/trip_lobby_screen.dart';
 import '../../view/sereen/UserScreen/track/group_drives/active_drive_screen.dart';
 import '../../view/sereen/UserScreen/track/group_drives/end_expedition_screen.dart';
 import '../../view/sereen/UserScreen/track/group_drives/share_expedition_screen.dart';
-import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/create_post_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/post/create_post_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/clubs/club_post_screen.dart';
 import '../../view/sereen/UserScreen/discover/add_spot_screen.dart';
 import '../../view/sereen/UserScreen/discover/add_video_screen.dart';

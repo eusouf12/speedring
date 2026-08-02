@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 
-import '../controller/home_controller.dart';
-import '../model/story_model.dart';
-import '../model/view_story_model.dart';
+import '../../controller/home_controller.dart';
+import '../../model/story_model.dart';
+import '../../model/view_story_model.dart';
 
 class StoryViewScreen extends StatefulWidget {
   const StoryViewScreen({super.key, required this.storyGroup});

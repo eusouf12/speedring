@@ -13,6 +13,10 @@ class PostCard extends StatelessWidget {
     this.onComment,
     this.onShare,
     this.onMore,
+    this.reactCount,
+    this.commentCount,
+    this.isLiked = false,
+    this.detailsWidget,
   });
 
   final String userName;
@@ -20,6 +24,10 @@ class PostCard extends StatelessWidget {
   final String imageUrl;
   final String caption;
   final String? profileImage;
+  final int? reactCount;
+  final int? commentCount;
+  final bool isLiked;
+  final Widget? detailsWidget;
 
   final VoidCallback? onTap;
   final VoidCallback? onLike;
@@ -59,46 +67,103 @@ class PostCard extends StatelessWidget {
                 location,
                 style: const TextStyle(color: Colors.grey),
               ),
-              trailing: GestureDetector(
-                onTap: onMore,
-                child: const Icon(Icons.more_horiz, color: Colors.white),
-              ),
+              trailing: onMore != null
+                  ? GestureDetector(
+                      onTap: onMore,
+                      child: const Icon(Icons.more_horiz, color: Colors.white),
+                    )
+                  : null,
             ),
 
             /// Post Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                imageUrl,
-                height: 250,
-                width: double.infinity,
-                fit: BoxFit.cover,
+            if (imageUrl.isNotEmpty)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  imageUrl,
+                  height: 250,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const SizedBox.shrink(),
+                ),
               ),
-            ),
 
             const SizedBox(height: 12),
+
+            if (detailsWidget != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: detailsWidget!,
+              ),
+
+            /// caption
+            if (caption.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: Text(
+                  caption,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
 
             /// Actions
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: onLike,
-                    child: const Icon(
-                      Icons.favorite_border,
-                      color: Colors.white,
-                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: onLike,
+                        child: Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: isLiked ? Colors.red : Colors.white,
+                        ),
+                      ),
+                      if (reactCount != null && reactCount! > 0) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          "$reactCount",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  GestureDetector(
-                    onTap: onComment,
-                    child: const Icon(
-                      Icons.chat_bubble_outline,
-                      color: Colors.white,
-                    ),
+                  const SizedBox(width: 20),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: onComment,
+                        child: const Icon(
+                          Icons.chat_bubble_outline,
+                          color: Colors.white,
+                        ),
+                      ),
+                      if (commentCount != null && commentCount! > 0) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          "$commentCount",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 20),
                   GestureDetector(
                     onTap: onShare,
                     child: const Icon(Icons.share, color: Colors.white),
@@ -106,14 +171,7 @@ class PostCard extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 12),
-
-            /// Caption
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(caption, style: const TextStyle(color: Colors.white)),
-            ),
           ],
         ),
       ),

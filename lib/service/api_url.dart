@@ -40,5 +40,37 @@ class ApiUrl {
       "/stories/get-story-viewers/$storyId";
   static String postViewStory({required String storyId}) =>
       "/stories/view-story/$storyId";
+  static String getAllPosts({
+    required int page,
+    required int limit,
+    String? searchTerm,
+    String? category,
+  }) {
+    String url = "/posts/get-all-posts?page=$page&limit=$limit";
+    if (searchTerm != null && searchTerm.isNotEmpty) {
+      url += "&searchTerm=${Uri.encodeComponent(searchTerm)}";
+    }
+    if (category != null && category.isNotEmpty) {
+      url += "&category=${Uri.encodeComponent(category)}";
+    }
+    return url;
+  }
+
+  static String deletePost({required String postId}) =>
+      "/posts/delete-post/$postId";
+  static String reactPost({required String postId}) =>
+      "/posts/react-post/$postId";
+  static String commentPost({required String postId}) =>
+      "/posts/comment-post/$postId";
+  static String commentPostReply({
+    required String postId,
+    required String commentId,
+  }) =>
+      "/posts/$postId/comment/$commentId/reply";
+  static String deleteComment({
+    required String postId,
+    required String commentId,
+  }) =>
+      "/posts/$postId/comment/$commentId";
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
 }

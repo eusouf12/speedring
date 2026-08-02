@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/core/dependency/dependency_injection.dart';
+import 'package:speedring/service/deeplink_service.dart';
 
 import 'utils/app_colors/app_colors.dart';
 
@@ -22,6 +23,8 @@ void main() async {
   );
 
   runApp(const MyApp());
+  // Initialize deep links
+  await DeepLinkService().initDeepLinks();
 }
 
 class MyApp extends StatelessWidget {

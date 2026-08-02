@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../../../core/app_routes/app_routes.dart';
 import '../../../../../../components/custom_appbar_user/custom_appbar_user.dart';
 import '../controller/home_controller.dart';
+import '../model/post_model.dart';
 import 'comment_screen.dart' show showCommentSheet;
-import 'story_view_screen.dart';
-import 'create_story_screen.dart';
-import 'post_detail_screen.dart';
-import 'create_post_screen.dart';
+import 'story/create_story_screen.dart';
+import 'story/story_view_screen.dart';
+import 'post/post_detail_screen.dart';
+import 'post/create_post_screen.dart';
 import '../../../widget/story_item.dart';
 import '../../../widget/add_post_button.dart';
 import '../../../widget/post_card.dart';
@@ -27,6 +29,7 @@ class UserHomeScreen extends StatelessWidget {
         backgroundColor: Colors.black,
         appBar: CustomAppBarUser(
           showSearchIcon: true,
+          onSearchTap: () => controller.showSearchBar.toggle(),
           onNotificationTap: () {
             Get.toNamed(AppRoutes.notificationScreen);
           },
@@ -36,6 +39,52 @@ class UserHomeScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
+            Obx(() {
+              if (controller.showSearchBar.value) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xff1C1C1C),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TextField(
+                      style: const TextStyle(color: Colors.white),
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: "Search posts...",
+                        hintStyle: const TextStyle(color: Colors.white30),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.white70,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear, color: Colors.white54),
+                          onPressed: () {
+                            controller.getPost(searchTerm: "");
+                            controller.showSearchBar.value = false;
+                          },
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                        ),
+                      ),
+                      onChanged: (val) {
+                        controller.searchPost(val);
+                      },
+                      onSubmitted: (val) {
+                        controller.showSearchBar.value = false;
+                      },
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            }),
             const SizedBox(height: 10),
 
             /// ── STORIES ──────────────────────────────────────────────────
@@ -119,7 +168,7 @@ class UserHomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _tab(
-                      "ALL",
+                      "POST",
                       controller.rxActiveTab.value == 0,
                       () => controller.changeTab(0),
                     ),
@@ -148,40 +197,185 @@ class UserHomeScreen extends StatelessWidget {
                 () => IndexedStack(
                   index: controller.rxActiveTab.value,
                   children: [
-                    /// Tab 0: ALL Feed
-                    ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      children: [
-                        AddPostButton(
-                          label: "ADD POST",
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const CreatePostScreen(),
+                    /// Tab 0: POST Feed
+                    controller.isPostLoading.value
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
                             ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: controller.postsList.length + 2,
+                            itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return Column(
+                                  children: [
+                                    AddPostButton(
+                                      label: "ADD POST",
+                                      onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const CreatePostScreen(),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                  ],
+                                );
+                              }
+
+                              if (index == controller.postsList.length + 1) {
+                                if (controller.isLoadMoreLoading.value) {
+                                  return const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  );
+                                } else if (controller.hasMorePosts) {
+                                  WidgetsBinding.instance.addPostFrameCallback((
+                                    _,
+                                  ) {
+                                    controller.getPost(isLoadMore: true);
+                                  });
+                                  return const SizedBox(height: 50);
+                                } else {
+                                  return const SizedBox(height: 30);
+                                }
+                              }
+
+                              final post = controller.postsList[index - 1];
+                              final categoryLabel = post.category != null
+                                  ? post.category!.replaceAll('_', ' ').toUpperCase()
+                                  : '';
+                              final userName = categoryLabel.isNotEmpty
+                                  ? "${post.user?.name ?? post.user?.userName ?? 'User'} • $categoryLabel"
+                                  : (post.user?.name ?? post.user?.userName ?? 'User');
+                              final profileImage = post.user?.profileImage;
+                              final location = post.spotDetails?.region ??
+                                  post.trackUpdateDetails?.circuit ??
+                                  post.sessionDetails?.trackName ??
+                                  (post.category != null
+                                      ? post.category!.replaceAll('_', ' ').toUpperCase()
+                                      : 'Unknown Location');
+                              final imageUrl =
+                                  post.media != null && post.media!.isNotEmpty
+                                  ? post.media!.first.url ?? ''
+                                  : '';
+                              final caption =
+                                  post.clubPostDetails?.details ??
+                                  post.businessPostDetails?.description ??
+                                  post.sessionDetails?.summary ??
+                                  post.trackUpdateDetails?.notes ??
+                                  '';
+
+                              final isMyPost = post.user?.id != null &&
+                                  post.user!.id == controller.currentUserId.value;
+
+                              return Column(
+                                children: [
+                                  PostCard(
+                                    userName: userName,
+                                    location: location,
+                                    imageUrl: imageUrl,
+                                    caption: caption,
+                                    profileImage: profileImage,
+                                    reactCount: post.reactCount,
+                                    commentCount: post.commentCount,
+                                    isLiked: post.isReacted ?? false,
+                                    detailsWidget: _buildPostDetails(post),
+                                    onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const PostDetailScreen(),
+                                      ),
+                                    ),
+                                    onLike: () => controller.reactToPost(post.id!),
+                                    onComment: () => showCommentSheet(context, post),
+                                    onShare: () {
+                                      final postLink = "https://speedring.com/post/${post.id}";
+                                      SharePlus.instance.share(
+                                        ShareParams(
+                                          text: "Check out this post on Speedring:\n\n$postLink",
+                                          subject: "Speedring Post",
+                                        ),
+                                      );
+                                    },
+                                    onMore: isMyPost
+                                        ? () {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              backgroundColor: const Color(0xff1C1C1C),
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(20),
+                                                ),
+                                              ),
+                                              builder: (context) {
+                                                return SafeArea(
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      ListTile(
+                                                        leading: const Icon(Icons.delete, color: Colors.red),
+                                                        title: const Text(
+                                                          "Delete Post",
+                                                          style: TextStyle(color: Colors.red),
+                                                        ),
+                                                        onTap: () {
+                                                          Navigator.pop(context);
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (context) => AlertDialog(
+                                                              backgroundColor: const Color(0xff1C1C1C),
+                                                              title: const Text(
+                                                                "Delete Post",
+                                                                style: TextStyle(color: Colors.white),
+                                                              ),
+                                                              content: const Text(
+                                                                "Are you sure you want to delete this post?",
+                                                                style: TextStyle(color: Colors.white70),
+                                                              ),
+                                                              actions: [
+                                                                TextButton(
+                                                                  onPressed: () => Navigator.pop(context),
+                                                                  child: const Text(
+                                                                    "Cancel",
+                                                                    style: TextStyle(color: Colors.grey),
+                                                                  ),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed: () {
+                                                                    Navigator.pop(context);
+                                                                    controller.deletePost(post.id!);
+                                                                  },
+                                                                  child: const Text(
+                                                                    "Delete",
+                                                                    style: TextStyle(color: Colors.red),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          }
+                                        : null,
+                                  ),
+                                  const SizedBox(height: 12),
+                                ],
+                              );
+                            },
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        PostCard(
-                          userName: "RED_BULL_FAN",
-                          location: "Nürburgring",
-                          imageUrl: "https://picsum.photos/600/401",
-                          caption:
-                              "Circuit life never gets old. #Nürburgring #Racing",
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const PostDetailScreen(),
-                            ),
-                          ),
-                          onLike: () {},
-                          onComment: () => showCommentSheet(context),
-                          onShare: () {},
-                          onMore: () {},
-                        ),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
 
                     /// Tab 1: EVENTS Feed (matching SS design)
                     ListView(
@@ -815,3 +1009,145 @@ class _EventCard extends StatelessWidget {
     );
   }
 }
+
+Widget? _buildPostDetails(PostModel post) {
+    final category = post.category;
+    if (category == "SPOT_POST" && post.spotDetails != null) {
+      final spot = post.spotDetails!;
+
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xff2A2A2A),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDetailRow(Icons.credit_card, "License Plate", spot.licensePlate ?? "N/A"),
+            const SizedBox(height: 6),
+            _buildDetailRow(Icons.public, "Region", spot.region ?? "N/A"),
+            const SizedBox(height: 6),
+            _buildDetailRow(Icons.settings, "Engine", spot.engine ?? "N/A"),
+            const SizedBox(height: 6),
+            _buildDetailRow(Icons.flash_on, "Power", "${spot.powerHp ?? 'N/A'} HP"),
+            const SizedBox(height: 6),
+            _buildDetailRow(Icons.directions_car, "Model", spot.makeAndModel ?? "N/A"),
+          ],
+        ),
+      );
+    } else if (category == "SESSION_POST" && post.sessionDetails != null) {
+      final session = post.sessionDetails!;
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xff2A2A2A),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDetailRow(Icons.sports_motorsports, "Vehicle", session.vehicle ?? "N/A"),
+            const SizedBox(height: 6),
+            _buildDetailRow(Icons.map, "Circuit", session.circuit ?? "N/A"),
+            const SizedBox(height: 6),
+            _buildDetailRow(Icons.flag, "Track", session.trackName ?? "N/A"),
+            const SizedBox(height: 6),
+            _buildDetailRow(Icons.timer, "Best Lap", session.bestLapTime ?? "N/A"),
+            const SizedBox(height: 6),
+            _buildDetailRow(Icons.speed, "Top Speed", session.topSpeed ?? "N/A"),
+          ],
+        ),
+      );
+    } else if (category == "BUSINESS_POST" && post.businessPostDetails != null) {
+      final biz = post.businessPostDetails!;
+      final hasTitle = biz.listingTitle != null && biz.listingTitle!.isNotEmpty;
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (hasTitle) ...[
+            Text(
+              biz.listingTitle!,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xff2A2A2A),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow(Icons.category, "Category", biz.listingCategory ?? "N/A"),
+                const SizedBox(height: 6),
+                _buildDetailRow(Icons.attach_money, "Price", biz.price ?? "N/A"),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else if ((category == "TRACK_UPDATE_POST" || category == "TRACK_UPDATE") && post.trackUpdateDetails != null) {
+      final track = post.trackUpdateDetails!;
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xff2A2A2A),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDetailRow(Icons.map, "Circuit", track.circuit ?? "N/A"),
+            const SizedBox(height: 6),
+            _buildDetailRow(Icons.traffic, "Condition", track.surfaceCondition ?? "N/A"),
+            if (track.hazards != null && track.hazards!.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              _buildDetailRow(Icons.warning, "Hazards", track.hazards!.join(", ")),
+            ],
+          ],
+        ),
+      );
+    } else if (category == "CLUB_POST" && post.clubPostDetails != null) {
+      final club = post.clubPostDetails!;
+      final hasTitle = club.title != null && club.title!.isNotEmpty;
+      if (!hasTitle) return null;
+
+      return Text(
+        club.title!,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+    }
+    return null;
+  }
+
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: Colors.yellow),
+        const SizedBox(width: 8),
+        Text(
+          "$label: ",
+          style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }

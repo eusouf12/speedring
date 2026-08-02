@@ -15,11 +15,274 @@ import 'package:speedring/utils/app_const/app_const.dart';
 import '../../../../../../../helper/shared_prefe/shared_prefe.dart';
 import '../model/story_model.dart';
 import '../model/view_story_model.dart';
+import '../model/post_model.dart';
 
 class HomeController extends GetxController {
-  final rxActiveTab = 0.obs; // 0: ALL, 1: EVENTS, 2: CLUBS
+  final rxActiveTab = 0.obs; // 0: POST, 1: EVENTS, 2: CLUBS
   void changeTab(int index) => rxActiveTab.value = index;
+  // ========================================= POST SECTION ==============================================================================
+  final RxList<PostModel> postsList = <PostModel>[].obs;
+  final RxBool isPostLoading = false.obs;
+  final RxBool isLoadMoreLoading = false.obs;
+  int _postPage = 1;
+  bool _hasMorePosts = true;
+  bool get hasMorePosts => _hasMorePosts;
+  final RxString postSearchTerm = "".obs;
+  final RxString postCategory = "".obs;
+  Timer? _searchDebounce;
+  final RxBool showSearchBar = false.obs;
 
+  Future<void> getPost({
+    bool isLoadMore = false,
+    String? searchTerm,
+    String? category,
+  }) async {
+    if (isLoadMore) {
+      if (!_hasMorePosts || isLoadMoreLoading.value) return;
+      isLoadMoreLoading.value = true;
+    } else {
+      isPostLoading.value = true;
+      _postPage = 1;
+      _hasMorePosts = true;
+    }
+
+    if (currentUserId.value.isEmpty) {
+      try {
+        String token = await SharePrefsHelper.getString(AppConstants.bearerToken);
+        String? myUserId = _getUserIdFromToken(token);
+        if (myUserId != null && myUserId.isNotEmpty) {
+          currentUserId.value = myUserId;
+        }
+      } catch (e) {
+        debugPrint("Error reading userId in getPost: $e");
+      }
+    }
+
+    if (searchTerm != null) {
+      postSearchTerm.value = searchTerm;
+    }
+    if (category != null) {
+      postCategory.value = category;
+    }
+
+    try {
+      String url = ApiUrl.getAllPosts(
+        page: _postPage,
+        limit: 10,
+        searchTerm: postSearchTerm.value,
+        category: postCategory.value,
+      );
+      debugPrint("--- getPost URL: $url");
+
+      var response = await ApiClient.getData(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var postResponse = PostResponse.fromJson(
+          response.body is String ? jsonDecode(response.body) : response.body,
+        );
+        final newPosts = postResponse.data ?? [];
+        if (newPosts.length < 10) {
+          _hasMorePosts = false;
+        } else {
+          _postPage++;
+        }
+        if (isLoadMore) {
+          postsList.addAll(newPosts);
+        } else {
+          postsList.value = newPosts;
+        }
+      } else {
+        showCustomSnackBar("Failed to load posts", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error loading posts: $e");
+    } finally {
+      if (isLoadMore) {
+        isLoadMoreLoading.value = false;
+      } else {
+        isPostLoading.value = false;
+      }
+    }
+  }
+
+  void searchPost(String query) {
+    if (_searchDebounce?.isActive ?? false) _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      getPost(searchTerm: query);
+    });
+  }
+
+  Future<void> deletePost(String postId) async {
+    try {
+      var response = await ApiClient.deleteData(ApiUrl.deletePost(postId: postId));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        postsList.removeWhere((post) => post.id == postId);
+        showCustomSnackBar("Post deleted successfully", isError: false);
+      } else {
+        showCustomSnackBar("Failed to delete post", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error deleting post: $e");
+      showCustomSnackBar("Error deleting post", isError: true);
+    }
+  }
+
+  final RxSet<String> reactingPostIds = <String>{}.obs;
+
+  Future<void> reactToPost(String postId, {String reactType = "LOVE"}) async {
+    if (reactingPostIds.contains(postId)) return;
+    reactingPostIds.add(postId);
+
+    final index = postsList.indexWhere((element) => element.id == postId);
+    if (index == -1) {
+      reactingPostIds.remove(postId);
+      return;
+    }
+
+    final originalPost = postsList[index];
+    final alreadyLiked = originalPost.isReacted ?? false;
+
+    List<PostReact> updatedReacts = List.from(originalPost.reacts ?? []);
+    int updatedReactCount = originalPost.reactCount ?? 0;
+
+    if (alreadyLiked) {
+      updatedReacts.removeWhere((r) => r.user?.id == currentUserId.value);
+      updatedReactCount = (updatedReactCount > 0) ? (updatedReactCount - 1) : 0;
+    } else {
+      updatedReacts.add(PostReact(
+        id: "temp",
+        reactType: reactType,
+        user: PostUser(id: currentUserId.value),
+        reactedAt: DateTime.now(),
+      ));
+      updatedReactCount = updatedReactCount + 1;
+    }
+
+    postsList[index] = PostModel(
+      id: originalPost.id,
+      category: originalPost.category,
+      visibility: originalPost.visibility,
+      club: originalPost.club,
+      status: originalPost.status,
+      user: originalPost.user,
+      clubPostDetails: originalPost.clubPostDetails,
+      businessPostDetails: originalPost.businessPostDetails,
+      sessionDetails: originalPost.sessionDetails,
+      spotDetails: originalPost.spotDetails,
+      trackUpdateDetails: originalPost.trackUpdateDetails,
+      media: originalPost.media,
+      reacts: updatedReacts,
+      commentCount: originalPost.commentCount,
+      reactCount: updatedReactCount,
+      isReacted: !alreadyLiked,
+      myReactType: !alreadyLiked ? reactType : null,
+      comments: originalPost.comments,
+      createdAt: originalPost.createdAt,
+      updatedAt: originalPost.updatedAt,
+    );
+
+    try {
+      var response = await ApiClient.patchData(
+        ApiUrl.reactPost(postId: postId),
+        jsonEncode({"reactType": reactType}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var responseBody = response.body is String ? jsonDecode(response.body) : response.body;
+        if (responseBody["data"] != null) {
+          final data = responseBody["data"];
+          final reactsJson = data["reacts"] ?? [];
+          final backendReacts = List<PostReact>.from(reactsJson.map((x) => PostReact.fromJson(x)));
+          final backendReactCount = data["reactCount"] ?? backendReacts.length;
+          
+          final isReacted = currentUserId.value.isNotEmpty
+              ? backendReacts.any((r) => r.user?.id == currentUserId.value)
+              : !alreadyLiked;
+
+          postsList[index] = PostModel(
+            id: originalPost.id,
+            category: originalPost.category,
+            visibility: originalPost.visibility,
+            club: originalPost.club,
+            status: originalPost.status,
+            user: originalPost.user,
+            clubPostDetails: originalPost.clubPostDetails,
+            businessPostDetails: originalPost.businessPostDetails,
+            sessionDetails: originalPost.sessionDetails,
+            spotDetails: originalPost.spotDetails,
+            trackUpdateDetails: originalPost.trackUpdateDetails,
+            media: originalPost.media,
+            reacts: backendReacts,
+            commentCount: originalPost.commentCount,
+            reactCount: backendReactCount,
+            isReacted: isReacted,
+            myReactType: isReacted ? reactType : null,
+            comments: originalPost.comments,
+            createdAt: originalPost.createdAt,
+            updatedAt: originalPost.updatedAt,
+          );
+        }
+      } else {
+        postsList[index] = originalPost;
+        showCustomSnackBar("Failed to update reaction", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error reacting to post: $e");
+      postsList[index] = originalPost;
+    } finally {
+      reactingPostIds.remove(postId);
+    }
+  }
+
+  Future<void> commentOnPost(String postId, String commentText) async {
+    try {
+      var response = await ApiClient.postData(
+        ApiUrl.commentPost(postId: postId),
+        jsonEncode({"comment": commentText}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        getPost();
+        showCustomSnackBar("Comment added successfully", isError: false);
+      } else {
+        showCustomSnackBar("Failed to add comment", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error commenting on post: $e");
+    }
+  }
+
+  Future<void> deleteComment(String postId, String commentId) async {
+    try {
+      var response = await ApiClient.deleteData(
+        ApiUrl.deleteComment(postId: postId, commentId: commentId),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        getPost();
+        showCustomSnackBar("Comment deleted successfully", isError: false);
+      } else {
+        showCustomSnackBar("Failed to delete comment", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error deleting comment: $e");
+    }
+  }
+
+  Future<void> replyToComment(String postId, String commentId, String replyText) async {
+    try {
+      var response = await ApiClient.postData(
+        ApiUrl.commentPostReply(postId: postId, commentId: commentId),
+        jsonEncode({"comment": replyText}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        getPost();
+        showCustomSnackBar("Reply added successfully", isError: false);
+      } else {
+        showCustomSnackBar("Failed to add reply", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error replying to comment: $e");
+    }
+  }
+
+  // ========================================= STORY SECTION ==============================================================================
   // ---Create  Story Creation -------------------------------
   final Rxn<File> selectedFile = Rxn<File>();
   final RxBool isVideo = false.obs;
@@ -254,6 +517,7 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     getStories();
+    getPost();
   }
 
   Future<void> getStories() async {

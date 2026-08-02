@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
-import 'session_post_screen.dart';
+import '../session_post_screen.dart';
 import 'spot_post_screen.dart';
-import 'track_update_screen.dart';
-import '../../clubs/club_post_screen.dart';
+import '../track_update_screen.dart';
+import '../../../clubs/club_post_screen.dart';
 import 'business_post_screen.dart';
 
 class CreatePostScreen extends StatefulWidget {
