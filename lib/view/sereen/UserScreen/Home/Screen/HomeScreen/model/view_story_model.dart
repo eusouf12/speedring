@@ -64,8 +64,9 @@ class StoryViewer {
   final String? id;
   final ViewerUser? user;
   final DateTime? viewedAt;
+  final StoryViewerReaction? reaction;
 
-  StoryViewer({this.id, this.user, this.viewedAt});
+  StoryViewer({this.id, this.user, this.viewedAt, this.reaction});
 
   factory StoryViewer.fromJson(Map<String, dynamic> json) {
     return StoryViewer(
@@ -73,6 +74,9 @@ class StoryViewer {
       user: json["user"] != null ? ViewerUser.fromJson(json["user"]) : null,
       viewedAt: json["viewedAt"] != null
           ? DateTime.parse(json["viewedAt"])
+          : null,
+      reaction: json["reaction"] != null
+          ? StoryViewerReaction.fromJson(json["reaction"])
           : null,
     );
   }
@@ -82,6 +86,7 @@ class StoryViewer {
       "_id": id,
       "user": user?.toJson(),
       "viewedAt": viewedAt?.toIso8601String(),
+      "reaction": reaction?.toJson(),
     };
   }
 }
@@ -103,5 +108,28 @@ class ViewerUser {
 
   Map<String, dynamic> toJson() {
     return {"_id": id, "name": name, "profileImage": profileImage};
+  }
+}
+
+class StoryViewerReaction {
+  final String? type;
+  final DateTime? reactedAt;
+
+  StoryViewerReaction({this.type, this.reactedAt});
+
+  factory StoryViewerReaction.fromJson(Map<String, dynamic> json) {
+    return StoryViewerReaction(
+      type: json["type"],
+      reactedAt: json["reactedAt"] != null
+          ? DateTime.parse(json["reactedAt"])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "type": type,
+      "reactedAt": reactedAt?.toIso8601String(),
+    };
   }
 }

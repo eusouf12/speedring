@@ -359,7 +359,9 @@ class HomeController extends GetxController {
         debugPrint("--- postViewStory success!");
         return true;
       }
-      debugPrint("--- postViewStory failed with status: ${response.statusCode}");
+      debugPrint(
+        "--- postViewStory failed with status: ${response.statusCode}",
+      );
       return false;
     } catch (e) {
       debugPrint("--- Error marking story as viewed: $e");

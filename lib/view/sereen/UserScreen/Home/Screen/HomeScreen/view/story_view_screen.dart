@@ -183,21 +183,37 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Colors.grey[800],
-                            backgroundImage: user?.profileImage != null &&
+                            backgroundImage:
+                                user?.profileImage != null &&
                                     user!.profileImage!.isNotEmpty
                                 ? NetworkImage(user.profileImage!)
                                 : null,
-                            child: user?.profileImage == null ||
+                            child:
+                                user?.profileImage == null ||
                                     user!.profileImage!.isEmpty
                                 ? const Icon(Icons.person, color: Colors.white)
                                 : null,
                           ),
-                          title: Text(
-                            user?.name ?? "User",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          title: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                user?.name ?? "User",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              if (viewer.reaction != null &&
+                                  viewer.reaction!.type == 'like') ...[
+                                const SizedBox(width: 8),
+                                const Icon(
+                                  Icons.favorite,
+                                  color: Colors.redAccent,
+                                  size: 16,
+                                ),
+                              ],
+                            ],
                           ),
                           trailing: Text(
                             _formatViewedTime(viewer.viewedAt),
@@ -467,7 +483,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                     GestureDetector(
                       onTap: () {
                         _progressController.stop();
-                        _showStoryViewersSheet(context, currentStory!.id!);
+                        _showStoryViewersSheet(context, currentStory.id!);
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -479,7 +495,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            "${currentStory!.viewCount ?? 0}",
+                            "${currentStory.viewCount ?? 0}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,
@@ -503,11 +519,15 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                               _isLikedLocally = true;
                               _floatingHearts.add(_heartCounter++);
                             });
-                            await controller.likeStory(currentStory!.id!);
+                            await controller.likeStory(currentStory.id!);
                           },
                           child: Icon(
-                            _isLikedLocally ? Icons.favorite : Icons.favorite_border,
-                            color: _isLikedLocally ? Colors.redAccent : Colors.white,
+                            _isLikedLocally
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: _isLikedLocally
+                                ? Colors.redAccent
+                                : Colors.white,
                             size: 26,
                           ),
                         ),
@@ -541,8 +561,9 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                         height: 4,
                                         decoration: BoxDecoration(
                                           color: Colors.white24,
-                                          borderRadius:
-                                              BorderRadius.circular(2),
+                                          borderRadius: BorderRadius.circular(
+                                            2,
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(height: 20),
@@ -570,13 +591,12 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                             barrierDismissible: false,
                                             builder: (dialogContext) {
                                               return AlertDialog(
-                                                backgroundColor:
-                                                    const Color(0xff1C1C1C),
+                                                backgroundColor: const Color(
+                                                  0xff1C1C1C,
+                                                ),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                        16,
-                                                      ),
+                                                      BorderRadius.circular(16),
                                                 ),
                                                 title: const Text(
                                                   "Delete Story?",
@@ -627,7 +647,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                                                   (story) =>
                                                                       story
                                                                           .id ==
-                                                                      currentStory!
+                                                                      currentStory
                                                                           .id,
                                                                 );
                                                             if (_localStories
@@ -662,8 +682,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                                     child: const Text(
                                                       "YES",
                                                       style: TextStyle(
-                                                        color:
-                                                            Colors.redAccent,
+                                                        color: Colors.redAccent,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -778,10 +797,7 @@ class _PulsingDotState extends State<_PulsingDot>
 class _FloatingHeartWidget extends StatefulWidget {
   final VoidCallback onAnimationComplete;
 
-  const _FloatingHeartWidget({
-    super.key,
-    required this.onAnimationComplete,
-  });
+  const _FloatingHeartWidget({super.key, required this.onAnimationComplete});
 
   @override
   State<_FloatingHeartWidget> createState() => _FloatingHeartWidgetState();
@@ -805,23 +821,33 @@ class _FloatingHeartWidgetState extends State<_FloatingHeartWidget>
     );
 
     // Random Sway: range from -30 to 30
-    _randomX = (double.tryParse((DateTime.now().microsecondsSinceEpoch % 100).toString()) ?? 0.0) / 100.0 * 60.0 - 30.0;
+    _randomX =
+        (double.tryParse(
+                  (DateTime.now().microsecondsSinceEpoch % 100).toString(),
+                ) ??
+                0.0) /
+            100.0 *
+            60.0 -
+        30.0;
 
-    _yAnim = Tween<double>(begin: 0, end: -200).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-    _xAnim = Tween<double>(begin: 0, end: _randomX).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _yAnim = Tween<double>(
+      begin: 0,
+      end: -200,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _xAnim = Tween<double>(
+      begin: 0,
+      end: _randomX,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     _opacityAnim = TweenSequence<double>([
       TweenSequenceItem(tween: Tween<double>(begin: 0.0, end: 1.0), weight: 15),
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: 55),
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: 30),
     ]).animate(_controller);
 
-    _scaleAnim = Tween<double>(begin: 0.4, end: 1.1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
+    _scaleAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
     _controller.forward().then((_) {
       widget.onAnimationComplete();
