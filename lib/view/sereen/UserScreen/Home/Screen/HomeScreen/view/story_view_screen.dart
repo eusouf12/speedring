@@ -23,6 +23,9 @@ class _StoryViewScreenState extends State<StoryViewScreen>
   final TextEditingController _messageCtrl = TextEditingController();
   int currentIndex = 0;
   List<Story> _localStories = [];
+  final List<int> _floatingHearts = [];
+  int _heartCounter = 0;
+  bool _isLikedLocally = false;
 
   @override
   void initState() {
@@ -62,6 +65,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     if (currentIndex < _localStories.length - 1) {
       setState(() {
         currentIndex++;
+        _isLikedLocally = false;
       });
       _triggerStoryView(currentIndex);
       _progressController.reset();
@@ -77,6 +81,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     if (currentIndex > 0) {
       setState(() {
         currentIndex--;
+        _isLikedLocally = false;
       });
       _triggerStoryView(currentIndex);
       _progressController.reset();
@@ -159,7 +164,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      "Viewers (${viewersData?.count ?? viewers.length})",
+                      "Viewers (${viewersData?.viewCount ?? viewers.length})",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -494,34 +499,15 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                       if (!isMyStory && currentStory != null) ...[
                         GestureDetector(
                           onTap: () async {
-                            bool success =
-                                await controller.likeStory(currentStory!.id!);
-                            if (success) {
-                              setState(() {
-                                if (currentStory!.reacts != null) {
-                                  final myId = controller.currentUserId.value;
-                                  if (currentStory!.reacts!.contains(myId)) {
-                                    currentStory!.reacts!.remove(myId);
-                                  } else {
-                                    currentStory!.reacts!.add(myId);
-                                  }
-                                }
-                              });
-                            }
+                            setState(() {
+                              _isLikedLocally = true;
+                              _floatingHearts.add(_heartCounter++);
+                            });
+                            await controller.likeStory(currentStory!.id!);
                           },
                           child: Icon(
-                            (currentStory!.reacts?.contains(
-                                      controller.currentUserId.value,
-                                    ) ??
-                                    false)
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: (currentStory!.reacts?.contains(
-                                      controller.currentUserId.value,
-                                    ) ??
-                                    false)
-                                ? Colors.redAccent
-                                : Colors.white,
+                            _isLikedLocally ? Icons.favorite : Icons.favorite_border,
+                            color: _isLikedLocally ? Colors.redAccent : Colors.white,
                             size: 26,
                           ),
                         ),
@@ -715,6 +701,24 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                 ],
               ),
             ),
+            ..._floatingHearts.map((heartId) {
+              return Positioned(
+                bottom: MediaQuery.of(context).padding.bottom + 26,
+                right: 20,
+                child: IgnorePointer(
+                  child: _FloatingHeartWidget(
+                    key: ValueKey(heartId),
+                    onAnimationComplete: () {
+                      if (mounted) {
+                        setState(() {
+                          _floatingHearts.remove(heartId);
+                        });
+                      }
+                    },
+                  ),
+                ),
+              );
+            }),
           ],
         ),
       ),
@@ -765,6 +769,91 @@ class _PulsingDotState extends State<_PulsingDot>
           ),
         ),
       ),
+    );
+  }
+}
+
+/// ── Floating Heart Animation Widget ───────────────────────────────────────────
+
+class _FloatingHeartWidget extends StatefulWidget {
+  final VoidCallback onAnimationComplete;
+
+  const _FloatingHeartWidget({
+    super.key,
+    required this.onAnimationComplete,
+  });
+
+  @override
+  State<_FloatingHeartWidget> createState() => _FloatingHeartWidgetState();
+}
+
+class _FloatingHeartWidgetState extends State<_FloatingHeartWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _yAnim;
+  late Animation<double> _xAnim;
+  late Animation<double> _opacityAnim;
+  late Animation<double> _scaleAnim;
+  late double _randomX;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    // Random Sway: range from -30 to 30
+    _randomX = (double.tryParse((DateTime.now().microsecondsSinceEpoch % 100).toString()) ?? 0.0) / 100.0 * 60.0 - 30.0;
+
+    _yAnim = Tween<double>(begin: 0, end: -200).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+    _xAnim = Tween<double>(begin: 0, end: _randomX).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    _opacityAnim = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween<double>(begin: 0.0, end: 1.0), weight: 15),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: 55),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: 30),
+    ]).animate(_controller);
+
+    _scaleAnim = Tween<double>(begin: 0.4, end: 1.1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+    );
+
+    _controller.forward().then((_) {
+      widget.onAnimationComplete();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(_xAnim.value, _yAnim.value),
+          child: Opacity(
+            opacity: _opacityAnim.value,
+            child: Transform.scale(
+              scale: _scaleAnim.value,
+              child: const Icon(
+                Icons.favorite,
+                color: Colors.redAccent,
+                size: 28,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

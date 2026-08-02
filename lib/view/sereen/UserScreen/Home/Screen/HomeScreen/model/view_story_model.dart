@@ -33,14 +33,16 @@ class StoryViewersResponse {
 }
 
 class StoryViewersData {
-  final int? count;
+  final int? viewCount;
+  final int? reactCount;
   final List<StoryViewer>? viewers;
 
-  StoryViewersData({this.count, this.viewers});
+  StoryViewersData({this.viewCount, this.reactCount, this.viewers});
 
   factory StoryViewersData.fromJson(Map<String, dynamic> json) {
     return StoryViewersData(
-      count: json["count"],
+      viewCount: json["viewCount"],
+      reactCount: json["reactCount"],
       viewers: json["viewers"] == null
           ? []
           : List<StoryViewer>.from(
@@ -51,7 +53,8 @@ class StoryViewersData {
 
   Map<String, dynamic> toJson() {
     return {
-      "count": count,
+      "viewCount": viewCount,
+      "reactCount": reactCount,
       "viewers": viewers?.map((e) => e.toJson()).toList(),
     };
   }
