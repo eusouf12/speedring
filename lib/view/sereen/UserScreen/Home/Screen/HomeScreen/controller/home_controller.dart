@@ -14,6 +14,7 @@ import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import '../../../../../../../helper/shared_prefe/shared_prefe.dart';
 import '../model/story_model.dart';
+import '../model/view_story_model.dart';
 
 class HomeController extends GetxController {
   final rxActiveTab = 0.obs; // 0: ALL, 1: EVENTS, 2: CLUBS
@@ -247,6 +248,7 @@ class HomeController extends GetxController {
   // ---------------- Get Story Screction ==========================
   final RxList<StoryUserGroup> allStories = <StoryUserGroup>[].obs;
   final RxBool isStoriesLoading = false.obs;
+  final RxString currentUserId = "".obs;
 
   @override
   void onInit() {
@@ -272,6 +274,7 @@ class HomeController extends GetxController {
           String? myUserId = _getUserIdFromToken(token);
 
           if (myUserId != null && myUserId.isNotEmpty) {
+            currentUserId.value = myUserId;
             int myIndex = stories.indexWhere(
               (element) => element.user?.id == myUserId,
             );
@@ -290,6 +293,100 @@ class HomeController extends GetxController {
       debugPrint("Error fetching stories: $e");
     } finally {
       isStoriesLoading.value = false;
+    }
+  }
+
+  // ---------------- Delete Story Screction ==========================
+  final RxBool isStoryDeleting = false.obs;
+
+  Future<bool> deleteStory(String storyId) async {
+    isStoryDeleting.value = true;
+    try {
+      var response = await ApiClient.deleteData(
+        ApiUrl.deleteStory(storyId: storyId),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Story deleted successfully!", isError: false);
+        await getStories(); // refresh stories list
+        return true;
+      } else {
+        showCustomSnackBar("Failed to delete story", isError: true);
+        return false;
+      }
+    } catch (e) {
+      showCustomSnackBar("An error occurred: $e", isError: true);
+      return false;
+    } finally {
+      isStoryDeleting.value = false;
+    }
+  }
+
+  // ---------------- Like Story ==========================
+  final RxBool isStoryLiking = false.obs;
+
+  Future<bool> likeStory(String storyId) async {
+    isStoryLiking.value = true;
+    try {
+      var body = jsonEncode({"type": "like"});
+      var response = await ApiClient.patchData(
+        ApiUrl.likeStory(storyId: storyId),
+        body,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      } else {
+        showCustomSnackBar("Failed to like story", isError: true);
+        return false;
+      }
+    } catch (e) {
+      showCustomSnackBar("An error occurred: $e", isError: true);
+      return false;
+    } finally {
+      isStoryLiking.value = false;
+    }
+  }
+
+  // ---------------- View Story (Mark viewed) ==========================
+  Future<bool> postViewStory(String storyId) async {
+    debugPrint("--- postViewStory called for storyId: $storyId");
+    try {
+      var response = await ApiClient.patchData(
+        ApiUrl.postViewStory(storyId: storyId),
+        jsonEncode({}),
+      );
+      debugPrint("--- postViewStory response status: ${response.statusCode}");
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        debugPrint("--- postViewStory success!");
+        return true;
+      }
+      debugPrint("--- postViewStory failed with status: ${response.statusCode}");
+      return false;
+    } catch (e) {
+      debugPrint("--- Error marking story as viewed: $e");
+      return false;
+    }
+  }
+
+  // ---------------- Get Story Viewers ==========================
+  final RxBool isStoryViewersLoading = false.obs;
+
+  Future<StoryViewersResponse?> getStoryViewers(String storyId) async {
+    isStoryViewersLoading.value = true;
+    try {
+      var response = await ApiClient.getData(
+        ApiUrl.viewStory(storyId: storyId),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.body != null) {
+          return StoryViewersResponse.fromJson(response.body);
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint("Error fetching story viewers: $e");
+      return null;
+    } finally {
+      isStoryViewersLoading.value = false;
     }
   }
 

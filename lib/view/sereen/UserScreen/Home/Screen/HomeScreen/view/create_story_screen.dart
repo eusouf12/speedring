@@ -62,7 +62,7 @@ class CreateStoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(HomeController());
+    final controller = Get.find<HomeController>();
 
     return Obx(
       () => Scaffold(

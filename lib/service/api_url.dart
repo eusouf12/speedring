@@ -32,5 +32,13 @@ class ApiUrl {
   ///========================= User =========================
   static const String createStory = "/stories/create-story";
   static const String getAllStory = "/stories/get-all-user-stories";
+  static String deleteStory({required String storyId}) =>
+      "/stories/delete-story/$storyId";
+  static String likeStory({required String storyId}) =>
+      "/stories/react-story/$storyId";
+  static String viewStory({required String storyId}) =>
+      "/stories/get-story-viewers/$storyId";
+  static String postViewStory({required String storyId}) =>
+      "/stories/view-story/$storyId";
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
 }

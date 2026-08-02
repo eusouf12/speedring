@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../../../core/app_routes/app_routes.dart';
-import '../../../../../../../utils/app_images/app_images.dart';
 import '../../../../../../components/custom_appbar_user/custom_appbar_user.dart';
 import '../controller/home_controller.dart';
 import 'comment_screen.dart' show showCommentSheet;
@@ -93,9 +92,8 @@ class UserHomeScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => StoryViewScreen(
-                              storyGroup: storyGroup,
-                            ),
+                            builder: (_) =>
+                                StoryViewScreen(storyGroup: storyGroup),
                           ),
                         );
                       },
