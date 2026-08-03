@@ -45,42 +45,47 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
           ),
           centerTitle: false,
           actions: [
-            Obx(() => TextButton(
-              onPressed: homeCtrl.isPostCreating.value
-                  ? null
-                  : () async {
-                      if (homeCtrl.clubTitleCtrl.text.isEmpty ||
-                          homeCtrl.clubDetailsCtrl.text.isEmpty) {
-                        showCustomSnackBar("Title and Details are required", isError: true);
-                        return;
-                      }
+            Obx(
+              () => TextButton(
+                onPressed: homeCtrl.isPostCreating.value
+                    ? null
+                    : () async {
+                        if (homeCtrl.clubTitleCtrl.text.isEmpty ||
+                            homeCtrl.clubDetailsCtrl.text.isEmpty) {
+                          showCustomSnackBar(
+                            "Title and Details are required",
+                            isError: true,
+                          );
+                          return;
+                        }
 
-                      final success = await homeCtrl.createPost(
-                        category: "CLUB_POST",
-                        visibility: "Club Only",
-                        clubId: homeCtrl.clubSelectedClubId.value,
-                        mediaFile: homeCtrl.clubSelectedMedia.value,
-                        clubPostDetails: {
-                          "title": homeCtrl.clubTitleCtrl.text.trim(),
-                          "details": homeCtrl.clubDetailsCtrl.text.trim(),
-                          "isPinned": homeCtrl.clubIsPinned.value,
-                        },
-                      );
-                      if (success) {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      }
-                    },
-              child: Text(
-                homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
-                style: const TextStyle(
-                  color: AppColors.yellow,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1,
+                        final success = await homeCtrl.createPost(
+                          category: "CLUB_POST",
+                          visibility: "Club Only",
+                          clubId: homeCtrl.clubSelectedClubId.value,
+                          mediaFile: homeCtrl.clubSelectedMedia.value,
+                          clubPostDetails: {
+                            "title": homeCtrl.clubTitleCtrl.text.trim(),
+                            "details": homeCtrl.clubDetailsCtrl.text.trim(),
+                            "isPinned": homeCtrl.clubIsPinned.value,
+                          },
+                        );
+                        if (success) {
+                          Get.back(); // close editor
+                          Get.back(); // close CreatePostScreen
+                        }
+                      },
+                child: Text(
+                  homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
+                  style: const TextStyle(
+                    color: AppColors.yellow,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
+                  ),
                 ),
               ),
-            )),
+            ),
           ],
         ),
         body: ListView(
@@ -91,7 +96,9 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
             /// ── Club Selector ─────────────────────────────────────────────
             Obx(() {
               if (homeCtrl.clubIsLoadingClubs.value) {
-                return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.yellow),
+                );
               }
               if (homeCtrl.clubMyClubs.isEmpty) {
                 return const Padding(
@@ -103,7 +110,10 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                 );
               }
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
@@ -115,7 +125,11 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                   value: homeCtrl.clubSelectedClubId.value,
                   decoration: const InputDecoration(
                     labelText: "SELECT CLUB",
-                    labelStyle: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold),
+                    labelStyle: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                    ),
                     border: InputBorder.none,
                   ),
                   style: const TextStyle(color: Colors.white, fontSize: 13),
@@ -159,14 +173,14 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.black,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextFormField(
                       cursorColor: AppColors.yellow,
                       controller: homeCtrl.clubTitleCtrl,
                       style: const TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -185,48 +199,50 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
             /// ── ADD MEDIA Box ─────────────────────────────────────────────
             GestureDetector(
               onTap: () => homeCtrl.pickPostImage(homeCtrl.clubSelectedMedia),
-              child: Obx(() => Container(
-                height: 120,
-                decoration: BoxDecoration(
-                  color: const Color(0xff111111),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.white12,
-                    style: BorderStyle.solid,
-                    width: 1.5,
+              child: Obx(
+                () => Container(
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: const Color(0xff111111),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.white12,
+                      style: BorderStyle.solid,
+                      width: 1.5,
+                    ),
                   ),
-                ),
-                child: homeCtrl.clubSelectedMedia.value != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.file(
-                          homeCtrl.clubSelectedMedia.value!,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      )
-                    : const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.camera_alt_outlined,
-                              color: AppColors.yellow,
-                              size: 28,
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              "Add Media (Max 50MB)",
-                              style: TextStyle(
-                                color: Colors.white60,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
+                  child: homeCtrl.clubSelectedMedia.value != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.file(
+                            homeCtrl.clubSelectedMedia.value!,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        )
+                      : const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.camera_alt_outlined,
+                                color: AppColors.yellow,
+                                size: 28,
                               ),
-                            ),
-                          ],
+                              SizedBox(height: 8),
+                              Text(
+                                "Add Media (Max 50MB)",
+                                style: TextStyle(
+                                  color: Colors.white60,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-              )),
+                ),
+              ),
             ),
 
             const SizedBox(height: 20),
@@ -324,19 +340,23 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                       ],
                     ),
                   ),
-                  Obx(() => Transform.scale(
-                    scale: 0.8,
-                    child: Switch(
-                      value: homeCtrl.clubIsPinned.value,
-                      onChanged: (val) {
-                        homeCtrl.clubIsPinned.value = val;
-                      },
-                      activeThumbColor: AppColors.yellow,
-                      activeTrackColor: AppColors.yellow.withValues(alpha: 0.5),
-                      inactiveThumbColor: Colors.white60,
-                      inactiveTrackColor: Colors.white10,
+                  Obx(
+                    () => Transform.scale(
+                      scale: 0.8,
+                      child: Switch(
+                        value: homeCtrl.clubIsPinned.value,
+                        onChanged: (val) {
+                          homeCtrl.clubIsPinned.value = val;
+                        },
+                        activeThumbColor: AppColors.yellow,
+                        activeTrackColor: AppColors.yellow.withValues(
+                          alpha: 0.5,
+                        ),
+                        inactiveThumbColor: Colors.white60,
+                        inactiveTrackColor: Colors.white10,
+                      ),
                     ),
-                  )),
+                  ),
                 ],
               ),
             ),
@@ -344,56 +364,73 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
             const SizedBox(height: 40),
 
             /// ── Publish button ───────────────────────────────────────────
-            Obx(() => GestureDetector(
-              onTap: homeCtrl.isPostCreating.value
-                  ? null
-                  : () async {
-                      if (homeCtrl.clubTitleCtrl.text.isEmpty ||
-                          homeCtrl.clubDetailsCtrl.text.isEmpty) {
-                        showCustomSnackBar("Title and Details are required", isError: true);
-                        return;
-                      }
+            Obx(
+              () => GestureDetector(
+                onTap: homeCtrl.isPostCreating.value
+                    ? null
+                    : () async {
+                        if (homeCtrl.clubTitleCtrl.text.isEmpty ||
+                            homeCtrl.clubDetailsCtrl.text.isEmpty) {
+                          showCustomSnackBar(
+                            "Title and Details are required",
+                            isError: true,
+                          );
+                          return;
+                        }
 
-                      final success = await homeCtrl.createPost(
-                        category: "CLUB_POST",
-                        visibility: "Club Only",
-                        clubId: homeCtrl.clubSelectedClubId.value,
-                        mediaFile: homeCtrl.clubSelectedMedia.value,
-                        clubPostDetails: {
-                          "title": homeCtrl.clubTitleCtrl.text.trim(),
-                          "details": homeCtrl.clubDetailsCtrl.text.trim(),
-                          "isPinned": homeCtrl.clubIsPinned.value,
-                        },
-                      );
-                      if (success) {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      }
-                    },
-              child: Container(
-                height: 56,
-                decoration: BoxDecoration(
-                  color: homeCtrl.isPostCreating.value ? const Color(0xff2A2A2A) : AppColors.yellow,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.publish, color: homeCtrl.isPostCreating.value ? Colors.white24 : Colors.black, size: 18),
-                    const SizedBox(width: 8),
-                    Text(
-                      homeCtrl.isPostCreating.value ? "PUBLISHING..." : "PUBLISH CLUB POST",
-                      style: TextStyle(
-                        color: homeCtrl.isPostCreating.value ? Colors.white24 : Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1,
+                        final success = await homeCtrl.createPost(
+                          category: "CLUB_POST",
+                          visibility: "Club Only",
+                          clubId: homeCtrl.clubSelectedClubId.value,
+                          mediaFile: homeCtrl.clubSelectedMedia.value,
+                          clubPostDetails: {
+                            "title": homeCtrl.clubTitleCtrl.text.trim(),
+                            "details": homeCtrl.clubDetailsCtrl.text.trim(),
+                            "isPinned": homeCtrl.clubIsPinned.value,
+                          },
+                        );
+                        if (success) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        }
+                      },
+                child: Container(
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: homeCtrl.isPostCreating.value
+                        ? const Color(0xff2A2A2A)
+                        : AppColors.yellow,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.publish,
+                        color: homeCtrl.isPostCreating.value
+                            ? Colors.white24
+                            : Colors.black,
+                        size: 18,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Text(
+                        homeCtrl.isPostCreating.value
+                            ? "PUBLISHING..."
+                            : "PUBLISH CLUB POST",
+                        style: TextStyle(
+                          color: homeCtrl.isPostCreating.value
+                              ? Colors.white24
+                              : Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            )),
+            ),
 
             const SizedBox(height: 32),
           ],

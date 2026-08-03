@@ -61,8 +61,8 @@ class TrackUpdateScreen extends StatelessWidget {
                         },
                       );
                       if (success) {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+                        Get.back(); // close editor
+                        Get.back(); // close CreatePostScreen
                       }
                     },
               child: Text(
@@ -176,24 +176,27 @@ class TrackUpdateScreen extends StatelessWidget {
               child: Obx(() => Column(
                 children: homeCtrl.trackHazards.keys.map((hazard) {
                   final isChecked = homeCtrl.trackHazards[hazard] ?? false;
-                  return CheckboxListTile(
-                    title: Text(
-                      hazard,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+                  return Material(
+                    color: Colors.transparent,
+                    child: CheckboxListTile(
+                      title: Text(
+                        hazard,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
+                      value: isChecked,
+                      activeColor: AppColors.yellow,
+                      checkColor: Colors.black,
+                      dense: true,
+                      onChanged: (val) {
+                        if (val != null) {
+                          homeCtrl.trackHazards[hazard] = val;
+                        }
+                      },
                     ),
-                    value: isChecked,
-                    activeColor: AppColors.yellow,
-                    checkColor: Colors.black,
-                    dense: true,
-                    onChanged: (val) {
-                      if (val != null) {
-                        homeCtrl.trackHazards[hazard] = val;
-                      }
-                    },
                   );
                 }).toList(),
               )),

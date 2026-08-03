@@ -75,8 +75,8 @@ class BusinessPostScreen extends StatelessWidget {
                         },
                       );
                       if (success) {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+                        Get.back(); // close editor
+                        Get.back(); // close CreatePostScreen
                       }
                     },
               child: Text(

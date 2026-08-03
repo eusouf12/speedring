@@ -222,10 +222,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               default:
                                 return;
                             }
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => target),
-                            );
+                            Get.to(() => target);
                           }
                         : null,
                     child: AnimatedContainer(

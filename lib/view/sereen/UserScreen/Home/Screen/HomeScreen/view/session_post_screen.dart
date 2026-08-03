@@ -33,42 +33,51 @@ class SessionPostScreen extends StatelessWidget {
           ),
           centerTitle: true,
           actions: [
-            Obx(() => TextButton(
-              onPressed: homeCtrl.isPostCreating.value
-                  ? null
-                  : () async {
-                      if (homeCtrl.sessionVehicleCtrl.text.isEmpty ||
-                          homeCtrl.sessionCircuitCtrl.text.isEmpty) {
-                        showCustomSnackBar("Vehicle and Circuit are required", isError: true);
-                        return;
-                      }
-                      final success = await homeCtrl.createPost(
-                        category: "SESSION_POST",
-                        visibility: "Public",
-                        mediaFile: homeCtrl.sessionSelectedImage.value,
-                        sessionDetails: {
-                          "vehicle": homeCtrl.sessionVehicleCtrl.text.trim(),
-                          "circuit": homeCtrl.sessionCircuitCtrl.text.trim(),
-                          "trackName": homeCtrl.sessionTrackNameCtrl.text.trim(),
-                          "bestLapTime": homeCtrl.sessionBestLapTimeCtrl.text.trim(),
-                          "topSpeed": homeCtrl.sessionTopSpeedCtrl.text.trim(),
-                          "summary": homeCtrl.sessionSummaryCtrl.text.trim(),
-                        },
-                      );
-                      if (success) {
-                        Navigator.pop(context);
-                      }
-                    },
-              child: Text(
-                homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
-                style: const TextStyle(
-                  color: AppColors.yellow,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1,
+            Obx(
+              () => TextButton(
+                onPressed: homeCtrl.isPostCreating.value
+                    ? null
+                    : () async {
+                        if (homeCtrl.sessionVehicleCtrl.text.isEmpty ||
+                            homeCtrl.sessionCircuitCtrl.text.isEmpty) {
+                          showCustomSnackBar(
+                            "Vehicle and Circuit are required",
+                            isError: true,
+                          );
+                          return;
+                        }
+                        final success = await homeCtrl.createPost(
+                          category: "SESSION_POST",
+                          visibility: "Public",
+                          mediaFile: homeCtrl.sessionSelectedImage.value,
+                          sessionDetails: {
+                            "vehicle": homeCtrl.sessionVehicleCtrl.text.trim(),
+                            "circuit": homeCtrl.sessionCircuitCtrl.text.trim(),
+                            "trackName": homeCtrl.sessionTrackNameCtrl.text
+                                .trim(),
+                            "bestLapTime": homeCtrl.sessionBestLapTimeCtrl.text
+                                .trim(),
+                            "topSpeed": homeCtrl.sessionTopSpeedCtrl.text
+                                .trim(),
+                            "summary": homeCtrl.sessionSummaryCtrl.text.trim(),
+                          },
+                        );
+                        if (success) {
+                          Get.back(); // close editor
+                          Get.back(); // close CreatePostScreen
+                        }
+                      },
+                child: Text(
+                  homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
+                  style: const TextStyle(
+                    color: AppColors.yellow,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
+                  ),
                 ),
               ),
-            )),
+            ),
           ],
         ),
         body: ListView(
@@ -76,41 +85,44 @@ class SessionPostScreen extends StatelessWidget {
           children: [
             /// ── Hero image ──────────────────────────────────────────────
             GestureDetector(
-              onTap: () => homeCtrl.pickPostImage(homeCtrl.sessionSelectedImage),
+              onTap: () =>
+                  homeCtrl.pickPostImage(homeCtrl.sessionSelectedImage),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Obx(() => Container(
-                  height: 180,
-                  width: double.infinity,
-                  color: const Color(0xff1A1A1A),
-                  child: homeCtrl.sessionSelectedImage.value != null
-                      ? Image.file(
-                          homeCtrl.sessionSelectedImage.value!,
-                          fit: BoxFit.cover,
-                        )
-                      : const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.camera_alt_outlined,
-                                color: AppColors.yellow,
-                                size: 32,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                "ADD PHOTO",
-                                style: TextStyle(
+                child: Obx(
+                  () => Container(
+                    height: 180,
+                    width: double.infinity,
+                    color: const Color(0xff1A1A1A),
+                    child: homeCtrl.sessionSelectedImage.value != null
+                        ? Image.file(
+                            homeCtrl.sessionSelectedImage.value!,
+                            fit: BoxFit.cover,
+                          )
+                        : const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.camera_alt_outlined,
                                   color: AppColors.yellow,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 1.5,
+                                  size: 32,
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 8),
+                                Text(
+                                  "ADD PHOTO",
+                                  style: TextStyle(
+                                    color: AppColors.yellow,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.5,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                )),
+                  ),
+                ),
               ),
             ),
 
@@ -194,35 +206,45 @@ class SessionPostScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             /// ── Publish button ───────────────────────────────────────────
-            Obx(() => _PublishButton(
-              label: homeCtrl.isPostCreating.value ? "PUBLISHING..." : "PUBLISH SESSION",
-              onTap: homeCtrl.isPostCreating.value
-                  ? null
-                  : () async {
-                      if (homeCtrl.sessionVehicleCtrl.text.isEmpty ||
-                          homeCtrl.sessionCircuitCtrl.text.isEmpty) {
-                        showCustomSnackBar("Vehicle and Circuit are required", isError: true);
-                        return;
-                      }
-                      final success = await homeCtrl.createPost(
-                        category: "SESSION_POST",
-                        visibility: "Public",
-                        mediaFile: homeCtrl.sessionSelectedImage.value,
-                        sessionDetails: {
-                          "vehicle": homeCtrl.sessionVehicleCtrl.text.trim(),
-                          "circuit": homeCtrl.sessionCircuitCtrl.text.trim(),
-                          "trackName": homeCtrl.sessionTrackNameCtrl.text.trim(),
-                          "bestLapTime": homeCtrl.sessionBestLapTimeCtrl.text.trim(),
-                          "topSpeed": homeCtrl.sessionTopSpeedCtrl.text.trim(),
-                          "summary": homeCtrl.sessionSummaryCtrl.text.trim(),
-                        },
-                      );
-                      if (success) {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      }
-                    },
-            )),
+            Obx(
+              () => _PublishButton(
+                label: homeCtrl.isPostCreating.value
+                    ? "PUBLISHING..."
+                    : "PUBLISH SESSION",
+                onTap: homeCtrl.isPostCreating.value
+                    ? null
+                    : () async {
+                        if (homeCtrl.sessionVehicleCtrl.text.isEmpty ||
+                            homeCtrl.sessionCircuitCtrl.text.isEmpty) {
+                          showCustomSnackBar(
+                            "Vehicle and Circuit are required",
+                            isError: true,
+                          );
+                          return;
+                        }
+                        final success = await homeCtrl.createPost(
+                          category: "SESSION_POST",
+                          visibility: "Public",
+                          mediaFile: homeCtrl.sessionSelectedImage.value,
+                          sessionDetails: {
+                            "vehicle": homeCtrl.sessionVehicleCtrl.text.trim(),
+                            "circuit": homeCtrl.sessionCircuitCtrl.text.trim(),
+                            "trackName": homeCtrl.sessionTrackNameCtrl.text
+                                .trim(),
+                            "bestLapTime": homeCtrl.sessionBestLapTimeCtrl.text
+                                .trim(),
+                            "topSpeed": homeCtrl.sessionTopSpeedCtrl.text
+                                .trim(),
+                            "summary": homeCtrl.sessionSummaryCtrl.text.trim(),
+                          },
+                        );
+                        if (success) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        }
+                      },
+              ),
+            ),
 
             const SizedBox(height: 32),
           ],
