@@ -6,7 +6,8 @@ import '../../../../../../../core/app_routes/app_routes.dart';
 import '../../../../../../components/custom_appbar_user/custom_appbar_user.dart';
 import '../controller/home_controller.dart';
 import '../model/post_model.dart';
-import 'comment_screen.dart' show showCommentSheet;
+import 'post/comment_screen.dart' show showCommentSheet;
+import 'event/event_comment_screen.dart' show showEventCommentSheet, shareEventLink;
 import 'story/create_story_screen.dart';
 import 'story/story_view_screen.dart';
 import 'post/post_detail_screen.dart';
@@ -203,7 +204,11 @@ class UserHomeScreen extends StatelessWidget {
                               color: AppColors.yellow,
                             ),
                           )
-                        : ListView.builder(
+                        : RefreshIndicator(
+                            color: AppColors.yellow,
+                            backgroundColor: Colors.black,
+                            onRefresh: () => controller.getPost(),
+                            child: ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             itemCount: controller.postsList.length + 2,
                             itemBuilder: (context, index) {
@@ -422,53 +427,108 @@ class UserHomeScreen extends StatelessWidget {
                               );
                             },
                           ),
+                        ),
 
-                    /// Tab 1:
-                    ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      children: [
-                        _EventCard(
-                          imageUrl:
-                              "https://picsum.photos/seed/silverstone_event/600/300",
-                          organizer: "ANDRUIA RACING",
-                          title: "SILVERSTONE PERFORMANCE PADDOCK",
-                          date: "OCT 24",
-                          type: "TRACK DAY",
-                          location: "SILVERSTONE",
-                          slots: "47/50",
-                          likes: "2.4k",
-                          comments: "128",
-                          status: "JOIN",
-                        ),
-                        _EventCard(
-                          imageUrl:
-                              "https://picsum.photos/seed/nurburg_event/600/300",
-                          organizer: "SPEEDRING ELITE",
-                          title: "NÜRBURGRING ENDURANCE SERIES",
-                          date: "NOV 11",
-                          type: "ENDURANCE",
-                          location: "NÜRBURG",
-                          slots: "FULL",
-                          likes: "1.9M",
-                          comments: "64",
-                          status: "WAITLIST",
-                        ),
-                        _EventCard(
-                          imageUrl:
-                              "https://picsum.photos/seed/yas_event/600/300",
-                          organizer: "SPEEDRING ELITE",
-                          title: "YAS MARINA NIGHT SESSIONS",
-                          date: "DEC 05",
-                          type: "EXPERIENCE",
-                          location: "YAS MARINA",
-                          slots: "12/25",
-                          likes: "5.5k",
-                          comments: "225",
-                          status: "JOIN",
-                        ),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
+                    /// Tab 1: EVENTS Feed
+                    controller.isEventsLoading.value
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.yellow,
+                            ),
+                          )
+                        : controller.eventsList.isEmpty
+                        ? const Center(
+                            child: Text(
+                              "No events found",
+                              style: TextStyle(color: Colors.white54),
+                            ),
+                          )
+                        : RefreshIndicator(
+                            color: AppColors.yellow,
+                            backgroundColor: Colors.black,
+                            onRefresh: () => controller.getEvents(),
+                            child: ListView.builder(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              itemCount: controller.eventsList.length + 2,
+                              itemBuilder: (context, index) {
+                                // index 0 → ADD EVENT button
+                                if (index == 0) {
+                                  return Column(
+                                    children: [
+                                      AddPostButton(
+                                        label: "ADD EVENT",
+                                        onTap: () {
+                                          Get.toNamed(AppRoutes.createEventScreen);
+                                        },
+                                      ),
+                                      const SizedBox(height: 20),
+                                    ],
+                                  );
+                                }
+
+                                // Last item → load-more indicator / trigger
+                                if (index == controller.eventsList.length + 1) {
+                                  if (controller.isEventsLoadMoreLoading.value) {
+                                    return const Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 16),
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                                  } else if (controller.hasMoreEvents) {
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      controller.getEvents(isLoadMore: true);
+                                    });
+                                    return const SizedBox(height: 50);
+                                  } else {
+                                    return const SizedBox(height: 30);
+                                  }
+                                }
+
+                                final event = controller.eventsList[index - 1];
+                                final isMyEvent = event.user?.id != null &&
+                                    event.user!.id == controller.currentUserId.value;
+
+                                // Build proper image URL
+                                String bannerUrl = event.bannerImage ?? "";
+                                if (bannerUrl.isNotEmpty && !bannerUrl.startsWith("http")) {
+                                  bannerUrl = "http://10.10.28.90:4050$bannerUrl";
+                                }
+
+                                return _EventCard(
+                                  imageUrl: bannerUrl.isNotEmpty
+                                      ? bannerUrl
+                                      : "https://picsum.photos/seed/event_${event.id}/600/300",
+                                  organizer: event.user?.name ?? "ORGANIZER",
+                                  title: event.eventName ?? "UNTITLED EVENT",
+                                  date: event.deploymentDate != null
+                                      ? event.deploymentDate!.split('T')[0]
+                                      : "UNKNOWN",
+                                  type: event.missionType ?? "EVENT",
+                                  location: event.locationCircuit ?? "UNKNOWN",
+                                  slots: "${event.joinCount ?? 0}/${event.maxCapacity ?? 0}",
+                                  likes: "${event.reactCount ?? 0}",
+                                  comments: "${event.commentCount ?? 0}",
+                                  isJoined: event.isEventJoined ?? false,
+                                  isReacted: event.isReacted ?? false,
+                                  isMyEvent: isMyEvent,
+                                  eventId: event.id ?? "",
+                                  onJoin: () => controller.joinEvent(eventId: event.id!),
+                                  onLike: () => controller.reactToEvent(eventId: event.id!),
+                                  onComment: () => showEventCommentSheet(context, event),
+                                  onShare: () {
+                                    controller.shareEvent(eventId: event.id!);
+                                    shareEventLink(event);
+                                  },
+                                  onDelete: isMyEvent
+                                      ? () => controller.deleteEvent(eventId: event.id!)
+                                      : null,
+                                );
+                              },
+                            ),
+                          ),
 
                     /// Tab 2: CLUBS Feed
                     ListView(
@@ -817,7 +877,15 @@ class _EventCard extends StatelessWidget {
   final String slots;
   final String likes;
   final String comments;
-  final String status; // JOIN or WAITLIST
+  final bool isJoined;
+  final bool isReacted;
+  final bool isMyEvent;
+  final String eventId;
+  final VoidCallback onJoin;
+  final VoidCallback onLike;
+  final VoidCallback onComment;
+  final VoidCallback onShare;
+  final VoidCallback? onDelete;
 
   const _EventCard({
     required this.imageUrl,
@@ -829,13 +897,21 @@ class _EventCard extends StatelessWidget {
     required this.slots,
     required this.likes,
     required this.comments,
-    required this.status,
+    required this.isJoined,
+    required this.isReacted,
+    required this.isMyEvent,
+    required this.eventId,
+    required this.onJoin,
+    required this.onLike,
+    required this.onComment,
+    required this.onShare,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isFull = slots.toUpperCase() == "FULL";
-    final bool isJoin = status.toUpperCase() == "JOIN";
+    final bool isFull = slots.split('/').length == 2 &&
+        slots.split('/')[0] == slots.split('/')[1];
 
     return GestureDetector(
       onTap: () {
@@ -965,12 +1041,19 @@ class _EventCard extends StatelessWidget {
                   const SizedBox(height: 14),
 
                   /// Footer (Likes, comments, join action)
-                  Row(
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {},
+                    child: Row(
                     children: [
-                      const Icon(
-                        Icons.favorite_border,
-                        color: Colors.white38,
-                        size: 16,
+                      // Like button
+                      GestureDetector(
+                        onTap: onLike,
+                        child: Icon(
+                          isReacted ? Icons.favorite : Icons.favorite_border,
+                          color: isReacted ? Colors.redAccent : Colors.white38,
+                          size: 16,
+                        ),
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -982,10 +1065,14 @@ class _EventCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 14),
-                      const Icon(
-                        Icons.chat_bubble_outline,
-                        color: Colors.white38,
-                        size: 16,
+                      // Comment button
+                      GestureDetector(
+                        onTap: onComment,
+                        child: const Icon(
+                          Icons.chat_bubble_outline,
+                          color: Colors.white38,
+                          size: 16,
+                        ),
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -997,36 +1084,56 @@ class _EventCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 14),
-                      const Icon(
-                        Icons.share_outlined,
-                        color: Colors.white38,
-                        size: 16,
+                      // Share button
+                      GestureDetector(
+                        onTap: onShare,
+                        child: const Icon(
+                          Icons.share_outlined,
+                          color: Colors.white38,
+                          size: 16,
+                        ),
                       ),
+                      // Delete button (only for my events)
+                      if (isMyEvent && onDelete != null) ...[
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: onDelete,
+                          child: const Icon(
+                            Icons.delete_outline,
+                            color: Colors.redAccent,
+                            size: 16,
+                          ),
+                        ),
+                      ],
                       const Spacer(),
 
-                      /// Action Button
-                      Container(
-                        height: 36,
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        decoration: BoxDecoration(
-                          color: isJoin
-                              ? AppColors.yellow
-                              : const Color(0xff222222),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: Text(
-                            status,
-                            style: TextStyle(
-                              color: isJoin ? Colors.black : Colors.white60,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.5,
+                      /// Join / Joined Button
+                      GestureDetector(
+                        onTap: isJoined ? null : onJoin,
+                        child: Container(
+                          height: 36,
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          decoration: BoxDecoration(
+                            color: isJoined
+                                ? const Color(0xff222222)
+                                : AppColors.yellow,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Text(
+                              isJoined ? "JOINED" : "JOIN",
+                              style: TextStyle(
+                                color: isJoined ? Colors.white60 : Colors.black,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.5,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ],
+                  ),
                   ),
                 ],
               ),

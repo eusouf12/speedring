@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controller/home_controller.dart';
-import '../model/post_model.dart';
+import '../../controller/home_controller.dart';
+import '../../model/post_model.dart';
 
 void showCommentSheet(BuildContext context, [PostModel? post]) {
   if (post == null) return;
@@ -87,15 +87,16 @@ class _CommentSheet extends StatelessWidget {
 
                   return ListView.separated(
                     controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     itemCount: commentsList.length,
-                    separatorBuilder: (_, _) => const Divider(color: Colors.white12, height: 24),
+                    separatorBuilder: (_, _) =>
+                        const Divider(color: Colors.white12, height: 24),
                     itemBuilder: (_, i) {
                       final comment = commentsList[i];
-                      return _CommentTile(
-                        postId: post.id!,
-                        comment: comment,
-                      );
+                      return _CommentTile(postId: post.id!, comment: comment);
                     },
                   );
                 }),
@@ -183,25 +184,44 @@ class _CommentTile extends StatelessWidget {
                       const Spacer(),
                       if (isMyComment)
                         IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.redAccent, size: 14),
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.redAccent,
+                            size: 14,
+                          ),
                           onPressed: () {
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
                                 backgroundColor: const Color(0xff1C1C1C),
-                                title: const Text("Delete Comment", style: TextStyle(color: Colors.white)),
-                                content: const Text("Are you sure you want to delete this comment?", style: TextStyle(color: Colors.white70)),
+                                title: const Text(
+                                  "Delete Comment",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                content: const Text(
+                                  "Are you sure you want to delete this comment?",
+                                  style: TextStyle(color: Colors.white70),
+                                ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+                                    child: const Text(
+                                      "Cancel",
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
                                   ),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.pop(context);
-                                      homeController.deleteComment(postId, comment.id!);
+                                      homeController.deleteComment(
+                                        postId,
+                                        comment.id!,
+                                      );
                                     },
-                                    child: const Text("Delete", style: TextStyle(color: Colors.red)),
+                                    child: const Text(
+                                      "Delete",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -222,7 +242,7 @@ class _CommentTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Reply action under comment (only if not own comment)
                   if (!isMyComment)
                     GestureDetector(
@@ -237,7 +257,11 @@ class _CommentTile extends StatelessWidget {
                           SizedBox(width: 4),
                           Text(
                             "Reply",
-                            style: TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -254,16 +278,18 @@ class _CommentTile extends StatelessWidget {
             padding: const EdgeInsets.only(left: 46, top: 8),
             child: GestureDetector(
               onTap: () => tileController.showReplies.toggle(),
-              child: Obx(() => Text(
-                    tileController.showReplies.value
-                        ? "Hide replies"
-                        : "View ${comment.replies!.length} replies",
-                    style: const TextStyle(
-                      color: Colors.yellow,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
+              child: Obx(
+                () => Text(
+                  tileController.showReplies.value
+                      ? "Hide replies"
+                      : "View ${comment.replies!.length} replies",
+                  style: const TextStyle(
+                    color: Colors.yellow,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
           Obx(() {
@@ -287,7 +313,11 @@ class _CommentTile extends StatelessWidget {
                               ? NetworkImage(reply.user!.profileImage!)
                               : null,
                           child: reply.user?.profileImage == null
-                              ? const Icon(Icons.person, size: 12, color: Colors.white54)
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 12,
+                                  color: Colors.white54,
+                                )
                               : null,
                         ),
                         const SizedBox(width: 8),
@@ -296,7 +326,9 @@ class _CommentTile extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                reply.user?.name ?? reply.user?.userName ?? "User",
+                                reply.user?.name ??
+                                    reply.user?.userName ??
+                                    "User",
                                 style: const TextStyle(
                                   color: Colors.white70,
                                   fontSize: 10,
@@ -306,7 +338,10 @@ class _CommentTile extends StatelessWidget {
                               const SizedBox(height: 2),
                               Text(
                                 reply.comment ?? "",
-                                style: const TextStyle(color: Colors.white60, fontSize: 11),
+                                style: const TextStyle(
+                                  color: Colors.white60,
+                                  fontSize: 11,
+                                ),
                               ),
                             ],
                           ),
@@ -344,22 +379,33 @@ class _CommentInputBar extends StatelessWidget {
           // Replying to bar indicator
           Obx(() {
             if (controller.replyingToComment.value != null) {
-              final commentUser = controller.replyingToComment.value!.user?.name ??
+              final commentUser =
+                  controller.replyingToComment.value!.user?.name ??
                   controller.replyingToComment.value!.user?.userName ??
                   "User";
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 color: const Color(0xff1C1C1C),
                 child: Row(
                   children: [
                     Text(
                       "Replying to @$commentUser",
-                      style: const TextStyle(color: Colors.white60, fontSize: 12),
+                      style: const TextStyle(
+                        color: Colors.white60,
+                        fontSize: 12,
+                      ),
                     ),
                     const Spacer(),
                     GestureDetector(
                       onTap: () => controller.replyingToComment.value = null,
-                      child: const Icon(Icons.close, size: 14, color: Colors.white60),
+                      child: const Icon(
+                        Icons.close,
+                        size: 14,
+                        color: Colors.white60,
+                      ),
                     ),
                   ],
                 ),
@@ -367,7 +413,7 @@ class _CommentInputBar extends StatelessWidget {
             }
             return const SizedBox.shrink();
           }),
-          
+
           Container(
             padding: EdgeInsets.only(
               left: 16,
@@ -400,25 +446,30 @@ class _CommentInputBar extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Obx(() => controller.hasText.value
-                    ? TextButton(
-                        onPressed: () {
-                          final text = controller.ctrl.text.trim();
-                          if (controller.replyingToComment.value != null) {
-                            homeController.replyToComment(
-                              postId,
-                              controller.replyingToComment.value!.id!,
-                              text,
-                            );
-                            controller.replyingToComment.value = null;
-                          } else {
-                            homeController.commentOnPost(postId, text);
-                          }
-                          controller.ctrl.clear();
-                        },
-                        child: const Text("Post", style: TextStyle(color: Colors.yellow)),
-                      )
-                    : const SizedBox.shrink()),
+                Obx(
+                  () => controller.hasText.value
+                      ? TextButton(
+                          onPressed: () {
+                            final text = controller.ctrl.text.trim();
+                            if (controller.replyingToComment.value != null) {
+                              homeController.replyToComment(
+                                postId,
+                                controller.replyingToComment.value!.id!,
+                                text,
+                              );
+                              controller.replyingToComment.value = null;
+                            } else {
+                              homeController.commentOnPost(postId, text);
+                            }
+                            controller.ctrl.clear();
+                          },
+                          child: const Text(
+                            "Post",
+                            style: TextStyle(color: Colors.yellow),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
               ],
             ),
           ),

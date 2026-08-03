@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import '../HomeScreen/controller/home_controller.dart';
+import '../../controller/home_controller.dart';
 
 class ClubPostScreen extends StatefulWidget {
   const ClubPostScreen({super.key});
@@ -19,7 +19,7 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
   void initState() {
     super.initState();
     homeCtrl = Get.find<HomeController>();
-    homeCtrl.fetchMyClubs();
+    homeCtrl.getMyClubs();
   }
 
   @override
@@ -44,56 +44,13 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
             ),
           ),
           centerTitle: false,
-          actions: [
-            Obx(
-              () => TextButton(
-                onPressed: homeCtrl.isPostCreating.value
-                    ? null
-                    : () async {
-                        if (homeCtrl.clubTitleCtrl.text.isEmpty ||
-                            homeCtrl.clubDetailsCtrl.text.isEmpty) {
-                          showCustomSnackBar(
-                            "Title and Details are required",
-                            isError: true,
-                          );
-                          return;
-                        }
-
-                        final success = await homeCtrl.createPost(
-                          category: "CLUB_POST",
-                          visibility: "Club Only",
-                          clubId: homeCtrl.clubSelectedClubId.value,
-                          mediaFile: homeCtrl.clubSelectedMedia.value,
-                          clubPostDetails: {
-                            "title": homeCtrl.clubTitleCtrl.text.trim(),
-                            "details": homeCtrl.clubDetailsCtrl.text.trim(),
-                            "isPinned": homeCtrl.clubIsPinned.value,
-                          },
-                        );
-                        if (success) {
-                          Get.back(); // close editor
-                          Get.back(); // close CreatePostScreen
-                        }
-                      },
-                child: Text(
-                  homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
-                  style: const TextStyle(
-                    color: AppColors.yellow,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const SizedBox(height: 16),
 
-            /// ── Club Selector ─────────────────────────────────────────────
+            /// ── CLUB SELECTOR (As TITLE) ──────────────────────────────────
             Obx(() {
               if (homeCtrl.clubIsLoadingClubs.value) {
                 return const Center(
@@ -110,89 +67,63 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                 );
               }
               return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: Colors.white10),
                 ),
-                child: DropdownButtonFormField<String>(
-                  dropdownColor: Colors.black,
-                  value: homeCtrl.clubSelectedClubId.value,
-                  decoration: const InputDecoration(
-                    labelText: "SELECT CLUB",
-                    labelStyle: TextStyle(
-                      color: Colors.white38,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "SELECT CLUB",
+                      style: TextStyle(
+                        color: Colors.white38,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1,
+                      ),
                     ),
-                    border: InputBorder.none,
-                  ),
-                  style: const TextStyle(color: Colors.white, fontSize: 13),
-                  items: homeCtrl.clubMyClubs.map((club) {
-                    return DropdownMenuItem<String>(
-                      value: club['_id']?.toString(),
-                      child: Text(club['name']?.toString() ?? "Unnamed Club"),
-                    );
-                  }).toList(),
-                  onChanged: (val) {
-                    homeCtrl.clubSelectedClubId.value = val;
-                  },
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        dropdownColor: Colors.black,
+                        value: homeCtrl.clubSelectedClubId.value,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        items: homeCtrl.clubMyClubs.map((club) {
+                          return DropdownMenuItem<String>(
+                            value: club['_id']?.toString(),
+                            child: Text(
+                              club['clubName']?.toString() ?? "Unnamed Club",
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          homeCtrl.clubSelectedClubId.value = val;
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               );
             }),
-
-            /// ── TITLE Container ───────────────────────────────────────────
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xff111111),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "TITLE",
-                    style: TextStyle(
-                      color: Colors.white38,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextFormField(
-                      cursorColor: AppColors.yellow,
-                      controller: homeCtrl.clubTitleCtrl,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        isDense: true,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
 
             const SizedBox(height: 16),
 
@@ -369,14 +300,20 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                 onTap: homeCtrl.isPostCreating.value
                     ? null
                     : () async {
-                        if (homeCtrl.clubTitleCtrl.text.isEmpty ||
+                        if (homeCtrl.clubSelectedClubId.value == null ||
                             homeCtrl.clubDetailsCtrl.text.isEmpty) {
                           showCustomSnackBar(
-                            "Title and Details are required",
+                            "Club Selection and Details are required",
                             isError: true,
                           );
                           return;
                         }
+
+                        final selectedClub = homeCtrl.clubMyClubs.firstWhere(
+                          (club) =>
+                              club['_id'] == homeCtrl.clubSelectedClubId.value,
+                          orElse: () => {"clubName": "Club Post"},
+                        );
 
                         final success = await homeCtrl.createPost(
                           category: "CLUB_POST",
@@ -384,14 +321,14 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                           clubId: homeCtrl.clubSelectedClubId.value,
                           mediaFile: homeCtrl.clubSelectedMedia.value,
                           clubPostDetails: {
-                            "title": homeCtrl.clubTitleCtrl.text.trim(),
+                            "title": selectedClub['clubName'],
                             "details": homeCtrl.clubDetailsCtrl.text.trim(),
                             "isPinned": homeCtrl.clubIsPinned.value,
                           },
                         );
                         if (success) {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          Get.back(); // close editor
+                          Get.back(); // close CreatePostScreen
                         }
                       },
                 child: Container(

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import '../controller/home_controller.dart';
+import '../../controller/home_controller.dart';
 
 class SessionPostScreen extends StatelessWidget {
   const SessionPostScreen({super.key});
@@ -32,53 +32,6 @@ class SessionPostScreen extends StatelessWidget {
             ),
           ),
           centerTitle: true,
-          actions: [
-            Obx(
-              () => TextButton(
-                onPressed: homeCtrl.isPostCreating.value
-                    ? null
-                    : () async {
-                        if (homeCtrl.sessionVehicleCtrl.text.isEmpty ||
-                            homeCtrl.sessionCircuitCtrl.text.isEmpty) {
-                          showCustomSnackBar(
-                            "Vehicle and Circuit are required",
-                            isError: true,
-                          );
-                          return;
-                        }
-                        final success = await homeCtrl.createPost(
-                          category: "SESSION_POST",
-                          visibility: "Public",
-                          mediaFile: homeCtrl.sessionSelectedImage.value,
-                          sessionDetails: {
-                            "vehicle": homeCtrl.sessionVehicleCtrl.text.trim(),
-                            "circuit": homeCtrl.sessionCircuitCtrl.text.trim(),
-                            "trackName": homeCtrl.sessionTrackNameCtrl.text
-                                .trim(),
-                            "bestLapTime": homeCtrl.sessionBestLapTimeCtrl.text
-                                .trim(),
-                            "topSpeed": homeCtrl.sessionTopSpeedCtrl.text
-                                .trim(),
-                            "summary": homeCtrl.sessionSummaryCtrl.text.trim(),
-                          },
-                        );
-                        if (success) {
-                          Get.back(); // close editor
-                          Get.back(); // close CreatePostScreen
-                        }
-                      },
-                child: Text(
-                  homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
-                  style: const TextStyle(
-                    color: AppColors.yellow,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),

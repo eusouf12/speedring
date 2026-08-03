@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import '../comment_screen.dart';
+import 'comment_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PostDetailScreen — Static data, no constructor params

@@ -17,10 +17,17 @@ import '../model/story_model.dart';
 import '../model/view_story_model.dart';
 import '../model/post_model.dart';
 import '../model/audio_model.dart';
+import '../model/event_model.dart';
 
 class HomeController extends GetxController {
   final rxActiveTab = 0.obs; // 0: POST, 1: EVENTS, 2: CLUBS
-  void changeTab(int index) => rxActiveTab.value = index;
+  void changeTab(int index) {
+    rxActiveTab.value = index;
+    if (index == 1 && eventsList.isEmpty) {
+      getEvents();
+    }
+  }
+
   // ========================================= POST SECTION ==============================================================================
   final RxList<PostModel> postsList = <PostModel>[].obs;
   final RxBool isPostLoading = false.obs;
@@ -453,26 +460,6 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> fetchMyClubs() async {
-    clubIsLoadingClubs.value = true;
-    try {
-      final response = await ApiClient.getData("/clubs/get-my-clubs");
-      if (response.statusCode == 200) {
-        final data = response.body['data'] as List?;
-        if (data != null) {
-          clubMyClubs.assignAll(data);
-          if (data.isNotEmpty) {
-            clubSelectedClubId.value = data[0]['_id']?.toString();
-          }
-        }
-      }
-    } catch (e) {
-      debugPrint("Error fetching clubs: $e");
-    } finally {
-      clubIsLoadingClubs.value = false;
-    }
-  }
-
   void resetAllPostFields() {
     sessionSummaryCtrl.clear();
     sessionVehicleCtrl.clear();
@@ -737,6 +724,7 @@ class HomeController extends GetxController {
     });
     getStories();
     getPost();
+    getEvents();
   }
 
   Future<void> getStories() async {
@@ -886,6 +874,553 @@ class HomeController extends GetxController {
       return decoded['userId'];
     } catch (e) {
       return null;
+    }
+  }
+  //=====================  CLUB ================================
+
+  Future<void> getMyClubs() async {
+    clubIsLoadingClubs.value = true;
+    try {
+      final response = await ApiClient.getData(ApiUrl.getMyClubs);
+      if (response.statusCode == 200) {
+        final responseData = response.body['data'];
+        final data = responseData != null
+            ? responseData['data'] as List?
+            : null;
+        if (data != null) {
+          clubMyClubs.assignAll(data);
+          if (data.isNotEmpty) {
+            clubSelectedClubId.value = data[0]['_id']?.toString();
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching clubs: $e");
+    } finally {
+      clubIsLoadingClubs.value = false;
+    }
+  }
+
+  // ================== Event =======================================
+  final RxList<EventModel> eventsList = <EventModel>[].obs;
+  final RxBool isEventsLoading = false.obs;
+  final RxBool isEventsLoadMoreLoading = false.obs;
+  int _eventPage = 1;
+  bool _hasMoreEvents = true;
+  bool get hasMoreEvents => _hasMoreEvents;
+
+  Future<void> getEvents({bool isLoadMore = false}) async {
+    if (isLoadMore) {
+      if (!_hasMoreEvents || isEventsLoadMoreLoading.value) return;
+      isEventsLoadMoreLoading.value = true;
+    } else {
+      isEventsLoading.value = true;
+      _eventPage = 1;
+      _hasMoreEvents = true;
+    }
+
+    try {
+      final response = await ApiClient.getData(
+        ApiUrl.getEvents(page: _eventPage, limit: 10),
+      );
+      if (response.statusCode == 200) {
+        final raw = response.body['data'];
+        List<dynamic>? data;
+        if (raw is List) {
+          data = raw;
+        } else if (raw is Map && raw['data'] is List) {
+          data = raw['data'] as List;
+        }
+        final newEvents = (data ?? [])
+            .map((e) => EventModel.fromJson(e))
+            .toList();
+
+        if (newEvents.length < 10) {
+          _hasMoreEvents = false;
+        } else {
+          _eventPage++;
+        }
+
+        if (isLoadMore) {
+          eventsList.addAll(newEvents);
+        } else {
+          eventsList.value = newEvents;
+        }
+      } else {
+        showCustomSnackBar("Failed to load events", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error fetching events: $e");
+    } finally {
+      if (isLoadMore) {
+        isEventsLoadMoreLoading.value = false;
+      } else {
+        isEventsLoading.value = false;
+      }
+    }
+  }
+
+  Future<bool> createEvent({
+    required File mediaFile,
+    required Map<String, dynamic> eventData,
+  }) async {
+    try {
+      final body = {'data': jsonEncode(eventData)};
+      final response = await ApiClient.postMultipartData(
+        ApiUrl.createEvent,
+        body,
+        multipartBody: [MultipartBody('bannerImage', mediaFile)],
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Event created successfully!", isError: false);
+        getEvents();
+        return true;
+      } else {
+        showCustomSnackBar("Failed to create event", isError: true);
+        return false;
+      }
+    } catch (e) {
+      showCustomSnackBar("Error creating event: $e", isError: true);
+      return false;
+    }
+  }
+
+  Future<void> getMyEvent() async {
+    isEventsLoading.value = true;
+    try {
+      final response = await ApiClient.getData(ApiUrl.getMyEvent);
+      if (response.statusCode == 200) {
+        final data = response.body['data'] as List?;
+        if (data != null) {
+          eventsList.value = data.map((e) => EventModel.fromJson(e)).toList();
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching my events: $e");
+    } finally {
+      isEventsLoading.value = false;
+    }
+  }
+
+  Future<bool> joinEvent({required String eventId}) async {
+    // Optimistic update
+    final index = eventsList.indexWhere((e) => e.id == eventId);
+    if (index != -1) {
+      final original = eventsList[index];
+      final alreadyJoined = original.isEventJoined ?? false;
+      eventsList[index] = EventModel(
+        id: original.id,
+        eventName: original.eventName,
+        missionType: original.missionType,
+        deploymentDate: original.deploymentDate,
+        locationCircuit: original.locationCircuit,
+        maxCapacity: original.maxCapacity,
+        accessType: original.accessType,
+        briefing: original.briefing,
+        bannerImage: original.bannerImage,
+        shareCount: original.shareCount,
+        status: original.status,
+        joinCount: alreadyJoined
+            ? ((original.joinCount ?? 1) - 1)
+            : ((original.joinCount ?? 0) + 1),
+        reactCount: original.reactCount,
+        commentCount: original.commentCount,
+        isReacted: original.isReacted,
+        isEventJoined: !alreadyJoined,
+        myReactType: original.myReactType,
+        timeWindow: original.timeWindow,
+        user: original.user,
+        comments: original.comments,
+      );
+      try {
+        final response = await ApiClient.postData(
+          ApiUrl.joinEvent(eventId: eventId),
+          jsonEncode({}),
+        );
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          return true;
+        } else {
+          // rollback
+          eventsList[index] = original;
+          showCustomSnackBar("Failed to join event", isError: true);
+          return false;
+        }
+      } catch (e) {
+        eventsList[index] = original;
+        debugPrint("Error joining event: $e");
+        return false;
+      }
+    }
+    return false;
+  }
+
+  final RxSet<String> reactingEventIds = <String>{}.obs;
+
+  Future<bool> reactToEvent({
+    required String eventId,
+    String reactType = "LOVE",
+  }) async {
+    if (reactingEventIds.contains(eventId)) return false;
+    reactingEventIds.add(eventId);
+
+    final index = eventsList.indexWhere((e) => e.id == eventId);
+    if (index == -1) {
+      reactingEventIds.remove(eventId);
+      return false;
+    }
+
+    final original = eventsList[index];
+    final alreadyLiked = original.isReacted ?? false;
+    final updatedCount = alreadyLiked
+        ? ((original.reactCount ?? 1) > 0 ? (original.reactCount! - 1) : 0)
+        : (original.reactCount ?? 0) + 1;
+
+    // Optimistic update
+    eventsList[index] = EventModel(
+      id: original.id,
+      eventName: original.eventName,
+      missionType: original.missionType,
+      deploymentDate: original.deploymentDate,
+      locationCircuit: original.locationCircuit,
+      maxCapacity: original.maxCapacity,
+      accessType: original.accessType,
+      briefing: original.briefing,
+      bannerImage: original.bannerImage,
+      shareCount: original.shareCount,
+      status: original.status,
+      joinCount: original.joinCount,
+      reactCount: updatedCount,
+      commentCount: original.commentCount,
+      isReacted: !alreadyLiked,
+      myReactType: !alreadyLiked ? reactType : null,
+      isEventJoined: original.isEventJoined,
+      timeWindow: original.timeWindow,
+      user: original.user,
+      comments: original.comments,
+    );
+
+    try {
+      final response = await ApiClient.patchData(
+        ApiUrl.reactEvent(eventId: eventId),
+        jsonEncode({"reactType": reactType}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = (response.body is String
+            ? jsonDecode(response.body)
+            : response.body)['data'];
+        if (data != null) {
+          final backendReactCount = data['reactCount'] ?? updatedCount;
+          final backendIsReacted = data['isReacted'] ?? !alreadyLiked;
+          eventsList[index] = EventModel(
+            id: original.id,
+            eventName: original.eventName,
+            missionType: original.missionType,
+            deploymentDate: original.deploymentDate,
+            locationCircuit: original.locationCircuit,
+            maxCapacity: original.maxCapacity,
+            accessType: original.accessType,
+            briefing: original.briefing,
+            bannerImage: original.bannerImage,
+            shareCount: original.shareCount,
+            status: original.status,
+            joinCount: original.joinCount,
+            reactCount: backendReactCount,
+            commentCount: original.commentCount,
+            isReacted: backendIsReacted,
+            myReactType: backendIsReacted ? reactType : null,
+            isEventJoined: original.isEventJoined,
+            timeWindow: original.timeWindow,
+            user: original.user,
+            comments: original.comments,
+          );
+        }
+        return true;
+      } else {
+        // rollback
+        eventsList[index] = original;
+        return false;
+      }
+    } catch (e) {
+      eventsList[index] = original;
+      debugPrint("Error reacting to event: $e");
+      return false;
+    } finally {
+      reactingEventIds.remove(eventId);
+    }
+  }
+
+  Future<bool> commentOnEvent({
+    required String eventId,
+    required String comment,
+  }) async {
+    try {
+      final response = await ApiClient.postData(
+        ApiUrl.commentEvent(eventId: eventId),
+        jsonEncode({"comment": comment}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final index = eventsList.indexWhere((e) => e.id == eventId);
+        if (index != -1) {
+          final original = eventsList[index];
+          final body = response.body is String
+              ? jsonDecode(response.body)
+              : response.body;
+          final data = body['data'];
+
+          // Use backend comments if available, else add temp comment
+          List<EventComment> updatedComments;
+          if (data != null && data['comments'] is List) {
+            updatedComments = (data['comments'] as List)
+                .map((c) => EventComment.fromJson(c))
+                .toList();
+          } else {
+            updatedComments = [
+              ...(original.comments ?? []),
+              EventComment(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                comment: comment,
+                user: EventUser(id: currentUserId.value, name: 'You'),
+              ),
+            ];
+          }
+
+          eventsList[index] = EventModel(
+            id: original.id,
+            eventName: original.eventName,
+            missionType: original.missionType,
+            deploymentDate: original.deploymentDate,
+            locationCircuit: original.locationCircuit,
+            maxCapacity: original.maxCapacity,
+            accessType: original.accessType,
+            briefing: original.briefing,
+            bannerImage: original.bannerImage,
+            shareCount: original.shareCount,
+            status: original.status,
+            joinCount: original.joinCount,
+            reactCount: original.reactCount,
+            commentCount:
+                data?['commentCount'] ?? (original.commentCount ?? 0) + 1,
+            isReacted: original.isReacted,
+            myReactType: original.myReactType,
+            isEventJoined: original.isEventJoined,
+            timeWindow: original.timeWindow,
+            user: original.user,
+            comments: updatedComments,
+          );
+        }
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Error commenting on event: $e");
+      return false;
+    }
+  }
+
+  Future<bool> shareEvent({required String eventId}) async {
+    try {
+      final response = await ApiClient.postData(
+        ApiUrl.shareEvent(eventId: eventId),
+        jsonEncode({}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Error sharing event: $e");
+      return false;
+    }
+  }
+
+  Future<dynamic> getEventInteractions({required String eventId}) async {
+    try {
+      final response = await ApiClient.getData(
+        ApiUrl.getEventInteractions(eventId: eventId),
+      );
+      if (response.statusCode == 200) {
+        return response.body['data'];
+      }
+      return null;
+    } catch (e) {
+      debugPrint("Error getting event interactions: $e");
+      return null;
+    }
+  }
+
+  Future<bool> deleteEvent({required String eventId}) async {
+    try {
+      final response = await ApiClient.deleteData(
+        ApiUrl.deleteEvent(eventId: eventId),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Event deleted", isError: false);
+        eventsList.removeWhere((e) => e.id == eventId);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Error deleting event: $e");
+      return false;
+    }
+  }
+
+  Future<bool> deleteEventComment({
+    required String eventId,
+    required String commentId,
+  }) async {
+    try {
+      final response = await ApiClient.deleteData(
+        ApiUrl.deleteEventComment(eventId: eventId, commentId: commentId),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final index = eventsList.indexWhere((e) => e.id == eventId);
+        if (index != -1) {
+          final original = eventsList[index];
+          final updatedComments = List<EventComment>.from(
+            original.comments ?? [],
+          );
+          updatedComments.removeWhere((c) => c.id == commentId);
+
+          eventsList[index] = EventModel(
+            id: original.id,
+            eventName: original.eventName,
+            missionType: original.missionType,
+            deploymentDate: original.deploymentDate,
+            locationCircuit: original.locationCircuit,
+            maxCapacity: original.maxCapacity,
+            accessType: original.accessType,
+            briefing: original.briefing,
+            bannerImage: original.bannerImage,
+            shareCount: original.shareCount,
+            status: original.status,
+            joinCount: original.joinCount,
+            reactCount: original.reactCount,
+            commentCount: (original.commentCount ?? 1) > 0
+                ? original.commentCount! - 1
+                : 0,
+            isReacted: original.isReacted,
+            myReactType: original.myReactType,
+            isEventJoined: original.isEventJoined,
+            timeWindow: original.timeWindow,
+            user: original.user,
+            comments: updatedComments,
+          );
+        }
+        showCustomSnackBar("Comment deleted", isError: false);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Error deleting event comment: $e");
+      return false;
+    }
+  }
+
+  Future<bool> reactToEventComment({
+    required String eventId,
+    required String commentId,
+    String reactType = "LOVE",
+  }) async {
+    try {
+      final response = await ApiClient.patchData(
+        ApiUrl.reactEventComment(eventId: eventId, commentId: commentId),
+        jsonEncode({"reactType": reactType}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Error reacting to event comment: $e");
+      return false;
+    }
+  }
+
+  Future<bool> replyToEventComment({
+    required String eventId,
+    required String commentId,
+    required String replyText,
+  }) async {
+    try {
+      final response = await ApiClient.postData(
+        ApiUrl.replyEventComment(eventId: eventId, commentId: commentId),
+        jsonEncode({"comment": replyText}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final index = eventsList.indexWhere((e) => e.id == eventId);
+        if (index != -1) {
+          final original = eventsList[index];
+          final body = response.body is String
+              ? jsonDecode(response.body)
+              : response.body;
+          final data = body['data'];
+
+          List<EventComment> updatedComments = List<EventComment>.from(
+            original.comments ?? [],
+          );
+          final cIndex = updatedComments.indexWhere((c) => c.id == commentId);
+          if (cIndex != -1) {
+            final oldComment = updatedComments[cIndex];
+            List<EventCommentReply> newReplies;
+
+            if (data != null && data['replies'] is List) {
+              newReplies = (data['replies'] as List)
+                  .map((r) => EventCommentReply.fromJson(r))
+                  .toList();
+            } else {
+              newReplies = [
+                ...(oldComment.replies ?? []),
+                EventCommentReply(
+                  id: DateTime.now().millisecondsSinceEpoch.toString(),
+                  comment: replyText,
+                  user: EventUser(id: currentUserId.value, name: 'You'),
+                ),
+              ];
+            }
+
+            updatedComments[cIndex] = EventComment(
+              id: oldComment.id,
+              comment: oldComment.comment,
+              commentedAt: oldComment.commentedAt,
+              user: oldComment.user,
+              reacts: oldComment.reacts,
+              replies: newReplies,
+              isReacted: oldComment.isReacted,
+              myReactType: oldComment.myReactType,
+            );
+          }
+
+          eventsList[index] = EventModel(
+            id: original.id,
+            eventName: original.eventName,
+            missionType: original.missionType,
+            deploymentDate: original.deploymentDate,
+            locationCircuit: original.locationCircuit,
+            maxCapacity: original.maxCapacity,
+            accessType: original.accessType,
+            briefing: original.briefing,
+            bannerImage: original.bannerImage,
+            shareCount: original.shareCount,
+            status: original.status,
+            joinCount: original.joinCount,
+            reactCount: original.reactCount,
+            commentCount: original.commentCount,
+            isReacted: original.isReacted,
+            myReactType: original.myReactType,
+            isEventJoined: original.isEventJoined,
+            timeWindow: original.timeWindow,
+            user: original.user,
+            comments: updatedComments,
+          );
+        }
+        showCustomSnackBar("Reply added", isError: false);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Error replying to event comment: $e");
+      return false;
     }
   }
 

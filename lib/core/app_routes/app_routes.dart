@@ -15,7 +15,7 @@ import '../../view/sereen/AuthScreen/SignupScreen/signup_screen.dart';
 import '../../view/sereen/AuthScreen/ForgotPasswordScreen/forgot_password_screen.dart';
 import '../../view/sereen/AuthScreen/VerifyOtpScreen/verify_otp_screen.dart';
 import '../../view/sereen/AuthScreen/ResetPasswordScreen/reset_password_screen.dart';
-import '../../view/sereen/UserScreen/Home/Screen/clubs/club_details_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_details_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/user_home_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/reels_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/create_reel_screen.dart';
@@ -25,8 +25,8 @@ import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/inbox_screen.dart
 import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/support_member_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/event_detail_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/access_granted_screen.dart';
-import '../../view/sereen/UserScreen/Home/Screen/clubs/create_club_screen.dart';
-import '../../view/sereen/UserScreen/Home/Screen/clubs/edit_club_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/create_club_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/edit_club_screen.dart';
 import '../../view/sereen/UserScreen/track/track_hub_screen.dart';
 import '../../view/sereen/UserScreen/track/prepare_session_screen.dart';
 import '../../view/sereen/UserScreen/track/live_session_screen.dart';
@@ -39,9 +39,10 @@ import '../../view/sereen/UserScreen/track/group_drives/active_drive_screen.dart
 import '../../view/sereen/UserScreen/track/group_drives/end_expedition_screen.dart';
 import '../../view/sereen/UserScreen/track/group_drives/share_expedition_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/post/create_post_screen.dart';
-import '../../view/sereen/UserScreen/Home/Screen/clubs/club_post_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/post/club_post_screen.dart';
 import '../../view/sereen/UserScreen/discover/add_spot_screen.dart';
 import '../../view/sereen/UserScreen/discover/add_video_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/event/create_event_screen.dart';
 import '../../view/sereen/UserScreen/discover/discover_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/marketplace_feed_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/item_detail_screen.dart';
@@ -134,6 +135,7 @@ class AppRoutes {
   static const String discoverScreen = "/DiscoverScreen";
   static const String addSpotScreen = "/AddSpotScreen";
   static const String addVideoScreen = "/AddVideoScreen";
+  static const String createEventScreen = "/CreateEventScreen";
   static const String trackHubScreen = "/TrackHubScreen";
   static const String prepareSessionScreen = "/PrepareSessionScreen";
   static const String liveSessionScreen = "/LiveSessionScreen";
@@ -274,6 +276,7 @@ class AppRoutes {
     GetPage(name: discoverScreen, page: () => const DiscoverScreen()),
     GetPage(name: addSpotScreen, page: () => const AddSpotScreen()),
     GetPage(name: addVideoScreen, page: () => const AddVideoScreen()),
+    GetPage(name: createEventScreen, page: () => const CreateEventScreen()),
     GetPage(name: trackHubScreen, page: () => const TrackHubScreen()),
     GetPage(
       name: prepareSessionScreen,

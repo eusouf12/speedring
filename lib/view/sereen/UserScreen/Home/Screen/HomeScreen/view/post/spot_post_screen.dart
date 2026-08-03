@@ -32,43 +32,6 @@ class SpotPostScreen extends StatelessWidget {
             ),
           ),
           centerTitle: true,
-          actions: [
-            Obx(() => TextButton(
-              onPressed: homeCtrl.isPostCreating.value
-                  ? null
-                  : () async {
-                      if (homeCtrl.spotMakeAndModelCtrl.text.isEmpty) {
-                        showCustomSnackBar("Make and Model is required", isError: true);
-                        return;
-                      }
-                      final success = await homeCtrl.createPost(
-                        category: "SPOT_POST",
-                        visibility: "Public",
-                        mediaFile: homeCtrl.spotSelectedImage.value,
-                        spotDetails: {
-                          "licensePlate": homeCtrl.spotLicensePlateCtrl.text.trim(),
-                          "region": homeCtrl.spotRegionCtrl.text.trim(),
-                          "makeAndModel": homeCtrl.spotMakeAndModelCtrl.text.trim(),
-                          "engine": homeCtrl.spotEngineCtrl.text.trim(),
-                          "powerHp": homeCtrl.spotPowerHpCtrl.text.trim(),
-                        },
-                      );
-                      if (success) {
-                        Get.back(); // close editor
-                        Get.back(); // close CreatePostScreen
-                      }
-                    },
-              child: Text(
-                homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
-                style: const TextStyle(
-                  color: AppColors.yellow,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1,
-                ),
-              ),
-            )),
-          ],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -78,38 +41,40 @@ class SpotPostScreen extends StatelessWidget {
               onTap: () => homeCtrl.pickPostImage(homeCtrl.spotSelectedImage),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Obx(() => Container(
-                  height: 180,
-                  width: double.infinity,
-                  color: const Color(0xff1A1A1A),
-                  child: homeCtrl.spotSelectedImage.value != null
-                      ? Image.file(
-                          homeCtrl.spotSelectedImage.value!,
-                          fit: BoxFit.cover,
-                        )
-                      : const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add_a_photo_outlined,
-                                color: AppColors.yellow,
-                                size: 32,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                "ADD SPOT PHOTO",
-                                style: TextStyle(
+                child: Obx(
+                  () => Container(
+                    height: 180,
+                    width: double.infinity,
+                    color: const Color(0xff1A1A1A),
+                    child: homeCtrl.spotSelectedImage.value != null
+                        ? Image.file(
+                            homeCtrl.spotSelectedImage.value!,
+                            fit: BoxFit.cover,
+                          )
+                        : const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_a_photo_outlined,
                                   color: AppColors.yellow,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 1.5,
+                                  size: 32,
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 8),
+                                Text(
+                                  "ADD SPOT PHOTO",
+                                  style: TextStyle(
+                                    color: AppColors.yellow,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.5,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                )),
+                  ),
+                ),
               ),
             ),
 
@@ -224,49 +189,62 @@ class SpotPostScreen extends StatelessWidget {
             const SizedBox(height: 40),
 
             /// ── Publish button ───────────────────────────────────────────
-            Obx(() => GestureDetector(
-              onTap: homeCtrl.isPostCreating.value
-                  ? null
-                  : () async {
-                      if (homeCtrl.spotMakeAndModelCtrl.text.isEmpty) {
-                        showCustomSnackBar("Make and Model is required", isError: true);
-                        return;
-                      }
-                      final success = await homeCtrl.createPost(
-                        category: "SPOT_POST",
-                        visibility: "Public",
-                        mediaFile: homeCtrl.spotSelectedImage.value,
-                        spotDetails: {
-                          "licensePlate": homeCtrl.spotLicensePlateCtrl.text.trim(),
-                          "region": homeCtrl.spotRegionCtrl.text.trim(),
-                          "makeAndModel": homeCtrl.spotMakeAndModelCtrl.text.trim(),
-                          "engine": homeCtrl.spotEngineCtrl.text.trim(),
-                          "powerHp": homeCtrl.spotPowerHpCtrl.text.trim(),
-                        },
-                      );
-                      if (success) {
-                        Navigator.pop(context);
-                      }
-                    },
-              child: Container(
-                height: 56,
-                decoration: BoxDecoration(
-                  color: homeCtrl.isPostCreating.value ? const Color(0xff2A2A2A) : AppColors.yellow,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Center(
-                  child: Text(
-                    homeCtrl.isPostCreating.value ? "PUBLISHING..." : "PUBLISH SPOT",
-                    style: TextStyle(
-                      color: homeCtrl.isPostCreating.value ? Colors.white24 : Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2,
+            Obx(
+              () => GestureDetector(
+                onTap: homeCtrl.isPostCreating.value
+                    ? null
+                    : () async {
+                        if (homeCtrl.spotMakeAndModelCtrl.text.isEmpty) {
+                          showCustomSnackBar(
+                            "Make and Model is required",
+                            isError: true,
+                          );
+                          return;
+                        }
+                        final success = await homeCtrl.createPost(
+                          category: "SPOT_POST",
+                          visibility: "Public",
+                          mediaFile: homeCtrl.spotSelectedImage.value,
+                          spotDetails: {
+                            "licensePlate": homeCtrl.spotLicensePlateCtrl.text
+                                .trim(),
+                            "region": homeCtrl.spotRegionCtrl.text.trim(),
+                            "makeAndModel": homeCtrl.spotMakeAndModelCtrl.text
+                                .trim(),
+                            "engine": homeCtrl.spotEngineCtrl.text.trim(),
+                            "powerHp": homeCtrl.spotPowerHpCtrl.text.trim(),
+                          },
+                        );
+                        if (success) {
+                          Navigator.pop(context);
+                        }
+                      },
+                child: Container(
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: homeCtrl.isPostCreating.value
+                        ? const Color(0xff2A2A2A)
+                        : AppColors.yellow,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Center(
+                    child: Text(
+                      homeCtrl.isPostCreating.value
+                          ? "PUBLISHING..."
+                          : "PUBLISH SPOT",
+                      style: TextStyle(
+                        color: homeCtrl.isPostCreating.value
+                            ? Colors.white24
+                            : Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2,
+                      ),
                     ),
                   ),
                 ),
               ),
-            )),
+            ),
 
             const SizedBox(height: 32),
           ],
@@ -325,7 +303,11 @@ class _CustomInputRow extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
 
-  const _CustomInputRow({required this.icon, required this.hint, required this.controller});
+  const _CustomInputRow({
+    required this.icon,
+    required this.hint,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {

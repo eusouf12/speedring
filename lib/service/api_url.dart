@@ -72,6 +72,23 @@ class ApiUrl {
     required String commentId,
   }) => "/posts/$postId/comment/$commentId";
   static const String createPost = "/posts/create-post";
+  static const String getMyClubs = "/clubs/get-my-clubs";
+  static String getEvents({int page = 1, int limit = 10}) =>
+      "/events/get-all-events?page=$page&limit=$limit";
+
+  // =================== Events =====================================
+  static const String createEvent = "/events/create-event";
+  static const String getMyEvent = "/events/get-my-event";
+  
+  static String joinEvent({required String eventId}) => "/events/join-event/$eventId";
+  static String reactEvent({required String eventId}) => "/events/react-event/$eventId";
+  static String commentEvent({required String eventId}) => "/events/add-comment/$eventId";
+  static String shareEvent({required String eventId}) => "/events/share-event/$eventId";
+  static String getEventInteractions({required String eventId}) => "/events/get-event-interactions/$eventId";
+  static String deleteEvent({required String eventId}) => "/events/delete-event/$eventId";
+  static String deleteEventComment({required String eventId, required String commentId}) => "/events/$eventId/comment/$commentId";
+  static String reactEventComment({required String eventId, required String commentId}) => "/events/$eventId/comment/$commentId/react";
+  static String replyEventComment({required String eventId, required String commentId}) => "/events/$eventId/comment/$commentId/reply";
 
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
 }
