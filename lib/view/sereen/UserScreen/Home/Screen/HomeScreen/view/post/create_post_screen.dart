@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
 import '../session_post_screen.dart';
 import 'spot_post_screen.dart';
 import '../track_update_screen.dart';
+import 'package:get/get.dart';
+import '../../controller/home_controller.dart';
 import '../../../clubs/club_post_screen.dart';
 import 'business_post_screen.dart';
 
@@ -17,6 +21,23 @@ class CreatePostScreen extends StatefulWidget {
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
   int? _selectedIndex;
+  String _userRole = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserRole();
+    Get.find<HomeController>().resetAllPostFields();
+  }
+
+  Future<void> _loadUserRole() async {
+    final role = await SharePrefsHelper.getString(AppConstants.role);
+    if (mounted) {
+      setState(() {
+        _userRole = role;
+      });
+    }
+  }
 
   static const List<_PostType> _postTypes = [
     _PostType(
@@ -48,6 +69,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredTypes = _postTypes.where((type) {
+      if (_userRole == 'driver' && type.title == 'BUSINESS POST') {
+        return false;
+      }
+      return true;
+    }).toList();
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -66,8 +94,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     const SizedBox(height: 60),
 
                     /// ── Post type cards ────────────────────────────────────
-                    ...List.generate(_postTypes.length, (i) {
-                      final type = _postTypes[i];
+                    ...List.generate(filteredTypes.length, (i) {
+                      final type = filteredTypes[i];
                       final isSelected = _selectedIndex == i;
                       return GestureDetector(
                         onTap: () => setState(() => _selectedIndex = i),
@@ -173,21 +201,22 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   GestureDetector(
                     onTap: _selectedIndex != null
                         ? () {
+                            final selectedType = filteredTypes[_selectedIndex!];
                             Widget target;
-                            switch (_selectedIndex) {
-                              case 0:
+                            switch (selectedType.title) {
+                              case "SESSION POST":
                                 target = const SessionPostScreen();
                                 break;
-                              case 1:
+                              case "SPOT POST":
                                 target = const SpotPostScreen();
                                 break;
-                              case 2:
+                              case "TRACK UPDATE":
                                 target = const TrackUpdateScreen();
                                 break;
-                              case 3:
+                              case "CLUB POST":
                                 target = const ClubPostScreen();
                                 break;
-                              case 4:
+                              case "BUSINESS POST":
                                 target = const BusinessPostScreen();
                                 break;
                               default:

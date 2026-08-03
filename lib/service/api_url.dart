@@ -71,5 +71,7 @@ class ApiUrl {
     required String postId,
     required String commentId,
   }) => "/posts/$postId/comment/$commentId";
+  static const String createPost = "/posts/create-post";
+
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
 }

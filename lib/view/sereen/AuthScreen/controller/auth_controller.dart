@@ -58,6 +58,10 @@ class AuthController extends GetxController {
 
         await SharePrefsHelper.setString(AppConstants.bearerToken, accessToken);
 
+        if (role.isNotEmpty) {
+          await SharePrefsHelper.setString(AppConstants.role, role);
+        }
+
         if (planName.isNotEmpty) {
           await SharePrefsHelper.setString(AppConstants.subscriptionPlanName, planName);
         }

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../controller/home_controller.dart';
 
 class SpotPostScreen extends StatelessWidget {
   const SpotPostScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final homeCtrl = Get.find<HomeController>();
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -28,73 +33,83 @@ class SpotPostScreen extends StatelessWidget {
           ),
           centerTitle: true,
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "PUBLISH",
-                style: TextStyle(
+            Obx(() => TextButton(
+              onPressed: homeCtrl.isPostCreating.value
+                  ? null
+                  : () async {
+                      if (homeCtrl.spotMakeAndModelCtrl.text.isEmpty) {
+                        showCustomSnackBar("Make and Model is required", isError: true);
+                        return;
+                      }
+                      final success = await homeCtrl.createPost(
+                        category: "SPOT_POST",
+                        visibility: "Public",
+                        mediaFile: homeCtrl.spotSelectedImage.value,
+                        spotDetails: {
+                          "licensePlate": homeCtrl.spotLicensePlateCtrl.text.trim(),
+                          "region": homeCtrl.spotRegionCtrl.text.trim(),
+                          "makeAndModel": homeCtrl.spotMakeAndModelCtrl.text.trim(),
+                          "engine": homeCtrl.spotEngineCtrl.text.trim(),
+                          "powerHp": homeCtrl.spotPowerHpCtrl.text.trim(),
+                        },
+                      );
+                      if (success) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
+                    },
+              child: Text(
+                homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
+                style: const TextStyle(
                   color: AppColors.yellow,
                   fontSize: 12,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1,
                 ),
               ),
-            ),
+            )),
           ],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             /// ── Hero image / Upload Photo ────────────────────────────────
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Stack(
-                children: [
-                  Image.network(
-                    "https://picsum.photos/seed/spotcar/600/240",
-                    height: 180,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Container(height: 180, color: const Color(0xff1A1A1A)),
-                  ),
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withValues(alpha: 0.2),
-                            Colors.black.withValues(alpha: 0.7),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Positioned.fill(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add_a_photo_outlined,
-                          color: AppColors.yellow,
-                          size: 32,
-                        ),
-                        SizedBox(height: 6),
-                        Text(
-                          "REPLACE SPOT PHOTO",
-                          style: TextStyle(
-                            color: AppColors.yellow,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1.5,
+            GestureDetector(
+              onTap: () => homeCtrl.pickPostImage(homeCtrl.spotSelectedImage),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Obx(() => Container(
+                  height: 180,
+                  width: double.infinity,
+                  color: const Color(0xff1A1A1A),
+                  child: homeCtrl.spotSelectedImage.value != null
+                      ? Image.file(
+                          homeCtrl.spotSelectedImage.value!,
+                          fit: BoxFit.cover,
+                        )
+                      : const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_a_photo_outlined,
+                                color: AppColors.yellow,
+                                size: 32,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                "ADD SPOT PHOTO",
+                                style: TextStyle(
+                                  color: AppColors.yellow,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ],
+                )),
               ),
             ),
 
@@ -103,8 +118,9 @@ class SpotPostScreen extends StatelessWidget {
 
             const _FieldLabel("LICENSE PLATE"),
             const SizedBox(height: 6),
-            const _CustomInputRow(
-              icon: Text(
+            _CustomInputRow(
+              controller: homeCtrl.spotLicensePlateCtrl,
+              icon: const Text(
                 "#",
                 style: TextStyle(
                   color: AppColors.yellow,
@@ -119,8 +135,9 @@ class SpotPostScreen extends StatelessWidget {
 
             const _FieldLabel("REGION / COUNTRY"),
             const SizedBox(height: 6),
-            const _CustomInputRow(
-              icon: Icon(Icons.public, color: AppColors.yellow, size: 20),
+            _CustomInputRow(
+              controller: homeCtrl.spotRegionCtrl,
+              icon: const Icon(Icons.public, color: AppColors.yellow, size: 20),
               hint: "SELECT REGION",
             ),
 
@@ -128,8 +145,9 @@ class SpotPostScreen extends StatelessWidget {
 
             const _FieldLabel("MAKE & MODEL"),
             const SizedBox(height: 6),
-            const _CustomInputRow(
-              icon: Icon(
+            _CustomInputRow(
+              controller: homeCtrl.spotMakeAndModelCtrl,
+              icon: const Icon(
                 Icons.directions_car_filled,
                 color: AppColors.yellow,
                 size: 20,
@@ -146,6 +164,8 @@ class SpotPostScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextFormField(
+                    cursorColor: AppColors.yellow,
+                    controller: homeCtrl.spotEngineCtrl,
                     style: const TextStyle(
                       color: AppColors.yellow,
                       fontSize: 22,
@@ -165,17 +185,6 @@ class SpotPostScreen extends StatelessWidget {
                       contentPadding: EdgeInsets.zero,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  TextFormField(
-                    style: const TextStyle(color: Colors.white70, fontSize: 13),
-                    decoration: const InputDecoration(
-                      hintText: "E.G. 4.0L FLAT-6",
-                      hintStyle: TextStyle(color: Colors.white38, fontSize: 13),
-                      border: InputBorder.none,
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -188,6 +197,8 @@ class SpotPostScreen extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextFormField(
+                      cursorColor: AppColors.yellow,
+                      controller: homeCtrl.spotPowerHpCtrl,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -210,55 +221,44 @@ class SpotPostScreen extends StatelessWidget {
               ),
             ),
 
-            // _SpecBox(
-            //   label: "0-100 KM/H (S)",
-            //   child: Row(
-            //     children: [
-            //       const Icon(
-            //         Icons.timer,
-            //         color: AppColors.yellow,
-            //         size: 20,
-            //       ),
-            //       const SizedBox(width: 10),
-            //       Expanded(
-            //         child: TextFormField(
-            //           style: const TextStyle(
-            //             color: Colors.white,
-            //             fontSize: 14,
-            //             fontWeight: FontWeight.w600,
-            //           ),
-            //           decoration: const InputDecoration(
-            //             hintText: "E.G. 3.2",
-            //             hintStyle: TextStyle(
-            //               color: Colors.white38,
-            //               fontSize: 14,
-            //               fontWeight: FontWeight.w600,
-            //             ),
-            //             border: InputBorder.none,
-            //             isDense: true,
-            //             contentPadding: EdgeInsets.zero,
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             const SizedBox(height: 40),
 
             /// ── Publish button ───────────────────────────────────────────
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
+            Obx(() => GestureDetector(
+              onTap: homeCtrl.isPostCreating.value
+                  ? null
+                  : () async {
+                      if (homeCtrl.spotMakeAndModelCtrl.text.isEmpty) {
+                        showCustomSnackBar("Make and Model is required", isError: true);
+                        return;
+                      }
+                      final success = await homeCtrl.createPost(
+                        category: "SPOT_POST",
+                        visibility: "Public",
+                        mediaFile: homeCtrl.spotSelectedImage.value,
+                        spotDetails: {
+                          "licensePlate": homeCtrl.spotLicensePlateCtrl.text.trim(),
+                          "region": homeCtrl.spotRegionCtrl.text.trim(),
+                          "makeAndModel": homeCtrl.spotMakeAndModelCtrl.text.trim(),
+                          "engine": homeCtrl.spotEngineCtrl.text.trim(),
+                          "powerHp": homeCtrl.spotPowerHpCtrl.text.trim(),
+                        },
+                      );
+                      if (success) {
+                        Navigator.pop(context);
+                      }
+                    },
               child: Container(
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.yellow,
+                  color: homeCtrl.isPostCreating.value ? const Color(0xff2A2A2A) : AppColors.yellow,
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    "PUBLISH SPOT",
+                    homeCtrl.isPostCreating.value ? "PUBLISHING..." : "PUBLISH SPOT",
                     style: TextStyle(
-                      color: Colors.black,
+                      color: homeCtrl.isPostCreating.value ? Colors.white24 : Colors.black,
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 2,
@@ -266,7 +266,7 @@ class SpotPostScreen extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
+            )),
 
             const SizedBox(height: 32),
           ],
@@ -323,8 +323,9 @@ class _FieldLabel extends StatelessWidget {
 class _CustomInputRow extends StatelessWidget {
   final Widget icon;
   final String hint;
+  final TextEditingController controller;
 
-  const _CustomInputRow({required this.icon, required this.hint});
+  const _CustomInputRow({required this.icon, required this.hint, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -341,6 +342,8 @@ class _CustomInputRow extends StatelessWidget {
           const SizedBox(width: 14),
           Expanded(
             child: TextFormField(
+              cursorColor: AppColors.yellow,
+              controller: controller,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 13,

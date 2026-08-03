@@ -49,7 +49,9 @@ class HomeController extends GetxController {
 
     if (currentUserId.value.isEmpty) {
       try {
-        String token = await SharePrefsHelper.getString(AppConstants.bearerToken);
+        String token = await SharePrefsHelper.getString(
+          AppConstants.bearerToken,
+        );
         String? myUserId = _getUserIdFromToken(token);
         if (myUserId != null && myUserId.isNotEmpty) {
           currentUserId.value = myUserId;
@@ -114,7 +116,9 @@ class HomeController extends GetxController {
 
   Future<void> deletePost(String postId) async {
     try {
-      var response = await ApiClient.deleteData(ApiUrl.deletePost(postId: postId));
+      var response = await ApiClient.deleteData(
+        ApiUrl.deletePost(postId: postId),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         postsList.removeWhere((post) => post.id == postId);
         showCustomSnackBar("Post deleted successfully", isError: false);
@@ -149,12 +153,14 @@ class HomeController extends GetxController {
       updatedReacts.removeWhere((r) => r.user?.id == currentUserId.value);
       updatedReactCount = (updatedReactCount > 0) ? (updatedReactCount - 1) : 0;
     } else {
-      updatedReacts.add(PostReact(
-        id: "temp",
-        reactType: reactType,
-        user: PostUser(id: currentUserId.value),
-        reactedAt: DateTime.now(),
-      ));
+      updatedReacts.add(
+        PostReact(
+          id: "temp",
+          reactType: reactType,
+          user: PostUser(id: currentUserId.value),
+          reactedAt: DateTime.now(),
+        ),
+      );
       updatedReactCount = updatedReactCount + 1;
     }
 
@@ -187,13 +193,17 @@ class HomeController extends GetxController {
         jsonEncode({"reactType": reactType}),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var responseBody = response.body is String ? jsonDecode(response.body) : response.body;
+        var responseBody = response.body is String
+            ? jsonDecode(response.body)
+            : response.body;
         if (responseBody["data"] != null) {
           final data = responseBody["data"];
           final reactsJson = data["reacts"] ?? [];
-          final backendReacts = List<PostReact>.from(reactsJson.map((x) => PostReact.fromJson(x)));
+          final backendReacts = List<PostReact>.from(
+            reactsJson.map((x) => PostReact.fromJson(x)),
+          );
           final backendReactCount = data["reactCount"] ?? backendReacts.length;
-          
+
           final isReacted = currentUserId.value.isNotEmpty
               ? backendReacts.any((r) => r.user?.id == currentUserId.value)
               : !alreadyLiked;
@@ -266,7 +276,11 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> replyToComment(String postId, String commentId, String replyText) async {
+  Future<void> replyToComment(
+    String postId,
+    String commentId,
+    String replyText,
+  ) async {
     try {
       var response = await ApiClient.postData(
         ApiUrl.commentPostReply(postId: postId, commentId: commentId),
@@ -292,7 +306,10 @@ class HomeController extends GetxController {
 
   bool _isPickingMedia = false;
 
-  Future<void> pickMedia({required bool isVideoVal, bool fromCamera = false}) async {
+  Future<void> pickMedia({
+    required bool isVideoVal,
+    bool fromCamera = false,
+  }) async {
     if (_isPickingMedia) return;
     _isPickingMedia = true;
 
@@ -371,6 +388,194 @@ class HomeController extends GetxController {
     }
   }
 
+  final RxBool isPostCreating = false.obs;
+
+  // === Session Post Fields ===
+  final sessionSummaryCtrl = TextEditingController();
+  final sessionVehicleCtrl = TextEditingController();
+  final sessionCircuitCtrl = TextEditingController();
+  final sessionTrackNameCtrl = TextEditingController();
+  final sessionBestLapTimeCtrl = TextEditingController();
+  final sessionTopSpeedCtrl = TextEditingController();
+  final Rxn<File> sessionSelectedImage = Rxn<File>();
+
+  // === Spot Post Fields ===
+  final spotLicensePlateCtrl = TextEditingController();
+  final spotRegionCtrl = TextEditingController();
+  final spotMakeAndModelCtrl = TextEditingController();
+  final spotEngineCtrl = TextEditingController();
+  final spotPowerHpCtrl = TextEditingController();
+  final Rxn<File> spotSelectedImage = Rxn<File>();
+
+  // === Track Update Fields ===
+  final trackCircuitCtrl = TextEditingController();
+  final trackNotesCtrl = TextEditingController();
+  final RxString trackSelectedCondition = "DRY".obs;
+  final RxString trackSelectedVisibility = "Public".obs;
+  final RxMap<String, bool> trackHazards = <String, bool>{
+    "Yellow Flag": false,
+    "Red Flag": false,
+    "Oil on Track": false,
+    "Debris": false,
+  }.obs;
+  final Rxn<File> trackSelectedImage = Rxn<File>();
+
+  // === Club Post Fields ===
+  final clubTitleCtrl = TextEditingController();
+  final clubDetailsCtrl = TextEditingController();
+  final RxBool clubIsPinned = false.obs;
+  final Rxn<File> clubSelectedMedia = Rxn<File>();
+  final RxList<dynamic> clubMyClubs = <dynamic>[].obs;
+  final RxnString clubSelectedClubId = RxnString();
+  final RxBool clubIsLoadingClubs = false.obs;
+
+  // === Business Post Fields ===
+  final businessTitleCtrl = TextEditingController();
+  final businessDescCtrl = TextEditingController();
+  final businessPriceCtrl = TextEditingController();
+  final RxString businessSelectedCategory = "Services".obs;
+  final RxnString businessSelectedAudioTrack = RxnString("AUTOBAHN");
+  final RxString businessSearchQuery = "".obs;
+  final Rxn<File> businessSelectedImage = Rxn<File>();
+
+  final ImagePicker _postImagePicker = ImagePicker();
+
+  Future<void> pickPostImage(Rxn<File> targetRx) async {
+    try {
+      final XFile? picked = await _postImagePicker.pickImage(
+        source: ImageSource.gallery,
+      );
+      if (picked != null) {
+        targetRx.value = File(picked.path);
+      }
+    } catch (e) {
+      debugPrint("Error picking image: $e");
+    }
+  }
+
+  Future<void> fetchMyClubs() async {
+    clubIsLoadingClubs.value = true;
+    try {
+      final response = await ApiClient.getData("/clubs/get-my-clubs");
+      if (response.statusCode == 200) {
+        final data = response.body['data'] as List?;
+        if (data != null) {
+          clubMyClubs.assignAll(data);
+          if (data.isNotEmpty) {
+            clubSelectedClubId.value = data[0]['_id']?.toString();
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching clubs: $e");
+    } finally {
+      clubIsLoadingClubs.value = false;
+    }
+  }
+
+  void resetAllPostFields() {
+    sessionSummaryCtrl.clear();
+    sessionVehicleCtrl.clear();
+    sessionCircuitCtrl.clear();
+    sessionTrackNameCtrl.clear();
+    sessionBestLapTimeCtrl.clear();
+    sessionTopSpeedCtrl.clear();
+    sessionSelectedImage.value = null;
+
+    spotLicensePlateCtrl.clear();
+    spotRegionCtrl.clear();
+    spotMakeAndModelCtrl.clear();
+    spotEngineCtrl.clear();
+    spotPowerHpCtrl.clear();
+    spotSelectedImage.value = null;
+
+    trackCircuitCtrl.clear();
+    trackNotesCtrl.clear();
+    trackSelectedCondition.value = "DRY";
+    trackSelectedVisibility.value = "Public";
+    trackHazards.forEach((key, val) => trackHazards[key] = false);
+    trackSelectedImage.value = null;
+
+    clubTitleCtrl.clear();
+    clubDetailsCtrl.clear();
+    clubIsPinned.value = false;
+    clubSelectedMedia.value = null;
+
+    businessTitleCtrl.clear();
+    businessDescCtrl.clear();
+    businessPriceCtrl.clear();
+    businessSelectedCategory.value = "Services";
+    businessSelectedAudioTrack.value = null;
+    businessSearchQuery.value = "";
+    businessSelectedImage.value = null;
+  }
+
+  Future<bool> createPost({
+    required String category,
+    required String visibility,
+    Map<String, dynamic>? sessionDetails,
+    Map<String, dynamic>? spotDetails,
+    Map<String, dynamic>? trackUpdateDetails,
+    Map<String, dynamic>? clubPostDetails,
+    Map<String, dynamic>? businessPostDetails,
+    String? clubId,
+    File? mediaFile,
+  }) async {
+    isPostCreating.value = true;
+    try {
+      Map<String, dynamic> dataMap = {
+        "category": category,
+        "visibility": visibility,
+      };
+
+      if (sessionDetails != null) {
+        dataMap["sessionDetails"] = sessionDetails;
+      }
+      if (spotDetails != null) {
+        dataMap["spotDetails"] = spotDetails;
+      }
+      if (trackUpdateDetails != null) {
+        dataMap["trackUpdateDetails"] = trackUpdateDetails;
+      }
+      if (clubPostDetails != null) {
+        dataMap["clubPostDetails"] = clubPostDetails;
+      }
+      if (businessPostDetails != null) {
+        dataMap["businessPostDetails"] = businessPostDetails;
+      }
+      if (clubId != null) {
+        dataMap["club"] = clubId;
+      }
+
+      Map<String, String> body = {"data": jsonEncode(dataMap)};
+
+      List<MultipartBody> multipartBody = [];
+      if (mediaFile != null) {
+        multipartBody.add(MultipartBody('media', mediaFile));
+      }
+
+      final response = await ApiClient.postMultipartData(
+        ApiUrl.createPost,
+        body,
+        multipartBody: multipartBody,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Post published successfully!", isError: false);
+        getPost();
+        return true;
+      } else {
+        showCustomSnackBar("Failed to publish post", isError: true);
+        return false;
+      }
+    } catch (e) {
+      showCustomSnackBar("An error occurred: $e", isError: true);
+      return false;
+    } finally {
+      isPostCreating.value = false;
+    }
+  }
+
   // --- Search State & Methods ---
   final RxList<Map<String, String>> musicList = <Map<String, String>>[].obs;
   final RxBool isSearchingMusic = false.obs;
@@ -381,7 +586,9 @@ class HomeController extends GetxController {
   Timer? _debounce;
 
   void searchMusic(String query) {
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    if (_debounce?.isActive ?? false) {
+      _debounce?.cancel();
+    }
     _debounce = Timer(const Duration(milliseconds: 500), () async {
       isSearchingMusic.value = true;
       try {
@@ -684,6 +891,24 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {
+    sessionSummaryCtrl.dispose();
+    sessionVehicleCtrl.dispose();
+    sessionCircuitCtrl.dispose();
+    sessionTrackNameCtrl.dispose();
+    sessionBestLapTimeCtrl.dispose();
+    sessionTopSpeedCtrl.dispose();
+    spotLicensePlateCtrl.dispose();
+    spotRegionCtrl.dispose();
+    spotMakeAndModelCtrl.dispose();
+    spotEngineCtrl.dispose();
+    spotPowerHpCtrl.dispose();
+    trackCircuitCtrl.dispose();
+    trackNotesCtrl.dispose();
+    clubTitleCtrl.dispose();
+    clubDetailsCtrl.dispose();
+    businessTitleCtrl.dispose();
+    businessDescCtrl.dispose();
+    businessPriceCtrl.dispose();
     audioPlayer.dispose();
     _debounce?.cancel();
     super.onClose();

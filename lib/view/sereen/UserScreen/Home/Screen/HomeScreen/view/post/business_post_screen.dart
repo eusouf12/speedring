@@ -1,34 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../controller/home_controller.dart';
 
-// ─── Controller ────────────────────────────────────────────────
-class BusinessPostController extends GetxController {
-  final TextEditingController titleCtrl = TextEditingController(
-    text: "Precision Suspension Tuning Service",
-  );
-  final TextEditingController descCtrl = TextEditingController(
-    text:
-        "Professional corner weighting, dampening setup, and alignment optimized for your specific track and driving style.",
-  );
-  final TextEditingController priceCtrl = TextEditingController(
-    text: "\$350.00",
-  );
-  final RxString selectedCategory = "Services".obs;
-  final RxnString selectedAudioTrack = RxnString("AUTOBAHN");
-  final RxString searchQuery = "".obs;
-
-  @override
-  void onClose() {
-    titleCtrl.dispose();
-    descCtrl.dispose();
-    priceCtrl.dispose();
-    super.onClose();
-  }
-}
-
-// ─── Screen ────────────────────────────────────────────────────
 class BusinessPostScreen extends StatelessWidget {
   const BusinessPostScreen({super.key});
 
@@ -52,7 +28,7 @@ class BusinessPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(BusinessPostController());
+    final homeCtrl = Get.find<HomeController>();
 
     return CustomGradient(
       child: Scaffold(
@@ -75,29 +51,103 @@ class BusinessPostScreen extends StatelessWidget {
           ),
           centerTitle: true,
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "PUBLISH",
-                style: TextStyle(
+            Obx(() => TextButton(
+              onPressed: homeCtrl.isPostCreating.value
+                  ? null
+                  : () async {
+                      if (homeCtrl.businessTitleCtrl.text.isEmpty ||
+                          homeCtrl.businessDescCtrl.text.isEmpty) {
+                        showCustomSnackBar("Title and Description are required", isError: true);
+                        return;
+                      }
+
+                      final success = await homeCtrl.createPost(
+                        category: "BUSINESS_POST",
+                        visibility: "Public",
+                        mediaFile: homeCtrl.businessSelectedImage.value,
+                        businessPostDetails: {
+                          "listingTitle": homeCtrl.businessTitleCtrl.text.trim(),
+                          "listingCategory": homeCtrl.businessSelectedCategory.value,
+                          "price": homeCtrl.businessPriceCtrl.text.trim(),
+                          "callToAction": "Send Message",
+                          "description": homeCtrl.businessDescCtrl.text.trim(),
+                          "telemetryAudio": homeCtrl.businessSelectedAudioTrack.value,
+                        },
+                      );
+                      if (success) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
+                    },
+              child: Text(
+                homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
+                style: const TextStyle(
                   color: AppColors.yellow,
                   fontSize: 12,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1,
                 ),
               ),
-            ),
+            )),
           ],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
+            /// ── Hero Image Selector ───────────────────────────────────────
+            GestureDetector(
+              onTap: () => homeCtrl.pickPostImage(homeCtrl.businessSelectedImage),
+              child: Obx(() => Container(
+                height: 150,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xff1A1A1A),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.white10,
+                    style: BorderStyle.solid,
+                  ),
+                ),
+                child: homeCtrl.businessSelectedImage.value != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(
+                          homeCtrl.businessSelectedImage.value!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      )
+                    : const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_photo_alternate_outlined,
+                              color: Colors.white38,
+                              size: 32,
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              "ATTACH PRODUCT / SERVICE IMAGE",
+                              style: TextStyle(
+                                color: Colors.white38,
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+              )),
+            ),
+
             /// ── Business Basic details ────────────────────────────────────
             const _FieldLabel("LISTING TITLE"),
             const SizedBox(height: 6),
             _InputField(
               hint: "e.g. Carbon Fiber Hood",
-              controller: controller.titleCtrl,
+              controller: homeCtrl.businessTitleCtrl,
             ),
 
             const SizedBox(height: 14),
@@ -107,10 +157,10 @@ class BusinessPostScreen extends StatelessWidget {
             Obx(
               () => Row(
                 children: _categories.map((cat) {
-                  final isSel = controller.selectedCategory.value == cat;
+                  final isSel = homeCtrl.businessSelectedCategory.value == cat;
                   return Expanded(
                     child: GestureDetector(
-                      onTap: () => controller.selectedCategory.value = cat,
+                      onTap: () => homeCtrl.businessSelectedCategory.value = cat,
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 4),
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -150,7 +200,7 @@ class BusinessPostScreen extends StatelessWidget {
                       const SizedBox(height: 6),
                       _InputField(
                         hint: "\$0.00",
-                        controller: controller.priceCtrl,
+                        controller: homeCtrl.businessPriceCtrl,
                       ),
                     ],
                   ),
@@ -184,11 +234,6 @@ class BusinessPostScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.white38,
-                              size: 18,
-                            ),
                           ],
                         ),
                       ),
@@ -204,22 +249,22 @@ class BusinessPostScreen extends StatelessWidget {
             const SizedBox(height: 6),
             _InputField(
               hint: "Write details about your offering...",
-              controller: controller.descCtrl,
+              controller: homeCtrl.businessDescCtrl,
               maxLines: 3,
             ),
 
             const SizedBox(height: 24),
 
             /// ── Telemetry Audio section ────────────────────────────────────
-            Row(
-              children: const [
-                Icon(
+             Row(
+              children: [
+                const Icon(
                   Icons.music_note_outlined,
                   color: AppColors.yellow,
                   size: 16,
                 ),
-                SizedBox(width: 6),
-                _FieldLabel("ATTACH TELEMETRY AUDIO"),
+                const SizedBox(width: 6),
+                const _FieldLabel("ATTACH TELEMETRY AUDIO"),
               ],
             ),
             const SizedBox(height: 10),
@@ -255,12 +300,13 @@ class BusinessPostScreen extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: TextFormField(
+                            cursorColor: AppColors.yellow,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
                             ),
                             onChanged: (val) =>
-                                controller.searchQuery.value = val,
+                                homeCtrl.businessSearchQuery.value = val,
                             decoration: const InputDecoration(
                               hintText: "Search telemetry tracks...",
                               hintStyle: TextStyle(color: Colors.white24),
@@ -286,7 +332,7 @@ class BusinessPostScreen extends StatelessWidget {
                   Obx(() {
                     final filteredTracks = _audioTracks.where((track) {
                       return track["title"]!.toLowerCase().contains(
-                        controller.searchQuery.value.toLowerCase(),
+                        homeCtrl.businessSearchQuery.value.toLowerCase(),
                       );
                     }).toList();
 
@@ -299,7 +345,7 @@ class BusinessPostScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final track = filteredTracks[index];
                         final isSelected =
-                            controller.selectedAudioTrack.value ==
+                            homeCtrl.businessSelectedAudioTrack.value ==
                             track["title"];
                         return ListTile(
                           contentPadding: EdgeInsets.zero,
@@ -348,7 +394,7 @@ class BusinessPostScreen extends StatelessWidget {
                               size: 18,
                             ),
                             onPressed: () {
-                              controller.selectedAudioTrack.value =
+                              homeCtrl.businessSelectedAudioTrack.value =
                                   track["title"];
                             },
                           ),
@@ -363,19 +409,44 @@ class BusinessPostScreen extends StatelessWidget {
             const SizedBox(height: 32),
 
             /// ── Publish button ───────────────────────────────────────────
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
+            Obx(() => GestureDetector(
+              onTap: homeCtrl.isPostCreating.value
+                  ? null
+                  : () async {
+                      if (homeCtrl.businessTitleCtrl.text.isEmpty ||
+                          homeCtrl.businessDescCtrl.text.isEmpty) {
+                        showCustomSnackBar("Title and Description are required", isError: true);
+                        return;
+                      }
+
+                      final success = await homeCtrl.createPost(
+                        category: "BUSINESS_POST",
+                        visibility: "Public",
+                        mediaFile: homeCtrl.businessSelectedImage.value,
+                        businessPostDetails: {
+                          "listingTitle": homeCtrl.businessTitleCtrl.text.trim(),
+                          "listingCategory": homeCtrl.businessSelectedCategory.value,
+                          "price": homeCtrl.businessPriceCtrl.text.trim(),
+                          "callToAction": "Send Message",
+                          "description": homeCtrl.businessDescCtrl.text.trim(),
+                          "telemetryAudio": homeCtrl.businessSelectedAudioTrack.value,
+                        },
+                      );
+                      if (success) {
+                        Navigator.pop(context);
+                      }
+                    },
               child: Container(
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.yellow,
+                  color: homeCtrl.isPostCreating.value ? const Color(0xff2A2A2A) : AppColors.yellow,
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    "↑  PUBLISH BUSINESS POST",
+                    homeCtrl.isPostCreating.value ? "PUBLISHING..." : "PUBLISH BUSINESS POST",
                     style: TextStyle(
-                      color: Colors.black,
+                      color: homeCtrl.isPostCreating.value ? Colors.white24 : Colors.black,
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 2,
@@ -383,7 +454,7 @@ class BusinessPostScreen extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
+            )),
 
             const SizedBox(height: 32),
           ],
@@ -427,6 +498,7 @@ class _InputField extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
     ),
     child: TextFormField(
+      cursorColor: AppColors.yellow,
       controller: controller,
       maxLines: maxLines,
       style: const TextStyle(color: Colors.white, fontSize: 13),

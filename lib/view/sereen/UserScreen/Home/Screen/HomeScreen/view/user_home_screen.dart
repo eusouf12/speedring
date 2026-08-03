@@ -10,7 +10,6 @@ import 'comment_screen.dart' show showCommentSheet;
 import 'story/create_story_screen.dart';
 import 'story/story_view_screen.dart';
 import 'post/post_detail_screen.dart';
-import 'post/create_post_screen.dart';
 import '../../../widget/story_item.dart';
 import '../../../widget/add_post_button.dart';
 import '../../../widget/post_card.dart';
@@ -201,7 +200,7 @@ class UserHomeScreen extends StatelessWidget {
                     controller.isPostLoading.value
                         ? const Center(
                             child: CircularProgressIndicator(
-                              color: Colors.white,
+                              color: AppColors.yellow,
                             ),
                           )
                         : ListView.builder(
@@ -213,12 +212,8 @@ class UserHomeScreen extends StatelessWidget {
                                   children: [
                                     AddPostButton(
                                       label: "ADD POST",
-                                      onTap: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              const CreatePostScreen(),
-                                        ),
+                                      onTap: () => Get.toNamed(
+                                        AppRoutes.createPostScreen,
                                       ),
                                     ),
                                     const SizedBox(height: 20),
@@ -250,17 +245,24 @@ class UserHomeScreen extends StatelessWidget {
 
                               final post = controller.postsList[index - 1];
                               final categoryLabel = post.category != null
-                                  ? post.category!.replaceAll('_', ' ').toUpperCase()
+                                  ? post.category!
+                                        .replaceAll('_', ' ')
+                                        .toUpperCase()
                                   : '';
                               final userName = categoryLabel.isNotEmpty
                                   ? "${post.user?.name ?? post.user?.userName ?? 'User'} • $categoryLabel"
-                                  : (post.user?.name ?? post.user?.userName ?? 'User');
+                                  : (post.user?.name ??
+                                        post.user?.userName ??
+                                        'User');
                               final profileImage = post.user?.profileImage;
-                              final location = post.spotDetails?.region ??
+                              final location =
+                                  post.spotDetails?.region ??
                                   post.trackUpdateDetails?.circuit ??
                                   post.sessionDetails?.trackName ??
                                   (post.category != null
-                                      ? post.category!.replaceAll('_', ' ').toUpperCase()
+                                      ? post.category!
+                                            .replaceAll('_', ' ')
+                                            .toUpperCase()
                                       : 'Unknown Location');
                               final imageUrl =
                                   post.media != null && post.media!.isNotEmpty
@@ -273,8 +275,10 @@ class UserHomeScreen extends StatelessWidget {
                                   post.trackUpdateDetails?.notes ??
                                   '';
 
-                              final isMyPost = post.user?.id != null &&
-                                  post.user!.id == controller.currentUserId.value;
+                              final isMyPost =
+                                  post.user?.id != null &&
+                                  post.user!.id ==
+                                      controller.currentUserId.value;
 
                               return Column(
                                 children: [
@@ -291,16 +295,21 @@ class UserHomeScreen extends StatelessWidget {
                                     onTap: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => const PostDetailScreen(),
+                                        builder: (_) =>
+                                            const PostDetailScreen(),
                                       ),
                                     ),
-                                    onLike: () => controller.reactToPost(post.id!),
-                                    onComment: () => showCommentSheet(context, post),
+                                    onLike: () =>
+                                        controller.reactToPost(post.id!),
+                                    onComment: () =>
+                                        showCommentSheet(context, post),
                                     onShare: () {
-                                      final postLink = "https://speedring.com/post/${post.id}";
+                                      final postLink =
+                                          "https://speedring.com/post/${post.id}";
                                       SharePlus.instance.share(
                                         ShareParams(
-                                          text: "Check out this post on Speedring:\n\n$postLink",
+                                          text:
+                                              "Check out this post on Speedring:\n\n$postLink",
                                           subject: "Speedring Post",
                                         ),
                                       );
@@ -309,53 +318,90 @@ class UserHomeScreen extends StatelessWidget {
                                         ? () {
                                             showModalBottomSheet(
                                               context: context,
-                                              backgroundColor: const Color(0xff1C1C1C),
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.vertical(
-                                                  top: Radius.circular(20),
-                                                ),
+                                              backgroundColor: const Color(
+                                                0xff1C1C1C,
                                               ),
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                          top: Radius.circular(
+                                                            20,
+                                                          ),
+                                                        ),
+                                                  ),
                                               builder: (context) {
                                                 return SafeArea(
                                                   child: Column(
-                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
                                                     children: [
                                                       ListTile(
-                                                        leading: const Icon(Icons.delete, color: Colors.red),
+                                                        leading: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                        ),
                                                         title: const Text(
                                                           "Delete Post",
-                                                          style: TextStyle(color: Colors.red),
+                                                          style: TextStyle(
+                                                            color: Colors.red,
+                                                          ),
                                                         ),
                                                         onTap: () {
-                                                          Navigator.pop(context);
+                                                          Navigator.pop(
+                                                            context,
+                                                          );
                                                           showDialog(
                                                             context: context,
                                                             builder: (context) => AlertDialog(
-                                                              backgroundColor: const Color(0xff1C1C1C),
+                                                              backgroundColor:
+                                                                  const Color(
+                                                                    0xff1C1C1C,
+                                                                  ),
                                                               title: const Text(
                                                                 "Delete Post",
-                                                                style: TextStyle(color: Colors.white),
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
                                                               ),
                                                               content: const Text(
                                                                 "Are you sure you want to delete this post?",
-                                                                style: TextStyle(color: Colors.white70),
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .white70,
+                                                                ),
                                                               ),
                                                               actions: [
                                                                 TextButton(
-                                                                  onPressed: () => Navigator.pop(context),
+                                                                  onPressed: () =>
+                                                                      Navigator.pop(
+                                                                        context,
+                                                                      ),
                                                                   child: const Text(
                                                                     "Cancel",
-                                                                    style: TextStyle(color: Colors.grey),
+                                                                    style: TextStyle(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                                 TextButton(
                                                                   onPressed: () {
-                                                                    Navigator.pop(context);
-                                                                    controller.deletePost(post.id!);
+                                                                    Navigator.pop(
+                                                                      context,
+                                                                    );
+                                                                    controller
+                                                                        .deletePost(
+                                                                          post.id!,
+                                                                        );
                                                                   },
                                                                   child: const Text(
                                                                     "Delete",
-                                                                    style: TextStyle(color: Colors.red),
+                                                                    style: TextStyle(
+                                                                      color: Colors
+                                                                          .red,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ],
@@ -377,7 +423,7 @@ class UserHomeScreen extends StatelessWidget {
                             },
                           ),
 
-                    /// Tab 1: EVENTS Feed (matching SS design)
+                    /// Tab 1:
                     ListView(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       children: [
@@ -424,7 +470,6 @@ class UserHomeScreen extends StatelessWidget {
                       ],
                     ),
 
-                    /// Tab 2: CLUBS Feed
                     /// Tab 2: CLUBS Feed
                     ListView(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1011,143 +1056,180 @@ class _EventCard extends StatelessWidget {
 }
 
 Widget? _buildPostDetails(PostModel post) {
-    final category = post.category;
-    if (category == "SPOT_POST" && post.spotDetails != null) {
-      final spot = post.spotDetails!;
+  final category = post.category;
+  if (category == "SPOT_POST" && post.spotDetails != null) {
+    final spot = post.spotDetails!;
 
-      return Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: const Color(0xff2A2A2A),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailRow(Icons.credit_card, "License Plate", spot.licensePlate ?? "N/A"),
-            const SizedBox(height: 6),
-            _buildDetailRow(Icons.public, "Region", spot.region ?? "N/A"),
-            const SizedBox(height: 6),
-            _buildDetailRow(Icons.settings, "Engine", spot.engine ?? "N/A"),
-            const SizedBox(height: 6),
-            _buildDetailRow(Icons.flash_on, "Power", "${spot.powerHp ?? 'N/A'} HP"),
-            const SizedBox(height: 6),
-            _buildDetailRow(Icons.directions_car, "Model", spot.makeAndModel ?? "N/A"),
-          ],
-        ),
-      );
-    } else if (category == "SESSION_POST" && post.sessionDetails != null) {
-      final session = post.sessionDetails!;
-      return Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: const Color(0xff2A2A2A),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailRow(Icons.sports_motorsports, "Vehicle", session.vehicle ?? "N/A"),
-            const SizedBox(height: 6),
-            _buildDetailRow(Icons.map, "Circuit", session.circuit ?? "N/A"),
-            const SizedBox(height: 6),
-            _buildDetailRow(Icons.flag, "Track", session.trackName ?? "N/A"),
-            const SizedBox(height: 6),
-            _buildDetailRow(Icons.timer, "Best Lap", session.bestLapTime ?? "N/A"),
-            const SizedBox(height: 6),
-            _buildDetailRow(Icons.speed, "Top Speed", session.topSpeed ?? "N/A"),
-          ],
-        ),
-      );
-    } else if (category == "BUSINESS_POST" && post.businessPostDetails != null) {
-      final biz = post.businessPostDetails!;
-      final hasTitle = biz.listingTitle != null && biz.listingTitle!.isNotEmpty;
-
-      return Column(
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xff2A2A2A),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (hasTitle) ...[
-            Text(
-              biz.listingTitle!,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-          ],
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xff2A2A2A),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDetailRow(Icons.category, "Category", biz.listingCategory ?? "N/A"),
-                const SizedBox(height: 6),
-                _buildDetailRow(Icons.attach_money, "Price", biz.price ?? "N/A"),
-              ],
-            ),
+          _buildDetailRow(
+            Icons.credit_card,
+            "License Plate",
+            spot.licensePlate ?? "N/A",
+          ),
+          const SizedBox(height: 6),
+          _buildDetailRow(Icons.public, "Region", spot.region ?? "N/A"),
+          const SizedBox(height: 6),
+          _buildDetailRow(Icons.settings, "Engine", spot.engine ?? "N/A"),
+          const SizedBox(height: 6),
+          _buildDetailRow(
+            Icons.flash_on,
+            "Power",
+            "${spot.powerHp ?? 'N/A'} HP",
+          ),
+          const SizedBox(height: 6),
+          _buildDetailRow(
+            Icons.directions_car,
+            "Model",
+            spot.makeAndModel ?? "N/A",
           ),
         ],
-      );
-    } else if ((category == "TRACK_UPDATE_POST" || category == "TRACK_UPDATE") && post.trackUpdateDetails != null) {
-      final track = post.trackUpdateDetails!;
-      return Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: const Color(0xff2A2A2A),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailRow(Icons.map, "Circuit", track.circuit ?? "N/A"),
-            const SizedBox(height: 6),
-            _buildDetailRow(Icons.traffic, "Condition", track.surfaceCondition ?? "N/A"),
-            if (track.hazards != null && track.hazards!.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              _buildDetailRow(Icons.warning, "Hazards", track.hazards!.join(", ")),
-            ],
-          ],
-        ),
-      );
-    } else if (category == "CLUB_POST" && post.clubPostDetails != null) {
-      final club = post.clubPostDetails!;
-      final hasTitle = club.title != null && club.title!.isNotEmpty;
-      if (!hasTitle) return null;
+      ),
+    );
+  } else if (category == "SESSION_POST" && post.sessionDetails != null) {
+    final session = post.sessionDetails!;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xff2A2A2A),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildDetailRow(
+            Icons.sports_motorsports,
+            "Vehicle",
+            session.vehicle ?? "N/A",
+          ),
+          const SizedBox(height: 6),
+          _buildDetailRow(Icons.map, "Circuit", session.circuit ?? "N/A"),
+          const SizedBox(height: 6),
+          _buildDetailRow(Icons.flag, "Track", session.trackName ?? "N/A"),
+          const SizedBox(height: 6),
+          _buildDetailRow(
+            Icons.timer,
+            "Best Lap",
+            session.bestLapTime ?? "N/A",
+          ),
+          const SizedBox(height: 6),
+          _buildDetailRow(Icons.speed, "Top Speed", session.topSpeed ?? "N/A"),
+        ],
+      ),
+    );
+  } else if (category == "BUSINESS_POST" && post.businessPostDetails != null) {
+    final biz = post.businessPostDetails!;
+    final hasTitle = biz.listingTitle != null && biz.listingTitle!.isNotEmpty;
 
-      return Text(
-        club.title!,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
-        ),
-      );
-    }
-    return null;
-  }
-
-  Widget _buildDetailRow(IconData icon, String label, String value) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 14, color: Colors.yellow),
-        const SizedBox(width: 8),
-        Text(
-          "$label: ",
-          style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-            overflow: TextOverflow.ellipsis,
+        if (hasTitle) ...[
+          Text(
+            biz.listingTitle!,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xff2A2A2A),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailRow(
+                Icons.category,
+                "Category",
+                biz.listingCategory ?? "N/A",
+              ),
+              const SizedBox(height: 6),
+              _buildDetailRow(Icons.attach_money, "Price", biz.price ?? "N/A"),
+            ],
           ),
         ),
       ],
     );
+  } else if ((category == "TRACK_UPDATE_POST" || category == "TRACK_UPDATE") &&
+      post.trackUpdateDetails != null) {
+    final track = post.trackUpdateDetails!;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xff2A2A2A),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildDetailRow(Icons.map, "Circuit", track.circuit ?? "N/A"),
+          const SizedBox(height: 6),
+          _buildDetailRow(
+            Icons.traffic,
+            "Condition",
+            track.surfaceCondition ?? "N/A",
+          ),
+          if (track.hazards != null && track.hazards!.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            _buildDetailRow(
+              Icons.warning,
+              "Hazards",
+              track.hazards!.join(", "),
+            ),
+          ],
+        ],
+      ),
+    );
+  } else if (category == "CLUB_POST" && post.clubPostDetails != null) {
+    final club = post.clubPostDetails!;
+    final hasTitle = club.title != null && club.title!.isNotEmpty;
+    if (!hasTitle) return null;
+
+    return Text(
+      club.title!,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 15,
+        fontWeight: FontWeight.bold,
+      ),
+    );
   }
+  return null;
+}
+
+Widget _buildDetailRow(IconData icon, String label, String value) {
+  return Row(
+    children: [
+      Icon(icon, size: 14, color: Colors.yellow),
+      const SizedBox(width: 8),
+      Text(
+        "$label: ",
+        style: const TextStyle(
+          color: Colors.white70,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      Expanded(
+        child: Text(
+          value,
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ],
+  );
+}

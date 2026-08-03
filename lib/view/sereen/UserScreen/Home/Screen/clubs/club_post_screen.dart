@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../HomeScreen/controller/home_controller.dart';
 
-class ClubPostScreen extends StatelessWidget {
+class ClubPostScreen extends StatefulWidget {
   const ClubPostScreen({super.key});
+
+  @override
+  State<ClubPostScreen> createState() => _ClubPostScreenState();
+}
+
+class _ClubPostScreenState extends State<ClubPostScreen> {
+  late final HomeController homeCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    homeCtrl = Get.find<HomeController>();
+    homeCtrl.fetchMyClubs();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +30,10 @@ class ClubPostScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-          leading: const SizedBox.shrink(),
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.close, color: Colors.white, size: 22),
+          ),
           title: const Text(
             "CREATE CLUB POST",
             style: TextStyle(
@@ -25,16 +45,92 @@ class ClubPostScreen extends StatelessWidget {
           ),
           centerTitle: false,
           actions: [
-            IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.close, color: Colors.white, size: 22),
-            ),
+            Obx(() => TextButton(
+              onPressed: homeCtrl.isPostCreating.value
+                  ? null
+                  : () async {
+                      if (homeCtrl.clubTitleCtrl.text.isEmpty ||
+                          homeCtrl.clubDetailsCtrl.text.isEmpty) {
+                        showCustomSnackBar("Title and Details are required", isError: true);
+                        return;
+                      }
+
+                      final success = await homeCtrl.createPost(
+                        category: "CLUB_POST",
+                        visibility: "Club Only",
+                        clubId: homeCtrl.clubSelectedClubId.value,
+                        mediaFile: homeCtrl.clubSelectedMedia.value,
+                        clubPostDetails: {
+                          "title": homeCtrl.clubTitleCtrl.text.trim(),
+                          "details": homeCtrl.clubDetailsCtrl.text.trim(),
+                          "isPinned": homeCtrl.clubIsPinned.value,
+                        },
+                      );
+                      if (success) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
+                    },
+              child: Text(
+                homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
+                style: const TextStyle(
+                  color: AppColors.yellow,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1,
+                ),
+              ),
+            )),
           ],
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const SizedBox(height: 16),
+
+            /// ── Club Selector ─────────────────────────────────────────────
+            Obx(() {
+              if (homeCtrl.clubIsLoadingClubs.value) {
+                return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
+              }
+              if (homeCtrl.clubMyClubs.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    "You are not joined in any club. Post will be published to general club category.",
+                    style: TextStyle(color: Colors.white38, fontSize: 11),
+                  ),
+                );
+              }
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xff111111),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.white10),
+                ),
+                child: DropdownButtonFormField<String>(
+                  dropdownColor: Colors.black,
+                  value: homeCtrl.clubSelectedClubId.value,
+                  decoration: const InputDecoration(
+                    labelText: "SELECT CLUB",
+                    labelStyle: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold),
+                    border: InputBorder.none,
+                  ),
+                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                  items: homeCtrl.clubMyClubs.map((club) {
+                    return DropdownMenuItem<String>(
+                      value: club['_id']?.toString(),
+                      child: Text(club['name']?.toString() ?? "Unnamed Club"),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    homeCtrl.clubSelectedClubId.value = val;
+                  },
+                ),
+              );
+            }),
 
             /// ── TITLE Container ───────────────────────────────────────────
             Container(
@@ -67,7 +163,8 @@ class ClubPostScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextFormField(
-                      initialValue: "Grand Prix Loop",
+                      cursorColor: AppColors.yellow,
+                      controller: homeCtrl.clubTitleCtrl,
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 14,
@@ -86,38 +183,50 @@ class ClubPostScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             /// ── ADD MEDIA Box ─────────────────────────────────────────────
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                color: const Color(0xff111111),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white12,
-                  style: BorderStyle.solid,
-                  width: 1.5,
+            GestureDetector(
+              onTap: () => homeCtrl.pickPostImage(homeCtrl.clubSelectedMedia),
+              child: Obx(() => Container(
+                height: 120,
+                decoration: BoxDecoration(
+                  color: const Color(0xff111111),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.white12,
+                    style: BorderStyle.solid,
+                    width: 1.5,
+                  ),
                 ),
-              ),
-              child: const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.camera_alt_outlined,
-                      color: AppColors.yellow,
-                      size: 28,
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      "Add Media (Max 50MB)",
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
+                child: homeCtrl.clubSelectedMedia.value != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.file(
+                          homeCtrl.clubSelectedMedia.value!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      )
+                    : const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.camera_alt_outlined,
+                              color: AppColors.yellow,
+                              size: 28,
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Add Media (Max 50MB)",
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+              )),
             ),
 
             const SizedBox(height: 20),
@@ -141,60 +250,11 @@ class ClubPostScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  /// Toolbar
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Colors.white10)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Text(
-                          "B",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                        ),
-                        const SizedBox(width: 18),
-                        const Text(
-                          "I",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                        ),
-                        const SizedBox(width: 18),
-                        const Text(
-                          "#",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                        ),
-                        const SizedBox(width: 18),
-                        const Icon(Icons.link, color: Colors.white70, size: 16),
-                        const SizedBox(width: 14),
-                        Container(width: 1, height: 16, color: Colors.white24),
-                        const SizedBox(width: 14),
-                        const Icon(
-                          Icons.format_list_bulleted,
-                          color: Colors.white70,
-                          size: 16,
-                        ),
-                      ],
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: TextFormField(
+                      cursorColor: AppColors.yellow,
+                      controller: homeCtrl.clubDetailsCtrl,
                       maxLines: 6,
                       style: const TextStyle(
                         color: Colors.white,
@@ -264,17 +324,19 @@ class ClubPostScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Transform.scale(
+                  Obx(() => Transform.scale(
                     scale: 0.8,
                     child: Switch(
-                      value: false,
-                      onChanged: (val) {},
+                      value: homeCtrl.clubIsPinned.value,
+                      onChanged: (val) {
+                        homeCtrl.clubIsPinned.value = val;
+                      },
                       activeThumbColor: AppColors.yellow,
                       activeTrackColor: AppColors.yellow.withValues(alpha: 0.5),
                       inactiveThumbColor: Colors.white60,
                       inactiveTrackColor: Colors.white10,
                     ),
-                  ),
+                  )),
                 ],
               ),
             ),
@@ -282,23 +344,47 @@ class ClubPostScreen extends StatelessWidget {
             const SizedBox(height: 40),
 
             /// ── Publish button ───────────────────────────────────────────
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
+            Obx(() => GestureDetector(
+              onTap: homeCtrl.isPostCreating.value
+                  ? null
+                  : () async {
+                      if (homeCtrl.clubTitleCtrl.text.isEmpty ||
+                          homeCtrl.clubDetailsCtrl.text.isEmpty) {
+                        showCustomSnackBar("Title and Details are required", isError: true);
+                        return;
+                      }
+
+                      final success = await homeCtrl.createPost(
+                        category: "CLUB_POST",
+                        visibility: "Club Only",
+                        clubId: homeCtrl.clubSelectedClubId.value,
+                        mediaFile: homeCtrl.clubSelectedMedia.value,
+                        clubPostDetails: {
+                          "title": homeCtrl.clubTitleCtrl.text.trim(),
+                          "details": homeCtrl.clubDetailsCtrl.text.trim(),
+                          "isPinned": homeCtrl.clubIsPinned.value,
+                        },
+                      );
+                      if (success) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
+                    },
               child: Container(
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.yellow,
+                  color: homeCtrl.isPostCreating.value ? const Color(0xff2A2A2A) : AppColors.yellow,
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.publish, color: Colors.black, size: 18),
-                    SizedBox(width: 8),
+                    Icon(Icons.publish, color: homeCtrl.isPostCreating.value ? Colors.white24 : Colors.black, size: 18),
+                    const SizedBox(width: 8),
                     Text(
-                      "PUBLISH SESSION",
+                      homeCtrl.isPostCreating.value ? "PUBLISHING..." : "PUBLISH CLUB POST",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: homeCtrl.isPostCreating.value ? Colors.white24 : Colors.black,
                         fontSize: 14,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1,
@@ -307,7 +393,7 @@ class ClubPostScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
+            )),
 
             const SizedBox(height: 32),
           ],
