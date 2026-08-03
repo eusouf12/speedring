@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 
@@ -26,6 +27,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
   final List<int> _floatingHearts = [];
   int _heartCounter = 0;
   bool _isLikedLocally = false;
+  AudioPlayer? _audioPlayer;
 
   @override
   void initState() {
@@ -42,9 +44,28 @@ class _StoryViewScreenState extends State<StoryViewScreen>
       }
     });
 
+    _audioPlayer = AudioPlayer();
+    _playStoryMusic(currentIndex);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _triggerStoryView(currentIndex);
     });
+  }
+
+  Future<void> _playStoryMusic(int index) async {
+    try {
+      await _audioPlayer?.stop();
+      if (index >= 0 && index < _localStories.length) {
+        final story = _localStories[index];
+        final musicUrl = story.music?.url;
+        if (musicUrl != null && musicUrl.isNotEmpty) {
+          await _audioPlayer?.setUrl(musicUrl);
+          await _audioPlayer?.play();
+        }
+      }
+    } catch (e) {
+      debugPrint("Error playing music: $e");
+    }
   }
 
   void _triggerStoryView(int index) {
@@ -67,6 +88,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
         currentIndex++;
         _isLikedLocally = false;
       });
+      _playStoryMusic(currentIndex);
       _triggerStoryView(currentIndex);
       _progressController.reset();
       _progressController.forward();
@@ -83,6 +105,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
         currentIndex--;
         _isLikedLocally = false;
       });
+      _playStoryMusic(currentIndex);
       _triggerStoryView(currentIndex);
       _progressController.reset();
       _progressController.forward();
@@ -93,11 +116,13 @@ class _StoryViewScreenState extends State<StoryViewScreen>
   void dispose() {
     _progressController.dispose();
     _messageCtrl.dispose();
+    _audioPlayer?.dispose();
     super.dispose();
   }
 
   void _showStoryViewersSheet(BuildContext context, String storyId) {
     final controller = Get.find<HomeController>();
+    _audioPlayer?.pause();
     showModalBottomSheet(
       context: context,
       useSafeArea: true,
@@ -236,6 +261,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
       if (mounted && !_progressController.isAnimating) {
         _progressController.forward();
       }
+      _audioPlayer?.play();
     });
   }
 
@@ -304,8 +330,14 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                     _nextStory();
                   }
                 },
-                onLongPressDown: (_) => _progressController.stop(),
-                onLongPressUp: () => _progressController.forward(),
+                onLongPressDown: (_) {
+                  _progressController.stop();
+                  _audioPlayer?.pause();
+                },
+                onLongPressUp: () {
+                  _progressController.forward();
+                  _audioPlayer?.play();
+                },
                 child: storyImageUrl != null
                     ? Stack(
                         fit: StackFit.expand,
@@ -438,13 +470,62 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                           ),
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          timeAgo,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 11,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              timeAgo,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 11,
+                              ),
+                            ),
+                            if (currentStory?.location?.name != null &&
+                                currentStory!.location!.name!.isNotEmpty) ...[
+                              const SizedBox(width: 8),
+                              const Icon(
+                                Icons.location_on,
+                                color: AppColors.yellow,
+                                size: 12,
+                              ),
+                              const SizedBox(width: 2),
+                              Expanded(
+                                child: Text(
+                                  currentStory.location!.name!,
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 11,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
+                        if (currentStory?.music?.name != null &&
+                            currentStory!.music!.name!.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.music_note,
+                                color: AppColors.yellow,
+                                size: 12,
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  currentStory.music!.name!,
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 11,
+                                    fontStyle: FontStyle.italic,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -540,6 +621,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                           onTap: () {
                             // Pause progress bar
                             _progressController.stop();
+                            _audioPlayer?.pause();
 
                             showModalBottomSheet(
                               context: context,
@@ -618,6 +700,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                                       ); // Close dialog
                                                       _progressController
                                                           .forward(); // Resume progress
+                                                      _audioPlayer?.play();
                                                     },
                                                     child: const Text(
                                                       "NO",
@@ -664,6 +747,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                                                         .length -
                                                                     1;
                                                               }
+                                                              _playStoryMusic(currentIndex);
                                                               _progressController
                                                                   .reset();
                                                               _progressController
@@ -673,10 +757,12 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                                         } else {
                                                           _progressController
                                                               .forward();
+                                                          _audioPlayer?.play();
                                                         }
                                                       } else {
                                                         _progressController
                                                             .forward();
+                                                        _audioPlayer?.play();
                                                       }
                                                     },
                                                     child: const Text(
@@ -705,6 +791,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                     !_progressController.isAnimating) {
                                   _progressController.forward();
                                 }
+                                _audioPlayer?.play();
                               }
                             });
                           },

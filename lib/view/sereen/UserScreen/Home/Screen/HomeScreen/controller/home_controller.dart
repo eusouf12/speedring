@@ -16,6 +16,7 @@ import '../../../../../../../helper/shared_prefe/shared_prefe.dart';
 import '../model/story_model.dart';
 import '../model/view_story_model.dart';
 import '../model/post_model.dart';
+import '../model/audio_model.dart';
 
 class HomeController extends GetxController {
   final rxActiveTab = 0.obs; // 0: POST, 1: EVENTS, 2: CLUBS
@@ -291,14 +292,15 @@ class HomeController extends GetxController {
 
   bool _isPickingMedia = false;
 
-  Future<void> pickMedia({required bool isVideoVal}) async {
+  Future<void> pickMedia({required bool isVideoVal, bool fromCamera = false}) async {
     if (_isPickingMedia) return;
     _isPickingMedia = true;
 
     try {
+      final source = fromCamera ? ImageSource.camera : ImageSource.gallery;
       final XFile? picked = isVideoVal
-          ? await _picker.pickVideo(source: ImageSource.gallery)
-          : await _picker.pickImage(source: ImageSource.gallery);
+          ? await _picker.pickVideo(source: source)
+          : await _picker.pickImage(source: source);
 
       if (picked != null) {
         selectedFile.value = File(picked.path);
@@ -315,11 +317,13 @@ class HomeController extends GetxController {
     selectedFile.value = null;
     isVideo.value = false;
     selectedMusic.value = null;
+    selectedMusicUrl.value = null;
     selectedLocation.value = null;
   }
 
   // --- Story Enhancements ---
   final RxnString selectedMusic = RxnString();
+  final RxnString selectedMusicUrl = RxnString();
   final RxnString selectedLocation = RxnString();
 
   Future<void> createStory() async {
@@ -335,7 +339,10 @@ class HomeController extends GetxController {
       }
 
       if (selectedMusic.value != null && selectedMusic.value!.isNotEmpty) {
-        dataMap["music"] = {"name": selectedMusic.value};
+        dataMap["music"] = {
+          "name": selectedMusic.value,
+          "url": selectedMusicUrl.value,
+        };
       }
 
       Map<String, String> body = {};
@@ -374,27 +381,29 @@ class HomeController extends GetxController {
   Timer? _debounce;
 
   void searchMusic(String query) {
-    if (query.isEmpty) {
-      musicList.clear();
-      return;
-    }
-
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () async {
       isSearchingMusic.value = true;
       try {
-        final url = Uri.parse(
-          'https://itunes.apple.com/search?term=$query&entity=song&limit=15',
-        );
-        final response = await http.get(url);
-        if (response.statusCode == 200) {
-          final data = json.decode(response.body);
-          final List results = data['results'] ?? [];
-          musicList.value = results.map((item) {
+        String url = ApiUrl.getAllMusic;
+        if (query.isNotEmpty) {
+          url += "?searchTerm=${Uri.encodeComponent(query)}";
+        }
+        var response = await ApiClient.getData(url);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          var musicResponse = MusicResponse.fromJson(
+            response.body is String ? jsonDecode(response.body) : response.body,
+          );
+          final list = musicResponse.data ?? [];
+          musicList.value = list.map((item) {
+            String fullAudioUrl = item.audioUrl ?? "";
+            if (fullAudioUrl.isNotEmpty && !fullAudioUrl.startsWith("http")) {
+              fullAudioUrl = "${ApiUrl.imageUrl}$fullAudioUrl";
+            }
             return {
-              "title": item['trackName']?.toString() ?? "Unknown Title",
-              "artist": item['artistName']?.toString() ?? "Unknown Artist",
-              "previewUrl": item['previewUrl']?.toString() ?? "",
+              "title": item.title ?? "Unknown Title",
+              "artist": item.artist ?? "Unknown Artist",
+              "previewUrl": fullAudioUrl,
             };
           }).toList();
         }
@@ -478,9 +487,9 @@ class HomeController extends GetxController {
     }
   }
 
-  // --- Audio Player ---
   final AudioPlayer audioPlayer = AudioPlayer();
   final RxString currentlyPlayingUrl = "".obs;
+  final RxBool isPlayingRx = false.obs;
 
   Future<void> togglePlay(String url) async {
     if (url.isEmpty) return;
@@ -516,6 +525,9 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    audioPlayer.playingStream.listen((playing) {
+      isPlayingRx.value = playing;
+    });
     getStories();
     getPost();
   }

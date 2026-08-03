@@ -32,6 +32,7 @@ class ApiUrl {
   ///========================= User =========================
   static const String createStory = "/stories/create-story";
   static const String getAllStory = "/stories/get-all-user-stories";
+  static const String getAllMusic = "/music/get-all-audio";
   static String deleteStory({required String storyId}) =>
       "/stories/delete-story/$storyId";
   static String likeStory({required String storyId}) =>
@@ -65,12 +66,10 @@ class ApiUrl {
   static String commentPostReply({
     required String postId,
     required String commentId,
-  }) =>
-      "/posts/$postId/comment/$commentId/reply";
+  }) => "/posts/$postId/comment/$commentId/reply";
   static String deleteComment({
     required String postId,
     required String commentId,
-  }) =>
-      "/posts/$postId/comment/$commentId";
+  }) => "/posts/$postId/comment/$commentId";
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
 }
