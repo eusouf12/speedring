@@ -97,7 +97,7 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                       ),
                       child: DropdownButtonFormField<String>(
                         dropdownColor: Colors.black,
-                        value: homeCtrl.clubSelectedClubId.value,
+                        initialValue: homeCtrl.clubSelectedClubId.value,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           isDense: true,

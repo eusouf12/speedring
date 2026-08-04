@@ -192,6 +192,7 @@ class SessionPostScreen extends StatelessWidget {
                           },
                         );
                         if (success) {
+                          if (!context.mounted) return;
                           Navigator.pop(context);
                           Navigator.pop(context);
                         }

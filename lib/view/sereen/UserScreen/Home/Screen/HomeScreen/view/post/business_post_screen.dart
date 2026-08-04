@@ -433,6 +433,7 @@ class BusinessPostScreen extends StatelessWidget {
                         },
                       );
                       if (success) {
+                        if (!context.mounted) return;
                         Navigator.pop(context);
                       }
                     },

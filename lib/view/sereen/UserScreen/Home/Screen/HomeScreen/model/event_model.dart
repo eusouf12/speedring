@@ -67,13 +67,13 @@ class EventModel {
           : null,
       user: json['user'] != null
           ? (json['user'] is String
-              ? EventUser(id: json['user'])
-              : EventUser.fromJson(json['user']))
+                ? EventUser(id: json['user'])
+                : EventUser.fromJson(json['user']))
           : null,
       comments: json['comments'] != null
           ? (json['comments'] as List)
-              .map((c) => EventComment.fromJson(c))
-              .toList()
+                .map((c) => EventComment.fromJson(c))
+                .toList()
           : null,
     );
   }
@@ -109,18 +109,18 @@ class EventComment {
       commentedAt: json['commentedAt']?.toString(),
       user: json['user'] != null
           ? (json['user'] is String
-              ? EventUser(id: json['user'])
-              : EventUser.fromJson(json['user']))
+                ? EventUser(id: json['user'])
+                : EventUser.fromJson(json['user']))
           : null,
       reacts: json['reacts'] != null
           ? (json['reacts'] as List)
-              .map((r) => EventCommentReact.fromJson(r))
-              .toList()
+                .map((r) => EventCommentReact.fromJson(r))
+                .toList()
           : null,
       replies: json['replies'] != null
           ? (json['replies'] as List)
-              .map((r) => EventCommentReply.fromJson(r))
-              .toList()
+                .map((r) => EventCommentReply.fromJson(r))
+                .toList()
           : null,
       isReacted: json['isReacted'],
       myReactType: json['myReactType'],
@@ -152,13 +152,13 @@ class EventCommentReply {
       commentedAt: json['commentedAt']?.toString(),
       user: json['user'] != null
           ? (json['user'] is String
-              ? EventUser(id: json['user'])
-              : EventUser.fromJson(json['user']))
+                ? EventUser(id: json['user'])
+                : EventUser.fromJson(json['user']))
           : null,
       reacts: json['reacts'] != null
           ? (json['reacts'] as List)
-              .map((r) => EventCommentReact.fromJson(r))
-              .toList()
+                .map((r) => EventCommentReact.fromJson(r))
+                .toList()
           : null,
     );
   }
@@ -181,8 +181,8 @@ class EventCommentReact {
       reactedAt: json['reactedAt']?.toString(),
       user: json['user'] != null
           ? (json['user'] is String
-              ? EventUser(id: json['user'])
-              : EventUser.fromJson(json['user']))
+                ? EventUser(id: json['user'])
+                : EventUser.fromJson(json['user']))
           : null,
     );
   }
@@ -219,9 +219,6 @@ class TimeWindow {
   TimeWindow({this.start, this.end});
 
   factory TimeWindow.fromJson(Map<String, dynamic> json) {
-    return TimeWindow(
-      start: json['start'],
-      end: json['end'],
-    );
+    return TimeWindow(start: json['start'], end: json['end']);
   }
 }

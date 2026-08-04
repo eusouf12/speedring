@@ -6,7 +6,7 @@ import 'widget/custom_onboarding_card.dart';
 import 'widget/on_bording_controller.dart';
 
 class OnboardingScreen extends StatelessWidget {
-  OnboardingScreen({super.key});
+  const OnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

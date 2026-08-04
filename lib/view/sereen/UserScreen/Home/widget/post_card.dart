@@ -110,6 +110,8 @@ class PostCard extends StatelessWidget {
                 child: Text(
                   caption,
                   style: const TextStyle(color: Colors.white),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
 

@@ -298,12 +298,15 @@ class PreviewView extends StatelessWidget {
                             size: 18,
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            controller.selectedMusic.value!,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                          Flexible(
+                            child: Text(
+                              controller.selectedMusic.value!,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -346,12 +349,15 @@ class PreviewView extends StatelessWidget {
                             size: 16,
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            controller.selectedLocation.value!.toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                          Flexible(
+                            child: Text(
+                              controller.selectedLocation.value!.toUpperCase(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

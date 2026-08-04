@@ -138,6 +138,31 @@ class HomeController extends GetxController {
     }
   }
 
+  // ================== Single Post Detail ===========================
+  final Rx<PostModel?> currentPostDetail = Rx<PostModel?>(null);
+  final RxBool isPostDetailLoading = false.obs;
+
+  Future<void> getSinglePost(String postId) async {
+    isPostDetailLoading.value = true;
+    currentPostDetail.value = null; // Clear previous
+    try {
+      var response = await ApiClient.getData(ApiUrl.getSinglePost(postId: postId));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final raw = response.body['data'];
+        if (raw != null) {
+          currentPostDetail.value = PostModel.fromJson(raw);
+        }
+      } else {
+        showCustomSnackBar("Failed to load post details", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error loading single post: $e");
+      showCustomSnackBar("Error loading post details", isError: true);
+    } finally {
+      isPostDetailLoading.value = false;
+    }
+  }
+
   final RxSet<String> reactingPostIds = <String>{}.obs;
 
   Future<void> reactToPost(String postId, {String reactType = "LOVE"}) async {
@@ -193,6 +218,9 @@ class HomeController extends GetxController {
       createdAt: originalPost.createdAt,
       updatedAt: originalPost.updatedAt,
     );
+    if (currentPostDetail.value?.id == postId) {
+      currentPostDetail.value = postsList[index];
+    }
 
     try {
       var response = await ApiClient.patchData(
@@ -237,14 +265,23 @@ class HomeController extends GetxController {
             createdAt: originalPost.createdAt,
             updatedAt: originalPost.updatedAt,
           );
+          if (currentPostDetail.value?.id == postId) {
+            currentPostDetail.value = postsList[index];
+          }
         }
       } else {
         postsList[index] = originalPost;
+        if (currentPostDetail.value?.id == postId) {
+          currentPostDetail.value = originalPost;
+        }
         showCustomSnackBar("Failed to update reaction", isError: true);
       }
     } catch (e) {
       debugPrint("Error reacting to post: $e");
       postsList[index] = originalPost;
+      if (currentPostDetail.value?.id == postId) {
+        currentPostDetail.value = originalPost;
+      }
     } finally {
       reactingPostIds.remove(postId);
     }
@@ -258,6 +295,7 @@ class HomeController extends GetxController {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         getPost();
+        if (currentPostDetail.value?.id == postId) getSinglePost(postId);
         showCustomSnackBar("Comment added successfully", isError: false);
       } else {
         showCustomSnackBar("Failed to add comment", isError: true);
@@ -274,6 +312,7 @@ class HomeController extends GetxController {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         getPost();
+        if (currentPostDetail.value?.id == postId) getSinglePost(postId);
         showCustomSnackBar("Comment deleted successfully", isError: false);
       } else {
         showCustomSnackBar("Failed to delete comment", isError: true);
@@ -295,6 +334,7 @@ class HomeController extends GetxController {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         getPost();
+        if (currentPostDetail.value?.id == postId) getSinglePost(postId);
         showCustomSnackBar("Reply added successfully", isError: false);
       } else {
         showCustomSnackBar("Failed to add reply", isError: true);
@@ -905,11 +945,48 @@ class HomeController extends GetxController {
   final RxList<EventModel> eventsList = <EventModel>[].obs;
   final RxBool isEventsLoading = false.obs;
   final RxBool isEventsLoadMoreLoading = false.obs;
+  
+  final Rx<EventModel?> currentEventDetail = Rx<EventModel?>(null);
+  final RxBool isEventDetailLoading = false.obs;
+
+  Future<void> getSingleEvent(String eventId) async {
+    isEventDetailLoading.value = true;
+    currentEventDetail.value = null; // Clear previous
+    try {
+      final response = await ApiClient.getData(ApiUrl.getSingleEvent(eventId: eventId));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final raw = response.body['data'];
+        if (raw != null) {
+          currentEventDetail.value = EventModel.fromJson(raw);
+        }
+      } else {
+        showCustomSnackBar("Failed to load event details", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error loading single event: $e");
+      showCustomSnackBar("Error loading event details", isError: true);
+    } finally {
+      isEventDetailLoading.value = false;
+    }
+  }
   int _eventPage = 1;
   bool _hasMoreEvents = true;
   bool get hasMoreEvents => _hasMoreEvents;
 
-  Future<void> getEvents({bool isLoadMore = false}) async {
+  final RxString eventSearchTerm = "".obs;
+  Timer? _eventSearchDebounce;
+
+  void searchEvents(String query) {
+    if (_eventSearchDebounce?.isActive ?? false) _eventSearchDebounce?.cancel();
+    _eventSearchDebounce = Timer(const Duration(milliseconds: 350), () {
+      getEvents(searchTerm: query);
+    });
+  }
+
+  Future<void> getEvents({bool isLoadMore = false, String? searchTerm}) async {
+    if (searchTerm != null) {
+      eventSearchTerm.value = searchTerm;
+    }
     if (isLoadMore) {
       if (!_hasMoreEvents || isEventsLoadMoreLoading.value) return;
       isEventsLoadMoreLoading.value = true;
@@ -921,7 +998,11 @@ class HomeController extends GetxController {
 
     try {
       final response = await ApiClient.getData(
-        ApiUrl.getEvents(page: _eventPage, limit: 10),
+        ApiUrl.getEvents(
+          page: _eventPage, 
+          limit: 10,
+          searchTerm: eventSearchTerm.value,
+        ),
       );
       if (response.statusCode == 200) {
         final raw = response.body['data'];
@@ -1098,6 +1179,9 @@ class HomeController extends GetxController {
       user: original.user,
       comments: original.comments,
     );
+    if (currentEventDetail.value?.id == eventId) {
+      currentEventDetail.value = eventsList[index];
+    }
 
     try {
       final response = await ApiClient.patchData(
@@ -1133,11 +1217,17 @@ class HomeController extends GetxController {
             user: original.user,
             comments: original.comments,
           );
+          if (currentEventDetail.value?.id == eventId) {
+            currentEventDetail.value = eventsList[index];
+          }
         }
         return true;
       } else {
         // rollback
         eventsList[index] = original;
+        if (currentEventDetail.value?.id == eventId) {
+          currentEventDetail.value = original;
+        }
         return false;
       }
     } catch (e) {
@@ -1207,6 +1297,9 @@ class HomeController extends GetxController {
             user: original.user,
             comments: updatedComments,
           );
+          if (currentEventDetail.value?.id == eventId) {
+            currentEventDetail.value = eventsList[index];
+          }
         }
         return true;
       }
@@ -1306,6 +1399,9 @@ class HomeController extends GetxController {
             user: original.user,
             comments: updatedComments,
           );
+          if (currentEventDetail.value?.id == eventId) {
+            currentEventDetail.value = eventsList[index];
+          }
         }
         showCustomSnackBar("Comment deleted", isError: false);
         return true;
@@ -1413,6 +1509,9 @@ class HomeController extends GetxController {
             user: original.user,
             comments: updatedComments,
           );
+          if (currentEventDetail.value?.id == eventId) {
+            currentEventDetail.value = eventsList[index];
+          }
         }
         showCustomSnackBar("Reply added", isError: false);
         return true;

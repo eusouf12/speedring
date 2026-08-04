@@ -1,296 +1,373 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
+import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../controller/home_controller.dart';
+import '../user_home_screen.dart';
+import 'package:share_plus/share_plus.dart';
 import 'comment_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PostDetailScreen — Static data, no constructor params
 // ─────────────────────────────────────────────────────────────────────────────
 
-class PostDetailScreen extends StatelessWidget {
-  const PostDetailScreen({super.key});
+class PostDetailScreen extends StatefulWidget {
+  final String postId;
+  const PostDetailScreen({super.key, required this.postId});
 
-  // ── Static data ────────────────────────────────────────────────────────────
-  static const String _userName = "MAX_VERSTAPPEN_33";
-  static const String _subTitle = "RED BULL RB20";
-  static const List<String> _imageUrls = [
-    "https://picsum.photos/seed/f1spa/600/400",
-    "https://picsum.photos/seed/f1race/600/400",
-    "https://picsum.photos/seed/f1pit/600/400",
-  ];
-  static const String _caption =
-      "Pushing the limits at Spa. The aero balance feels incredible through Eau Rouge. #Speedring #F1 #Motorsport #Spa";
+  @override
+  State<PostDetailScreen> createState() => _PostDetailScreenState();
+}
 
-  static const String _likeCount = "12.4k";
-  static const String _commentCount = "482";
-  static const bool _isVerified = true;
-  static const List<_ProfileData> _similarProfiles = [
-    _ProfileData(
-      name: "Lando_Norris",
-      team: "McLaren F1 Team",
-      imageUrl: "https://picsum.photos/seed/lando/200",
-    ),
-    _ProfileData(
-      name: "Charles_Leclerc",
-      team: "Scuderia Ferrari",
-      imageUrl: "https://picsum.photos/seed/charles/200",
-    ),
-    _ProfileData(
-      name: "Lewis_Hamilton",
-      team: "Mercedes AMG",
-      imageUrl: "https://picsum.photos/seed/lewis/200",
-    ),
-  ];
+class _PostDetailScreenState extends State<PostDetailScreen> {
+  final HomeController controller = Get.find<HomeController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getSinglePost(widget.postId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: const Color(0xff111111),
-        body: CustomScrollView(
-          slivers: [
-            /// ── App bar ──────────────────────────────────────────────────
-            SliverAppBar(
-              backgroundColor: const Color(0xff111111),
-              elevation: 0,
-              pinned: true,
-              leading: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-              ),
-              title: const Text(
-                "DETAILS",
-                style: TextStyle(
-                  color: AppColors.yellow,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2,
-                ),
-              ),
-              centerTitle: true,
-            ),
+        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "Details"),
+        body: Obx(() {
+          if (controller.isPostDetailLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.yellow),
+            );
+          }
+          final post = controller.currentPostDetail.value;
+          if (post == null) {
+            return const Center(
+              child: CustomText(text: "Post not found", color: Colors.white),
+            );
+          }
 
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// ── Image Carousel ───────────────────────────────────
-                  const _ImageCarousel(imageUrls: _imageUrls),
+          final userName = post.user?.userName ?? post.user?.name ?? "Unknown";
+          final profileImage = post.user?.profileImage;
+          final imageUrls = (post.media ?? [])
+              .map((e) => e.url ?? "")
+              .where((u) => u.isNotEmpty)
+              .toList();
+          final likeCount = "${post.reactCount ?? 0}";
+          final commentCount = "${post.commentCount ?? 0}";
+          final isMyPost =
+              post.user?.id != null &&
+              post.user!.id == controller.currentUserId.value;
 
-                  const SizedBox(height: 16),
+          final categoryLabel = post.category != null
+              ? post.category!.replaceAll('_', ' ').toUpperCase()
+              : '';
+          final loc =
+              post.spotDetails?.region ??
+              post.trackUpdateDetails?.circuit ??
+              post.sessionDetails?.trackName;
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// ── User info row ──────────────────────────────
-                        Row(
-                          children: [
-                            /// Avatar
-                            Container(
-                              width: 46,
-                              height: 46,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: AppColors.yellow,
-                                  width: 1.5,
+          String subtitle = loc != null && loc.isNotEmpty
+              ? (categoryLabel.isNotEmpty ? "$categoryLabel • $loc" : loc)
+              : (categoryLabel.isNotEmpty ? categoryLabel : '');
+
+          // Get specific caption
+          String caption = "";
+          if (post.sessionDetails != null) {
+            caption = post.sessionDetails!.summary ?? "";
+          } else if (post.spotDetails != null) {
+            caption = post.spotDetails!.region ?? "";
+          } else if (post.businessPostDetails != null) {
+            caption = post.businessPostDetails!.description ?? "";
+          } else if (post.trackUpdateDetails != null) {
+            caption = post.trackUpdateDetails!.notes ?? "";
+          } else if (post.clubPostDetails != null) {
+            caption =
+                post.clubPostDetails!.details ??
+                post.clubPostDetails!.title ??
+                "";
+          }
+
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// ── Image Carousel ───────────────────────────────────
+                    if (imageUrls.isNotEmpty)
+                      _ImageCarousel(imageUrls: imageUrls),
+                    if (imageUrls.isNotEmpty) const SizedBox(height: 16),
+
+                    const SizedBox(height: 16),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// ── User info row ──────────────────────────────
+                          Row(
+                            children: [
+                              /// Avatar
+                              Container(
+                                width: 46,
+                                height: 46,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: AppColors.yellow,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: ClipOval(
+                                  child:
+                                      profileImage != null &&
+                                          profileImage.isNotEmpty
+                                      ? Image.network(
+                                          profileImage,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : const Icon(
+                                          Icons.person,
+                                          color: Colors.white,
+                                        ),
                                 ),
                               ),
-                              child: const ClipOval(
-                                child: Icon(Icons.person, color: Colors.white),
-                              ),
-                            ),
 
-                            const SizedBox(width: 10),
+                              const SizedBox(width: 10),
 
-                            /// Name + subtitle
-                            const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        _userName,
-                                        style: TextStyle(
+                              /// Name + subtitle
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CustomText(
+                                          text: userName,
                                           color: Colors.white,
                                           fontSize: 13,
                                           fontWeight: FontWeight.w800,
                                           letterSpacing: 0.5,
                                         ),
-                                      ),
-                                      if (_isVerified) ...[
-                                        SizedBox(width: 4),
-                                        Icon(
-                                          Icons.verified,
-                                          color: AppColors.yellow,
-                                          size: 14,
-                                        ),
                                       ],
-                                    ],
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    _subTitle,
-                                    style: TextStyle(
-                                      color: Colors.white54,
-                                      fontSize: 11,
                                     ),
-                                  ),
-                                ],
+                                    if (subtitle.isNotEmpty) ...[
+                                      const SizedBox(height: 2),
+                                      CustomText(
+                                        text: subtitle,
+                                        color: Colors.white54,
+                                        fontSize: 11,
+                                      ),
+                                    ],
+                                  ],
+                                ),
                               ),
-                            ),
 
-                            /// More options
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.more_horiz,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 14),
-
-                        /// ── Caption ──────────────────────────────────
-                        const _CaptionText(caption: _caption),
-
-                        const SizedBox(height: 14),
-
-                        /// ── Location + Spec pills ────────────────────
-                        // const Row(
-                        //   children: [
-                        //     _InfoPill(
-                        //       icon: Icons.location_on_outlined,
-                        //       label: _location,
-                        //     ),
-                        //     SizedBox(width: 12),
-                        //     _InfoPill(
-                        //       icon: Icons.directions_car_outlined,
-                        //       label: _carSpec,
-                        //     ),
-                        //   ],
-                        // ),
-
-                        // const SizedBox(height: 16),
-
-                        /// ── Engagement row ───────────────────────────
-                        Row(
-                          children: [
-                            const _LikeButton(likeCount: _likeCount),
-
-                            const SizedBox(width: 20),
-
-                            GestureDetector(
-                              onTap: () => showCommentSheet(context),
-                              child: const Row(
-                                children: [
-                                  Icon(
-                                    Icons.chat_bubble_outline,
+                              /// More options
+                              if (isMyPost)
+                                IconButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      backgroundColor: const Color(0xff1C1C1C),
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(20),
+                                        ),
+                                      ),
+                                      builder: (context) {
+                                        return SafeArea(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              ListTile(
+                                                leading: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
+                                                ),
+                                                title: const CustomText(
+                                                  text: "Delete Post",
+                                                  color: Colors.red,
+                                                ),
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) => AlertDialog(
+                                                      backgroundColor:
+                                                          const Color(
+                                                            0xff1C1C1C,
+                                                          ),
+                                                      title: const CustomText(
+                                                        text: "Delete Post",
+                                                        color: Colors.white,
+                                                      ),
+                                                      content: const CustomText(
+                                                        text:
+                                                            "Are you sure you want to delete this post?",
+                                                        color: Colors.white70,
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                context,
+                                                              ),
+                                                          child:
+                                                              const CustomText(
+                                                                text: "Cancel",
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                              context,
+                                                            );
+                                                            Navigator.pop(
+                                                              context,
+                                                            ); // Go back from detail screen
+                                                            controller
+                                                                .deletePost(
+                                                                  post.id!,
+                                                                );
+                                                          },
+                                                          child:
+                                                              const CustomText(
+                                                                text: "Delete",
+                                                                color:
+                                                                    Colors.red,
+                                                              ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.more_horiz,
                                     color: Colors.white,
-                                    size: 22,
                                   ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    _commentCount,
-                                    style: TextStyle(
+                                ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 14),
+
+                          /// ── Caption ──────────────────────────────────
+                          if (caption.isNotEmpty) ...[
+                            _CaptionText(caption: caption),
+                            const SizedBox(height: 14),
+                          ],
+
+                          if (buildPostDetails(post) != null) ...[
+                            buildPostDetails(post)!,
+                            const SizedBox(height: 16),
+                          ],
+
+                          /// ── Engagement row ───────────────────────────
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () => controller.reactToPost(post.id!),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      post.isReacted == true
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: post.isReacted == true
+                                          ? Colors.red
+                                          : Colors.white,
+                                      size: 22,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    CustomText(
+                                      text: likeCount,
                                       color: Colors.white,
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
 
-                            const Spacer(),
+                              const SizedBox(width: 20),
 
-                            GestureDetector(
-                              onTap: () {},
-                              child: const Icon(
-                                Icons.share_outlined,
-                                color: Colors.white,
-                                size: 22,
+                              GestureDetector(
+                                onTap: () => showCommentSheet(context, post),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.chat_bubble_outline,
+                                      color: Colors.white,
+                                      size: 22,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    CustomText(
+                                      text: commentCount,
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
 
-                        const SizedBox(height: 24),
+                              const Spacer(),
 
-                        /// ── Similar Profiles ─────────────────────────
-                        const Text(
-                          "SIMILAR PROFILES",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.4,
+                              GestureDetector(
+                                onTap: () {
+                                  final postLink =
+                                      "https://speedring.com/post/${post.id}";
+                                  SharePlus.instance.share(
+                                    ShareParams(
+                                      text:
+                                          "Check out this post on Speedring:\n\n$postLink",
+                                      subject: "Speedring Post",
+                                    ),
+                                  );
+                                },
+                                child: const Icon(
+                                  Icons.share_outlined,
+                                  color: Colors.white,
+                                  size: 22,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 160,
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: _similarProfiles.length,
-                            separatorBuilder: (_, _) =>
-                                const SizedBox(width: 12),
-                            itemBuilder: (_, i) => _SimilarProfileCard(
-                              profile: _similarProfiles[i],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                      ],
+
+                          const SizedBox(height: 32),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        }),
       ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Internal data class (const-capable)
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _ProfileData {
-  final String name;
-  final String team;
-  final String? imageUrl;
-
-  const _ProfileData({required this.name, required this.team, this.imageUrl});
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Controllers
-// ─────────────────────────────────────────────────────────────────────────────
-
 class ImageCarouselController extends GetxController {
   final RxInt currentIndex = 0.obs;
 }
-
-class LikeButtonController extends GetxController {
-  final RxBool isLiked = false.obs;
-}
-
-class SimilarProfileCardController extends GetxController {
-  final RxBool following = false.obs;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _ImageCarousel — page index state managed via GetX
-// ─────────────────────────────────────────────────────────────────────────────
 
 class _ImageCarousel extends StatelessWidget {
   final List<String> imageUrls;
@@ -357,56 +434,6 @@ class _ImageCarousel extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _LikeButton — liked state managed via GetX
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _LikeButton extends StatelessWidget {
-  final String likeCount;
-
-  const _LikeButton({required this.likeCount});
-
-  @override
-  Widget build(BuildContext context) {
-    final tag = likeCount;
-    final controller = Get.put(LikeButtonController(), tag: tag);
-
-    return GestureDetector(
-      onTap: () => controller.isLiked.value = !controller.isLiked.value,
-      child: Row(
-        children: [
-          Obx(
-            () => AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: Icon(
-                controller.isLiked.value
-                    ? Icons.favorite
-                    : Icons.favorite_border,
-                key: ValueKey(controller.isLiked.value),
-                color: controller.isLiked.value ? Colors.red : Colors.white,
-                size: 22,
-              ),
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            likeCount,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _CaptionText — hashtag গুলো yellow করে highlight করে
-// ─────────────────────────────────────────────────────────────────────────────
-
 class _CaptionText extends StatelessWidget {
   final String caption;
 
@@ -429,119 +456,6 @@ class _CaptionText extends StatelessWidget {
             ),
           );
         }).toList(),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _SimilarProfileCard — following state managed via GetX
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _SimilarProfileCard extends StatelessWidget {
-  final _ProfileData profile;
-
-  const _SimilarProfileCard({required this.profile});
-
-  @override
-  Widget build(BuildContext context) {
-    final tag = profile.name;
-    final controller = Get.put(SimilarProfileCardController(), tag: tag);
-
-    return Container(
-      width: 140,
-      decoration: BoxDecoration(
-        color: const Color(0xff1C1C1C),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          /// Avatar
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.yellow, width: 1.5),
-            ),
-            child: ClipOval(
-              child: profile.imageUrl != null
-                  ? Image.network(profile.imageUrl!, fit: BoxFit.cover)
-                  : const Icon(Icons.person, color: Colors.white),
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          /// Name
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              profile.name,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 2),
-
-          /// Team
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              profile.team.toUpperCase(),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white38,
-                fontSize: 9,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          /// Follow button
-          GestureDetector(
-            onTap: () =>
-                controller.following.value = !controller.following.value,
-            child: Obx(
-              () => AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                width: 100,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: controller.following.value
-                      ? Colors.white12
-                      : AppColors.yellow,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    controller.following.value ? "FOLLOWING" : "FOLLOW",
-                    style: TextStyle(
-                      color: controller.following.value
-                          ? Colors.white60
-                          : Colors.black,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.8,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

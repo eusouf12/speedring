@@ -1,5 +1,8 @@
 import 'dart:io';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import '../../../../../../../../../service/api_url.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,16 +40,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   TimeOfDay? _timeStart;
   TimeOfDay? _timeEnd;
   String? _locationCircuit;
-  final List<String> _circuits = [
-    "Silverstone",
-    "Spa-Francorchamps",
-    "Nürburgring",
-    "Monza",
-    "Suzuka",
-    "Brands Hatch",
-    "Yas Marina",
-    "Circuit de Catalunya",
-  ];
 
   // Phase 03 — Access
   String _accessType = "PUBLIC (OPEN TO ALL)";
@@ -500,13 +493,34 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
   Widget _buildCircuitDropdown() {
     return Autocomplete<String>(
-      optionsBuilder: (TextEditingValue textEditingValue) {
+      optionsBuilder: (TextEditingValue textEditingValue) async {
         if (textEditingValue.text.isEmpty) {
           return const Iterable<String>.empty();
         }
-        return _circuits.where((String option) {
-          return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
-        });
+
+        try {
+          final query = Uri.encodeComponent(textEditingValue.text);
+          final url =
+              'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=${ApiUrl.mapKey}';
+
+          final response = await http.get(Uri.parse(url));
+          debugPrint("PLACES API STATUS: ${response.statusCode}");
+          debugPrint("PLACES API BODY: ${response.body}");
+
+          if (response.statusCode == 200) {
+            final data = json.decode(response.body);
+            if (data['status'] == 'OK') {
+              final predictions = data['predictions'] as List;
+              return predictions
+                  .map((p) => p['description'].toString())
+                  .toList();
+            }
+          }
+        } catch (e) {
+          debugPrint("PLACES API ERROR: $e");
+        }
+
+        return const Iterable<String>.empty();
       },
       onSelected: (String selection) {
         setState(() => _locationCircuit = selection);
@@ -514,8 +528,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       },
       fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
         // Sync controllers if it's the first time
-        if (_locationCtrl.text != controller.text && controller.text.isEmpty && _locationCtrl.text.isNotEmpty) {
-           controller.text = _locationCtrl.text;
+        if (_locationCtrl.text != controller.text &&
+            controller.text.isEmpty &&
+            _locationCtrl.text.isNotEmpty) {
+          controller.text = _locationCtrl.text;
         }
         return _buildTextField(
           controller: controller,
@@ -551,7 +567,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   return InkWell(
                     onTap: () => onSelected(option),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 12.h,
+                      ),
                       child: Text(
                         option,
                         style: TextStyle(

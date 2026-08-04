@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:speedring/service/api_url.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../../../core/app_routes/app_routes.dart';
 import '../../../../../../components/custom_appbar_user/custom_appbar_user.dart';
 import '../controller/home_controller.dart';
 import '../model/post_model.dart';
 import 'post/comment_screen.dart' show showCommentSheet;
-import 'event/event_comment_screen.dart' show showEventCommentSheet, shareEventLink;
+import 'event/event_comment_screen.dart'
+    show showEventCommentSheet, shareEventLink;
 import 'story/create_story_screen.dart';
 import 'story/story_view_screen.dart';
 import 'post/post_detail_screen.dart';
@@ -55,7 +57,9 @@ class UserHomeScreen extends StatelessWidget {
                       style: const TextStyle(color: Colors.white),
                       autofocus: true,
                       decoration: InputDecoration(
-                        hintText: "Search posts...",
+                        hintText: controller.rxActiveTab.value == 1
+                            ? "Search events..."
+                            : "Search posts...",
                         hintStyle: const TextStyle(color: Colors.white30),
                         prefixIcon: const Icon(
                           Icons.search,
@@ -64,7 +68,11 @@ class UserHomeScreen extends StatelessWidget {
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.clear, color: Colors.white54),
                           onPressed: () {
-                            controller.getPost(searchTerm: "");
+                            if (controller.rxActiveTab.value == 0) {
+                              controller.getPost(searchTerm: "");
+                            } else if (controller.rxActiveTab.value == 1) {
+                              controller.getEvents(searchTerm: "");
+                            }
                             controller.showSearchBar.value = false;
                           },
                         ),
@@ -74,7 +82,11 @@ class UserHomeScreen extends StatelessWidget {
                         ),
                       ),
                       onChanged: (val) {
-                        controller.searchPost(val);
+                        if (controller.rxActiveTab.value == 0) {
+                          controller.searchPost(val);
+                        } else if (controller.rxActiveTab.value == 1) {
+                          controller.searchEvents(val);
+                        }
                       },
                       onSubmitted: (val) {
                         controller.showSearchBar.value = false;
@@ -209,225 +221,233 @@ class UserHomeScreen extends StatelessWidget {
                             backgroundColor: Colors.black,
                             onRefresh: () => controller.getPost(),
                             child: ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: controller.postsList.length + 2,
-                            itemBuilder: (context, index) {
-                              if (index == 0) {
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              itemCount: controller.postsList.length + 2,
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  return Column(
+                                    children: [
+                                      AddPostButton(
+                                        label: "ADD POST",
+                                        onTap: () => Get.toNamed(
+                                          AppRoutes.createPostScreen,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                    ],
+                                  );
+                                }
+
+                                if (index == controller.postsList.length + 1) {
+                                  if (controller.isLoadMoreLoading.value) {
+                                    return const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                                  } else if (controller.hasMorePosts) {
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                          controller.getPost(isLoadMore: true);
+                                        });
+                                    return const SizedBox(height: 50);
+                                  } else {
+                                    return const SizedBox(height: 30);
+                                  }
+                                }
+
+                                final post = controller.postsList[index - 1];
+                                final categoryLabel = post.category != null
+                                    ? post.category!
+                                          .replaceAll('_', ' ')
+                                          .toUpperCase()
+                                    : '';
+                                final userName =
+                                    post.user?.name ??
+                                    post.user?.userName ??
+                                    'User';
+                                final profileImage = post.user?.profileImage;
+
+                                final loc =
+                                    post.spotDetails?.region ??
+                                    post.trackUpdateDetails?.circuit ??
+                                    post.sessionDetails?.trackName;
+
+                                final location = loc != null && loc.isNotEmpty
+                                    ? (categoryLabel.isNotEmpty
+                                          ? "$categoryLabel • $loc"
+                                          : loc)
+                                    : (categoryLabel.isNotEmpty
+                                          ? categoryLabel
+                                          : 'Unknown Location');
+                                final imageUrl =
+                                    post.media != null && post.media!.isNotEmpty
+                                    ? post.media!.first.url ?? ''
+                                    : '';
+                                final caption =
+                                    post.clubPostDetails?.details ??
+                                    post.businessPostDetails?.description ??
+                                    post.sessionDetails?.summary ??
+                                    post.trackUpdateDetails?.notes ??
+                                    '';
+
+                                final isMyPost =
+                                    post.user?.id != null &&
+                                    post.user!.id ==
+                                        controller.currentUserId.value;
+
                                 return Column(
                                   children: [
-                                    AddPostButton(
-                                      label: "ADD POST",
-                                      onTap: () => Get.toNamed(
-                                        AppRoutes.createPostScreen,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 20),
-                                  ],
-                                );
-                              }
-
-                              if (index == controller.postsList.length + 1) {
-                                if (controller.isLoadMoreLoading.value) {
-                                  return const Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 16),
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  );
-                                } else if (controller.hasMorePosts) {
-                                  WidgetsBinding.instance.addPostFrameCallback((
-                                    _,
-                                  ) {
-                                    controller.getPost(isLoadMore: true);
-                                  });
-                                  return const SizedBox(height: 50);
-                                } else {
-                                  return const SizedBox(height: 30);
-                                }
-                              }
-
-                              final post = controller.postsList[index - 1];
-                              final categoryLabel = post.category != null
-                                  ? post.category!
-                                        .replaceAll('_', ' ')
-                                        .toUpperCase()
-                                  : '';
-                              final userName = categoryLabel.isNotEmpty
-                                  ? "${post.user?.name ?? post.user?.userName ?? 'User'} • $categoryLabel"
-                                  : (post.user?.name ??
-                                        post.user?.userName ??
-                                        'User');
-                              final profileImage = post.user?.profileImage;
-                              final location =
-                                  post.spotDetails?.region ??
-                                  post.trackUpdateDetails?.circuit ??
-                                  post.sessionDetails?.trackName ??
-                                  (post.category != null
-                                      ? post.category!
-                                            .replaceAll('_', ' ')
-                                            .toUpperCase()
-                                      : 'Unknown Location');
-                              final imageUrl =
-                                  post.media != null && post.media!.isNotEmpty
-                                  ? post.media!.first.url ?? ''
-                                  : '';
-                              final caption =
-                                  post.clubPostDetails?.details ??
-                                  post.businessPostDetails?.description ??
-                                  post.sessionDetails?.summary ??
-                                  post.trackUpdateDetails?.notes ??
-                                  '';
-
-                              final isMyPost =
-                                  post.user?.id != null &&
-                                  post.user!.id ==
-                                      controller.currentUserId.value;
-
-                              return Column(
-                                children: [
-                                  PostCard(
-                                    userName: userName,
-                                    location: location,
-                                    imageUrl: imageUrl,
-                                    caption: caption,
-                                    profileImage: profileImage,
-                                    reactCount: post.reactCount,
-                                    commentCount: post.commentCount,
-                                    isLiked: post.isReacted ?? false,
-                                    detailsWidget: _buildPostDetails(post),
-                                    onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            const PostDetailScreen(),
-                                      ),
-                                    ),
-                                    onLike: () =>
-                                        controller.reactToPost(post.id!),
-                                    onComment: () =>
-                                        showCommentSheet(context, post),
-                                    onShare: () {
-                                      final postLink =
-                                          "https://speedring.com/post/${post.id}";
-                                      SharePlus.instance.share(
-                                        ShareParams(
-                                          text:
-                                              "Check out this post on Speedring:\n\n$postLink",
-                                          subject: "Speedring Post",
+                                    PostCard(
+                                      userName: userName,
+                                      location: location,
+                                      imageUrl: imageUrl,
+                                      caption: caption,
+                                      profileImage: profileImage,
+                                      reactCount: post.reactCount,
+                                      commentCount: post.commentCount,
+                                      isLiked: post.isReacted ?? false,
+                                      detailsWidget: buildPostDetails(post),
+                                      onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => PostDetailScreen(
+                                            postId: post.id!,
+                                          ),
                                         ),
-                                      );
-                                    },
-                                    onMore: isMyPost
-                                        ? () {
-                                            showModalBottomSheet(
-                                              context: context,
-                                              backgroundColor: const Color(
-                                                0xff1C1C1C,
-                                              ),
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.vertical(
-                                                          top: Radius.circular(
-                                                            20,
+                                      ),
+                                      onLike: () =>
+                                          controller.reactToPost(post.id!),
+                                      onComment: () =>
+                                          showCommentSheet(context, post),
+                                      onShare: () {
+                                        final postLink =
+                                            "https://speedring.com/post/${post.id}";
+                                        SharePlus.instance.share(
+                                          ShareParams(
+                                            text:
+                                                "Check out this post on Speedring:\n\n$postLink",
+                                            subject: "Speedring Post",
+                                          ),
+                                        );
+                                      },
+                                      onMore: isMyPost
+                                          ? () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                backgroundColor: const Color(
+                                                  0xff1C1C1C,
+                                                ),
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.vertical(
+                                                            top:
+                                                                Radius.circular(
+                                                                  20,
+                                                                ),
                                                           ),
-                                                        ),
-                                                  ),
-                                              builder: (context) {
-                                                return SafeArea(
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      ListTile(
-                                                        leading: const Icon(
-                                                          Icons.delete,
-                                                          color: Colors.red,
-                                                        ),
-                                                        title: const Text(
-                                                          "Delete Post",
-                                                          style: TextStyle(
+                                                    ),
+                                                builder: (context) {
+                                                  return SafeArea(
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        ListTile(
+                                                          leading: const Icon(
+                                                            Icons.delete,
                                                             color: Colors.red,
                                                           ),
-                                                        ),
-                                                        onTap: () {
-                                                          Navigator.pop(
-                                                            context,
-                                                          );
-                                                          showDialog(
-                                                            context: context,
-                                                            builder: (context) => AlertDialog(
-                                                              backgroundColor:
-                                                                  const Color(
-                                                                    0xff1C1C1C,
+                                                          title: const Text(
+                                                            "Delete Post",
+                                                            style: TextStyle(
+                                                              color: Colors.red,
+                                                            ),
+                                                          ),
+                                                          onTap: () {
+                                                            Navigator.pop(
+                                                              context,
+                                                            );
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (context) => AlertDialog(
+                                                                backgroundColor:
+                                                                    const Color(
+                                                                      0xff1C1C1C,
+                                                                    ),
+                                                                title: const Text(
+                                                                  "Delete Post",
+                                                                  style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
-                                                              title: const Text(
-                                                                "Delete Post",
-                                                                style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
                                                                 ),
-                                                              ),
-                                                              content: const Text(
-                                                                "Are you sure you want to delete this post?",
-                                                                style: TextStyle(
-                                                                  color: Colors
-                                                                      .white70,
+                                                                content: const Text(
+                                                                  "Are you sure you want to delete this post?",
+                                                                  style: TextStyle(
+                                                                    color: Colors
+                                                                        .white70,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              actions: [
-                                                                TextButton(
-                                                                  onPressed: () =>
+                                                                actions: [
+                                                                  TextButton(
+                                                                    onPressed: () =>
+                                                                        Navigator.pop(
+                                                                          context,
+                                                                        ),
+                                                                    child: const Text(
+                                                                      "Cancel",
+                                                                      style: TextStyle(
+                                                                        color: Colors
+                                                                            .grey,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  TextButton(
+                                                                    onPressed: () {
                                                                       Navigator.pop(
                                                                         context,
+                                                                      );
+                                                                      controller
+                                                                          .deletePost(
+                                                                            post.id!,
+                                                                          );
+                                                                    },
+                                                                    child: const Text(
+                                                                      "Delete",
+                                                                      style: TextStyle(
+                                                                        color: Colors
+                                                                            .red,
                                                                       ),
-                                                                  child: const Text(
-                                                                    "Cancel",
-                                                                    style: TextStyle(
-                                                                      color: Colors
-                                                                          .grey,
                                                                     ),
                                                                   ),
-                                                                ),
-                                                                TextButton(
-                                                                  onPressed: () {
-                                                                    Navigator.pop(
-                                                                      context,
-                                                                    );
-                                                                    controller
-                                                                        .deletePost(
-                                                                          post.id!,
-                                                                        );
-                                                                  },
-                                                                  child: const Text(
-                                                                    "Delete",
-                                                                    style: TextStyle(
-                                                                      color: Colors
-                                                                          .red,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          }
-                                        : null,
-                                  ),
-                                  const SizedBox(height: 12),
-                                ],
-                              );
-                            },
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          : null,
+                                    ),
+                                    const SizedBox(height: 12),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
-                        ),
 
                     /// Tab 1: EVENTS Feed
                     controller.isEventsLoading.value
@@ -448,7 +468,9 @@ class UserHomeScreen extends StatelessWidget {
                             backgroundColor: Colors.black,
                             onRefresh: () => controller.getEvents(),
                             child: ListView.builder(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               itemCount: controller.eventsList.length + 2,
                               itemBuilder: (context, index) {
                                 // index 0 → ADD EVENT button
@@ -458,7 +480,9 @@ class UserHomeScreen extends StatelessWidget {
                                       AddPostButton(
                                         label: "ADD EVENT",
                                         onTap: () {
-                                          Get.toNamed(AppRoutes.createEventScreen);
+                                          Get.toNamed(
+                                            AppRoutes.createEventScreen,
+                                          );
                                         },
                                       ),
                                       const SizedBox(height: 20),
@@ -468,9 +492,13 @@ class UserHomeScreen extends StatelessWidget {
 
                                 // Last item → load-more indicator / trigger
                                 if (index == controller.eventsList.length + 1) {
-                                  if (controller.isEventsLoadMoreLoading.value) {
+                                  if (controller
+                                      .isEventsLoadMoreLoading
+                                      .value) {
                                     return const Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 16),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
                                       child: Center(
                                         child: CircularProgressIndicator(
                                           color: Colors.white,
@@ -478,9 +506,12 @@ class UserHomeScreen extends StatelessWidget {
                                       ),
                                     );
                                   } else if (controller.hasMoreEvents) {
-                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      controller.getEvents(isLoadMore: true);
-                                    });
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                          controller.getEvents(
+                                            isLoadMore: true,
+                                          );
+                                        });
                                     return const SizedBox(height: 50);
                                   } else {
                                     return const SizedBox(height: 30);
@@ -488,13 +519,17 @@ class UserHomeScreen extends StatelessWidget {
                                 }
 
                                 final event = controller.eventsList[index - 1];
-                                final isMyEvent = event.user?.id != null &&
-                                    event.user!.id == controller.currentUserId.value;
+                                final isMyEvent =
+                                    event.user?.id != null &&
+                                    event.user!.id ==
+                                        controller.currentUserId.value;
 
                                 // Build proper image URL
                                 String bannerUrl = event.bannerImage ?? "";
-                                if (bannerUrl.isNotEmpty && !bannerUrl.startsWith("http")) {
-                                  bannerUrl = "http://10.10.28.90:4050$bannerUrl";
+                                if (bannerUrl.isNotEmpty &&
+                                    !bannerUrl.startsWith("http")) {
+                                  bannerUrl =
+                                      "http://10.10.28.90:4050$bannerUrl";
                                 }
 
                                 return _EventCard(
@@ -502,28 +537,36 @@ class UserHomeScreen extends StatelessWidget {
                                       ? bannerUrl
                                       : "https://picsum.photos/seed/event_${event.id}/600/300",
                                   organizer: event.user?.name ?? "ORGANIZER",
+                                  organizerImage: event.user?.profileImage,
                                   title: event.eventName ?? "UNTITLED EVENT",
                                   date: event.deploymentDate != null
                                       ? event.deploymentDate!.split('T')[0]
                                       : "UNKNOWN",
                                   type: event.missionType ?? "EVENT",
                                   location: event.locationCircuit ?? "UNKNOWN",
-                                  slots: "${event.joinCount ?? 0}/${event.maxCapacity ?? 0}",
+                                  slots:
+                                      "${event.joinCount ?? 0}/${event.maxCapacity ?? 0}",
                                   likes: "${event.reactCount ?? 0}",
                                   comments: "${event.commentCount ?? 0}",
                                   isJoined: event.isEventJoined ?? false,
                                   isReacted: event.isReacted ?? false,
                                   isMyEvent: isMyEvent,
                                   eventId: event.id ?? "",
-                                  onJoin: () => controller.joinEvent(eventId: event.id!),
-                                  onLike: () => controller.reactToEvent(eventId: event.id!),
-                                  onComment: () => showEventCommentSheet(context, event),
+                                  onJoin: () =>
+                                      controller.joinEvent(eventId: event.id!),
+                                  onLike: () => controller.reactToEvent(
+                                    eventId: event.id!,
+                                  ),
+                                  onComment: () =>
+                                      showEventCommentSheet(context, event),
                                   onShare: () {
                                     controller.shareEvent(eventId: event.id!);
                                     shareEventLink(event);
                                   },
                                   onDelete: isMyEvent
-                                      ? () => controller.deleteEvent(eventId: event.id!)
+                                      ? () => controller.deleteEvent(
+                                          eventId: event.id!,
+                                        )
                                       : null,
                                 );
                               },
@@ -886,6 +929,7 @@ class _EventCard extends StatelessWidget {
   final VoidCallback onComment;
   final VoidCallback onShare;
   final VoidCallback? onDelete;
+  final String? organizerImage;
 
   const _EventCard({
     required this.imageUrl,
@@ -906,29 +950,20 @@ class _EventCard extends StatelessWidget {
     required this.onComment,
     required this.onShare,
     this.onDelete,
+    this.organizerImage,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isFull = slots.split('/').length == 2 &&
+    final bool isFull =
+        slots.split('/').length == 2 &&
         slots.split('/')[0] == slots.split('/')[1];
 
     return GestureDetector(
       onTap: () {
         Get.toNamed(
           AppRoutes.eventDetailScreen,
-          arguments: {
-            'imageUrl': imageUrl,
-            'title': title,
-            'organizer': organizer,
-            'date': date,
-            'location': location,
-            'likes': likes,
-            'comments': comments,
-            'timeWindow': '09:00 GMT',
-            'capacity': isFull ? '100% FULL' : '84% FULL',
-            'capacityProgress': isFull ? 1.0 : 0.84,
-          },
+          arguments: {'eventId': eventId},
         );
       },
       child: Container(
@@ -960,30 +995,35 @@ class _EventCard extends StatelessWidget {
                   /// Organizer
                   Row(
                     children: [
-                      const CircleAvatar(
-                        radius: 8,
+                      CircleAvatar(
+                        radius: 14,
                         backgroundColor: Colors.white24,
-                        child: Icon(
-                          Icons.person,
-                          size: 10,
-                          color: Colors.white,
-                        ),
+                        backgroundImage:
+                            organizerImage != null && organizerImage!.isNotEmpty
+                            ? NetworkImage(
+                                organizerImage!.startsWith('http')
+                                    ? organizerImage!
+                                    : ApiUrl.baseUrl + organizerImage!,
+                              )
+                            : null,
+                        child: organizerImage == null || organizerImage!.isEmpty
+                            ? const Icon(
+                                Icons.person,
+                                size: 10,
+                                color: Colors.white,
+                              )
+                            : null,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         organizer,
                         style: const TextStyle(
                           color: AppColors.yellow,
-                          fontSize: 9,
+                          fontSize: 12,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Icon(
-                        Icons.verified,
-                        color: AppColors.yellow,
-                        size: 10,
-                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -1045,95 +1085,147 @@ class _EventCard extends StatelessWidget {
                     behavior: HitTestBehavior.opaque,
                     onTap: () {},
                     child: Row(
-                    children: [
-                      // Like button
-                      GestureDetector(
-                        onTap: onLike,
-                        child: Icon(
-                          isReacted ? Icons.favorite : Icons.favorite_border,
-                          color: isReacted ? Colors.redAccent : Colors.white38,
-                          size: 16,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        likes,
-                        style: const TextStyle(
-                          color: Colors.white38,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      // Comment button
-                      GestureDetector(
-                        onTap: onComment,
-                        child: const Icon(
-                          Icons.chat_bubble_outline,
-                          color: Colors.white38,
-                          size: 16,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        comments,
-                        style: const TextStyle(
-                          color: Colors.white38,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      // Share button
-                      GestureDetector(
-                        onTap: onShare,
-                        child: const Icon(
-                          Icons.share_outlined,
-                          color: Colors.white38,
-                          size: 16,
-                        ),
-                      ),
-                      // Delete button (only for my events)
-                      if (isMyEvent && onDelete != null) ...[
-                        const SizedBox(width: 8),
+                      children: [
+                        // Like button
                         GestureDetector(
-                          onTap: onDelete,
-                          child: const Icon(
-                            Icons.delete_outline,
-                            color: Colors.redAccent,
+                          onTap: onLike,
+                          child: Icon(
+                            isReacted ? Icons.favorite : Icons.favorite_border,
+                            color: isReacted
+                                ? Colors.redAccent
+                                : Colors.white38,
                             size: 16,
                           ),
                         ),
-                      ],
-                      const Spacer(),
-
-                      /// Join / Joined Button
-                      GestureDetector(
-                        onTap: isJoined ? null : onJoin,
-                        child: Container(
-                          height: 36,
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          decoration: BoxDecoration(
-                            color: isJoined
-                                ? const Color(0xff222222)
-                                : AppColors.yellow,
-                            borderRadius: BorderRadius.circular(8),
+                        const SizedBox(width: 4),
+                        Text(
+                          likes,
+                          style: const TextStyle(
+                            color: Colors.white38,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
                           ),
-                          child: Center(
-                            child: Text(
-                              isJoined ? "JOINED" : "JOIN",
-                              style: TextStyle(
-                                color: isJoined ? Colors.white60 : Colors.black,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.5,
+                        ),
+                        const SizedBox(width: 14),
+                        // Comment button
+                        GestureDetector(
+                          onTap: onComment,
+                          child: const Icon(
+                            Icons.chat_bubble_outline,
+                            color: Colors.white38,
+                            size: 16,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          comments,
+                          style: const TextStyle(
+                            color: Colors.white38,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        // Share button
+                        GestureDetector(
+                          onTap: onShare,
+                          child: const Icon(
+                            Icons.share_outlined,
+                            color: Colors.white38,
+                            size: 16,
+                          ),
+                        ),
+                        // Delete button (only for my events)
+                        if (isMyEvent && onDelete != null) ...[
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () {
+                              Get.dialog(
+                                AlertDialog(
+                                  backgroundColor: const Color(0xff1C1C1C),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  title: const Text(
+                                    "Delete Event",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  content: const Text(
+                                    "Are you sure you want to delete this event?",
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Get.back(),
+                                      child: const Text(
+                                        "NO",
+                                        style: TextStyle(
+                                          color: Colors.white54,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.back(); // close dialog
+                                        onDelete?.call();
+                                      },
+                                      child: const Text(
+                                        "YES",
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.redAccent,
+                              size: 16,
+                            ),
+                          ),
+                        ],
+                        const Spacer(),
+
+                        /// Join / Joined Button
+                        if (!isMyEvent)
+                          GestureDetector(
+                            onTap: isJoined ? null : onJoin,
+                            child: Container(
+                              height: 36,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isJoined
+                                    ? const Color(0xff222222)
+                                    : AppColors.yellow,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  isJoined ? "JOINED" : "JOIN",
+                                  style: TextStyle(
+                                    color: isJoined
+                                        ? Colors.white60
+                                        : Colors.black,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -1146,15 +1238,23 @@ class _EventCard extends StatelessWidget {
 
   Widget _metaRow(IconData icon, String label, {Color color = Colors.white60}) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.white24, size: 12),
+        Padding(
+          padding: const EdgeInsets.only(top: 1.0),
+          child: Icon(icon, color: Colors.white24, size: 12),
+        ),
         const SizedBox(width: 6),
-        Text(
-          label,
-          style: TextStyle(
-            color: color,
-            fontSize: 9,
-            fontWeight: FontWeight.w800,
+        Expanded(
+          child: Text(
+            label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: color,
+              fontSize: 9,
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ),
       ],
@@ -1162,7 +1262,7 @@ class _EventCard extends StatelessWidget {
   }
 }
 
-Widget? _buildPostDetails(PostModel post) {
+Widget? buildPostDetails(PostModel post) {
   final category = post.category;
   if (category == "SPOT_POST" && post.spotDetails != null) {
     final spot = post.spotDetails!;
@@ -1176,23 +1276,23 @@ Widget? _buildPostDetails(PostModel post) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDetailRow(
+          buildDetailRow(
             Icons.credit_card,
             "License Plate",
             spot.licensePlate ?? "N/A",
           ),
           const SizedBox(height: 6),
-          _buildDetailRow(Icons.public, "Region", spot.region ?? "N/A"),
+          buildDetailRow(Icons.public, "Region", spot.region ?? "N/A"),
           const SizedBox(height: 6),
-          _buildDetailRow(Icons.settings, "Engine", spot.engine ?? "N/A"),
+          buildDetailRow(Icons.settings, "Engine", spot.engine ?? "N/A"),
           const SizedBox(height: 6),
-          _buildDetailRow(
+          buildDetailRow(
             Icons.flash_on,
             "Power",
             "${spot.powerHp ?? 'N/A'} HP",
           ),
           const SizedBox(height: 6),
-          _buildDetailRow(
+          buildDetailRow(
             Icons.directions_car,
             "Model",
             spot.makeAndModel ?? "N/A",
@@ -1211,23 +1311,19 @@ Widget? _buildPostDetails(PostModel post) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDetailRow(
+          buildDetailRow(
             Icons.sports_motorsports,
             "Vehicle",
             session.vehicle ?? "N/A",
           ),
           const SizedBox(height: 6),
-          _buildDetailRow(Icons.map, "Circuit", session.circuit ?? "N/A"),
+          buildDetailRow(Icons.map, "Circuit", session.circuit ?? "N/A"),
           const SizedBox(height: 6),
-          _buildDetailRow(Icons.flag, "Track", session.trackName ?? "N/A"),
+          buildDetailRow(Icons.flag, "Track", session.trackName ?? "N/A"),
           const SizedBox(height: 6),
-          _buildDetailRow(
-            Icons.timer,
-            "Best Lap",
-            session.bestLapTime ?? "N/A",
-          ),
+          buildDetailRow(Icons.timer, "Best Lap", session.bestLapTime ?? "N/A"),
           const SizedBox(height: 6),
-          _buildDetailRow(Icons.speed, "Top Speed", session.topSpeed ?? "N/A"),
+          buildDetailRow(Icons.speed, "Top Speed", session.topSpeed ?? "N/A"),
         ],
       ),
     );
@@ -1258,13 +1354,13 @@ Widget? _buildPostDetails(PostModel post) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDetailRow(
+              buildDetailRow(
                 Icons.category,
                 "Category",
                 biz.listingCategory ?? "N/A",
               ),
               const SizedBox(height: 6),
-              _buildDetailRow(Icons.attach_money, "Price", biz.price ?? "N/A"),
+              buildDetailRow(Icons.attach_money, "Price", biz.price ?? "N/A"),
             ],
           ),
         ),
@@ -1282,20 +1378,16 @@ Widget? _buildPostDetails(PostModel post) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDetailRow(Icons.map, "Circuit", track.circuit ?? "N/A"),
+          buildDetailRow(Icons.map, "Circuit", track.circuit ?? "N/A"),
           const SizedBox(height: 6),
-          _buildDetailRow(
+          buildDetailRow(
             Icons.traffic,
             "Condition",
             track.surfaceCondition ?? "N/A",
           ),
           if (track.hazards != null && track.hazards!.isNotEmpty) ...[
             const SizedBox(height: 6),
-            _buildDetailRow(
-              Icons.warning,
-              "Hazards",
-              track.hazards!.join(", "),
-            ),
+            buildDetailRow(Icons.warning, "Hazards", track.hazards!.join(", ")),
           ],
         ],
       ),
@@ -1317,7 +1409,7 @@ Widget? _buildPostDetails(PostModel post) {
   return null;
 }
 
-Widget _buildDetailRow(IconData icon, String label, String value) {
+Widget buildDetailRow(IconData icon, String label, String value) {
   return Row(
     children: [
       Icon(icon, size: 14, color: Colors.yellow),
