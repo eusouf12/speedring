@@ -18,6 +18,7 @@ import '../model/view_story_model.dart';
 import '../model/post_model.dart';
 import '../model/audio_model.dart';
 import '../model/event_model.dart';
+import '../model/club_model.dart';
 
 class HomeController extends GetxController {
   final rxActiveTab = 0.obs; // 0: POST, 1: EVENTS, 2: CLUBS
@@ -25,6 +26,9 @@ class HomeController extends GetxController {
     rxActiveTab.value = index;
     if (index == 1 && eventsList.isEmpty) {
       getEvents();
+    } else if (index == 2 && allClubs.isEmpty) {
+      getAllClubs();
+      getMyClubs();
     }
   }
 
@@ -146,7 +150,9 @@ class HomeController extends GetxController {
     isPostDetailLoading.value = true;
     currentPostDetail.value = null; // Clear previous
     try {
-      var response = await ApiClient.getData(ApiUrl.getSinglePost(postId: postId));
+      var response = await ApiClient.getData(
+        ApiUrl.getSinglePost(postId: postId),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final raw = response.body['data'];
         if (raw != null) {
@@ -574,25 +580,41 @@ class HomeController extends GetxController {
         dataMap["club"] = clubId;
       }
 
-      Map<String, String> body = {"data": jsonEncode(dataMap)};
-
-      List<MultipartBody> multipartBody = [];
+      dynamic response;
       if (mediaFile != null) {
-        multipartBody.add(MultipartBody('media', mediaFile));
+        response = await ApiClient.postMultipartData(
+          ApiUrl.createPost,
+          {"data": jsonEncode(dataMap)},
+          multipartBody: [MultipartBody('media', mediaFile)],
+        );
+      } else {
+        response = await ApiClient.postData(
+          ApiUrl.createPost,
+          jsonEncode(dataMap),
+        );
       }
 
-      final response = await ApiClient.postMultipartData(
-        ApiUrl.createPost,
-        body,
-        multipartBody: multipartBody,
-      );
+      Map<String, dynamic> jsonResponse = {};
+      try {
+        jsonResponse = response.body is String
+            ? jsonDecode(response.body)
+            : response.body as Map<String, dynamic>;
+      } catch (e) {
+        debugPrint("JSON Decode error in createPost: $e");
+      }
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        showCustomSnackBar("Post published successfully!", isError: false);
+        showCustomSnackBar(
+          jsonResponse['message']?.toString() ?? "Post published successfully!",
+          isError: false,
+        );
         getPost();
         return true;
       } else {
-        showCustomSnackBar("Failed to publish post", isError: true);
+        showCustomSnackBar(
+          jsonResponse['message']?.toString() ?? "Failed to publish post",
+          isError: true,
+        );
         return false;
       }
     } catch (e) {
@@ -916,36 +938,12 @@ class HomeController extends GetxController {
       return null;
     }
   }
-  //=====================  CLUB ================================
-
-  Future<void> getMyClubs() async {
-    clubIsLoadingClubs.value = true;
-    try {
-      final response = await ApiClient.getData(ApiUrl.getMyClubs);
-      if (response.statusCode == 200) {
-        final responseData = response.body['data'];
-        final data = responseData != null
-            ? responseData['data'] as List?
-            : null;
-        if (data != null) {
-          clubMyClubs.assignAll(data);
-          if (data.isNotEmpty) {
-            clubSelectedClubId.value = data[0]['_id']?.toString();
-          }
-        }
-      }
-    } catch (e) {
-      debugPrint("Error fetching clubs: $e");
-    } finally {
-      clubIsLoadingClubs.value = false;
-    }
-  }
 
   // ================== Event =======================================
   final RxList<EventModel> eventsList = <EventModel>[].obs;
   final RxBool isEventsLoading = false.obs;
   final RxBool isEventsLoadMoreLoading = false.obs;
-  
+
   final Rx<EventModel?> currentEventDetail = Rx<EventModel?>(null);
   final RxBool isEventDetailLoading = false.obs;
 
@@ -953,7 +951,9 @@ class HomeController extends GetxController {
     isEventDetailLoading.value = true;
     currentEventDetail.value = null; // Clear previous
     try {
-      final response = await ApiClient.getData(ApiUrl.getSingleEvent(eventId: eventId));
+      final response = await ApiClient.getData(
+        ApiUrl.getSingleEvent(eventId: eventId),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final raw = response.body['data'];
         if (raw != null) {
@@ -969,6 +969,7 @@ class HomeController extends GetxController {
       isEventDetailLoading.value = false;
     }
   }
+
   int _eventPage = 1;
   bool _hasMoreEvents = true;
   bool get hasMoreEvents => _hasMoreEvents;
@@ -999,7 +1000,7 @@ class HomeController extends GetxController {
     try {
       final response = await ApiClient.getData(
         ApiUrl.getEvents(
-          page: _eventPage, 
+          page: _eventPage,
           limit: 10,
           searchTerm: eventSearchTerm.value,
         ),
@@ -1520,6 +1521,136 @@ class HomeController extends GetxController {
     } catch (e) {
       debugPrint("Error replying to event comment: $e");
       return false;
+    }
+  }
+
+  // ========================================= CLUBS SECTION ==============================================================================
+  final RxList<ClubModel> allClubs = <ClubModel>[].obs;
+  final RxList<ClubModel> myClubs = <ClubModel>[].obs;
+  final Rx<ClubModel?> currentClubDetail = Rx<ClubModel?>(null);
+
+  final RxBool isClubsLoading = false.obs;
+  final RxBool isMyClubsLoading = false.obs;
+  final RxBool isClubDetailsLoading = false.obs;
+  final RxBool isCreateClubLoading = false.obs;
+
+  Future<void> getAllClubs() async {
+    isClubsLoading.value = true;
+    try {
+      final response = await ApiClient.getData(ApiUrl.getAllClubs);
+      if (response.statusCode == 200) {
+        final List data = response.body['data'] ?? [];
+        allClubs.value = data.map((json) => ClubModel.fromJson(json)).toList();
+      }
+    } catch (e) {
+      debugPrint("Error fetching all clubs: $e");
+    } finally {
+      isClubsLoading.value = false;
+    }
+  }
+
+  Future<void> getMyClubs() async {
+    isMyClubsLoading.value = true;
+    try {
+      final response = await ApiClient.getData(ApiUrl.getMyClubs);
+      if (response.statusCode == 200) {
+        final List data = response.body['data'] ?? [];
+        myClubs.value = data.map((json) => ClubModel.fromJson(json)).toList();
+      } else {
+        debugPrint(response.body['message']);
+      }
+    } catch (e) {
+      debugPrint("Error fetching my clubs: $e");
+    } finally {
+      isMyClubsLoading.value = false;
+    }
+  }
+
+  Future<void> getSingleClub(String clubId) async {
+    isClubDetailsLoading.value = true;
+    try {
+      final response = await ApiClient.getData(
+        ApiUrl.getSingleClub(clubId: clubId),
+      );
+      if (response.statusCode == 200) {
+        final data = response.body['data'];
+        if (data != null) {
+          currentClubDetail.value = ClubModel.fromJson(data);
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching club details: $e");
+    } finally {
+      isClubDetailsLoading.value = false;
+    }
+  }
+
+  Future<bool> createClub({
+    required String clubName,
+    required String description,
+    List<String>? categories,
+    required String accessType,
+    required bool telemetryVerification,
+    File? logo,
+    File? banner,
+  }) async {
+    isCreateClubLoading.value = true;
+    try {
+      Map<String, dynamic> body = {
+        'clubName': clubName,
+        'description': description,
+        if (categories != []) 'categories': categories,
+        'accessType': accessType,
+        'telemetryVerification': telemetryVerification,
+      };
+
+      List<MultipartBody> multipartBodyList = [];
+
+      if (logo != null) {
+        multipartBodyList.add(MultipartBody('logo', logo));
+      }
+      if (banner != null) {
+        multipartBodyList.add(MultipartBody('banner', banner));
+      }
+
+      final response = await ApiClient.postMultipartData(ApiUrl.createClub, {
+        "data": jsonEncode(body),
+      }, multipartBody: multipartBodyList);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Club created successfully!", isError: false);
+        getAllClubs();
+        getMyClubs();
+        return true;
+      } else {
+        showCustomSnackBar(response.body['message'] ?? 'Failed to create club');
+        return false;
+      }
+    } catch (e) {
+      debugPrint("Error creating club: $e");
+      showCustomSnackBar('An error occurred');
+      return false;
+    } finally {
+      isCreateClubLoading.value = false;
+    }
+  }
+
+  Future<void> joinClub(String clubId) async {
+    try {
+      final response = await ApiClient.postData(
+        ApiUrl.joinClub(clubId: clubId),
+        jsonEncode({}),
+      );
+      if (response.statusCode == 200) {
+        showCustomSnackBar("join club successful", isError: false);
+        getSingleClub(clubId); // Refresh details
+        getMyClubs(); // Refresh my clubs
+      } else {
+        showCustomSnackBar(response.body['message'] ?? 'Failed to join club');
+      }
+    } catch (e) {
+      debugPrint("Error joining club: $e");
+      showCustomSnackBar('An error occurred');
     }
   }
 

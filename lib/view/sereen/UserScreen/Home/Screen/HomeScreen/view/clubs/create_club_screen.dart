@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
 
 // ─── Controller ────────────────────────────────────────────────
 class CreateClubController extends GetxController {
@@ -40,28 +41,7 @@ class CreateClubScreen extends StatelessWidget {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.yellow,
-              size: 24,
-            ),
-            onPressed: () => Get.back(),
-          ),
-          title: const Text(
-            "CREATE NEW CLUB",
-            style: TextStyle(
-              color: AppColors.yellow,
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.0,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "CREATE NEW CLUB"),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(

@@ -39,9 +39,12 @@ class UserHomeScreen extends StatelessWidget {
             Get.toNamed(AppRoutes.messageScreen);
           },
         ),
-        body: Column(
-          children: [
-            Obx(() {
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Obx(() {
               if (controller.showSearchBar.value) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -170,42 +173,19 @@ class UserHomeScreen extends StatelessWidget {
               }),
             ),
 
-            const Divider(color: Colors.white24),
-
-            /// ── TABS ─────────────────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Obx(
-                () => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _tab(
-                      "POST",
-                      controller.rxActiveTab.value == 0,
-                      () => controller.changeTab(0),
-                    ),
-                    const SizedBox(width: 10),
-                    _tab(
-                      "EVENTS",
-                      controller.rxActiveTab.value == 1,
-                      () => controller.changeTab(1),
-                    ),
-                    const SizedBox(width: 10),
-                    _tab(
-                      "CLUBS",
-                      controller.rxActiveTab.value == 2,
-                      () => controller.changeTab(2),
-                    ),
-                  ],
-                ),
+                  const Divider(color: Colors.white24),
+                ],
               ),
             ),
-
-            const SizedBox(height: 20),
-
-            /// ── FEED AREA ────────────────────────────────────────────────
-            Expanded(
-              child: Obx(
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _TabBarDelegate(
+                controller,
+                (title, selected, onTap) => _tab(title, selected, onTap),
+              ),
+            ),
+          ],
+          body: Obx(
                 () => IndexedStack(
                   index: controller.rxActiveTab.value,
                   children: [
@@ -342,24 +322,20 @@ class UserHomeScreen extends StatelessWidget {
                                           ? () {
                                               showModalBottomSheet(
                                                 context: context,
+                                                useRootNavigator: true,
+                                                isScrollControlled: true,
+                                                useSafeArea: true,
                                                 backgroundColor: const Color(
                                                   0xff1C1C1C,
                                                 ),
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.vertical(
-                                                            top:
-                                                                Radius.circular(
-                                                                  20,
-                                                                ),
-                                                          ),
-                                                    ),
                                                 builder: (context) {
-                                                  return SafeArea(
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(
+                                                      bottom: MediaQuery.of(
+                                                        context,
+                                                      ).viewPadding.bottom,
+                                                    ),
+                                                    child: Wrap(
                                                       children: [
                                                         ListTile(
                                                           leading: const Icon(
@@ -592,96 +568,80 @@ class UserHomeScreen extends StatelessWidget {
                         const SizedBox(height: 14),
 
                         /// Your Clubs List (Horizontal scroll)
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          clipBehavior: Clip.none,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildCircularClubItem(
-                                name: "GT3 COLL.",
-                                imageUrl:
-                                    "https://picsum.photos/seed/gt3coll/100/100",
-                                onTap: () => Get.toNamed(
-                                  AppRoutes.clubDetailsScreen,
-                                  arguments: {
-                                    "name": "Porsche GT3 Collective",
-                                    "members": "1,248",
-                                    "isMember": true,
-                                  },
-                                ),
+                        Obx(() {
+                          if (controller.isMyClubsLoading.value) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.yellow,
                               ),
-                              const SizedBox(width: 20),
-                              _buildCircularClubItem(
-                                name: "NUR ENDO",
-                                imageUrl:
-                                    "https://picsum.photos/seed/nurendo/100/100",
-                                onTap: () => Get.toNamed(
-                                  AppRoutes.clubDetailsScreen,
-                                  arguments: {
-                                    "name": "Nürburgring Endurance Group",
-                                    "members": "856",
-                                    "isMember": true,
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                              _buildCircularClubItem(
-                                name: "APEX PREP",
-                                imageUrl:
-                                    "https://picsum.photos/seed/apexprep/100/100",
-                                onTap: () => Get.toNamed(
-                                  AppRoutes.clubDetailsScreen,
-                                  arguments: {
-                                    "name": "Apex Strategy Masters",
-                                    "members": "412",
-                                    "isMember": true,
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 20),
+                            );
+                          }
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            clipBehavior: Clip.none,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ...controller.myClubs.map((club) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: _buildCircularClubItem(
+                                      name: club.clubName ?? "Unknown",
+                                      imageUrl:
+                                          club.logo != null &&
+                                              club.logo!.isNotEmpty
+                                          ? "${ApiUrl.imageUrl}${club.logo}"
+                                          : "https://picsum.photos/seed/gt3coll/100/100", // Fallback
+                                      onTap: () => Get.toNamed(
+                                        AppRoutes.clubDetailsScreen,
+                                        arguments: {"id": club.id},
+                                      ),
+                                    ),
+                                  );
+                                }),
 
-                              /// Add New Club Button
-                              GestureDetector(
-                                onTap: () =>
-                                    Get.toNamed(AppRoutes.createClubScreen),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: 60,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: AppColors.yellow,
-                                          width: 1.5,
-                                          style: BorderStyle.solid,
+                                /// Add New Club Button
+                                GestureDetector(
+                                  onTap: () =>
+                                      Get.toNamed(AppRoutes.createClubScreen),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 60,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: AppColors.yellow,
+                                            width: 1.5,
+                                            style: BorderStyle.solid,
+                                          ),
+                                        ),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.add,
+                                            color: AppColors.yellow,
+                                            size: 22,
+                                          ),
                                         ),
                                       ),
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.add,
-                                          color: AppColors.yellow,
-                                          size: 22,
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        "NEW CLUB",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    const Text(
-                                      "NEW CLUB",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
+                              ],
+                            ),
+                          );
+                        }),
                         const SizedBox(height: 28),
 
                         /// BROWSE ALL CLUBS Header
@@ -697,48 +657,42 @@ class UserHomeScreen extends StatelessWidget {
                         const SizedBox(height: 16),
 
                         /// Browse Clubs List
-                        _buildBrowseClubCard(
-                          name: "Porsche GT3 Collective",
-                          members: "1,240",
-                          imageUrl:
-                              "https://picsum.photos/seed/gt3coll/100/100",
-                          onTap: () => Get.toNamed(
-                            AppRoutes.clubDetailsScreen,
-                            arguments: {
-                              "name": "Porsche GT3 Collective",
-                              "members": "1,240",
-                              "isMember": false,
-                            },
-                          ),
-                        ),
-                        _buildBrowseClubCard(
-                          name: "Nürburgring Endurance Group",
-                          members: "856",
-                          imageUrl:
-                              "https://picsum.photos/seed/nurendo/100/100",
-                          onTap: () => Get.toNamed(
-                            AppRoutes.clubDetailsScreen,
-                            arguments: {
-                              "name": "Nürburgring Endurance Group",
-                              "members": "856",
-                              "isMember": false,
-                            },
-                          ),
-                        ),
-                        _buildBrowseClubCard(
-                          name: "Apex Strategy Masters",
-                          members: "412",
-                          imageUrl:
-                              "https://picsum.photos/seed/apexprep/100/100",
-                          onTap: () => Get.toNamed(
-                            AppRoutes.clubDetailsScreen,
-                            arguments: {
-                              "name": "Apex Strategy Masters",
-                              "members": "412",
-                              "isMember": false,
-                            },
-                          ),
-                        ),
+                        Obx(() {
+                          if (controller.isClubsLoading.value) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.yellow,
+                              ),
+                            );
+                          }
+                          if (controller.allClubs.isEmpty) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: Center(
+                                child: Text(
+                                  "No clubs found.",
+                                  style: TextStyle(color: Colors.white54),
+                                ),
+                              ),
+                            );
+                          }
+                          return Column(
+                            children: controller.allClubs.map((club) {
+                              return _buildBrowseClubCard(
+                                name: club.clubName ?? "Unknown",
+                                members: "${club.members?.length ?? 0}",
+                                imageUrl:
+                                    club.logo != null && club.logo!.isNotEmpty
+                                    ? "${ApiUrl.imageUrl}${club.logo}"
+                                    : "https://picsum.photos/seed/gt3coll/100/100", // Fallback
+                                onTap: () => Get.toNamed(
+                                  AppRoutes.clubDetailsScreen,
+                                  arguments: {"id": club.id},
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        }),
                         const SizedBox(height: 30),
                       ],
                     ),
@@ -746,8 +700,6 @@ class UserHomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ),
         bottomNavigationBar: const CustomNavBar(currentIndex: 0),
       ),
     );
@@ -1431,4 +1383,44 @@ Widget buildDetailRow(IconData icon, String label, String value) {
       ),
     ],
   );
+}
+
+class _TabBarDelegate extends SliverPersistentHeaderDelegate {
+  final HomeController controller;
+  final Widget Function(String, bool, VoidCallback) tabBuilder;
+
+  _TabBarDelegate(this.controller, this.tabBuilder);
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Colors.black, // Background color when pinned
+      padding: const EdgeInsets.only(top: 10, bottom: 15),
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Obx(
+          () => Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              tabBuilder("POST", controller.rxActiveTab.value == 0, () => controller.changeTab(0)),
+              const SizedBox(width: 10),
+              tabBuilder("EVENTS", controller.rxActiveTab.value == 1, () => controller.changeTab(1)),
+              const SizedBox(width: 10),
+              tabBuilder("CLUBS", controller.rxActiveTab.value == 2, () => controller.changeTab(2)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => 60.0;
+
+  @override
+  double get minExtent => 60.0;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
 }

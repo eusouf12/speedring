@@ -3,19 +3,30 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../controller/home_controller.dart';
 
-class ClubDetailsScreen extends StatelessWidget {
+class ClubDetailsScreen extends StatefulWidget {
   const ClubDetailsScreen({super.key});
 
   @override
+  State<ClubDetailsScreen> createState() => _ClubDetailsScreenState();
+}
+
+class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
+  final HomeController controller = Get.find<HomeController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Get.arguments != null && Get.arguments['id'] != null) {
+        controller.getSingleClub(Get.arguments['id']);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final String clubName = Get.arguments?['name'] ?? 'PORSCHE GT3 COLLECTIVE';
-    final String membersCount = Get.arguments?['members'] ?? '1,240';
-    final bool isAlreadyMember = Get.arguments?['isMember'] ?? false;
-
-    // RxBool to manage membership state dynamically in this screen session
-    final RxBool rxIsMember = isAlreadyMember.obs;
-
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -49,7 +60,28 @@ class ClubDetailsScreen extends StatelessWidget {
           ],
         ),
         body: Obx(() {
-          if (!rxIsMember.value) {
+          if (controller.isClubDetailsLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.yellow),
+            );
+          }
+          final club = controller.currentClubDetail.value;
+          if (club == null) {
+            return const Center(
+              child: Text(
+                "Club not found",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+          final String clubName = club.clubName ?? "Unknown";
+          final String membersCount = "${club.members?.length ?? 0}";
+          
+          final bool isMember = club.members?.any(
+            (m) => m.user?.id == controller.currentUserId.value
+          ) ?? false;
+
+          if (!isMember) {
             /// ==================== 3rd Page: Guest / Join View ====================
             return SingleChildScrollView(
               child: Column(
@@ -142,7 +174,6 @@ class ClubDetailsScreen extends StatelessWidget {
                               elevation: 0,
                             ),
                             onPressed: () {
-                              rxIsMember.value = true;
                               Get.snackbar(
                                 "Welcome!",
                                 "You are now a member of $clubName",

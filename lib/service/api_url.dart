@@ -113,6 +113,18 @@ class ApiUrl {
     required String eventId,
     required String commentId,
   }) => "/events/$eventId/comment/$commentId/reply";
+  // ============ Clubs =========
+  static const String createClub = "/clubs/create-club";
+  static const String getAllClubs = "/clubs/get-all-clubs";
+  static String updateClub({required String clubId}) => "/clubs/update-club/$clubId";
+  static String joinClub({required String clubId}) => "/clubs/$clubId/join";
+  static String getSingleClub({required String clubId}) => "/clubs/view-club/$clubId";
+  static String changeRole({required String clubId}) => "/clubs/$clubId/change-role";
+  static String removeMember({required String clubId, required String memberId}) => "/clubs/$clubId/remove-member/$memberId";
+  static String handleRequest({required String clubId}) => "/clubs/$clubId/handle-request";
+  static String shareClub({required String clubId}) => "/clubs/$clubId/share";
+  static String createClubPost({required String clubId}) => "/clubs/$clubId/create-post";
+  static String getClubMembers({required String clubId}) => "/clubs/$clubId/members";
 
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
 }

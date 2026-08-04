@@ -4,8 +4,9 @@ import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/view/event/event_comment_screen.dart';
-import '../../../../../../components/custom_royel_appbar/custom_royel_appbar.dart';
-import '../controller/home_controller.dart';
+import '../../../../../../../components/custom_netwrok_image/custom_network_image.dart';
+import '../../../../../../../components/custom_royel_appbar/custom_royel_appbar.dart';
+import '../../controller/home_controller.dart';
 
 class EventDetailScreen extends StatefulWidget {
   const EventDetailScreen({super.key});
@@ -85,17 +86,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// Banner Image
-                Container(
+                CustomNetworkImage(
+                  imageUrl: imageUrl,
+                  height: 380,
                   width: double.infinity,
-                  height: 240,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(imageUrl),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16.0,
@@ -136,9 +131,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             radius: 18,
                             backgroundColor: Colors.white12,
                             backgroundImage: organizerImage.isNotEmpty
-                                ? NetworkImage(organizerImage.startsWith('http')
-                                    ? organizerImage
-                                    : ApiUrl.baseUrl + organizerImage)
+                                ? NetworkImage(
+                                    organizerImage.startsWith('http')
+                                        ? organizerImage
+                                        : ApiUrl.baseUrl + organizerImage,
+                                  )
                                 : null,
                             child: organizerImage.isEmpty
                                 ? const Icon(
@@ -162,9 +159,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       const SizedBox(height: 20),
 
                       /// Event Description
-                      const Text(
-                        "Execute high-intensity technical sequences at Britain's home of racing. Our engineering team will provide real-time telemetry overlays and post-session data reviews to optimize entry speeds and braking zones.",
-                        style: TextStyle(
+                      Text(
+                        event.briefing ?? "No description provided.",
+                        style: const TextStyle(
                           color: Colors.white60,
                           fontSize: 13,
                           height: 1.5,
@@ -318,86 +315,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      /// Weather & Data Stream Indicators
-                      Row(
-                        children: [
-                          /// Weather
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "WEATHER",
-                                  style: TextStyle(
-                                    color: Colors.white38,
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.wb_sunny_outlined,
-                                      color: AppColors.yellow,
-                                      size: 16,
-                                    ),
-                                    SizedBox(width: 6),
-                                    Text(
-                                      "OPTIMAL (18°C)",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          /// Data Stream
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "DATA STREAM",
-                                  style: TextStyle(
-                                    color: Colors.white38,
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.sensors,
-                                      color: AppColors.yellow,
-                                      size: 16,
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      capacityText,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-
                       /// Capacity Utilization Progress Bar
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -480,7 +397,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                   ),
                                   title: const Text(
                                     "Delete Event",
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   content: const Text(
                                     "Are you sure you want to delete this event?",
@@ -489,15 +409,29 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                   actions: [
                                     TextButton(
                                       onPressed: () => Get.back(),
-                                      child: const Text("NO", style: TextStyle(color: Colors.white54, fontWeight: FontWeight.w600)),
+                                      child: const Text(
+                                        "NO",
+                                        style: TextStyle(
+                                          color: Colors.white54,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                     ),
                                     TextButton(
                                       onPressed: () {
                                         Get.back(); // close dialog
-                                        controller.deleteEvent(eventId: event.id!);
+                                        controller.deleteEvent(
+                                          eventId: event.id!,
+                                        );
                                         Get.back(); // go back from details page
                                       },
-                                      child: const Text("YES", style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600)),
+                                      child: const Text(
+                                        "YES",
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
