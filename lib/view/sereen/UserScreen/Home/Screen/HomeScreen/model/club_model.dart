@@ -12,6 +12,9 @@ class ClubModel {
   String? createdAt;
   String? updatedAt;
   List<ClubMember>? members;
+  int? totalMembersCount;
+  bool? isClubJoined;
+  bool? isJoinRequestPending;
 
   ClubModel({
     this.id,
@@ -27,6 +30,9 @@ class ClubModel {
     this.createdAt,
     this.updatedAt,
     this.members,
+    this.totalMembersCount,
+    this.isClubJoined,
+    this.isJoinRequestPending,
   });
 
   factory ClubModel.fromJson(Map<String, dynamic> json) {
@@ -49,6 +55,9 @@ class ClubModel {
           ? List<ClubMember>.from(
               json['members'].map((x) => ClubMember.fromJson(x)))
           : null,
+      totalMembersCount: json['totalMembersCount'],
+      isClubJoined: json['isClubJoined'],
+      isJoinRequestPending: json['isJoinRequestPending'],
     );
   }
 

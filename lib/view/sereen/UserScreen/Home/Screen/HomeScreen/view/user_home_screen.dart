@@ -45,133 +45,139 @@ class UserHomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Obx(() {
-              if (controller.showSearchBar.value) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xff1C1C1C),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      style: const TextStyle(color: Colors.white),
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: controller.rxActiveTab.value == 1
-                            ? "Search events..."
-                            : "Search posts...",
-                        hintStyle: const TextStyle(color: Colors.white30),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.white70,
+                    if (controller.showSearchBar.value) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
                         ),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear, color: Colors.white54),
-                          onPressed: () {
-                            if (controller.rxActiveTab.value == 0) {
-                              controller.getPost(searchTerm: "");
-                            } else if (controller.rxActiveTab.value == 1) {
-                              controller.getEvents(searchTerm: "");
-                            }
-                            controller.showSearchBar.value = false;
-                          },
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 12,
-                        ),
-                      ),
-                      onChanged: (val) {
-                        if (controller.rxActiveTab.value == 0) {
-                          controller.searchPost(val);
-                        } else if (controller.rxActiveTab.value == 1) {
-                          controller.searchEvents(val);
-                        }
-                      },
-                      onSubmitted: (val) {
-                        controller.showSearchBar.value = false;
-                      },
-                    ),
-                  ),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
-            const SizedBox(height: 10),
-
-            /// ── STORIES ──────────────────────────────────────────────────
-            SizedBox(
-              height: 110,
-              child: Obx(() {
-                if (controller.isStoriesLoading.value) {
-                  return const Center(
-                    child: CircularProgressIndicator(color: AppColors.yellow),
-                  );
-                }
-
-                final storiesList = controller.allStories;
-
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: storiesList.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const CreateStoryScreen(),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xff1C1C1C),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextField(
+                            style: const TextStyle(color: Colors.white),
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              hintText: controller.rxActiveTab.value == 1
+                                  ? "Search events..."
+                                  : "Search posts...",
+                              hintStyle: const TextStyle(color: Colors.white30),
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: Colors.white70,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: const Icon(
+                                  Icons.clear,
+                                  color: Colors.white54,
+                                ),
+                                onPressed: () {
+                                  if (controller.rxActiveTab.value == 0) {
+                                    controller.getPost(searchTerm: "");
+                                  } else if (controller.rxActiveTab.value ==
+                                      1) {
+                                    controller.getEvents(searchTerm: "");
+                                  }
+                                  controller.showSearchBar.value = false;
+                                },
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                              ),
                             ),
-                          );
-                        },
-                        child: const StoryItem(
-                          isMe: true,
-                          name: 'CREATE',
-                          imageSrc: null,
-                          icon: Icons.add,
+                            onChanged: (val) {
+                              if (controller.rxActiveTab.value == 0) {
+                                controller.searchPost(val);
+                              } else if (controller.rxActiveTab.value == 1) {
+                                controller.searchEvents(val);
+                              }
+                            },
+                            onSubmitted: (val) {
+                              controller.showSearchBar.value = false;
+                            },
+                          ),
                         ),
                       );
                     }
+                    return const SizedBox.shrink();
+                  }),
+                  const SizedBox(height: 10),
 
-                    final storyGroup = storiesList[index - 1];
-                    String? imageUrl;
-                    if (storyGroup.stories != null &&
-                        storyGroup.stories!.isNotEmpty) {
-                      final mediaList = storyGroup.stories!.last.media;
-                      if (mediaList != null && mediaList.isNotEmpty) {
-                        imageUrl = mediaList.first.url;
-                      }
-                    }
-                    if (imageUrl == null || imageUrl.isEmpty) {
-                      imageUrl = storyGroup.user?.profileImage;
-                    }
-
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                StoryViewScreen(storyGroup: storyGroup),
+                  /// ── STORIES ──────────────────────────────────────────────────
+                  SizedBox(
+                    height: 110,
+                    child: Obx(() {
+                      if (controller.isStoriesLoading.value) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.yellow,
                           ),
                         );
-                      },
-                      child: StoryItem(
-                        isMe: false,
-                        name: storyGroup.user?.name ?? 'Unknown',
-                        imageSrc: imageUrl,
-                        icon: null,
-                      ),
-                    );
-                  },
-                );
-              }),
-            ),
+                      }
+
+                      final storiesList = controller.allStories;
+
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: storiesList.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const CreateStoryScreen(),
+                                  ),
+                                );
+                              },
+                              child: const StoryItem(
+                                isMe: true,
+                                name: 'CREATE',
+                                imageSrc: null,
+                                icon: Icons.add,
+                              ),
+                            );
+                          }
+
+                          final storyGroup = storiesList[index - 1];
+                          String? imageUrl;
+                          if (storyGroup.stories != null &&
+                              storyGroup.stories!.isNotEmpty) {
+                            final mediaList = storyGroup.stories!.last.media;
+                            if (mediaList != null && mediaList.isNotEmpty) {
+                              imageUrl = mediaList.first.url;
+                            }
+                          }
+                          if (imageUrl == null || imageUrl.isEmpty) {
+                            imageUrl = storyGroup.user?.profileImage;
+                          }
+
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      StoryViewScreen(storyGroup: storyGroup),
+                                ),
+                              );
+                            },
+                            child: StoryItem(
+                              isMe: false,
+                              name: storyGroup.user?.name ?? 'Unknown',
+                              imageSrc: imageUrl,
+                              icon: null,
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ),
 
                   const Divider(color: Colors.white24),
                 ],
@@ -186,520 +192,505 @@ class UserHomeScreen extends StatelessWidget {
             ),
           ],
           body: Obx(
-                () => IndexedStack(
-                  index: controller.rxActiveTab.value,
-                  children: [
-                    /// Tab 0: POST Feed
-                    controller.isPostLoading.value
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.yellow,
-                            ),
-                          )
-                        : RefreshIndicator(
-                            color: AppColors.yellow,
-                            backgroundColor: Colors.black,
-                            onRefresh: () => controller.getPost(),
-                            child: ListView.builder(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              itemCount: controller.postsList.length + 2,
-                              itemBuilder: (context, index) {
-                                if (index == 0) {
-                                  return Column(
-                                    children: [
-                                      AddPostButton(
-                                        label: "ADD POST",
-                                        onTap: () => Get.toNamed(
-                                          AppRoutes.createPostScreen,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                    ],
-                                  );
-                                }
-
-                                if (index == controller.postsList.length + 1) {
-                                  if (controller.isLoadMoreLoading.value) {
-                                    return const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 16,
-                                      ),
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    );
-                                  } else if (controller.hasMorePosts) {
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback((_) {
-                                          controller.getPost(isLoadMore: true);
-                                        });
-                                    return const SizedBox(height: 50);
-                                  } else {
-                                    return const SizedBox(height: 30);
-                                  }
-                                }
-
-                                final post = controller.postsList[index - 1];
-                                final categoryLabel = post.category != null
-                                    ? post.category!
-                                          .replaceAll('_', ' ')
-                                          .toUpperCase()
-                                    : '';
-                                final userName =
-                                    post.user?.name ??
-                                    post.user?.userName ??
-                                    'User';
-                                final profileImage = post.user?.profileImage;
-
-                                final loc =
-                                    post.spotDetails?.region ??
-                                    post.trackUpdateDetails?.circuit ??
-                                    post.sessionDetails?.trackName;
-
-                                final location = loc != null && loc.isNotEmpty
-                                    ? (categoryLabel.isNotEmpty
-                                          ? "$categoryLabel • $loc"
-                                          : loc)
-                                    : (categoryLabel.isNotEmpty
-                                          ? categoryLabel
-                                          : 'Unknown Location');
-                                final imageUrl =
-                                    post.media != null && post.media!.isNotEmpty
-                                    ? post.media!.first.url ?? ''
-                                    : '';
-                                final caption =
-                                    post.clubPostDetails?.details ??
-                                    post.businessPostDetails?.description ??
-                                    post.sessionDetails?.summary ??
-                                    post.trackUpdateDetails?.notes ??
-                                    '';
-
-                                final isMyPost =
-                                    post.user?.id != null &&
-                                    post.user!.id ==
-                                        controller.currentUserId.value;
-
-                                return Column(
-                                  children: [
-                                    PostCard(
-                                      userName: userName,
-                                      location: location,
-                                      imageUrl: imageUrl,
-                                      caption: caption,
-                                      profileImage: profileImage,
-                                      reactCount: post.reactCount,
-                                      commentCount: post.commentCount,
-                                      isLiked: post.isReacted ?? false,
-                                      detailsWidget: buildPostDetails(post),
-                                      onTap: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => PostDetailScreen(
-                                            postId: post.id!,
-                                          ),
-                                        ),
-                                      ),
-                                      onLike: () =>
-                                          controller.reactToPost(post.id!),
-                                      onComment: () =>
-                                          showCommentSheet(context, post),
-                                      onShare: () {
-                                        final postLink =
-                                            "https://speedring.com/post/${post.id}";
-                                        SharePlus.instance.share(
-                                          ShareParams(
-                                            text:
-                                                "Check out this post on Speedring:\n\n$postLink",
-                                            subject: "Speedring Post",
-                                          ),
-                                        );
-                                      },
-                                      onMore: isMyPost
-                                          ? () {
-                                              showModalBottomSheet(
-                                                context: context,
-                                                useRootNavigator: true,
-                                                isScrollControlled: true,
-                                                useSafeArea: true,
-                                                backgroundColor: const Color(
-                                                  0xff1C1C1C,
-                                                ),
-                                                builder: (context) {
-                                                  return Padding(
-                                                    padding: EdgeInsets.only(
-                                                      bottom: MediaQuery.of(
-                                                        context,
-                                                      ).viewPadding.bottom,
-                                                    ),
-                                                    child: Wrap(
-                                                      children: [
-                                                        ListTile(
-                                                          leading: const Icon(
-                                                            Icons.delete,
-                                                            color: Colors.red,
-                                                          ),
-                                                          title: const Text(
-                                                            "Delete Post",
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                            ),
-                                                          ),
-                                                          onTap: () {
-                                                            Navigator.pop(
-                                                              context,
-                                                            );
-                                                            showDialog(
-                                                              context: context,
-                                                              builder: (context) => AlertDialog(
-                                                                backgroundColor:
-                                                                    const Color(
-                                                                      0xff1C1C1C,
-                                                                    ),
-                                                                title: const Text(
-                                                                  "Delete Post",
-                                                                  style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                  ),
-                                                                ),
-                                                                content: const Text(
-                                                                  "Are you sure you want to delete this post?",
-                                                                  style: TextStyle(
-                                                                    color: Colors
-                                                                        .white70,
-                                                                  ),
-                                                                ),
-                                                                actions: [
-                                                                  TextButton(
-                                                                    onPressed: () =>
-                                                                        Navigator.pop(
-                                                                          context,
-                                                                        ),
-                                                                    child: const Text(
-                                                                      "Cancel",
-                                                                      style: TextStyle(
-                                                                        color: Colors
-                                                                            .grey,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  TextButton(
-                                                                    onPressed: () {
-                                                                      Navigator.pop(
-                                                                        context,
-                                                                      );
-                                                                      controller
-                                                                          .deletePost(
-                                                                            post.id!,
-                                                                          );
-                                                                    },
-                                                                    child: const Text(
-                                                                      "Delete",
-                                                                      style: TextStyle(
-                                                                        color: Colors
-                                                                            .red,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            }
-                                          : null,
-                                    ),
-                                    const SizedBox(height: 12),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-
-                    /// Tab 1: EVENTS Feed
-                    controller.isEventsLoading.value
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.yellow,
-                            ),
-                          )
-                        : controller.eventsList.isEmpty
-                        ? const Center(
-                            child: Text(
-                              "No events found",
-                              style: TextStyle(color: Colors.white54),
-                            ),
-                          )
-                        : RefreshIndicator(
-                            color: AppColors.yellow,
-                            backgroundColor: Colors.black,
-                            onRefresh: () => controller.getEvents(),
-                            child: ListView.builder(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              itemCount: controller.eventsList.length + 2,
-                              itemBuilder: (context, index) {
-                                // index 0 → ADD EVENT button
-                                if (index == 0) {
-                                  return Column(
-                                    children: [
-                                      AddPostButton(
-                                        label: "ADD EVENT",
-                                        onTap: () {
-                                          Get.toNamed(
-                                            AppRoutes.createEventScreen,
-                                          );
-                                        },
-                                      ),
-                                      const SizedBox(height: 20),
-                                    ],
-                                  );
-                                }
-
-                                // Last item → load-more indicator / trigger
-                                if (index == controller.eventsList.length + 1) {
-                                  if (controller
-                                      .isEventsLoadMoreLoading
-                                      .value) {
-                                    return const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 16,
-                                      ),
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    );
-                                  } else if (controller.hasMoreEvents) {
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback((_) {
-                                          controller.getEvents(
-                                            isLoadMore: true,
-                                          );
-                                        });
-                                    return const SizedBox(height: 50);
-                                  } else {
-                                    return const SizedBox(height: 30);
-                                  }
-                                }
-
-                                final event = controller.eventsList[index - 1];
-                                final isMyEvent =
-                                    event.user?.id != null &&
-                                    event.user!.id ==
-                                        controller.currentUserId.value;
-
-                                // Build proper image URL
-                                String bannerUrl = event.bannerImage ?? "";
-                                if (bannerUrl.isNotEmpty &&
-                                    !bannerUrl.startsWith("http")) {
-                                  bannerUrl =
-                                      "http://10.10.28.90:4050$bannerUrl";
-                                }
-
-                                return _EventCard(
-                                  imageUrl: bannerUrl.isNotEmpty
-                                      ? bannerUrl
-                                      : "https://picsum.photos/seed/event_${event.id}/600/300",
-                                  organizer: event.user?.name ?? "ORGANIZER",
-                                  organizerImage: event.user?.profileImage,
-                                  title: event.eventName ?? "UNTITLED EVENT",
-                                  date: event.deploymentDate != null
-                                      ? event.deploymentDate!.split('T')[0]
-                                      : "UNKNOWN",
-                                  type: event.missionType ?? "EVENT",
-                                  location: event.locationCircuit ?? "UNKNOWN",
-                                  slots:
-                                      "${event.joinCount ?? 0}/${event.maxCapacity ?? 0}",
-                                  likes: "${event.reactCount ?? 0}",
-                                  comments: "${event.commentCount ?? 0}",
-                                  isJoined: event.isEventJoined ?? false,
-                                  isReacted: event.isReacted ?? false,
-                                  isMyEvent: isMyEvent,
-                                  eventId: event.id ?? "",
-                                  onJoin: () =>
-                                      controller.joinEvent(eventId: event.id!),
-                                  onLike: () => controller.reactToEvent(
-                                    eventId: event.id!,
-                                  ),
-                                  onComment: () =>
-                                      showEventCommentSheet(context, event),
-                                  onShare: () {
-                                    controller.shareEvent(eventId: event.id!);
-                                    shareEventLink(event);
-                                  },
-                                  onDelete: isMyEvent
-                                      ? () => controller.deleteEvent(
-                                          eventId: event.id!,
-                                        )
-                                      : null,
-                                );
-                              },
-                            ),
-                          ),
-
-                    /// Tab 2: CLUBS Feed
-                    ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      children: [
-                        const SizedBox(height: 16),
-
-                        /// YOUR CLUBS Header
-                        const Text(
-                          "YOUR CLUBS",
-                          style: TextStyle(
-                            color: AppColors.yellow,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.0,
-                          ),
+            () => IndexedStack(
+              index: controller.rxActiveTab.value,
+              children: [
+                /// Tab 0: POST Feed
+                controller.isPostLoading.value
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.yellow,
                         ),
-                        const SizedBox(height: 14),
+                      )
+                    : RefreshIndicator(
+                        color: AppColors.yellow,
+                        backgroundColor: Colors.black,
+                        onRefresh: () => controller.getPost(),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: controller.postsList.length + 2,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return Column(
+                                children: [
+                                  AddPostButton(
+                                    label: "ADD POST",
+                                    onTap: () =>
+                                        Get.toNamed(AppRoutes.createPostScreen),
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
+                              );
+                            }
 
-                        /// Your Clubs List (Horizontal scroll)
-                        Obx(() {
-                          if (controller.isMyClubsLoading.value) {
-                            return const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.yellow,
-                              ),
-                            );
-                          }
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            clipBehavior: Clip.none,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            if (index == controller.postsList.length + 1) {
+                              if (controller.isLoadMoreLoading.value) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              } else if (controller.hasMorePosts) {
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
+                                  controller.getPost(isLoadMore: true);
+                                });
+                                return const SizedBox(height: 50);
+                              } else {
+                                return const SizedBox(height: 30);
+                              }
+                            }
+
+                            final post = controller.postsList[index - 1];
+                            final categoryLabel = post.category != null
+                                ? post.category!
+                                      .replaceAll('_', ' ')
+                                      .toUpperCase()
+                                : '';
+                            final userName =
+                                post.user?.name ??
+                                post.user?.userName ??
+                                'User';
+                            final profileImage = post.user?.profileImage;
+
+                            final loc =
+                                post.spotDetails?.region ??
+                                post.trackUpdateDetails?.circuit ??
+                                post.sessionDetails?.trackName;
+
+                            final location = loc != null && loc.isNotEmpty
+                                ? (categoryLabel.isNotEmpty
+                                      ? "$categoryLabel • $loc"
+                                      : loc)
+                                : (categoryLabel.isNotEmpty
+                                      ? categoryLabel
+                                      : 'Unknown Location');
+                            final imageUrl =
+                                post.media != null && post.media!.isNotEmpty
+                                ? post.media!.first.url ?? ''
+                                : '';
+                            final caption =
+                                post.clubPostDetails?.details ??
+                                post.businessPostDetails?.description ??
+                                post.sessionDetails?.summary ??
+                                post.trackUpdateDetails?.notes ??
+                                '';
+
+                            final isMyPost =
+                                post.user?.id != null &&
+                                post.user!.id == controller.currentUserId.value;
+
+                            return Column(
                               children: [
-                                ...controller.myClubs.map((club) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 20),
-                                    child: _buildCircularClubItem(
-                                      name: club.clubName ?? "Unknown",
-                                      imageUrl:
-                                          club.logo != null &&
-                                              club.logo!.isNotEmpty
-                                          ? "${ApiUrl.imageUrl}${club.logo}"
-                                          : "https://picsum.photos/seed/gt3coll/100/100", // Fallback
-                                      onTap: () => Get.toNamed(
-                                        AppRoutes.clubDetailsScreen,
-                                        arguments: {"id": club.id},
+                                PostCard(
+                                  userName: userName,
+                                  location: location,
+                                  imageUrl: imageUrl,
+                                  caption: caption,
+                                  profileImage: profileImage,
+                                  reactCount: post.reactCount,
+                                  commentCount: post.commentCount,
+                                  isLiked: post.isReacted ?? false,
+                                  detailsWidget: buildPostDetails(post),
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          PostDetailScreen(postId: post.id!),
+                                    ),
+                                  ),
+                                  onLike: () =>
+                                      controller.reactToPost(post.id!),
+                                  onComment: () =>
+                                      showCommentSheet(context, post),
+                                  onShare: () {
+                                    final postLink =
+                                        "https://speedring.com/post/${post.id}";
+                                    SharePlus.instance.share(
+                                      ShareParams(
+                                        text:
+                                            "Check out this post on Speedring:\n\n$postLink",
+                                        subject: "Speedring Post",
+                                      ),
+                                    );
+                                  },
+                                  onMore: isMyPost
+                                      ? () {
+                                          showModalBottomSheet(
+                                            context: context,
+                                            useRootNavigator: true,
+                                            isScrollControlled: true,
+                                            useSafeArea: true,
+                                            backgroundColor: const Color(
+                                              0xff1C1C1C,
+                                            ),
+                                            builder: (context) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(
+                                                    context,
+                                                  ).viewPadding.bottom,
+                                                ),
+                                                child: Wrap(
+                                                  children: [
+                                                    ListTile(
+                                                      leading: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red,
+                                                      ),
+                                                      title: const Text(
+                                                        "Delete Post",
+                                                        style: TextStyle(
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) => AlertDialog(
+                                                            backgroundColor:
+                                                                const Color(
+                                                                  0xff1C1C1C,
+                                                                ),
+                                                            title: const Text(
+                                                              "Delete Post",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                            content: const Text(
+                                                              "Are you sure you want to delete this post?",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white70,
+                                                              ),
+                                                            ),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () =>
+                                                                    Navigator.pop(
+                                                                      context,
+                                                                    ),
+                                                                child: const Text(
+                                                                  "Cancel",
+                                                                  style: TextStyle(
+                                                                    color: Colors
+                                                                        .grey,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                    context,
+                                                                  );
+                                                                  controller
+                                                                      .deletePost(
+                                                                        post.id!,
+                                                                      );
+                                                                },
+                                                                child: const Text(
+                                                                  "Delete",
+                                                                  style: TextStyle(
+                                                                    color: Colors
+                                                                        .red,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        }
+                                      : null,
+                                ),
+                                const SizedBox(height: 12),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+
+                /// Tab 1: EVENTS Feed
+                controller.isEventsLoading.value
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.yellow,
+                        ),
+                      )
+                    : controller.eventsList.isEmpty
+                    ? const Center(
+                        child: Text(
+                          "No events found",
+                          style: TextStyle(color: Colors.white54),
+                        ),
+                      )
+                    : RefreshIndicator(
+                        color: AppColors.yellow,
+                        backgroundColor: Colors.black,
+                        onRefresh: () => controller.getEvents(),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: controller.eventsList.length + 2,
+                          itemBuilder: (context, index) {
+                            // index 0 → ADD EVENT button
+                            if (index == 0) {
+                              return Column(
+                                children: [
+                                  AddPostButton(
+                                    label: "ADD EVENT",
+                                    onTap: () {
+                                      Get.toNamed(AppRoutes.createEventScreen);
+                                    },
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
+                              );
+                            }
+
+                            // Last item → load-more indicator / trigger
+                            if (index == controller.eventsList.length + 1) {
+                              if (controller.isEventsLoadMoreLoading.value) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              } else if (controller.hasMoreEvents) {
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
+                                  controller.getEvents(isLoadMore: true);
+                                });
+                                return const SizedBox(height: 50);
+                              } else {
+                                return const SizedBox(height: 30);
+                              }
+                            }
+
+                            final event = controller.eventsList[index - 1];
+                            final isMyEvent =
+                                event.user?.id != null &&
+                                event.user!.id ==
+                                    controller.currentUserId.value;
+
+                            // Build proper image URL
+                            String bannerUrl = event.bannerImage ?? "";
+                            if (bannerUrl.isNotEmpty &&
+                                !bannerUrl.startsWith("http")) {
+                              bannerUrl = "http://10.10.28.90:4050$bannerUrl";
+                            }
+
+                            return _EventCard(
+                              imageUrl: bannerUrl.isNotEmpty
+                                  ? bannerUrl
+                                  : "https://picsum.photos/seed/event_${event.id}/600/300",
+                              organizer: event.user?.name ?? "ORGANIZER",
+                              organizerImage: event.user?.profileImage,
+                              title: event.eventName ?? "UNTITLED EVENT",
+                              date: event.deploymentDate != null
+                                  ? event.deploymentDate!.split('T')[0]
+                                  : "UNKNOWN",
+                              type: event.missionType ?? "EVENT",
+                              location: event.locationCircuit ?? "UNKNOWN",
+                              slots:
+                                  "${event.joinCount ?? 0}/${event.maxCapacity ?? 0}",
+                              likes: "${event.reactCount ?? 0}",
+                              comments: "${event.commentCount ?? 0}",
+                              isJoined: event.isEventJoined ?? false,
+                              isReacted: event.isReacted ?? false,
+                              isMyEvent: isMyEvent,
+                              eventId: event.id ?? "",
+                              onJoin: () =>
+                                  controller.joinEvent(eventId: event.id!),
+                              onLike: () =>
+                                  controller.reactToEvent(eventId: event.id!),
+                              onComment: () =>
+                                  showEventCommentSheet(context, event),
+                              onShare: () {
+                                controller.shareEvent(eventId: event.id!);
+                                shareEventLink(event);
+                              },
+                              onDelete: isMyEvent
+                                  ? () => controller.deleteEvent(
+                                      eventId: event.id!,
+                                    )
+                                  : null,
+                            );
+                          },
+                        ),
+                      ),
+
+                /// Tab 2: CLUBS Feed
+                ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  children: [
+                    const SizedBox(height: 16),
+
+                    /// YOUR CLUBS Header
+                    const Text(
+                      "YOUR CLUBS",
+                      style: TextStyle(
+                        color: AppColors.yellow,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    /// Your Clubs List (Horizontal scroll)
+                    Obx(() {
+                      if (controller.isMyClubsLoading.value) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.yellow,
+                          ),
+                        );
+                      }
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        clipBehavior: Clip.none,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            /// Add New Club Button
+                            Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: GestureDetector(
+                                onTap: () =>
+                                    Get.toNamed(AppRoutes.createClubScreen),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: 60,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: AppColors.yellow,
+                                          width: 1.5,
+                                          style: BorderStyle.solid,
+                                        ),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.add,
+                                          color: AppColors.yellow,
+                                          size: 22,
+                                        ),
                                       ),
                                     ),
-                                  );
-                                }),
-
-                                /// Add New Club Button
-                                GestureDetector(
-                                  onTap: () =>
-                                      Get.toNamed(AppRoutes.createClubScreen),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: 60,
-                                        height: 60,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: AppColors.yellow,
-                                            width: 1.5,
-                                            style: BorderStyle.solid,
-                                          ),
-                                        ),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.add,
-                                            color: AppColors.yellow,
-                                            size: 22,
-                                          ),
-                                        ),
+                                    const SizedBox(height: 8),
+                                    const Text(
+                                      "NEW CLUB",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.5,
                                       ),
-                                      const SizedBox(height: 8),
-                                      const Text(
-                                        "NEW CLUB",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          );
-                        }),
-                        const SizedBox(height: 28),
-
-                        /// BROWSE ALL CLUBS Header
-                        const Text(
-                          "BROWSE ALL CLUBS",
-                          style: TextStyle(
-                            color: AppColors.yellow,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.0,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        /// Browse Clubs List
-                        Obx(() {
-                          if (controller.isClubsLoading.value) {
-                            return const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.yellow,
-                              ),
-                            );
-                          }
-                          if (controller.allClubs.isEmpty) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              child: Center(
-                                child: Text(
-                                  "No clubs found.",
-                                  style: TextStyle(color: Colors.white54),
-                                ),
-                              ),
-                            );
-                          }
-                          return Column(
-                            children: controller.allClubs.map((club) {
-                              return _buildBrowseClubCard(
-                                name: club.clubName ?? "Unknown",
-                                members: "${club.members?.length ?? 0}",
-                                imageUrl:
-                                    club.logo != null && club.logo!.isNotEmpty
-                                    ? "${ApiUrl.imageUrl}${club.logo}"
-                                    : "https://picsum.photos/seed/gt3coll/100/100", // Fallback
-                                onTap: () => Get.toNamed(
-                                  AppRoutes.clubDetailsScreen,
-                                  arguments: {"id": club.id},
+                            ...controller.myClubs.map((club) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: _buildCircularClubItem(
+                                  name: club.clubName ?? "Unknown",
+                                  imageUrl:
+                                      club.logo != null && club.logo!.isNotEmpty
+                                      ? (club.logo!.startsWith('http')
+                                            ? club.logo!
+                                            : "${ApiUrl.imageUrl}${club.logo}")
+                                      : "", // Fallback
+                                  onTap: () => Get.toNamed(
+                                    AppRoutes.clubDetailsScreen,
+                                    arguments: {"id": club.id},
+                                  ),
                                 ),
                               );
-                            }).toList(),
-                          );
-                        }),
-                        const SizedBox(height: 30),
-                      ],
+                            }),
+                          ],
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 28),
+
+                    /// BROWSE ALL CLUBS Header
+                    const Text(
+                      "BROWSE ALL CLUBS",
+                      style: TextStyle(
+                        color: AppColors.yellow,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.0,
+                      ),
                     ),
+                    const SizedBox(height: 16),
+
+                    /// Browse Clubs List
+                    Obx(() {
+                      if (controller.isClubsLoading.value) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.yellow,
+                          ),
+                        );
+                      }
+                      if (controller.allClubs.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Center(
+                            child: Text(
+                              "No clubs found.",
+                              style: TextStyle(color: Colors.white54),
+                            ),
+                          ),
+                        );
+                      }
+                      return Column(
+                        children: controller.allClubs.map((club) {
+                          return _buildBrowseClubCard(
+                            name: club.clubName ?? "Unknown",
+                            members: "${club.members?.length ?? 0}",
+                            imageUrl: club.logo != null && club.logo!.isNotEmpty
+                                ? (club.logo!.startsWith('http')
+                                      ? club.logo!
+                                      : "${ApiUrl.imageUrl}${club.logo}")
+                                : "", // Fallback
+                            onTap: () => Get.toNamed(
+                              AppRoutes.clubDetailsScreen,
+                              arguments: {"id": club.id},
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }),
+                    const SizedBox(height: 30),
                   ],
                 ),
-              ),
+              ],
             ),
+          ),
+        ),
         bottomNavigationBar: const CustomNavBar(currentIndex: 0),
       ),
     );
@@ -1392,7 +1383,11 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
   _TabBarDelegate(this.controller, this.tabBuilder);
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Container(
       color: Colors.black, // Background color when pinned
       padding: const EdgeInsets.only(top: 10, bottom: 15),
@@ -1403,11 +1398,23 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
           () => Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              tabBuilder("POST", controller.rxActiveTab.value == 0, () => controller.changeTab(0)),
+              tabBuilder(
+                "POST",
+                controller.rxActiveTab.value == 0,
+                () => controller.changeTab(0),
+              ),
               const SizedBox(width: 10),
-              tabBuilder("EVENTS", controller.rxActiveTab.value == 1, () => controller.changeTab(1)),
+              tabBuilder(
+                "EVENTS",
+                controller.rxActiveTab.value == 1,
+                () => controller.changeTab(1),
+              ),
               const SizedBox(width: 10),
-              tabBuilder("CLUBS", controller.rxActiveTab.value == 2, () => controller.changeTab(2)),
+              tabBuilder(
+                "CLUBS",
+                controller.rxActiveTab.value == 2,
+                () => controller.changeTab(2),
+              ),
             ],
           ),
         ),
@@ -1422,5 +1429,6 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 60.0;
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }

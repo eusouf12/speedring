@@ -1,14 +1,73 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 
 // ─── Controller ────────────────────────────────────────────────
 class CreateClubController extends GetxController {
-  final RxString selectedClass = "GT3 SERIES".obs;
+  final RxList<String> selectedCategories = <String>[].obs;
+  final RxList<Map<String, dynamic>> dynamicCategories =
+      <Map<String, dynamic>>[].obs;
+
   final RxString selectedAccess = "PUBLIC".obs;
   final RxBool telemetryVerification = true.obs;
+
+  final TextEditingController clubNameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+
+  final Rx<File?> logoImage = Rx<File?>(null);
+  final Rx<File?> bannerImage = Rx<File?>(null);
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> pickLogo() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      logoImage.value = File(image.path);
+    }
+  }
+
+  Future<void> pickBanner() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      bannerImage.value = File(image.path);
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    dynamicCategories.addAll(CreateClubScreen.categories);
+  }
+
+  @override
+  void onClose() {
+    clubNameController.dispose();
+    descriptionController.dispose();
+    super.onClose();
+  }
+
+  void toggleCategory(String categoryName) {
+    if (selectedCategories.contains(categoryName)) {
+      selectedCategories.remove(categoryName);
+    } else {
+      selectedCategories.add(categoryName);
+    }
+  }
+
+  void addCustomCategory(String categoryName) {
+    if (categoryName.isNotEmpty) {
+      final newCategory = {
+        "name": categoryName.toUpperCase(),
+        "icon": Icons.label_outline,
+      };
+      dynamicCategories.insert(dynamicCategories.length - 1, newCategory);
+      selectedCategories.add(newCategory['name'] as String);
+    }
+  }
 }
 
 // ─── Screen ────────────────────────────────────────────────────
@@ -68,7 +127,10 @@ class CreateClubScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    _buildTextField("e.g., SYNDICATE RACING"),
+                    _buildTextField(
+                      "e.g., SYNDICATE RACING",
+                      controller: controller.clubNameController,
+                    ),
                     const SizedBox(height: 16),
                     const Text(
                       "INPUT DETAILS",
@@ -80,7 +142,11 @@ class CreateClubScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    _buildTextField("Describe About Club", maxLines: 3),
+                    _buildTextField(
+                      "Describe About Club",
+                      maxLines: 3,
+                      controller: controller.descriptionController,
+                    ),
                   ],
                 ),
               ),
@@ -96,12 +162,16 @@ class CreateClubScreen extends StatelessWidget {
                   () => Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: categories.map((cat) {
-                      final bool isSelected =
-                          cat['name'] == controller.selectedClass.value;
+                    children: controller.dynamicCategories.map((cat) {
+                      final bool isSelected = controller.selectedCategories
+                          .contains(cat['name']);
                       return GestureDetector(
                         onTap: () {
-                          controller.selectedClass.value = cat['name'];
+                          if (cat['name'] == 'AND MORE') {
+                            _showAddCategoryDialog(context, controller);
+                          } else {
+                            controller.toggleCategory(cat['name']);
+                          }
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -217,46 +287,6 @@ class CreateClubScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              "TELEMETRY VERIFICATION",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 2),
-                            Text(
-                              "Req. validated data logs",
-                              style: TextStyle(
-                                color: Colors.white38,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Obx(
-                          () => Switch(
-                            value: controller.telemetryVerification.value,
-                            onChanged: (val) {
-                              controller.telemetryVerification.value = val;
-                            },
-                            activeThumbColor: AppColors.yellow,
-                            activeTrackColor: AppColors.yellow.withValues(
-                              alpha: 0.3,
-                            ),
-                            inactiveThumbColor: Colors.white38,
-                            inactiveTrackColor: Colors.white10,
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
@@ -281,35 +311,50 @@ class CreateClubScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.white12,
-                          style: BorderStyle.solid,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.upload_file_outlined,
-                            color: Colors.white60,
-                            size: 24,
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            "SVG / PNG",
-                            style: TextStyle(
-                              color: Colors.white38,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
+                    GestureDetector(
+                      onTap: controller.pickLogo,
+                      child: Obx(() {
+                        return Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.white12,
+                              style: BorderStyle.solid,
                             ),
+                            borderRadius: BorderRadius.circular(8),
+                            image: controller.logoImage.value != null
+                                ? DecorationImage(
+                                    image: FileImage(
+                                      controller.logoImage.value!,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
                           ),
-                        ],
-                      ),
+                          child: controller.logoImage.value == null
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.upload_file_outlined,
+                                      color: Colors.white60,
+                                      size: 24,
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      "SVG / PNG",
+                                      style: TextStyle(
+                                        color: Colors.white38,
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox.shrink(),
+                        );
+                      }),
                     ),
                     const SizedBox(height: 20),
                     const Text(
@@ -322,41 +367,55 @@ class CreateClubScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      width: double.infinity,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white12),
-                        borderRadius: BorderRadius.circular(8),
-                        image: const DecorationImage(
-                          image: NetworkImage(
-                            "https://picsum.photos/seed/createbanner/600/300",
+                    GestureDetector(
+                      onTap: controller.pickBanner,
+                      child: Obx(() {
+                        return Container(
+                          width: double.infinity,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white12),
+                            borderRadius: BorderRadius.circular(8),
+                            image: controller.bannerImage.value != null
+                                ? DecorationImage(
+                                    image: FileImage(
+                                      controller.bannerImage.value!,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )
+                                : const DecorationImage(
+                                    image: NetworkImage(
+                                      "https://picsum.photos/seed/createbanner/600/300",
+                                    ),
+                                    fit: BoxFit.cover,
+                                    opacity: 0.3,
+                                  ),
                           ),
-                          fit: BoxFit.cover,
-                          opacity: 0.3,
-                        ),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(
-                              Icons.add_photo_alternate_outlined,
-                              color: Colors.white70,
-                              size: 28,
-                            ),
-                            SizedBox(height: 6),
-                            Text(
-                              "DEPLOY BANNER ASSET",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          child: controller.bannerImage.value == null
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Icon(
+                                        Icons.add_photo_alternate_outlined,
+                                        color: Colors.white70,
+                                        size: 28,
+                                      ),
+                                      SizedBox(height: 6),
+                                      Text(
+                                        "DEPLOY BANNER ASSET",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        );
+                      }),
                     ),
                   ],
                 ),
@@ -367,36 +426,73 @@ class CreateClubScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 52,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.yellow,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                child: Obx(() {
+                  final homeController = Get.find<HomeController>();
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.yellow,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
                     ),
-                    elevation: 0,
-                  ),
-                  onPressed: () {
-                    Get.back();
-                    Get.snackbar(
-                      "Club Created",
-                      "Your new motorsport club has been deployed.",
-                      snackPosition: SnackPosition.BOTTOM,
-                      backgroundColor: const Color(0xff181818),
-                      colorText: Colors.white,
-                      borderColor: AppColors.yellow,
-                      borderWidth: 1,
-                    );
-                  },
-                  child: const Text(
-                    "CREATE CLUB",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ),
+                    onPressed: homeController.isCreateClubLoading.value
+                        ? null
+                        : () async {
+                            if (controller.clubNameController.text
+                                    .trim()
+                                    .isEmpty ||
+                                controller.descriptionController.text
+                                    .trim()
+                                    .isEmpty) {
+                              Get.snackbar(
+                                "Error",
+                                "Club Name and Description are required.",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: const Color(0xff181818),
+                                colorText: Colors.white,
+                              );
+                              return;
+                            }
+
+                            final success = await homeController.createClub(
+                              clubName: controller.clubNameController.text
+                                  .trim(),
+                              description: controller.descriptionController.text
+                                  .trim(),
+                              categories: controller.selectedCategories
+                                  .toList(),
+                              accessType: controller.selectedAccess.value,
+                              telemetryVerification:
+                                  controller.telemetryVerification.value,
+                              logo: controller.logoImage.value,
+                              banner: controller.bannerImage.value,
+                            );
+
+                            if (success) {
+                              Get.back();
+                            }
+                          },
+                    child: homeController.isCreateClubLoading.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                              strokeWidth: 2.0,
+                            ),
+                          )
+                        : const Text(
+                            "CREATE CLUB",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                  );
+                }),
               ),
               const SizedBox(height: 16),
 
@@ -449,7 +545,11 @@ class CreateClubScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String hint, {int maxLines = 1}) {
+  Widget _buildTextField(
+    String hint, {
+    int maxLines = 1,
+    TextEditingController? controller,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
       decoration: BoxDecoration(
@@ -457,6 +557,7 @@ class CreateClubScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextFormField(
+        controller: controller,
         maxLines: maxLines,
         style: const TextStyle(color: Colors.white, fontSize: 13),
         decoration: InputDecoration(
@@ -466,6 +567,60 @@ class CreateClubScreen extends StatelessWidget {
           isDense: true,
         ),
       ),
+    );
+  }
+
+  void _showAddCategoryDialog(
+    BuildContext context,
+    CreateClubController controller,
+  ) {
+    final TextEditingController textController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xff1C1C1C),
+          title: const Text(
+            "Add Custom Category",
+            style: TextStyle(color: Colors.white),
+          ),
+          content: TextField(
+            controller: textController,
+            style: const TextStyle(color: Colors.white),
+            decoration: const InputDecoration(
+              hintText: "Enter category name",
+              hintStyle: TextStyle(color: Colors.white38),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white24),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.yellow),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                "CANCEL",
+                style: TextStyle(color: Colors.white54),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                if (textController.text.trim().isNotEmpty) {
+                  controller.addCustomCategory(textController.text.trim());
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text(
+                "ADD",
+                style: TextStyle(color: AppColors.yellow),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

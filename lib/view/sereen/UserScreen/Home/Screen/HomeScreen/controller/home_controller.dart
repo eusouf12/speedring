@@ -1539,8 +1539,14 @@ class HomeController extends GetxController {
     try {
       final response = await ApiClient.getData(ApiUrl.getAllClubs);
       if (response.statusCode == 200) {
-        final List data = response.body['data'] ?? [];
-        allClubs.value = data.map((json) => ClubModel.fromJson(json)).toList();
+        var bodyData = response.body['data'];
+        List dataList = [];
+        if (bodyData is List) {
+          dataList = bodyData;
+        } else if (bodyData is Map && bodyData['data'] is List) {
+          dataList = bodyData['data'];
+        }
+        allClubs.value = dataList.map((json) => ClubModel.fromJson(json)).toList();
       }
     } catch (e) {
       debugPrint("Error fetching all clubs: $e");
@@ -1554,8 +1560,14 @@ class HomeController extends GetxController {
     try {
       final response = await ApiClient.getData(ApiUrl.getMyClubs);
       if (response.statusCode == 200) {
-        final List data = response.body['data'] ?? [];
-        myClubs.value = data.map((json) => ClubModel.fromJson(json)).toList();
+        var bodyData = response.body['data'];
+        List dataList = [];
+        if (bodyData is List) {
+          dataList = bodyData;
+        } else if (bodyData is Map && bodyData['data'] is List) {
+          dataList = bodyData['data'];
+        }
+        myClubs.value = dataList.map((json) => ClubModel.fromJson(json)).toList();
       } else {
         debugPrint(response.body['message']);
       }
