@@ -47,6 +47,7 @@ class ApiUrl {
     required int limit,
     String? searchTerm,
     String? category,
+    String? clubId,
   }) {
     String url = "/posts/get-all-posts?page=$page&limit=$limit";
     if (searchTerm != null && searchTerm.isNotEmpty) {
@@ -54,6 +55,9 @@ class ApiUrl {
     }
     if (category != null && category.isNotEmpty) {
       url += "&category=${Uri.encodeComponent(category)}";
+    }
+    if (clubId != null && clubId.isNotEmpty) {
+      url += "&clubId=${Uri.encodeComponent(clubId)}";
     }
     return url;
   }

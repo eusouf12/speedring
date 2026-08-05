@@ -19,6 +19,7 @@ import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_deta
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_detaisl_screen_non_my.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_members_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_join_requests_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_group_post_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/user_home_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/reel/reels_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/reel/create_reel_screen.dart';
@@ -237,6 +238,7 @@ class AppRoutes {
   static const String clubDetaislScreenNonMy = "/ClubDetaislScreenNonMy";
   static const String clubMembersScreen = "/ClubMembersScreen";
   static const String clubJoinRequestsScreen = "/ClubJoinRequestsScreen";
+  static const String clubGroupPostScreen = "/ClubGroupPostScreen";
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -516,6 +518,10 @@ class AppRoutes {
     GetPage(
       name: clubJoinRequestsScreen,
       page: () => const ClubJoinRequestsScreen(),
+    ),
+    GetPage(
+      name: clubGroupPostScreen,
+      page: () => const ClubGroupPostScreen(),
     ),
   ];
 }

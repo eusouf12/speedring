@@ -48,6 +48,7 @@ class HomeController extends GetxController {
     bool isLoadMore = false,
     String? searchTerm,
     String? category,
+    String? clubId,
   }) async {
     if (isLoadMore) {
       if (!_hasMorePosts || isLoadMoreLoading.value) return;
@@ -85,6 +86,7 @@ class HomeController extends GetxController {
         limit: 10,
         searchTerm: postSearchTerm.value,
         category: postCategory.value,
+        clubId: clubId,
       );
       debugPrint("--- getPost URL: $url");
 
@@ -139,6 +141,7 @@ class HomeController extends GetxController {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         postsList.removeWhere((post) => post.id == postId);
+        clubPosts.removeWhere((post) => post.id == postId);
         showCustomSnackBar("Post deleted successfully", isError: false);
       } else {
         showCustomSnackBar("Failed to delete post", isError: true);
@@ -182,13 +185,15 @@ class HomeController extends GetxController {
     if (reactingPostIds.contains(postId)) return;
     reactingPostIds.add(postId);
 
-    final index = postsList.indexWhere((element) => element.id == postId);
-    if (index == -1) {
+    final globalIndex = postsList.indexWhere((element) => element.id == postId);
+    final clubIndex = clubPosts.indexWhere((element) => element.id == postId);
+
+    if (globalIndex == -1 && clubIndex == -1) {
       reactingPostIds.remove(postId);
       return;
     }
 
-    final originalPost = postsList[index];
+    final originalPost = globalIndex != -1 ? postsList[globalIndex] : clubPosts[clubIndex];
     final alreadyLiked = originalPost.isReacted ?? false;
 
     List<PostReact> updatedReacts = List.from(originalPost.reacts ?? []);
@@ -209,7 +214,7 @@ class HomeController extends GetxController {
       updatedReactCount = updatedReactCount + 1;
     }
 
-    postsList[index] = PostModel(
+    final updatedPostModel = PostModel(
       id: originalPost.id,
       category: originalPost.category,
       visibility: originalPost.visibility,
@@ -231,8 +236,11 @@ class HomeController extends GetxController {
       createdAt: originalPost.createdAt,
       updatedAt: originalPost.updatedAt,
     );
+
+    if (globalIndex != -1) postsList[globalIndex] = updatedPostModel;
+    if (clubIndex != -1) clubPosts[clubIndex] = updatedPostModel;
     if (currentPostDetail.value?.id == postId) {
-      currentPostDetail.value = postsList[index];
+      currentPostDetail.value = updatedPostModel;
     }
 
     try {
@@ -256,7 +264,7 @@ class HomeController extends GetxController {
               ? backendReacts.any((r) => r.user?.id == currentUserId.value)
               : !alreadyLiked;
 
-          postsList[index] = PostModel(
+          final backendUpdatedPostModel = PostModel(
             id: originalPost.id,
             category: originalPost.category,
             visibility: originalPost.visibility,
@@ -278,12 +286,16 @@ class HomeController extends GetxController {
             createdAt: originalPost.createdAt,
             updatedAt: originalPost.updatedAt,
           );
+
+          if (globalIndex != -1) postsList[globalIndex] = backendUpdatedPostModel;
+          if (clubIndex != -1) clubPosts[clubIndex] = backendUpdatedPostModel;
           if (currentPostDetail.value?.id == postId) {
-            currentPostDetail.value = postsList[index];
+            currentPostDetail.value = backendUpdatedPostModel;
           }
         }
       } else {
-        postsList[index] = originalPost;
+        if (globalIndex != -1) postsList[globalIndex] = originalPost;
+        if (clubIndex != -1) clubPosts[clubIndex] = originalPost;
         if (currentPostDetail.value?.id == postId) {
           currentPostDetail.value = originalPost;
         }
@@ -291,7 +303,8 @@ class HomeController extends GetxController {
       }
     } catch (e) {
       debugPrint("Error reacting to post: $e");
-      postsList[index] = originalPost;
+      if (globalIndex != -1) postsList[globalIndex] = originalPost;
+      if (clubIndex != -1) clubPosts[clubIndex] = originalPost;
       if (currentPostDetail.value?.id == postId) {
         currentPostDetail.value = originalPost;
       }
@@ -630,6 +643,78 @@ class HomeController extends GetxController {
     } finally {
       isPostCreating.value = false;
     }
+  }
+
+  // --- Club Group Post Specific ---
+  final TextEditingController clubGroupPostTextCtrl = TextEditingController();
+  final Rxn<File> clubGroupSelectedMedia = Rxn<File>();
+  final RxList<PostModel> clubPosts = <PostModel>[].obs;
+  final RxBool isClubPostsLoading = false.obs;
+
+  Future<void> getClubPosts(String clubId) async {
+    isClubPostsLoading.value = true;
+    try {
+      String url = ApiUrl.getAllPosts(
+        page: 1,
+        limit: 50, // Get a chunk of posts for the club
+        clubId: clubId,
+      );
+      var response = await ApiClient.getData(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var postResponse = PostResponse.fromJson(
+          response.body is String ? jsonDecode(response.body) : response.body,
+        );
+        clubPosts.value = postResponse.data ?? [];
+      } else {
+        showCustomSnackBar("Failed to load club posts", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error loading club posts: $e");
+    } finally {
+      isClubPostsLoading.value = false;
+    }
+  }
+
+  Future<void> pickClubGroupMedia(ImageSource source, {bool isVideo = false}) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      XFile? pickedFile;
+      if (isVideo) {
+        pickedFile = await picker.pickVideo(source: source);
+      } else {
+        pickedFile = await picker.pickImage(source: source);
+      }
+
+      if (pickedFile != null) {
+        clubGroupSelectedMedia.value = File(pickedFile.path);
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Could not pick media: $e", colorText: Colors.red);
+    }
+  }
+
+  Future<bool> createClubSpecificPost({
+    required String clubId,
+    required String details,
+    File? mediaFile,
+  }) async {
+    final success = await createPost(
+      category: "CLUB_POST",
+      visibility: "Club Only",
+      clubId: clubId,
+      mediaFile: mediaFile,
+      clubPostDetails: {
+        "title": "Group Post",
+        "details": details,
+        "isPinned": false,
+      },
+    );
+    if (success) {
+      clubGroupPostTextCtrl.clear();
+      clubGroupSelectedMedia.value = null;
+      getClubPosts(clubId);
+    }
+    return success;
   }
 
   // --- Search State & Methods ---
@@ -1544,7 +1629,9 @@ class HomeController extends GetxController {
   Future<void> getAllClubs({String? searchTerm}) async {
     isClubsLoading.value = true;
     try {
-      final response = await ApiClient.getData(ApiUrl.getAllClubs(searchTerm: searchTerm));
+      final response = await ApiClient.getData(
+        ApiUrl.getAllClubs(searchTerm: searchTerm),
+      );
       if (response.statusCode == 200) {
         var bodyData = response.body['data'];
         List dataList = [];
@@ -1657,14 +1744,15 @@ class HomeController extends GetxController {
     }
   }
 
-  // ===================== Members & Requests =====================
   final RxList<dynamic> clubMembersList = <dynamic>[].obs;
   final RxBool isClubMembersLoading = false.obs;
 
   Future<void> getClubMembers(String clubId) async {
     isClubMembersLoading.value = true;
     try {
-      final response = await ApiClient.getData(ApiUrl.getClubMembers(clubId: clubId));
+      final response = await ApiClient.getData(
+        ApiUrl.getClubMembers(clubId: clubId),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.body['data'];
         if (data is List) {
@@ -1688,7 +1776,9 @@ class HomeController extends GetxController {
   Future<void> getClubJoinRequests(String clubId) async {
     isClubJoinRequestsLoading.value = true;
     try {
-      final response = await ApiClient.getData(ApiUrl.getJoinRequests(clubId: clubId));
+      final response = await ApiClient.getData(
+        ApiUrl.getJoinRequests(clubId: clubId),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.body['data'];
         if (data is List) {
@@ -1720,12 +1810,14 @@ class HomeController extends GetxController {
         showCustomSnackBar("Request ${action}d successfully", isError: false);
         // Remove from list
         clubJoinRequestsList.removeWhere((req) {
-           final id = req['_id'] ?? req['id'];
-           return id == memberId;
+          final id = req['_id'] ?? req['id'];
+          return id == memberId;
         });
         clubJoinRequestsList.refresh();
       } else {
-        showCustomSnackBar(response.body['message'] ?? "Failed to handle request");
+        showCustomSnackBar(
+          response.body['message'] ?? "Failed to handle request",
+        );
       }
     } catch (e) {
       debugPrint("Error handling join request: $e");
@@ -1767,7 +1859,9 @@ class HomeController extends GetxController {
         getClubMembers(clubId);
         getSingleClub(clubId);
       } else {
-        showCustomSnackBar(response.body['message'] ?? "Failed to remove member");
+        showCustomSnackBar(
+          response.body['message'] ?? "Failed to remove member",
+        );
       }
     } catch (e) {
       debugPrint("Error removing member: $e");
@@ -1788,7 +1882,8 @@ class HomeController extends GetxController {
       Map<String, dynamic> body = {
         'clubName': clubName,
         'description': description,
-        if (categories != null && categories.isNotEmpty) 'categories': categories,
+        if (categories != null && categories.isNotEmpty)
+          'categories': categories,
         'accessType': accessType,
       };
 
@@ -1801,9 +1896,11 @@ class HomeController extends GetxController {
         multipartBodyList.add(MultipartBody('banner', banner));
       }
 
-      final response = await ApiClient.patchMultipartData(ApiUrl.updateClub(clubId: clubId), {
-        "data": jsonEncode(body),
-      }, multipartBody: multipartBodyList);
+      final response = await ApiClient.patchMultipartData(
+        ApiUrl.updateClub(clubId: clubId),
+        {"data": jsonEncode(body)},
+        multipartBody: multipartBodyList,
+      );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         showCustomSnackBar("Club updated successfully!", isError: false);
@@ -1827,7 +1924,9 @@ class HomeController extends GetxController {
   Future<bool> deleteClub(String clubId) async {
     isCreateClubLoading.value = true;
     try {
-      final response = await ApiClient.deleteData(ApiUrl.deleteClub(clubId: clubId));
+      final response = await ApiClient.deleteData(
+        ApiUrl.deleteClub(clubId: clubId),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         showCustomSnackBar("Club deleted successfully!", isError: false);
         getAllClubs();
@@ -1862,7 +1961,8 @@ class HomeController extends GetxController {
 
         // Optimistic UI Update for single club
         if (currentClubDetail.value?.id == clubId) {
-          String access = (currentClubDetail.value?.accessType ?? "PUBLIC").toUpperCase();
+          String access = (currentClubDetail.value?.accessType ?? "PUBLIC")
+              .toUpperCase();
           if (access == "PUBLIC") {
             currentClubDetail.value?.isClubJoined = true;
             currentClubDetail.value?.isJoinRequestPending = false;
@@ -1876,7 +1976,8 @@ class HomeController extends GetxController {
         // Optimistic UI Update for all clubs list
         int index = allClubs.indexWhere((c) => c.id == clubId);
         if (index != -1) {
-          String access = (allClubs[index].accessType ?? "PUBLIC").toUpperCase();
+          String access = (allClubs[index].accessType ?? "PUBLIC")
+              .toUpperCase();
           if (access == "PUBLIC") {
             allClubs[index].isClubJoined = true;
             allClubs[index].isJoinRequestPending = false;
@@ -1906,13 +2007,13 @@ class HomeController extends GetxController {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         showCustomSnackBar("Left club successfully", isError: false);
-        
+
         // Optimistic UI Update for single club
         if (currentClubDetail.value?.id == clubId) {
           currentClubDetail.value?.isClubJoined = false;
           currentClubDetail.refresh();
         }
-        
+
         // Optimistic UI Update for all clubs list
         int index = allClubs.indexWhere((c) => c.id == clubId);
         if (index != -1) {
