@@ -39,6 +39,11 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.transparent,
+          textSelectionTheme: const TextSelectionThemeData(
+            cursorColor: AppColors.yellow,
+            selectionHandleColor: AppColors.yellow,
+            selectionColor: Colors.white24,
+          ),
           appBarTheme: const AppBarTheme(
             toolbarHeight: 65,
             elevation: 0,

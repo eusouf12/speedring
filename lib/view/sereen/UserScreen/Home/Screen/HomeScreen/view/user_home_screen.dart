@@ -676,8 +676,17 @@ class UserHomeScreen extends StatelessWidget {
                                       ? club.logo!
                                       : "${ApiUrl.imageUrl}${club.logo}")
                                 : "", // Fallback
+                            isJoined: club.isClubJoined ?? false,
+                            isPending: club.isJoinRequestPending ?? false,
+                            onJoinTap: () {
+                              if (club.id != null) {
+                                controller.joinClub(club.id!);
+                              }
+                            },
                             onTap: () => Get.toNamed(
-                              AppRoutes.clubDetailsScreen,
+                              (club.isClubJoined == true)
+                                  ? AppRoutes.clubDetailsScreen
+                                  : AppRoutes.clubDetaislScreenNonMy,
                               arguments: {"id": club.id},
                             ),
                           );
@@ -759,7 +768,26 @@ class UserHomeScreen extends StatelessWidget {
     required String members,
     required String imageUrl,
     required VoidCallback onTap,
+    bool isJoined = false,
+    bool isPending = false,
+    VoidCallback? onJoinTap,
   }) {
+    String btnText = "JOIN CLUB";
+    Color btnColor = AppColors.yellow;
+    Color textColor = Colors.black;
+    Border? btnBorder;
+
+    if (isJoined == true && isPending == false) {
+      btnText = "JOINED";
+      btnColor = Colors.transparent;
+      textColor = AppColors.yellow;
+      btnBorder = Border.all(color: AppColors.yellow, width: 1);
+    } else if (isJoined == false && isPending == true) {
+      btnText = "PENDING REQUEST";
+      btnColor = Colors.white24;
+      textColor = Colors.white54;
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -826,20 +854,24 @@ class UserHomeScreen extends StatelessWidget {
             ),
 
             /// Join Button
-            Container(
-              height: 32,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: AppColors.yellow,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Center(
-                child: Text(
-                  "JOIN CLUB",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
+            GestureDetector(
+              onTap: (isJoined || isPending) ? null : onJoinTap,
+              child: Container(
+                height: 32,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: btnColor,
+                  border: btnBorder,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Center(
+                  child: Text(
+                    btnText,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
               ),

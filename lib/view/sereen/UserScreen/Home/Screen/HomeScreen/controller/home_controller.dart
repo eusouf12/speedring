@@ -1546,7 +1546,9 @@ class HomeController extends GetxController {
         } else if (bodyData is Map && bodyData['data'] is List) {
           dataList = bodyData['data'];
         }
-        allClubs.value = dataList.map((json) => ClubModel.fromJson(json)).toList();
+        allClubs.value = dataList
+            .map((json) => ClubModel.fromJson(json))
+            .toList();
       }
     } catch (e) {
       debugPrint("Error fetching all clubs: $e");
@@ -1567,7 +1569,9 @@ class HomeController extends GetxController {
         } else if (bodyData is Map && bodyData['data'] is List) {
           dataList = bodyData['data'];
         }
-        myClubs.value = dataList.map((json) => ClubModel.fromJson(json)).toList();
+        myClubs.value = dataList
+            .map((json) => ClubModel.fromJson(json))
+            .toList();
       } else {
         debugPrint(response.body['message']);
       }
@@ -1653,8 +1657,36 @@ class HomeController extends GetxController {
         ApiUrl.joinClub(clubId: clubId),
         jsonEncode({}),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         showCustomSnackBar("join club successful", isError: false);
+        
+        // Optimistic UI Update for single club
+        if (currentClubDetail.value?.id == clubId) {
+          String access = (currentClubDetail.value?.accessType ?? "PUBLIC").toUpperCase();
+          if (access == "PUBLIC") {
+             currentClubDetail.value?.isClubJoined = true;
+             currentClubDetail.value?.isJoinRequestPending = false;
+          } else {
+             currentClubDetail.value?.isClubJoined = false;
+             currentClubDetail.value?.isJoinRequestPending = true;
+          }
+          currentClubDetail.refresh();
+        }
+        
+        // Optimistic UI Update for all clubs list
+        int index = allClubs.indexWhere((c) => c.id == clubId);
+        if (index != -1) {
+          String access = (allClubs[index].accessType ?? "PUBLIC").toUpperCase();
+          if (access == "PUBLIC") {
+             allClubs[index].isClubJoined = true;
+             allClubs[index].isJoinRequestPending = false;
+          } else {
+             allClubs[index].isClubJoined = false;
+             allClubs[index].isJoinRequestPending = true;
+          }
+          allClubs.refresh();
+        }
+
         getSingleClub(clubId); // Refresh details
         getMyClubs(); // Refresh my clubs
       } else {

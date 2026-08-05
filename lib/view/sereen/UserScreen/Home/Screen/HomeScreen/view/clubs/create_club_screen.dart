@@ -101,7 +101,7 @@ class CreateClubScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: CustomRoyelAppbar(leftIcon: true, titleName: "CREATE NEW CLUB"),
-        body: SingleChildScrollView(
+          body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -559,6 +559,7 @@ class CreateClubScreen extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
+        cursorColor: AppColors.yellow,
         style: const TextStyle(color: Colors.white, fontSize: 13),
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -586,6 +587,7 @@ class CreateClubScreen extends StatelessWidget {
           ),
           content: TextField(
             controller: textController,
+            cursorColor: AppColors.yellow,
             style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
               hintText: "Enter category name",

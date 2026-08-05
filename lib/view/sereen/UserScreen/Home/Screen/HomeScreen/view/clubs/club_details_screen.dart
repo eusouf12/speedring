@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
-import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../controller/home_controller.dart';
 import 'package:speedring/service/api_url.dart';
 
@@ -28,74 +27,136 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomGradient(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.yellow,
-              size: 24,
-            ),
-            onPressed: () => Get.back(),
-          ),
-          title: const Text(
-            "CLUB DETAILS",
-            style: TextStyle(
-              color: AppColors.yellow,
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.0,
-            ),
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.more_vert, color: AppColors.yellow),
-              onPressed: () {
-                Get.toNamed(AppRoutes.editClubScreen);
-              },
-            ),
-          ],
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.yellow, size: 24),
+          onPressed: () => Get.back(),
         ),
-        body: Obx(() {
-          if (controller.isClubDetailsLoading.value) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.yellow),
+        title: const Text(
+          "CLUB DETAILS",
+          style: TextStyle(
+            color: AppColors.yellow,
+            fontSize: 16,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.0,
+          ),
+        ),
+        actions: [
+          Obx(() {
+            final club = controller.currentClubDetail.value;
+            if (club == null) return const SizedBox();
+
+            bool isAdmin =
+                club.members?.any(
+                  (m) =>
+                      m.user?.id == controller.currentUserId.value &&
+                      m.role == "ADMIN",
+                ) ??
+                false;
+
+            return PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert, color: AppColors.yellow),
+              color: const Color(0xff1B1B1B),
+              onSelected: (value) {
+                if (value == 'edit') {
+                  Get.toNamed(AppRoutes.editClubScreen);
+                } else if (value == 'delete') {
+                  // TODO: Handle delete group API
+                } else if (value == 'leave') {
+                  // TODO: Handle leave group API
+                } else if (value == 'requests') {
+                  // TODO: Navigate to requests screen
+                } else if (value == 'members') {
+                  // TODO: Navigate to members screen
+                }
+              },
+              itemBuilder: (context) {
+                if (isAdmin) {
+                  return [
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Text(
+                        'Edit Group',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Text(
+                        'Delete Group',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'requests',
+                      child: Text(
+                        'View Join Requests',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'members',
+                      child: Text(
+                        'View Members',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ];
+                } else {
+                  return [
+                    const PopupMenuItem(
+                      value: 'leave',
+                      child: Text(
+                        'Leave Group',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ];
+                }
+              },
             );
-          }
-          final club = controller.currentClubDetail.value;
-          if (club == null) {
-            return const Center(
-              child: Text(
-                "Club not found",
-                style: TextStyle(color: Colors.white),
-              ),
-            );
-          }
-          final String clubName = club.clubName ?? "Unknown";
-          final String membersCount =
-              "${club.totalMembersCount ?? club.members?.length ?? 0}";
-          final String description =
-              club.description ?? "No description available.";
-          final String accessType = club.accessType ?? "PUBLIC";
+          }),
+        ],
+      ),
+      body: Obx(() {
+        if (controller.isClubDetailsLoading.value) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.yellow),
+          );
+        }
+        final club = controller.currentClubDetail.value;
+        if (club == null) {
+          return const Center(
+            child: Text(
+              "Club not found",
+              style: TextStyle(color: Colors.white),
+            ),
+          );
+        }
+        final String clubName = club.clubName ?? "Unknown";
+        final String membersCount =
+            "${club.totalMembersCount ?? club.members?.length ?? 0}";
 
-          final String logoUrl = club.logo != null && club.logo!.isNotEmpty
-              ? (club.logo!.startsWith('http')
-                    ? club.logo!
-                    : "${ApiUrl.imageUrl}${club.logo}")
-              : "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=porsche_shield";
+        final String logoUrl = club.logo != null && club.logo!.isNotEmpty
+            ? (club.logo!.startsWith('http')
+                  ? club.logo!
+                  : "${ApiUrl.imageUrl}${club.logo}")
+            : "";
 
-          final String bannerUrl =
-              club.banner != null && club.banner!.isNotEmpty
-              ? (club.banner!.startsWith('http')
-                    ? club.banner!
-                    : "${ApiUrl.imageUrl}${club.banner}")
-              : "https://picsum.photos/seed/porschegt3/800/400";
+        final String bannerUrl = club.banner != null && club.banner!.isNotEmpty
+            ? (club.banner!.startsWith('http')
+                  ? club.banner!
+                  : "${ApiUrl.imageUrl}${club.banner}")
+            : "";
 
-          return SingleChildScrollView(
+        return SafeArea(
+          bottom: true,
+          top: false,
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -139,7 +200,11 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                           height: 80,
                           decoration: BoxDecoration(
                             color: Colors.black,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: AppColors.yellow,
+                              width: 2,
+                            ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withValues(alpha: 0.6),
@@ -150,13 +215,13 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                             ],
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(14),
                             child: Image.network(
                               logoUrl,
                               fit: BoxFit.cover,
                               errorBuilder: (context, _, _) => const Icon(
-                                Icons.directions_car,
-                                color: AppColors.yellow,
+                                Icons.shield,
+                                color: Colors.white,
                                 size: 40,
                               ),
                             ),
@@ -338,41 +403,10 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                 ),
               ],
             ),
-          );
-        }),
-      ),
-    );
-  }
-
-  Widget _buildInfoCol(String label, String value) {
-    return Expanded(
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white38,
-              fontSize: 9,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
           ),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ],
-      ),
+        );
+      }),
     );
-  }
-
-  Widget _buildVerticalDivider() {
-    return Container(width: 1, height: 32, color: Colors.white10);
   }
 
   Widget _buildCommandButton({

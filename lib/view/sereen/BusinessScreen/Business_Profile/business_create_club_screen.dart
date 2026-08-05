@@ -294,6 +294,7 @@ class BusinessCreateClubScreen extends StatelessWidget {
       child: TextFormField(
         controller: textController,
         maxLines: maxLines,
+        cursorColor: AppColors.yellow,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 13,
