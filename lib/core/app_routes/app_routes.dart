@@ -17,6 +17,8 @@ import '../../view/sereen/AuthScreen/VerifyOtpScreen/verify_otp_screen.dart';
 import '../../view/sereen/AuthScreen/ResetPasswordScreen/reset_password_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_details_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_detaisl_screen_non_my.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_members_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_join_requests_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/user_home_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/reel/reels_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/reel/create_reel_screen.dart';
@@ -233,6 +235,8 @@ class AppRoutes {
   static const String reelsScreen = "/ReelsScreen";
   static const String createReelScreen = "/CreateReelScreen";
   static const String clubDetaislScreenNonMy = "/ClubDetaislScreenNonMy";
+  static const String clubMembersScreen = "/ClubMembersScreen";
+  static const String clubJoinRequestsScreen = "/ClubJoinRequestsScreen";
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -504,6 +508,14 @@ class AppRoutes {
     GetPage(
       name: clubDetaislScreenNonMy,
       page: () => const ClubDetaislScreenNonMy(),
+    ),
+    GetPage(
+      name: clubMembersScreen,
+      page: () => const ClubMembersScreen(),
+    ),
+    GetPage(
+      name: clubJoinRequestsScreen,
+      page: () => const ClubJoinRequestsScreen(),
     ),
   ];
 }

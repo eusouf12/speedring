@@ -115,9 +115,17 @@ class ApiUrl {
   }) => "/events/$eventId/comment/$commentId/reply";
   // ============ Clubs =========
   static const String createClub = "/clubs/create-club";
-  static const String getAllClubs = "/clubs/get-all-clubs";
+  static String getAllClubs({String? searchTerm}) {
+    String url = "/clubs/get-all-clubs";
+    if (searchTerm != null && searchTerm.isNotEmpty) {
+      url += "?searchTerm=${Uri.encodeComponent(searchTerm)}";
+    }
+    return url;
+  }
   static String updateClub({required String clubId}) => "/clubs/update-club/$clubId";
+  static String deleteClub({required String clubId}) => "/clubs/delete-club/$clubId";
   static String joinClub({required String clubId}) => "/clubs/$clubId/join";
+  static String leaveClub({required String clubId}) => "/clubs/$clubId/leave";
   static String getSingleClub({required String clubId}) => "/clubs/view-club/$clubId";
   static String changeRole({required String clubId}) => "/clubs/$clubId/change-role";
   static String removeMember({required String clubId, required String memberId}) => "/clubs/$clubId/remove-member/$memberId";
@@ -125,6 +133,7 @@ class ApiUrl {
   static String shareClub({required String clubId}) => "/clubs/$clubId/share";
   static String createClubPost({required String clubId}) => "/clubs/$clubId/create-post";
   static String getClubMembers({required String clubId}) => "/clubs/$clubId/members";
+  static String getJoinRequests({required String clubId}) => "/clubs/$clubId/join-requests";
 
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
 }

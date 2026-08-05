@@ -227,28 +227,37 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
                       return SizedBox(
                         width: double.infinity,
                         height: 48,
-                        child: ElevatedButton(
+                        child: Obx(() => ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.yellow,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: controller.isJoinClubLoading.value ? null : () {
                             if (club.id != null) {
                               controller.joinClub(club.id!);
                             }
                           },
-                          child: const Text(
-                            "JOIN CLUB",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                        ),
+                          child: controller.isJoinClubLoading.value
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  "JOIN CLUB",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                        )),
                       );
                     }
                   },

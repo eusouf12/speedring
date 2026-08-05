@@ -62,7 +62,9 @@ class UserHomeScreen extends StatelessWidget {
                             decoration: InputDecoration(
                               hintText: controller.rxActiveTab.value == 1
                                   ? "Search events..."
-                                  : "Search posts...",
+                                  : controller.rxActiveTab.value == 2
+                                      ? "Search clubs..."
+                                      : "Search posts...",
                               hintStyle: const TextStyle(color: Colors.white30),
                               prefixIcon: const Icon(
                                 Icons.search,
@@ -76,9 +78,10 @@ class UserHomeScreen extends StatelessWidget {
                                 onPressed: () {
                                   if (controller.rxActiveTab.value == 0) {
                                     controller.getPost(searchTerm: "");
-                                  } else if (controller.rxActiveTab.value ==
-                                      1) {
+                                  } else if (controller.rxActiveTab.value == 1) {
                                     controller.getEvents(searchTerm: "");
+                                  } else if (controller.rxActiveTab.value == 2) {
+                                    controller.getAllClubs(searchTerm: "");
                                   }
                                   controller.showSearchBar.value = false;
                                 },
@@ -93,6 +96,8 @@ class UserHomeScreen extends StatelessWidget {
                                 controller.searchPost(val);
                               } else if (controller.rxActiveTab.value == 1) {
                                 controller.searchEvents(val);
+                              } else if (controller.rxActiveTab.value == 2) {
+                                controller.searchClubs(val);
                               }
                             },
                             onSubmitted: (val) {
@@ -537,9 +542,16 @@ class UserHomeScreen extends StatelessWidget {
                       ),
 
                 /// Tab 2: CLUBS Feed
-                ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: [
+                RefreshIndicator(
+                  color: AppColors.yellow,
+                  backgroundColor: Colors.black,
+                  onRefresh: () async {
+                    controller.getAllClubs();
+                    controller.getMyClubs();
+                  },
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    children: [
                     const SizedBox(height: 16),
 
                     /// YOUR CLUBS Header
@@ -695,6 +707,7 @@ class UserHomeScreen extends StatelessWidget {
                     }),
                     const SizedBox(height: 30),
                   ],
+                ),
                 ),
               ],
             ),

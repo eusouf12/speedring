@@ -125,6 +125,13 @@ class HomeController extends GetxController {
     });
   }
 
+  void searchClubs(String query) {
+    if (_searchDebounce?.isActive ?? false) _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      getAllClubs(searchTerm: query);
+    });
+  }
+
   Future<void> deletePost(String postId) async {
     try {
       var response = await ApiClient.deleteData(
@@ -1534,10 +1541,10 @@ class HomeController extends GetxController {
   final RxBool isClubDetailsLoading = false.obs;
   final RxBool isCreateClubLoading = false.obs;
 
-  Future<void> getAllClubs() async {
+  Future<void> getAllClubs({String? searchTerm}) async {
     isClubsLoading.value = true;
     try {
-      final response = await ApiClient.getData(ApiUrl.getAllClubs);
+      final response = await ApiClient.getData(ApiUrl.getAllClubs(searchTerm: searchTerm));
       if (response.statusCode == 200) {
         var bodyData = response.body['data'];
         List dataList = [];
@@ -1644,6 +1651,172 @@ class HomeController extends GetxController {
       }
     } catch (e) {
       debugPrint("Error creating club: $e");
+      return false;
+    } finally {
+      isCreateClubLoading.value = false;
+    }
+  }
+
+  // ===================== Members & Requests =====================
+  final RxList<dynamic> clubMembersList = <dynamic>[].obs;
+  final RxBool isClubMembersLoading = false.obs;
+
+  Future<void> getClubMembers(String clubId) async {
+    isClubMembersLoading.value = true;
+    try {
+      final response = await ApiClient.getData(ApiUrl.getClubMembers(clubId: clubId));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.body['data'];
+        if (data is List) {
+          clubMembersList.value = data;
+        } else if (data != null && data['data'] is List) {
+          clubMembersList.value = data['data'];
+        } else {
+          clubMembersList.clear();
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching club members: $e");
+    } finally {
+      isClubMembersLoading.value = false;
+    }
+  }
+
+  final RxList<dynamic> clubJoinRequestsList = <dynamic>[].obs;
+  final RxBool isClubJoinRequestsLoading = false.obs;
+
+  Future<void> getClubJoinRequests(String clubId) async {
+    isClubJoinRequestsLoading.value = true;
+    try {
+      final response = await ApiClient.getData(ApiUrl.getJoinRequests(clubId: clubId));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.body['data'];
+        if (data is List) {
+          clubJoinRequestsList.value = data;
+        } else if (data != null && data['data'] is List) {
+          clubJoinRequestsList.value = data['data'];
+        } else {
+          clubJoinRequestsList.clear();
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching club join requests: $e");
+    } finally {
+      isClubJoinRequestsLoading.value = false;
+    }
+  }
+
+  Future<void> handleJoinRequest({
+    required String clubId,
+    required String memberId,
+    required String action, // "approve" or "reject"
+  }) async {
+    try {
+      final response = await ApiClient.patchData(
+        ApiUrl.handleRequest(clubId: clubId),
+        jsonEncode({"memberId": memberId, "action": action}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Request ${action}d successfully", isError: false);
+        // Remove from list
+        clubJoinRequestsList.removeWhere((req) {
+           final id = req['_id'] ?? req['id'];
+           return id == memberId;
+        });
+        clubJoinRequestsList.refresh();
+      } else {
+        showCustomSnackBar(response.body['message'] ?? "Failed to handle request");
+      }
+    } catch (e) {
+      debugPrint("Error handling join request: $e");
+    }
+  }
+
+  Future<void> changeMemberRole({
+    required String clubId,
+    required String memberId,
+    required String role, // "ADMIN" or "MEMBER"
+  }) async {
+    try {
+      final response = await ApiClient.patchData(
+        ApiUrl.changeRole(clubId: clubId),
+        jsonEncode({"memberId": memberId, "role": role}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Role updated successfully", isError: false);
+        getClubMembers(clubId);
+        getSingleClub(clubId);
+      } else {
+        showCustomSnackBar(response.body['message'] ?? "Failed to update role");
+      }
+    } catch (e) {
+      debugPrint("Error changing role: $e");
+    }
+  }
+
+  Future<void> removeClubMember({
+    required String clubId,
+    required String memberId,
+  }) async {
+    try {
+      final response = await ApiClient.deleteData(
+        ApiUrl.removeMember(clubId: clubId, memberId: memberId),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Member removed successfully", isError: false);
+        getClubMembers(clubId);
+        getSingleClub(clubId);
+      } else {
+        showCustomSnackBar(response.body['message'] ?? "Failed to remove member");
+      }
+    } catch (e) {
+      debugPrint("Error removing member: $e");
+    }
+  }
+
+  Future<bool> updateClub({
+    required String clubId,
+    required String clubName,
+    required String description,
+    List<String>? categories,
+    required String accessType,
+    File? logo,
+    File? banner,
+  }) async {
+    isCreateClubLoading.value = true;
+    try {
+      Map<String, dynamic> body = {
+        'clubName': clubName,
+        'description': description,
+        if (categories != null && categories.isNotEmpty) 'categories': categories,
+        'accessType': accessType,
+      };
+
+      List<MultipartBody> multipartBodyList = [];
+
+      if (logo != null) {
+        multipartBodyList.add(MultipartBody('logo', logo));
+      }
+      if (banner != null) {
+        multipartBodyList.add(MultipartBody('banner', banner));
+      }
+
+      final response = await ApiClient.patchMultipartData(ApiUrl.updateClub(clubId: clubId), {
+        "data": jsonEncode(body),
+      }, multipartBody: multipartBodyList);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Club updated successfully!", isError: false);
+        getSingleClub(clubId);
+        getAllClubs();
+        getMyClubs();
+        return true;
+      } else {
+        showCustomSnackBar(response.body['message'] ?? 'Failed to update club');
+        return false;
+      }
+    } catch (e) {
+      debugPrint("Error updating club: $e");
       showCustomSnackBar('An error occurred');
       return false;
     } finally {
@@ -1651,7 +1824,34 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<bool> deleteClub(String clubId) async {
+    isCreateClubLoading.value = true;
+    try {
+      final response = await ApiClient.deleteData(ApiUrl.deleteClub(clubId: clubId));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Club deleted successfully!", isError: false);
+        getAllClubs();
+        getMyClubs();
+        return true;
+      } else {
+        showCustomSnackBar(response.body['message'] ?? 'Failed to delete club');
+        return false;
+      }
+    } catch (e) {
+      debugPrint("Error deleting club: $e");
+      showCustomSnackBar('An error occurred');
+      return false;
+    } finally {
+      isCreateClubLoading.value = false;
+    }
+  }
+
+  // Loading state for joining a club
+  final RxBool isJoinClubLoading = false.obs;
+
   Future<void> joinClub(String clubId) async {
+    if (isJoinClubLoading.value) return; // prevent duplicate calls
+    isJoinClubLoading.value = true;
     try {
       final response = await ApiClient.postData(
         ApiUrl.joinClub(clubId: clubId),
@@ -1659,30 +1859,30 @@ class HomeController extends GetxController {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         showCustomSnackBar("join club successful", isError: false);
-        
+
         // Optimistic UI Update for single club
         if (currentClubDetail.value?.id == clubId) {
           String access = (currentClubDetail.value?.accessType ?? "PUBLIC").toUpperCase();
           if (access == "PUBLIC") {
-             currentClubDetail.value?.isClubJoined = true;
-             currentClubDetail.value?.isJoinRequestPending = false;
+            currentClubDetail.value?.isClubJoined = true;
+            currentClubDetail.value?.isJoinRequestPending = false;
           } else {
-             currentClubDetail.value?.isClubJoined = false;
-             currentClubDetail.value?.isJoinRequestPending = true;
+            currentClubDetail.value?.isClubJoined = false;
+            currentClubDetail.value?.isJoinRequestPending = true;
           }
           currentClubDetail.refresh();
         }
-        
+
         // Optimistic UI Update for all clubs list
         int index = allClubs.indexWhere((c) => c.id == clubId);
         if (index != -1) {
           String access = (allClubs[index].accessType ?? "PUBLIC").toUpperCase();
           if (access == "PUBLIC") {
-             allClubs[index].isClubJoined = true;
-             allClubs[index].isJoinRequestPending = false;
+            allClubs[index].isClubJoined = true;
+            allClubs[index].isJoinRequestPending = false;
           } else {
-             allClubs[index].isClubJoined = false;
-             allClubs[index].isJoinRequestPending = true;
+            allClubs[index].isClubJoined = false;
+            allClubs[index].isJoinRequestPending = true;
           }
           allClubs.refresh();
         }
@@ -1694,6 +1894,39 @@ class HomeController extends GetxController {
       }
     } catch (e) {
       debugPrint("Error joining club: $e");
+      showCustomSnackBar('An error occurred');
+    }
+  }
+
+  Future<void> leaveClub(String clubId) async {
+    try {
+      final response = await ApiClient.postData(
+        ApiUrl.leaveClub(clubId: clubId),
+        jsonEncode({}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Left club successfully", isError: false);
+        
+        // Optimistic UI Update for single club
+        if (currentClubDetail.value?.id == clubId) {
+          currentClubDetail.value?.isClubJoined = false;
+          currentClubDetail.refresh();
+        }
+        
+        // Optimistic UI Update for all clubs list
+        int index = allClubs.indexWhere((c) => c.id == clubId);
+        if (index != -1) {
+          allClubs[index].isClubJoined = false;
+          allClubs.refresh();
+        }
+
+        getSingleClub(clubId); // Refresh details
+        getMyClubs(); // Refresh my clubs
+      } else {
+        showCustomSnackBar(response.body['message'] ?? 'Failed to leave club');
+      }
+    } catch (e) {
+      debugPrint("Error leaving club: $e");
       showCustomSnackBar('An error occurred');
     }
   }

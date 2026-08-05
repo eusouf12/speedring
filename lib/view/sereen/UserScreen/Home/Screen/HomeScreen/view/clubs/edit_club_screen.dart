@@ -2,27 +2,93 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
 
 // ─── Controller ────────────────────────────────────────────────
-class EditClubController extends GetxController {
-  final RxString selectedSecurity = "PRIVATE".obs;
-  final TextEditingController designationController = TextEditingController(
-    text: "Porsche GT3 Collective",
-  );
-  final TextEditingController aboutController = TextEditingController(
-    text:
-        "The Porsche GT3 Collective is dedicated to the purist pursuit of "
-        "naturally aspirated performance. We focus on the intersection of driver "
-        "mechanical empathy and track-optimized engineering. Members are expected "
-        "to maintain technical telemetry data records.",
-  );
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
+import 'package:speedring/service/api_url.dart';
 
-  final RxList<String> tags = [
-    "GT3",
-    "Nürburgring",
-    "Flat-Six",
-    "9000-RPM",
-  ].obs;
+class EditClubController extends GetxController {
+  final HomeController homeController = Get.find<HomeController>();
+
+  final RxString selectedSecurity = "PRIVATE".obs;
+  final TextEditingController designationController = TextEditingController();
+  final TextEditingController aboutController = TextEditingController();
+  final RxList<String> tags = <String>[].obs;
+
+  final Rxn<File> coverImage = Rxn<File>();
+  final Rxn<File> profileImage = Rxn<File>();
+  final RxString currentCoverUrl = "".obs;
+  final RxString currentLogoUrl = "".obs;
+  final ImagePicker _picker = ImagePicker();
+
+  @override
+  void onInit() {
+    super.onInit();
+    final club = homeController.currentClubDetail.value;
+    if (club != null) {
+      designationController.text = club.clubName ?? "";
+      aboutController.text = club.description ?? "";
+      tags.value = club.categories ?? [];
+      selectedSecurity.value = (club.accessType ?? "PRIVATE").toUpperCase();
+
+      currentCoverUrl.value = club.banner != null && club.banner!.isNotEmpty
+          ? (club.banner!.startsWith('http')
+                ? club.banner!
+                : "${ApiUrl.imageUrl}${club.banner}")
+          : "";
+      currentLogoUrl.value = club.logo != null && club.logo!.isNotEmpty
+          ? (club.logo!.startsWith('http')
+                ? club.logo!
+                : "${ApiUrl.imageUrl}${club.logo}")
+          : "";
+    }
+  }
+
+  Future<void> pickCoverImage() async {
+    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      coverImage.value = File(picked.path);
+    }
+  }
+
+  Future<void> pickProfileImage() async {
+    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      profileImage.value = File(picked.path);
+    }
+  }
+
+  Future<void> saveChanges() async {
+    final clubId = homeController.currentClubDetail.value?.id;
+    if (clubId == null) return;
+
+    bool success = await homeController.updateClub(
+      clubId: clubId,
+      clubName: designationController.text,
+      description: aboutController.text,
+      categories: tags,
+      accessType: selectedSecurity.value,
+      banner: coverImage.value,
+      logo: profileImage.value,
+    );
+
+    if (success) {
+      Get.back();
+    }
+  }
+
+  Future<void> terminateClub() async {
+    final clubId = homeController.currentClubDetail.value?.id;
+    if (clubId == null) return;
+
+    bool success = await homeController.deleteClub(clubId);
+    if (success) {
+      Get.close(3); // Close dialog, edit screen, and detail screen
+    }
+  }
 
   @override
   void onClose() {
@@ -43,34 +109,7 @@ class EditClubScreen extends StatelessWidget {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          elevation: 0,
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.yellow,
-              size: 24,
-            ),
-            onPressed: () => Get.back(),
-          ),
-          title: const Text(
-            "EDIT CLUB",
-            style: TextStyle(
-              color: AppColors.yellow,
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.0,
-            ),
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.more_vert, color: AppColors.yellow),
-              onPressed: () {},
-            ),
-          ],
-        ),
+        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "EDIT CLUB"),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,15 +117,24 @@ class EditClubScreen extends StatelessWidget {
               /// 1. Cinematic Banner / Cover image area
               Stack(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    height: 200,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          "https://picsum.photos/seed/purple_porsche/800/400",
+                  Obx(
+                    () => Container(
+                      width: double.infinity,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: controller.coverImage.value != null
+                              ? FileImage(controller.coverImage.value!)
+                                    as ImageProvider
+                              : (controller.currentCoverUrl.value.isNotEmpty
+                                    ? NetworkImage(
+                                        controller.currentCoverUrl.value,
+                                      )
+                                    : const NetworkImage(
+                                        "https://picsum.photos/seed/purple_porsche/800/400",
+                                      )),
+                          fit: BoxFit.cover,
                         ),
-                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -95,10 +143,7 @@ class EditClubScreen extends StatelessWidget {
                     right: 16,
                     child: GestureDetector(
                       onTap: () {
-                        Get.snackbar(
-                          "Cover Image",
-                          "Change cover photo selected.",
-                        );
+                        controller.pickCoverImage();
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -120,7 +165,7 @@ class EditClubScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 4),
                             Text(
-                              "EDIT COVER",
+                              "Update COVER",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 9,
@@ -151,61 +196,84 @@ class EditClubScreen extends StatelessWidget {
                         border: Border.all(color: Colors.white10),
                       ),
                       child: Center(
-                        child: Container(
-                          width: 160,
-                          height: 160,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.yellow,
-                              width: 2,
-                            ),
-                            gradient: const RadialGradient(
-                              colors: [Color(0xff222222), Colors.black],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.yellow.withValues(alpha: 0.15),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.directions_car_filled,
+                        child: Obx(
+                          () => Container(
+                            width: 160,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
                                 color: AppColors.yellow,
-                                size: 40,
+                                width: 2,
                               ),
-                              const SizedBox(height: 6),
-                              const Text(
-                                "GT3 COLLECTIVE",
-                                style: TextStyle(
-                                  color: AppColors.yellow,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 0.5,
+                              gradient: const RadialGradient(
+                                colors: [Color(0xff222222), Colors.black],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.yellow.withValues(
+                                    alpha: 0.15,
+                                  ),
+                                  blurRadius: 15,
+                                  spreadRadius: 2,
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Container(
-                                height: 1,
-                                width: 60,
-                                color: Colors.white24,
-                              ),
-                              const SizedBox(height: 4),
-                              const Text(
-                                "ELITE PORSCHE CLUB",
-                                style: TextStyle(
-                                  color: Colors.white54,
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
+                              ],
+                              image: controller.profileImage.value != null
+                                  ? DecorationImage(
+                                      image: FileImage(
+                                        controller.profileImage.value!,
+                                      ),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : (controller.currentLogoUrl.value.isNotEmpty
+                                        ? DecorationImage(
+                                            image: NetworkImage(
+                                              controller.currentLogoUrl.value,
+                                            ),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null),
+                            ),
+                            child:
+                                (controller.profileImage.value == null &&
+                                    controller.currentLogoUrl.value.isEmpty)
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.directions_car_filled,
+                                        color: AppColors.yellow,
+                                        size: 40,
+                                      ),
+                                      const SizedBox(height: 6),
+                                      const Text(
+                                        "GT3 COLLECTIVE",
+                                        style: TextStyle(
+                                          color: AppColors.yellow,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Container(
+                                        height: 1,
+                                        width: 60,
+                                        color: Colors.white24,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      const Text(
+                                        "ELITE PORSCHE CLUB",
+                                        style: TextStyle(
+                                          color: Colors.white54,
+                                          fontSize: 8,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : null,
                           ),
                         ),
                       ),
@@ -215,10 +283,7 @@ class EditClubScreen extends StatelessWidget {
                       right: 12,
                       child: GestureDetector(
                         onTap: () {
-                          Get.snackbar(
-                            "Profile Image",
-                            "Change profile avatar selected.",
-                          );
+                          controller.pickProfileImage();
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -240,7 +305,7 @@ class EditClubScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 4),
                               Text(
-                                "EDIT Profile",
+                                "Update Logo",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 8,
@@ -429,7 +494,7 @@ class EditClubScreen extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            _showDeleteConfirmationDialog();
+                            _showDeleteConfirmationDialog(controller);
                           },
                           child: const Text(
                             "TERMINATE CLUB",
@@ -495,16 +560,7 @@ class EditClubScreen extends StatelessWidget {
                             elevation: 0,
                           ),
                           onPressed: () {
-                            Get.back();
-                            Get.snackbar(
-                              "Success",
-                              "Club configuration updated successfully.",
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: const Color(0xff181818),
-                              colorText: Colors.white,
-                              borderColor: AppColors.yellow,
-                              borderWidth: 1,
-                            );
+                            controller.saveChanges();
                           },
                           child: const Text(
                             "SAVE CHANGES",
@@ -779,7 +835,7 @@ class EditClubScreen extends StatelessWidget {
     );
   }
 
-  void _showDeleteConfirmationDialog() {
+  void _showDeleteConfirmationDialog(EditClubController controller) {
     Get.dialog(
       AlertDialog(
         backgroundColor: const Color(0xff181818),
@@ -801,20 +857,9 @@ class EditClubScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              Get.back(); // Close dialog
-              Get.back(); // Back from edit club
-              Get.back(); // Back from club details to home
-              Get.snackbar(
-                "Decommissioned",
-                "Club has been terminated successfully.",
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: const Color(0xff180707),
-                colorText: Colors.red,
-                borderColor: Colors.red,
-                borderWidth: 1,
-              );
+              controller.terminateClub();
             },
-            child: const Text("TERMINATE", style: TextStyle(color: Colors.red)),
+            child: const Text("YES", style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

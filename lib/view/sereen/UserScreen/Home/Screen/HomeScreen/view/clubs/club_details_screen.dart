@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../controller/home_controller.dart';
 import 'package:speedring/service/api_url.dart';
 
@@ -27,136 +28,234 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
+    return CustomGradient(
+      child: Scaffold(
         backgroundColor: Colors.black,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.yellow, size: 24),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text(
-          "CLUB DETAILS",
-          style: TextStyle(
-            color: AppColors.yellow,
-            fontSize: 16,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.0,
-          ),
-        ),
-        actions: [
-          Obx(() {
-            final club = controller.currentClubDetail.value;
-            if (club == null) return const SizedBox();
-
-            bool isAdmin =
-                club.members?.any(
-                  (m) =>
-                      m.user?.id == controller.currentUserId.value &&
-                      m.role == "ADMIN",
-                ) ??
-                false;
-
-            return PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert, color: AppColors.yellow),
-              color: const Color(0xff1B1B1B),
-              onSelected: (value) {
-                if (value == 'edit') {
-                  Get.toNamed(AppRoutes.editClubScreen);
-                } else if (value == 'delete') {
-                  // TODO: Handle delete group API
-                } else if (value == 'leave') {
-                  // TODO: Handle leave group API
-                } else if (value == 'requests') {
-                  // TODO: Navigate to requests screen
-                } else if (value == 'members') {
-                  // TODO: Navigate to members screen
-                }
-              },
-              itemBuilder: (context) {
-                if (isAdmin) {
-                  return [
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Text(
-                        'Edit Group',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: 'delete',
-                      child: Text(
-                        'Delete Group',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: 'requests',
-                      child: Text(
-                        'View Join Requests',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: 'members',
-                      child: Text(
-                        'View Members',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ];
-                } else {
-                  return [
-                    const PopupMenuItem(
-                      value: 'leave',
-                      child: Text(
-                        'Leave Group',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ];
-                }
-              },
-            );
-          }),
-        ],
-      ),
-      body: Obx(() {
-        if (controller.isClubDetailsLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.yellow),
-          );
-        }
-        final club = controller.currentClubDetail.value;
-        if (club == null) {
-          return const Center(
-            child: Text(
-              "Club not found",
-              style: TextStyle(color: Colors.white),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColors.yellow,
+              size: 24,
             ),
-          );
-        }
-        final String clubName = club.clubName ?? "Unknown";
-        final String membersCount =
-            "${club.totalMembersCount ?? club.members?.length ?? 0}";
+            onPressed: () => Get.back(),
+          ),
+          title: const Text(
+            "CLUB DETAILS",
+            style: TextStyle(
+              color: AppColors.yellow,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.0,
+            ),
+          ),
+          actions: [
+            Obx(() {
+              final club = controller.currentClubDetail.value;
+              if (club == null) return const SizedBox();
 
-        final String logoUrl = club.logo != null && club.logo!.isNotEmpty
-            ? (club.logo!.startsWith('http')
-                  ? club.logo!
-                  : "${ApiUrl.imageUrl}${club.logo}")
-            : "";
+              bool isAdmin =
+                  club.members?.any(
+                    (m) =>
+                        m.user?.id == controller.currentUserId.value &&
+                        m.role == "ADMIN",
+                  ) ??
+                  false;
 
-        final String bannerUrl = club.banner != null && club.banner!.isNotEmpty
-            ? (club.banner!.startsWith('http')
-                  ? club.banner!
-                  : "${ApiUrl.imageUrl}${club.banner}")
-            : "";
+              return PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert, color: AppColors.yellow),
+                color: const Color(0xff1B1B1B),
+                onSelected: (value) {
+                  if (value == 'edit') {
+                    Get.toNamed(AppRoutes.editClubScreen);
+                  } else if (value == 'delete') {
+                    Get.dialog(
+                      AlertDialog(
+                        backgroundColor: const Color(0xff181818),
+                        title: const Text(
+                          "Delete Club?",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: const Text(
+                          "Are you sure you want to delete this club? This action cannot be undone.",
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Get.back(),
+                            child: const Text(
+                              "CANCEL",
+                              style: TextStyle(color: Colors.white54),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Get.back();
+                              if (club.id != null) {
+                                controller.deleteClub(club.id!).then((success) {
+                                  if (success) {
+                                    Get.back(); // Go back to clubs list
+                                  }
+                                });
+                              }
+                            },
+                            child: const Text(
+                              "YES",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (value == 'leave') {
+                    Get.dialog(
+                      AlertDialog(
+                        backgroundColor: const Color(0xff181818),
+                        title: const Text(
+                          "Leave Club?",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: const Text(
+                          "Are you sure you want to leave this club?",
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Get.back(),
+                            child: const Text(
+                              "CANCEL",
+                              style: TextStyle(color: Colors.white54),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Get.back();
+                              if (club.id != null) {
+                                controller.leaveClub(club.id!);
+                              }
+                            },
+                            child: const Text(
+                              "YES",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (value == 'requests') {
+                    if (club.id != null) {
+                      Get.toNamed(AppRoutes.clubJoinRequestsScreen, arguments: {'id': club.id});
+                    }
+                  } else if (value == 'members') {
+                    if (club.id != null) {
+                      Get.toNamed(AppRoutes.clubMembersScreen, arguments: {'id': club.id});
+                    }
+                  }
+                },
+                itemBuilder: (context) {
+                  if (isAdmin) {
+                    return [
+                      const PopupMenuItem(
+                        value: 'edit',
+                        child: Text(
+                          'Edit Group',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Text(
+                          'Delete Group',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'requests',
+                        child: Text(
+                          'View Join Requests',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'members',
+                        child: Text(
+                          'View Members',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'leave',
+                        child: Text(
+                          'Leave Group',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ];
+                  } else {
+                    return [
+                      const PopupMenuItem(
+                        value: 'members',
+                        child: Text(
+                          'View Members',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'leave',
+                        child: Text(
+                          'Leave Group',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ];
+                  }
+                },
+              );
+            }),
+          ],
+        ),
 
-        return SafeArea(
-          bottom: true,
-          top: false,
-          child: SingleChildScrollView(
+        body: Obx(() {
+          if (controller.isClubDetailsLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.yellow),
+            );
+          }
+          final club = controller.currentClubDetail.value;
+          if (club == null) {
+            return const Center(
+              child: Text(
+                "Club not found",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+          final String clubName = club.clubName ?? "Unknown";
+          final String membersCount =
+              "${club.totalMembersCount ?? club.members?.length ?? 0}";
+
+          final String logoUrl = club.logo != null && club.logo!.isNotEmpty
+              ? (club.logo!.startsWith('http')
+                    ? club.logo!
+                    : "${ApiUrl.imageUrl}${club.logo}")
+              : "";
+
+          final String bannerUrl =
+              club.banner != null && club.banner!.isNotEmpty
+              ? (club.banner!.startsWith('http')
+                    ? club.banner!
+                    : "${ApiUrl.imageUrl}${club.banner}")
+              : "";
+
+          return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -403,9 +502,9 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                 ),
               ],
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
