@@ -392,10 +392,7 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                   icon: Icons.chat_bubble_outline,
                                   isYellow: true,
                                   onPressed: () {
-                                    Get.snackbar(
-                                      "Chat",
-                                      "Opening Group Chat room...",
-                                    );
+                                    Get.toNamed(AppRoutes.inboxScreen);
                                   },
                                 ),
                                 const SizedBox(height: 12),
@@ -406,7 +403,10 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                   icon: Icons.edit_outlined,
                                   isYellow: false,
                                   onPressed: () {
-                                    Get.toNamed(AppRoutes.createPostScreen);
+                                    Get.toNamed(
+                                      AppRoutes.clubGroupPostScreen,
+                                      arguments: {'id': controller.currentClubDetail.value?.id ?? ''},
+                                    );
                                   },
                                 ),
                                 const SizedBox(height: 12),
@@ -417,9 +417,12 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                   icon: Icons.photo_library_outlined,
                                   isYellow: false,
                                   onPressed: () {
-                                    Get.snackbar(
-                                      "Media",
-                                      "Select media to upload...",
+                                    Get.toNamed(
+                                      AppRoutes.clubGroupPostScreen,
+                                      arguments: {
+                                        'id': controller.currentClubDetail.value?.id ?? '',
+                                        'mode': 'SHARE_MEDIA',
+                                      },
                                     );
                                   },
                                 ),
