@@ -44,10 +44,11 @@ import '../../view/sereen/UserScreen/track/group_drives/end_expedition_screen.da
 import '../../view/sereen/UserScreen/track/group_drives/share_expedition_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/post/create_post_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/post/club_post_screen.dart';
-import '../../view/sereen/UserScreen/discover/add_spot_screen.dart';
-import '../../view/sereen/UserScreen/discover/add_video_screen.dart';
+import '../../view/sereen/UserScreen/discover/view/add_spot_screen.dart';
+import '../../view/sereen/UserScreen/discover/view/edit_spot_screen.dart';
+import '../../view/sereen/UserScreen/discover/view/add_video_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/event/create_event_screen.dart';
-import '../../view/sereen/UserScreen/discover/discover_screen.dart';
+import '../../view/sereen/UserScreen/discover/view/discover_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/marketplace_feed_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/item_detail_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/select_category_screen.dart';
@@ -138,6 +139,7 @@ class AppRoutes {
   static const String editClubScreen = "/EditClubScreen";
   static const String discoverScreen = "/DiscoverScreen";
   static const String addSpotScreen = "/AddSpotScreen";
+  static const String editSpotScreen = "/EditSpotScreen";
   static const String addVideoScreen = "/AddVideoScreen";
   static const String createEventScreen = "/CreateEventScreen";
   static const String trackHubScreen = "/TrackHubScreen";
@@ -281,8 +283,9 @@ class AppRoutes {
     GetPage(name: accessGrantedScreen, page: () => const AccessGrantedScreen()),
     GetPage(name: createClubScreen, page: () => const CreateClubScreen()),
     GetPage(name: editClubScreen, page: () => const EditClubScreen()),
-    GetPage(name: discoverScreen, page: () => const DiscoverScreen()),
+    GetPage(name: discoverScreen, page: () => DiscoverScreen()),
     GetPage(name: addSpotScreen, page: () => const AddSpotScreen()),
+    GetPage(name: editSpotScreen, page: () => const EditSpotScreen()),
     GetPage(name: addVideoScreen, page: () => const AddVideoScreen()),
     GetPage(name: createEventScreen, page: () => const CreateEventScreen()),
     GetPage(name: trackHubScreen, page: () => const TrackHubScreen()),

@@ -140,4 +140,10 @@ class ApiUrl {
   static String getJoinRequests({required String clubId}) => "/clubs/$clubId/join-requests";
 
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
+  
+  // ============ Discover =========
+  static const String createDiscoverPost = "/discovers/create-discover-post";
+  static String getAllDiscoverPosts({int page = 1, int limit = 10}) => "/discovers/get-all-discover-posts?page=$page&limit=$limit";
+  static String editDiscoverPost({required String postId}) => "/discovers/edit-discover-post/$postId";
+  static String deleteDiscoverPost({required String postId}) => "/discovers/delete-my-post/$postId";
 }
