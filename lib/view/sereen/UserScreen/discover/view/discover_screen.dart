@@ -9,6 +9,8 @@ import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/model/discover_model.dart';
 
+import 'package:speedring/view/sereen/UserScreen/discover/view/video_player_item.dart';
+
 class DiscoverScreen extends StatelessWidget {
   DiscoverScreen({super.key});
 
@@ -29,18 +31,64 @@ class DiscoverScreen extends StatelessWidget {
         backgroundColor: Colors.black,
         appBar: CustomAppBarUser(
           showSearchIcon: true,
+          onSearchTap: () => controller.showSearchBar.toggle(),
           onNotificationTap: () => Get.toNamed(AppRoutes.notificationScreen),
           onMailTap: () => Get.toNamed(AppRoutes.messageScreen),
         ),
         body: Column(
           children: [
+            // ── Search Bar ──
+            Obx(() {
+              if (!controller.showSearchBar.value)
+                return const SizedBox.shrink();
+              final isVideo = controller.activeSubTab.value == 1;
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xff1C1C1C),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextField(
+                    autofocus: true,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: isVideo
+                          ? "Search videos..."
+                          : "Search spots...",
+                      hintStyle: const TextStyle(color: Colors.white30),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.white70,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear, color: Colors.white54),
+                        onPressed: () {
+                          if (isVideo) {
+                            controller.searchVideoPosts("");
+                          } else {
+                            controller.searchDiscoverPosts("");
+                          }
+                          controller.showSearchBar.value = false;
+                        },
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    onChanged: (val) {
+                      if (isVideo) {
+                        controller.searchVideoPosts(val);
+                      } else {
+                        controller.searchDiscoverPosts(val);
+                      }
+                    },
+                  ),
+                ),
+              );
+            }),
             const SizedBox(height: 10),
-
-            /// 1. Tab Selector: Spotting, Videos, Network
             _buildTabBar(),
             const SizedBox(height: 16),
-
-            /// 2. Active Tab View
             Expanded(child: Obx(() => _buildActiveTabView())),
           ],
         ),
@@ -210,16 +258,19 @@ class DiscoverScreen extends StatelessWidget {
   }
 
   Widget _buildSpotCard(DiscoverPost post) {
-    String imageUrl = "https://picsum.photos/seed/blue992/600/350";
+    String imageUrl = "";
     if (post.media != null && post.media!.isNotEmpty) {
       imageUrl = post.media!.first.url ?? imageUrl;
     }
 
     debugPrint("=== checking isMine ===");
     debugPrint("post.user?.id: ${post.user?.id}");
-    debugPrint("controller.currentUserId.value: ${controller.currentUserId.value}");
-    final bool isMine = post.user?.id != null && 
-        controller.currentUserId.value.isNotEmpty && 
+    debugPrint(
+      "controller.currentUserId.value: ${controller.currentUserId.value}",
+    );
+    final bool isMine =
+        post.user?.id != null &&
+        controller.currentUserId.value.isNotEmpty &&
         post.user?.id == controller.currentUserId.value;
     debugPrint("isMine evaluated to: $isMine");
 
@@ -258,7 +309,10 @@ class DiscoverScreen extends StatelessWidget {
                   top: 12,
                   left: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.8),
                       borderRadius: BorderRadius.circular(4),
@@ -286,10 +340,16 @@ class DiscoverScreen extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       padding: const EdgeInsets.all(4),
-                      child: const Icon(Icons.more_vert, color: Colors.white, size: 18),
+                      child: const Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                        size: 18,
+                      ),
                     ),
                     color: const Color(0xff1C1C1C),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     onSelected: (value) {
                       if (value == 'edit') {
                         Get.toNamed(AppRoutes.editSpotScreen, arguments: post);
@@ -302,7 +362,11 @@ class DiscoverScreen extends StatelessWidget {
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit_outlined, color: Colors.white70, size: 16),
+                            Icon(
+                              Icons.edit_outlined,
+                              color: Colors.white70,
+                              size: 16,
+                            ),
                             SizedBox(width: 10),
                             Text('Edit', style: TextStyle(color: Colors.white)),
                           ],
@@ -312,7 +376,11 @@ class DiscoverScreen extends StatelessWidget {
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Icons.delete_outline, color: Colors.red, size: 16),
+                            Icon(
+                              Icons.delete_outline,
+                              color: Colors.red,
+                              size: 16,
+                            ),
                             SizedBox(width: 10),
                             Text('Delete', style: TextStyle(color: Colors.red)),
                           ],
@@ -352,13 +420,22 @@ class DiscoverScreen extends StatelessWidget {
                             children: [
                               Text(
                                 "Spotted by @${post.user?.userName ?? "Unknown"}",
-                                style: const TextStyle(color: Colors.white38, fontSize: 11),
+                                style: const TextStyle(
+                                  color: Colors.white38,
+                                  fontSize: 11,
+                                ),
                               ),
                               if (post.spotDetails?.licensePlate != null &&
-                                  post.spotDetails!.licensePlate!.isNotEmpty) ...[
+                                  post
+                                      .spotDetails!
+                                      .licensePlate!
+                                      .isNotEmpty) ...[
                                 const SizedBox(width: 8),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.white24),
                                     borderRadius: BorderRadius.circular(4),
@@ -366,7 +443,11 @@ class DiscoverScreen extends StatelessWidget {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(Icons.tag, color: Colors.white54, size: 10),
+                                      const Icon(
+                                        Icons.tag,
+                                        color: Colors.white54,
+                                        size: 10,
+                                      ),
                                       const SizedBox(width: 3),
                                       Text(
                                         post.spotDetails!.licensePlate!,
@@ -389,10 +470,12 @@ class DiscoverScreen extends StatelessWidget {
                     // Share button
                     GestureDetector(
                       onTap: () {
-                        final link = "https://speedring.com/discover/${post.id}";
+                        final link =
+                            "https://speedring.com/discover/${post.id}";
                         SharePlus.instance.share(
                           ShareParams(
-                            text: "Check out this car spot on Speedring:\n\n$link",
+                            text:
+                                "Check out this car spot on Speedring:\n\n$link",
                             subject: "Speedring Car Spot",
                           ),
                         );
@@ -501,262 +584,179 @@ class DiscoverScreen extends StatelessWidget {
 
   /// ==================== 2. VIDEOS TAB ====================
   Widget _buildVideosTab() {
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      children: [
-        /// Horizontal subtags list
-        SizedBox(
-          height: 36,
-          child: Obx(
-            () => ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: videoTags.length,
-              itemBuilder: (context, idx) {
-                final tag = videoTags[idx];
-                final isSel = controller.activeVideoTag.value == tag;
-                return GestureDetector(
-                  onTap: () => controller.activeVideoTag.value = tag,
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSel ? AppColors.yellow : const Color(0xff181818),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Center(
-                      child: Text(
-                        tag,
-                        style: TextStyle(
-                          color: isSel ? Colors.black : Colors.white70,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+    return RefreshIndicator(
+      color: AppColors.yellow,
+      backgroundColor: Colors.black,
+      onRefresh: () async => controller.getAllVideoPosts(refresh: true),
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (scrollInfo) {
+          if (!controller.isVideoLoading.value &&
+              !controller.isMoreVideoLoading.value &&
+              scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+            controller.getAllVideoPosts();
+            return true;
+          }
+          return false;
+        },
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: [
+            /// Horizontal tag filter
+            SizedBox(
+              height: 36,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: videoTags.length,
+                itemBuilder: (context, idx) {
+                  final tag = videoTags[idx];
+                  return Obx(() {
+                    final isSel = controller.activeVideoTag.value == tag;
+                    return GestureDetector(
+                      onTap: () => controller.activeVideoTag.value = tag,
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSel
+                              ? AppColors.yellow
+                              : const Color(0xff181818),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Center(
+                          child: Text(
+                            tag,
+                            style: TextStyle(
+                              color: isSel ? Colors.black : Colors.white70,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        /// ADD NEW VIDEO Button
-        SizedBox(
-          width: double.infinity,
-          height: 48,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.yellow,
-              foregroundColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                    );
+                  });
+                },
               ),
-              elevation: 0,
             ),
-            onPressed: () => Get.toNamed(AppRoutes.addVideoScreen),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            const SizedBox(height: 16),
+
+            /// ADD NEW VIDEO button
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.yellow,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 0,
+                ),
+                onPressed: () => Get.toNamed(AppRoutes.addVideoScreen),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.add_circle_outline, size: 18),
+                    SizedBox(width: 8),
+                    Text(
+                      "ADD NEW VIDEO",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
-                Icon(Icons.add_circle_outline, size: 18),
-                SizedBox(width: 8),
                 Text(
-                  "ADD NEW VIDEO",
+                  "LATEST UPLOADS",
                   style: TextStyle(
-                    fontSize: 12,
+                    color: Colors.white,
+                    fontSize: 16,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 0.5,
                   ),
                 ),
               ],
             ),
-          ),
-        ),
-        const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
-        /// Title uploads header
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text(
-              "LATEST UPLOADS",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.5,
-              ),
-            ),
-            Text(
-              "VIEW ALL",
-              style: TextStyle(
-                color: AppColors.yellow,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
-            ),
+            /// Video List
+            Obx(() {
+              if (controller.isVideoLoading.value &&
+                  controller.videoPosts.isEmpty) {
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.yellow),
+                );
+              }
+              if (controller.videoPosts.isEmpty) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 40),
+                    child: Text(
+                      "No videos found",
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                  ),
+                );
+              }
+              return Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.videoPosts.length,
+                    itemBuilder: (context, index) {
+                      final video = controller.videoPosts[index];
+
+                      final isMine =
+                          video.user?.id != null &&
+                          controller.currentUserId.value.isNotEmpty &&
+                          video.user!.id == controller.currentUserId.value;
+
+                      final createdAt = video.createdAt;
+                      String postedTime = "";
+                      if (createdAt != null) {
+                        final diff = DateTime.now().difference(createdAt);
+                        if (diff.inDays > 0) {
+                          postedTime =
+                              "${diff.inDays} ${diff.inDays == 1 ? 'DAY' : 'DAYS'} AGO";
+                        } else if (diff.inHours > 0) {
+                          postedTime = "${diff.inHours}H AGO";
+                        } else {
+                          postedTime = "JUST NOW";
+                        }
+                      }
+
+                      return VideoPlayerItem(
+                        video: video,
+                        isMine: isMine,
+                        postedTime: postedTime,
+                      );
+                    },
+                  ),
+                  if (controller.isMoreVideoLoading.value)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: CircularProgressIndicator(color: AppColors.yellow),
+                    ),
+                ],
+              );
+            }),
+            const SizedBox(height: 30),
           ],
         ),
-        const SizedBox(height: 16),
-
-        /// Video Feed List
-        _buildVideoCard(
-          thumbnailUrl: "https://picsum.photos/seed/steering/600/350",
-          duration: "11:02",
-          category: "TECHNICAL",
-          title: "Aero Deep Dive: 992 GT3 RS Downforce",
-          creator: "EngineeringExplained",
-          views: "214K VIEWS",
-          postedTime: "2 DAYS AGO",
-        ),
-        _buildVideoCard(
-          thumbnailUrl: "https://picsum.photos/seed/nightrun/600/350",
-          duration: "8:45",
-          category: "ONBOARD",
-          title: "Night Run: Porsche Carrera GT - V10 Screamer",
-          creator: "AutoTopNL",
-          views: "890K VIEWS",
-          postedTime: "5 DAYS AGO",
-        ),
-        const SizedBox(height: 30),
-      ],
-    );
-  }
-
-  Widget _buildVideoCard({
-    required String thumbnailUrl,
-    required String duration,
-    required String category,
-    required String title,
-    required String creator,
-    required String views,
-    required String postedTime,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// Thumbnail Stack
-          Stack(
-            children: [
-              Container(
-                height: 180,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                    image: NetworkImage(thumbnailUrl),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.5),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white24),
-                    ),
-                    child: const Icon(
-                      Icons.play_arrow,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 12,
-                right: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.8),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    duration,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          /// Video Info
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Creator Avatar (Placeholder)
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white12,
-                  border: Border.all(color: Colors.white24),
-                ),
-                child: const Icon(
-                  Icons.person,
-                  color: Colors.white54,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      category,
-                      style: const TextStyle(
-                        color: AppColors.yellow,
-                        fontSize: 8,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "$creator • $views • $postedTime",
-                      style: const TextStyle(
-                        color: Colors.white54,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(Icons.more_vert, color: Colors.white54, size: 20),
-            ],
-          ),
-        ],
       ),
     );
   }

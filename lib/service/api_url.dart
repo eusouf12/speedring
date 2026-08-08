@@ -143,7 +143,22 @@ class ApiUrl {
   
   // ============ Discover =========
   static const String createDiscoverPost = "/discovers/create-discover-post";
-  static String getAllDiscoverPosts({int page = 1, int limit = 10}) => "/discovers/get-all-discover-posts?page=$page&limit=$limit";
+  static String getAllDiscoverPosts({int page = 1, int limit = 10, String searchTerm = ''}) {
+    final q = searchTerm.isNotEmpty ? '&searchTerm=${Uri.encodeComponent(searchTerm)}' : '';
+    return "/discovers/get-all-discover-posts?page=$page&limit=$limit$q";
+  }
   static String editDiscoverPost({required String postId}) => "/discovers/edit-discover-post/$postId";
   static String deleteDiscoverPost({required String postId}) => "/discovers/delete-my-post/$postId";
+
+  // ============ Videos =========
+  static const String createVideoPost = "/videos/create-video-post";
+  static String getAllVideos({int page = 1, int limit = 10, String classification = '', String searchTerm = ''}) {
+    var q = "page=$page&limit=$limit";
+    if (classification.isNotEmpty && classification != 'All') q += '&classification=${Uri.encodeComponent(classification)}';
+    if (searchTerm.isNotEmpty) q += '&searchTerm=${Uri.encodeComponent(searchTerm)}';
+    return "/videos/get-all-videos?$q";
+  }
+  static String deleteVideo({required String videoId}) => "/videos/delete-video/$videoId";
+  static String shareVideo({required String videoId}) => "/videos/share-video/$videoId";
+  static String incrementVideoViews({required String videoId}) => "/videos/increment-views/$videoId";
 }

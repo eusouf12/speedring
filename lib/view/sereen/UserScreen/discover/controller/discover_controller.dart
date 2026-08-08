@@ -5,20 +5,34 @@ import 'package:get/get.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/model/discover_model.dart';
+import 'package:speedring/view/sereen/UserScreen/discover/model/video_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:speedring/service/api_client.dart';
 
 class DiscoverController extends GetxController {
+  // ─── Spotting (Discover) ───
   var isDiscoverLoading = false.obs;
   var isMoreLoading = false.obs;
   int currentPage = 1;
   int totalPages = 1;
-
   var discoverPosts = <DiscoverPost>[].obs;
   var currentUserId = "".obs;
 
+  // ─── Videos ───
+  var isVideoLoading = false.obs;
+  var isMoreVideoLoading = false.obs;
+  int _videoPage = 1;
+  int _videoTotalPages = 1;
+  var videoPosts = <VideoPost>[].obs;
+
+  // ─── Search ───
+  var showSearchBar = false.obs;
+  var discoverSearchTerm = "".obs;
+  var videoSearchTerm = "".obs;
+
+  // ─── Tab / Tag ───
   var activeSubTab = 0.obs; // 0: Spotting, 1: Videos, 2: Network
   var activeTag = "Trending".obs;
   var activeVideoTag = "All".obs;
@@ -28,6 +42,9 @@ class DiscoverController extends GetxController {
     super.onInit();
     _loadUserId();
     getAllDiscoverPosts();
+    getAllVideoPosts();
+    // Reactive: reload videos when tag changes
+    ever(activeVideoTag, (_) => getAllVideoPosts(refresh: true));
   }
 
   Future<void> _loadUserId() async {
@@ -56,40 +73,35 @@ class DiscoverController extends GetxController {
     }
   }
 
+  // ─── Spotting CRUD ───
+
   Future<void> getAllDiscoverPosts({bool refresh = false}) async {
     if (refresh) {
       currentPage = 1;
       totalPages = 1;
     }
-
     if (currentPage > totalPages) return;
 
-    if (currentPage == 1) {
-      isDiscoverLoading.value = true;
-    } else {
-      isMoreLoading.value = true;
-    }
+    currentPage == 1
+        ? isDiscoverLoading.value = true
+        : isMoreLoading.value = true;
 
     try {
       var response = await ApiClient.getData(
-        ApiUrl.getAllDiscoverPosts(page: currentPage),
+        ApiUrl.getAllDiscoverPosts(
+          page: currentPage,
+          searchTerm: discoverSearchTerm.value,
+        ),
       );
-
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.body is String
             ? json.decode(response.body)
             : response.body;
         final res = DiscoverPostResponse.fromJson(data);
-        final newPosts = res.data ?? [];
-        final meta = res.meta;
-
-        totalPages = meta != null && meta.totalPage != null
-            ? meta.totalPage!
-            : 1;
-
+        totalPages =
+            res.meta?.totalPage ?? 1;
         if (currentPage == 1) discoverPosts.clear();
-        discoverPosts.addAll(newPosts);
-
+        discoverPosts.addAll(res.data ?? []);
         currentPage++;
       } else {
         showCustomSnackBar("Failed to fetch discover posts", isError: true);
@@ -97,11 +109,90 @@ class DiscoverController extends GetxController {
     } catch (e, stack) {
       debugPrint("--- Error fetching discover posts: $e");
       debugPrint(stack.toString());
-      showCustomSnackBar(e.toString(), isError: true);
     } finally {
       isDiscoverLoading.value = false;
       isMoreLoading.value = false;
     }
+  }
+
+  void searchDiscoverPosts(String term) {
+    discoverSearchTerm.value = term;
+    getAllDiscoverPosts(refresh: true);
+  }
+
+  // ─── Videos ───
+
+  Future<void> getAllVideoPosts({bool refresh = false}) async {
+    if (refresh) {
+      _videoPage = 1;
+      _videoTotalPages = 1;
+    }
+    if (_videoPage > _videoTotalPages) return;
+
+    _videoPage == 1
+        ? isVideoLoading.value = true
+        : isMoreVideoLoading.value = true;
+
+    try {
+      var response = await ApiClient.getData(
+        ApiUrl.getAllVideos(
+          page: _videoPage,
+          classification: activeVideoTag.value,
+          searchTerm: videoSearchTerm.value,
+        ),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.body is String
+            ? json.decode(response.body)
+            : response.body;
+        final res = VideoPostResponse.fromJson(data);
+        _videoTotalPages = res.meta?.totalPage ?? 1;
+        if (_videoPage == 1) videoPosts.clear();
+        videoPosts.addAll(res.data ?? []);
+        _videoPage++;
+      } else {
+        showCustomSnackBar("Failed to fetch videos", isError: true);
+      }
+    } catch (e, stack) {
+      debugPrint("--- Error fetching videos: $e");
+      debugPrint(stack.toString());
+    } finally {
+      isVideoLoading.value = false;
+      isMoreVideoLoading.value = false;
+    }
+  }
+
+  void searchVideoPosts(String term) {
+    videoSearchTerm.value = term;
+    getAllVideoPosts(refresh: true);
+  }
+
+  Future<void> deleteVideo(String id) async {
+    try {
+      final response = await ApiClient.deleteData(
+        ApiUrl.deleteVideo(videoId: id),
+      );
+      if (response.statusCode == 200) {
+        videoPosts.removeWhere((v) => v.id == id);
+        showCustomSnackBar("Video deleted successfully", isError: false);
+      } else {
+        showCustomSnackBar("Failed to delete video", isError: true);
+      }
+    } catch (e) {
+      showCustomSnackBar(e.toString(), isError: true);
+    }
+  }
+
+  Future<void> shareVideoPost(String id) async {
+    try {
+      await ApiClient.postData(ApiUrl.shareVideo(videoId: id), '');
+    } catch (_) {}
+  }
+
+  Future<void> incrementVideoViews(String id) async {
+    try {
+      await ApiClient.patchData(ApiUrl.incrementVideoViews(videoId: id), '');
+    } catch (_) {}
   }
 
   Future<void> createDiscoverPost({
