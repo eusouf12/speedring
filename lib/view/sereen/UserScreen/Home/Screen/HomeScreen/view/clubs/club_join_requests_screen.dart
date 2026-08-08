@@ -33,8 +33,8 @@ class ClubJoinRequestsScreen extends StatelessWidget {
             icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
             onPressed: () => Get.back(),
           ),
-          title: const CustomText(
-            text: "JOIN REQUESTS",
+          title: CustomText(
+            text: "joinRequests".tr.toUpperCase(),
             color: AppColors.yellow,
             fontSize: 16,
             fontWeight: FontWeight.w900,
@@ -50,9 +50,9 @@ class ClubJoinRequestsScreen extends StatelessWidget {
           }
 
           if (controller.clubJoinRequestsList.isEmpty) {
-            return const Center(
+            return Center(
               child: CustomText(
-                text: "No pending requests",
+                text: "noPendingRequests".tr,
                 color: Colors.white54,
                 fontSize: 14,
               ),

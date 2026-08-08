@@ -437,8 +437,8 @@ class _CommentInputBar extends StatelessWidget {
                       focusNode: controller.focusNode,
                       cursorColor: Colors.yellow,
                       style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        hintText: "Add comment...",
+                      decoration: InputDecoration(
+                        hintText: "addComment".tr,
                         hintStyle: TextStyle(color: Colors.white30),
                         border: InputBorder.none,
                       ),

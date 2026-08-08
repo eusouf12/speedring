@@ -33,16 +33,17 @@ class SetupProfileScreen3 extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// ── Title Section ─────────────────────────────────────
-              const CustomText(
-                text: 'ADD YOUR FIRST VEHICLE',
+              /// ── Title Section ─────────────────────────────────────
+              CustomText(
+                text: 'addFirstVehicle'.tr,
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.2,
               ),
               const SizedBox(height: 4),
-              const CustomText(
-                text: 'BUILD YOUR SPEEDRING GARAGE.',
+              CustomText(
+                text: 'buildGarage'.tr,
                 color: Colors.grey,
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
@@ -58,17 +59,17 @@ class SetupProfileScreen3 extends StatelessWidget {
               const SizedBox(height: 28),
 
               /// ── Form Fields ───────────────────────────────────────
-              _SectionLabel(label: 'VEHICLE NAME'),
+              _SectionLabel(label: 'vehicleName'.tr),
               const SizedBox(height: 6),
               CustomTextField(
                 textEditingController: controller.vehicleNameCtrl,
-                hintText: 'e.g. Daily Driver',
+                hintText: 'vehicleNameHint'.tr,
                 fillColor: _cardBg,
               ),
 
               const SizedBox(height: 16),
 
-              _SectionLabel(label: 'PLATE NUMBER'),
+              _SectionLabel(label: 'plateNumber'.tr),
               const SizedBox(height: 6),
               CustomTextField(
                 textEditingController: controller.vehicleNumberPlate,
@@ -84,11 +85,11 @@ class SetupProfileScreen3 extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _SectionLabel(label: 'BRAND'),
+                        _SectionLabel(label: 'brand'.tr),
                         const SizedBox(height: 6),
                         CustomTextField(
                           textEditingController: controller.brandCtrl,
-                          hintText: 'Porsche',
+                          hintText: 'brandHint'.tr,
                           fillColor: _cardBg,
                         ),
                       ],
@@ -99,11 +100,11 @@ class SetupProfileScreen3 extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _SectionLabel(label: 'MODEL'),
+                        _SectionLabel(label: 'model'.tr),
                         const SizedBox(height: 6),
                         CustomTextField(
                           textEditingController: controller.modelCtrl,
-                          hintText: '911 GT3 RS',
+                          hintText: 'modelHint'.tr,
                           fillColor: _cardBg,
                         ),
                       ],
@@ -121,11 +122,11 @@ class SetupProfileScreen3 extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _SectionLabel(label: 'YEAR'),
+                        _SectionLabel(label: 'year'.tr),
                         const SizedBox(height: 6),
                         CustomTextField(
                           textEditingController: controller.yearCtrl,
-                          hintText: '2023',
+                          hintText: 'yearHint'.tr,
                           fillColor: _cardBg,
                           keyboardType: TextInputType.number,
                         ),
@@ -137,11 +138,11 @@ class SetupProfileScreen3 extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _SectionLabel(label: 'HP'),
+                        _SectionLabel(label: 'hp'.tr),
                         const SizedBox(height: 6),
                         CustomTextField(
                           textEditingController: controller.hpCtrl,
-                          hintText: '528',
+                          hintText: 'hpHint'.tr,
                           fillColor: _cardBg,
                           keyboardType: TextInputType.number,
                         ),
@@ -154,7 +155,7 @@ class SetupProfileScreen3 extends StatelessWidget {
               const SizedBox(height: 24),
 
               /// ── Engine Type Selection ─────────────────────────────
-              _SectionLabel(label: 'ENGINE TYPE'),
+              _SectionLabel(label: 'engineType'.tr),
               const SizedBox(height: 12),
               Obx(
                 () => Wrap(
@@ -162,27 +163,27 @@ class SetupProfileScreen3 extends StatelessWidget {
                   runSpacing: 10,
                   children: [
                     _EngineChip(
-                      label: 'COMBUSTION',
+                      label: 'combustion'.tr.toUpperCase(),
                       isSelected: controller.engineType.value == 'combustion',
                       onTap: () => controller.engineType.value = 'combustion',
                     ),
                     _EngineChip(
-                      label: 'ELECTRIC',
+                      label: 'electric'.tr.toUpperCase(),
                       isSelected: controller.engineType.value == 'electric',
                       onTap: () => controller.engineType.value = 'electric',
                     ),
                     _EngineChip(
-                      label: 'MOTORCYCLE',
+                      label: 'motorcycle'.tr.toUpperCase(),
                       isSelected: controller.engineType.value == 'motorcycle',
                       onTap: () => controller.engineType.value = 'motorcycle',
                     ),
                     _EngineChip(
-                      label: 'KARTING',
+                      label: 'karting'.tr.toUpperCase(),
                       isSelected: controller.engineType.value == 'karting',
                       onTap: () => controller.engineType.value = 'karting',
                     ),
                     _EngineChip(
-                      label: 'OLDTIMER',
+                      label: 'oldtimer'.tr.toUpperCase(),
                       isSelected: controller.engineType.value == 'oldtimer',
                       onTap: () => controller.engineType.value = 'oldtimer',
                     ),
@@ -193,7 +194,7 @@ class SetupProfileScreen3 extends StatelessWidget {
               const SizedBox(height: 32),
 
               /// ── Vehicle Image Upload ──────────────────────────────
-              _SectionLabel(label: 'VEHICLE IMAGE'),
+              _SectionLabel(label: 'vehicleImage'.tr),
               const SizedBox(height: 12),
               Obx(() {
                 return GestureDetector(
@@ -222,14 +223,14 @@ class SetupProfileScreen3 extends StatelessWidget {
                                 size: 32,
                               ),
                               const SizedBox(height: 8),
-                              const CustomText(
-                                text: 'UPLOAD VEHICLE PHOTO',
+                              CustomText(
+                                text: 'uploadPhoto'.tr,
                                 color: Colors.white70,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,
                               ),
-                              const CustomText(
-                                text: 'High resolution PNG, JPG, or JPEG',
+                              CustomText(
+                                text: 'highResInfo'.tr,
                                 color: Colors.white24,
                                 fontSize: 9,
                               ),
@@ -244,7 +245,7 @@ class SetupProfileScreen3 extends StatelessWidget {
 
               /// ── Action Buttons ────────────────────────────────────
               CustomButton(
-                title: 'ADD VEHICLE',
+                title: 'addVehicle'.tr,
                 height: 56,
                 borderRadius: 30,
                 fillColor: AppColors.yellow,
@@ -259,8 +260,8 @@ class SetupProfileScreen3 extends StatelessWidget {
               Center(
                 child: TextButton(
                   onPressed: () => Get.toNamed(AppRoutes.setupProfileScreen4),
-                  child: const CustomText(
-                    text: 'SKIP FOR NOW',
+                  child: CustomText(
+                    text: 'skipNow'.tr,
                     color: Colors.white54,
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -380,8 +381,8 @@ class SetupProfileScreen3 extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
-              children: const [
-                Text(
+              children: [
+                const Text(
                   '528',
                   style: TextStyle(
                     color: Colors.white,
@@ -389,10 +390,10 @@ class SetupProfileScreen3 extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Text(
-                  'HP',
-                  style: TextStyle(
+                  'hp'.tr.toUpperCase(),
+                  style: const TextStyle(
                     color: AppColors.yellow,
                     fontSize: 12,
                     fontWeight: FontWeight.w900,

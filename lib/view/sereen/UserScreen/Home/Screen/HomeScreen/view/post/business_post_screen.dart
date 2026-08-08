@@ -40,9 +40,9 @@ class BusinessPostScreen extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close, color: Colors.white),
           ),
-          title: const Text(
-            "CREATE BUSINESS POST",
-            style: TextStyle(
+          title: Text(
+            "businessPost".tr,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w900,
@@ -80,7 +80,7 @@ class BusinessPostScreen extends StatelessWidget {
                       }
                     },
               child: Text(
-                homeCtrl.isPostCreating.value ? "PUBLISHING" : "PUBLISH",
+                homeCtrl.isPostCreating.value ? "publishing".tr : "publish".tr,
                 style: const TextStyle(
                   color: AppColors.yellow,
                   fontSize: 12,
@@ -117,7 +117,7 @@ class BusinessPostScreen extends StatelessWidget {
                           width: double.infinity,
                         ),
                       )
-                    : const Center(
+                    : Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -128,7 +128,7 @@ class BusinessPostScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 6),
                             Text(
-                              "ATTACH PRODUCT / SERVICE IMAGE",
+                              "attachProductServiceImage".tr,
                               style: TextStyle(
                                 color: Colors.white38,
                                 fontSize: 9,
@@ -143,16 +143,16 @@ class BusinessPostScreen extends StatelessWidget {
             ),
 
             /// ── Business Basic details ────────────────────────────────────
-            const _FieldLabel("LISTING TITLE"),
+            _FieldLabel("listingTitle".tr),
             const SizedBox(height: 6),
             _InputField(
-              hint: "e.g. Carbon Fiber Hood",
+              hint: "carbonFiberHoodHint".tr,
               controller: homeCtrl.businessTitleCtrl,
             ),
 
             const SizedBox(height: 14),
 
-            const _FieldLabel("LISTING CATEGORY"),
+            _FieldLabel("listingCategory".tr),
             const SizedBox(height: 8),
             Obx(
               () => Row(
@@ -196,7 +196,7 @@ class BusinessPostScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const _FieldLabel("PRICE"),
+                      _FieldLabel("price".tr),
                       const SizedBox(height: 6),
                       _InputField(
                         hint: "\$0.00",
@@ -211,7 +211,7 @@ class BusinessPostScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const _FieldLabel("CONTACT / CALL TO ACTION"),
+                      _FieldLabel("contactCallToAction".tr),
                       const SizedBox(height: 6),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -222,11 +222,11 @@ class BusinessPostScreen extends StatelessWidget {
                           color: const Color(0xff1A1A1A),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Row(
+                        child: Row(
                           children: [
                             Expanded(
                               child: Text(
-                                "Send Message",
+                                "sendMessage".tr,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 13,
@@ -245,10 +245,10 @@ class BusinessPostScreen extends StatelessWidget {
 
             const SizedBox(height: 14),
 
-            const _FieldLabel("DESCRIPTION"),
+            _FieldLabel("descriptionUpper".tr),
             const SizedBox(height: 6),
             _InputField(
-              hint: "Write details about your offering...",
+              hint: "promoDescHint".tr,
               controller: homeCtrl.businessDescCtrl,
               maxLines: 3,
             ),
@@ -307,8 +307,8 @@ class BusinessPostScreen extends StatelessWidget {
                             ),
                             onChanged: (val) =>
                                 homeCtrl.businessSearchQuery.value = val,
-                            decoration: const InputDecoration(
-                              hintText: "Search telemetry tracks...",
+                            decoration: InputDecoration(
+                              hintText: "searchTelemetryTracks".tr,
                               hintStyle: TextStyle(color: Colors.white24),
                               border: InputBorder.none,
                               isDense: true,

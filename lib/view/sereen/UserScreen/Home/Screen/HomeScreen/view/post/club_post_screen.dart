@@ -34,9 +34,9 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close, color: Colors.white, size: 22),
           ),
-          title: const Text(
-            "CREATE CLUB POST",
-            style: TextStyle(
+          title: Text(
+            "clubPost".tr,
+            style: const TextStyle(
               color: AppColors.yellow,
               fontSize: 16,
               fontWeight: FontWeight.w900,
@@ -58,10 +58,10 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                 );
               }
               if (homeCtrl.clubMyClubs.isEmpty) {
-                return const Padding(
+                return Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    "You are not joined in any club. Post will be published to general club category.",
+                    "notJoinedInClub".tr,
                     style: TextStyle(color: Colors.white38, fontSize: 11),
                   ),
                 );
@@ -76,8 +76,8 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "SELECT CLUB",
+                    Text(
+                      "selectClub".tr,
                       style: TextStyle(
                         color: Colors.white38,
                         fontSize: 9,
@@ -111,7 +111,7 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                           return DropdownMenuItem<String>(
                             value: club['_id']?.toString(),
                             child: Text(
-                              club['clubName']?.toString() ?? "Unnamed Club",
+                              club['clubName']?.toString() ?? "unnamedClub".tr,
                             ),
                           );
                         }).toList(),
@@ -151,19 +151,19 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                             width: double.infinity,
                           ),
                         )
-                      : const Center(
+                      : Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.camera_alt_outlined,
                                 color: AppColors.yellow,
                                 size: 28,
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Text(
-                                "Add Media (Max 50MB)",
-                                style: TextStyle(
+                                "addMediaMax50MB".tr,
+                                style: const TextStyle(
                                   color: Colors.white60,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
@@ -179,9 +179,9 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
             const SizedBox(height: 20),
 
             /// ── POST DETAILS ──────────────────────────────────────────────
-            const Text(
-              "POST DETAILS",
-              style: TextStyle(
+            Text(
+              "postDetails".tr,
+              style: const TextStyle(
                 color: Colors.white38,
                 fontSize: 9,
                 fontWeight: FontWeight.w800,
@@ -208,9 +208,9 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                         fontSize: 13,
                         height: 1.5,
                       ),
-                      decoration: const InputDecoration(
-                        hintText: "Brief the club on the next stage...",
-                        hintStyle: TextStyle(
+                      decoration: InputDecoration(
+                        hintText: "briefClub".tr,
+                        hintStyle: const TextStyle(
                           color: Colors.white24,
                           fontSize: 13,
                         ),
@@ -250,12 +250,12 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "PINNED ANNOUNCEMENT",
+                          "pinnedAnnouncement".tr,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -265,7 +265,7 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                         ),
                         SizedBox(height: 2),
                         Text(
-                          "Prioritize this post for all club members",
+                          "prioritizeThisPost".tr,
                           style: TextStyle(color: Colors.white38, fontSize: 10),
                         ),
                       ],
@@ -352,8 +352,8 @@ class _ClubPostScreenState extends State<ClubPostScreen> {
                       const SizedBox(width: 8),
                       Text(
                         homeCtrl.isPostCreating.value
-                            ? "PUBLISHING..."
-                            : "PUBLISH CLUB POST",
+                            ? "publishing".tr
+                            : "publishClubPost".tr,
                         style: TextStyle(
                           color: homeCtrl.isPostCreating.value
                               ? Colors.white24

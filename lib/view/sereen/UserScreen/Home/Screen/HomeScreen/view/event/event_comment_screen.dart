@@ -72,7 +72,11 @@ class _EventCommentSheet extends StatelessWidget {
                     const Spacer(),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.close, color: Colors.white, size: 22),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
                   ],
                 ),
@@ -101,7 +105,9 @@ class _EventCommentSheet extends StatelessWidget {
                   return ListView.separated(
                     controller: scrollController,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     itemCount: comments.length,
                     separatorBuilder: (_, _) =>
                         const Divider(color: Colors.white12, height: 24),
@@ -140,15 +146,15 @@ class _EventCommentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeCtrl = Get.find<HomeController>();
-    final inputBarCtrl =
-        Get.find<_EventCommentInputBarController>(tag: eventId);
+    final inputBarCtrl = Get.find<_EventCommentInputBarController>(
+      tag: eventId,
+    );
     final tileCtrl = Get.put(
       _EventCommentTileController(),
       tag: 'evt_c_${comment.id}',
     );
 
-    final isMyComment =
-        comment.user?.id == homeCtrl.currentUserId.value;
+    final isMyComment = comment.user?.id == homeCtrl.currentUserId.value;
     final replyCount = comment.replies?.length ?? 0;
 
     return Column(
@@ -177,9 +183,7 @@ class _EventCommentTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        comment.user?.name ??
-                            comment.user?.userName ??
-                            "User",
+                        comment.user?.name ?? comment.user?.userName ?? "User",
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 11,
@@ -190,9 +194,16 @@ class _EventCommentTile extends StatelessWidget {
                       if (isMyComment)
                         GestureDetector(
                           onTap: () => _confirmDeleteComment(
-                              context, homeCtrl, eventId, comment.id!),
-                          child: const Icon(Icons.delete,
-                              color: Colors.redAccent, size: 16),
+                            context,
+                            homeCtrl,
+                            eventId,
+                            comment.id!,
+                          ),
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.redAccent,
+                            size: 16,
+                          ),
                         ),
                     ],
                   ),
@@ -212,7 +223,6 @@ class _EventCommentTile extends StatelessWidget {
                   // Action row: Reply
                   Row(
                     children: [
-
                       // Reply
                       GestureDetector(
                         onTap: () {
@@ -281,8 +291,11 @@ class _EventCommentTile extends StatelessWidget {
                               ? NetworkImage(reply.user!.profileImage!)
                               : null,
                           child: reply.user?.profileImage == null
-                              ? const Icon(Icons.person,
-                                  size: 12, color: Colors.white54)
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 12,
+                                  color: Colors.white54,
+                                )
                               : null,
                         ),
                         const SizedBox(width: 8),
@@ -304,7 +317,9 @@ class _EventCommentTile extends StatelessWidget {
                               Text(
                                 reply.comment ?? "",
                                 style: const TextStyle(
-                                    color: Colors.white60, fontSize: 11),
+                                  color: Colors.white60,
+                                  fontSize: 11,
+                                ),
                               ),
                               // Reply react count removed
                             ],
@@ -332,8 +347,7 @@ class _EventCommentTile extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xff1C1C1C),
-        title: const Text("Delete Comment",
-            style: TextStyle(color: Colors.white)),
+        title: Text("deleteComment".tr, style: TextStyle(color: Colors.white)),
         content: const Text(
           "Are you sure you want to delete this comment?",
           style: TextStyle(color: Colors.white70),
@@ -341,15 +355,20 @@ class _EventCommentTile extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            child: Text(
+              "cancel".tr,
+              style: const TextStyle(color: Colors.grey),
+            ),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               homeCtrl.deleteEventComment(
-                  eventId: eventId, commentId: commentId);
+                eventId: eventId,
+                commentId: commentId,
+              );
             },
-            child: const Text("Delete", style: TextStyle(color: Colors.red)),
+            child: Text("delete".tr, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -405,8 +424,7 @@ class _EventCommentInputBar extends StatelessWidget {
             if (replyTo == null) return const SizedBox.shrink();
             final name = replyTo.user?.name ?? replyTo.user?.userName ?? "User";
             return Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               color: const Color(0xff1C1C1C),
               child: Row(
                 children: [
@@ -417,8 +435,11 @@ class _EventCommentInputBar extends StatelessWidget {
                   const Spacer(),
                   GestureDetector(
                     onTap: () => ctrl.replyingToComment.value = null,
-                    child: const Icon(Icons.close,
-                        size: 14, color: Colors.white60),
+                    child: const Icon(
+                      Icons.close,
+                      size: 14,
+                      color: Colors.white60,
+                    ),
                   ),
                 ],
               ),
@@ -449,8 +470,8 @@ class _EventCommentInputBar extends StatelessWidget {
                       focusNode: ctrl.focusNode,
                       cursorColor: Colors.yellow,
                       style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        hintText: "Add a comment...",
+                      decoration: InputDecoration(
+                        hintText: "addComment".tr,
                         hintStyle: TextStyle(color: Colors.white30),
                         border: InputBorder.none,
                       ),
@@ -464,15 +485,19 @@ class _EventCommentInputBar extends StatelessWidget {
                           onPressed: () async {
                             final text = ctrl.ctrl.text.trim();
                             if (ctrl.replyingToComment.value != null) {
-                              final commentId = ctrl.replyingToComment.value!.id!;
+                              final commentId =
+                                  ctrl.replyingToComment.value!.id!;
                               await homeCtrl.replyToEventComment(
                                 eventId: eventId,
                                 commentId: commentId,
                                 replyText: text,
                               );
-                              
+
                               try {
-                                final tileCtrl = Get.find<_EventCommentTileController>(tag: 'evt_c_$commentId');
+                                final tileCtrl =
+                                    Get.find<_EventCommentTileController>(
+                                      tag: 'evt_c_$commentId',
+                                    );
                                 tileCtrl.showReplies.value = true;
                               } catch (_) {}
 

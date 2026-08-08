@@ -22,9 +22,9 @@ class SessionPostScreen extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close, color: Colors.white),
           ),
-          title: const Text(
-            "CREATE SESSION",
-            style: TextStyle(
+          title: Text(
+            "sessionPost".tr,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w900,
@@ -52,7 +52,7 @@ class SessionPostScreen extends StatelessWidget {
                             homeCtrl.sessionSelectedImage.value!,
                             fit: BoxFit.cover,
                           )
-                        : const Center(
+                        : Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -63,7 +63,7 @@ class SessionPostScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  "ADD PHOTO",
+                                  "addPhoto".tr,
                                   style: TextStyle(
                                     color: AppColors.yellow,
                                     fontSize: 10,
@@ -82,37 +82,37 @@ class SessionPostScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// ── Vehicle ─────────────────────────────────────────────────
-            const _FieldLabel("VEHICLE"),
+            _FieldLabel("vehicle".tr),
             const SizedBox(height: 6),
             _InputField(
-              hint: "Ferrari SF90 Stradale",
+              hint: "ferrariHint".tr,
               controller: homeCtrl.sessionVehicleCtrl,
             ),
 
             const SizedBox(height: 14),
 
             /// ── Circuit ─────────────────────────────────────────────────
-            const _FieldLabel("CIRCUIT"),
+            _FieldLabel("circuit".tr),
             const SizedBox(height: 6),
             _InputField(
-              hint: "Silverstone Circuit",
+              hint: "silverstoneHint".tr,
               controller: homeCtrl.sessionCircuitCtrl,
             ),
 
             const SizedBox(height: 14),
 
             /// ── Track Name ──────────────────────────────────────────────
-            const _FieldLabel("TRACK NAME"),
+            _FieldLabel("trackName".tr),
             const SizedBox(height: 6),
             _InputField(
-              hint: "Grand Prix Loop",
+              hint: "grandPrixHint".tr,
               controller: homeCtrl.sessionTrackNameCtrl,
             ),
 
             const SizedBox(height: 20),
 
             /// ── Best Lap Time ────────────────────────────────────────────
-            const _FieldLabel("BEST LAP TIME"),
+            _FieldLabel("bestLapTime".tr),
             const SizedBox(height: 8),
             _InputField(
               hint: "01:28.442",
@@ -122,7 +122,7 @@ class SessionPostScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// ── Top Speed ────────────────────────────────────────────────
-            const _FieldLabel("TOP SPEED ACHIEVED"),
+            _FieldLabel("topSpeedAchieved".tr),
             const SizedBox(height: 8),
             _InputField(
               hint: "342 KM/H",
@@ -132,7 +132,7 @@ class SessionPostScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// ── Driver Session Summary ───────────────────────────────────
-            const _FieldLabel("DRIVER SESSION SUMMARY"),
+            _FieldLabel("driverSessionSummary".tr),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.all(14),
@@ -163,7 +163,7 @@ class SessionPostScreen extends StatelessWidget {
               () => _PublishButton(
                 label: homeCtrl.isPostCreating.value
                     ? "PUBLISHING..."
-                    : "PUBLISH SESSION",
+                    : "publishSession".tr,
                 onTap: homeCtrl.isPostCreating.value
                     ? null
                     : () async {

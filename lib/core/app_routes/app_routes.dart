@@ -21,8 +21,8 @@ import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_memb
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_join_requests_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_group_post_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/user_home_screen.dart';
-import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/reel/reels_screen.dart';
-import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/reel/create_reel_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/reel/reels_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/reel/create_reel_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/NotificationScreen/notification_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/message_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/inbox_screen.dart';
@@ -511,17 +511,11 @@ class AppRoutes {
       name: clubDetaislScreenNonMy,
       page: () => const ClubDetaislScreenNonMy(),
     ),
-    GetPage(
-      name: clubMembersScreen,
-      page: () => const ClubMembersScreen(),
-    ),
+    GetPage(name: clubMembersScreen, page: () => const ClubMembersScreen()),
     GetPage(
       name: clubJoinRequestsScreen,
       page: () => const ClubJoinRequestsScreen(),
     ),
-    GetPage(
-      name: clubGroupPostScreen,
-      page: () => const ClubGroupPostScreen(),
-    ),
+    GetPage(name: clubGroupPostScreen, page: () => const ClubGroupPostScreen()),
   ];
 }

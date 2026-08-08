@@ -25,33 +25,33 @@ class SetupProfileScreen4 extends StatelessWidget {
       {
         'id': 'track_alerts',
         'icon': Icons.flag_rounded,
-        'category': 'LIVE TELEMETRY',
-        'title': 'Track Open Alerts',
-        'trailingBadge': 'REAL-TIME',
+        'category': 'liveTelemetry',
+        'title': 'trackOpenAlerts',
+        'trailingBadge': 'realTime',
       },
       {
         'id': 'new_followers',
         'icon': Icons.people_alt_rounded,
-        'category': 'SOCIAL',
-        'title': 'New Followers',
+        'category': 'social',
+        'title': 'newFollowers',
       },
       {
         'id': 'live_sessions',
         'icon': Icons.location_on_rounded,
-        'category': 'LOCATION BASED',
-        'title': 'Live Sessions Nearby',
+        'category': 'locationBased',
+        'title': 'liveSessionsNearby',
       },
       {
         'id': 'marketplace',
         'icon': Icons.shopping_cart_rounded,
-        'category': 'MARKETPLACE',
-        'title': 'Marketplace Messages',
+        'category': 'marketplace',
+        'title': 'marketplaceMessages',
       },
       {
         'id': 'event_updates',
         'icon': Icons.emoji_events_rounded,
-        'category': 'PRO TOUR',
-        'title': 'Event Updates',
+        'category': 'proTour',
+        'title': 'eventUpdates',
       },
     ];
 
@@ -97,8 +97,8 @@ class SetupProfileScreen4 extends StatelessWidget {
                       /// ── Title Header (STAY IN THE FAST LANE) ──────────
                       RichText(
                         textAlign: TextAlign.center,
-                        text: const TextSpan(
-                          style: TextStyle(
+                        text: TextSpan(
+                          style: const TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.5,
@@ -107,12 +107,12 @@ class SetupProfileScreen4 extends StatelessWidget {
                           ),
                           children: [
                             TextSpan(
-                              text: 'STAY IN THE ',
-                              style: TextStyle(color: Colors.white),
+                              text: 'stayFastLane'.tr,
+                              style: const TextStyle(color: Colors.white),
                             ),
                             TextSpan(
-                              text: 'FAST LANE',
-                              style: TextStyle(color: AppColors.yellow),
+                              text: 'fastLane'.tr,
+                              style: const TextStyle(color: AppColors.yellow),
                             ),
                           ],
                         ),
@@ -121,12 +121,12 @@ class SetupProfileScreen4 extends StatelessWidget {
                       const SizedBox(height: 14),
 
                       /// ── Subtitle Description ──────────────────────────
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: Text(
-                          'Get notified about sessions, followers, events and marketplace activity. Never miss a green flag.',
+                          'notificationDesc'.tr,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
@@ -145,9 +145,9 @@ class SetupProfileScreen4 extends StatelessWidget {
                                 .contains(item['id']);
                             return _buildNotificationTile(
                               icon: item['icon'] as IconData,
-                              category: item['category'] as String,
-                              title: item['title'] as String,
-                              trailingBadge: item['trailingBadge'] as String?,
+                              category: (item['category'] as String).tr.toUpperCase(),
+                              title: (item['title'] as String).tr,
+                              trailingBadge: item['trailingBadge'] != null ? (item['trailingBadge'] as String).tr.toUpperCase() : null,
                               isSelected: isSelected,
                               onTap: () {
                                 if (isSelected) {
@@ -177,7 +177,7 @@ class SetupProfileScreen4 extends StatelessWidget {
                 child: Column(
                   children: [
                     Obx(() => CustomButton(
-                          title: controller.isLoading.value ? 'SAVING...' : 'COMPLETE SETUP',
+                          title: controller.isLoading.value ? 'saving'.tr.toUpperCase() : 'completeSetup'.tr.toUpperCase(),
                           height: 54,
                           borderRadius: 30,
                           fillColor: AppColors.yellow,
@@ -191,9 +191,9 @@ class SetupProfileScreen4 extends StatelessWidget {
                     const SizedBox(height: 16),
                     GestureDetector(
                       onTap: () => _navigateToDashboard(),
-                      child: const Text(
-                        'MAYBE LATER',
-                        style: TextStyle(
+                      child: Text(
+                        'maybeLater'.tr,
+                        style: const TextStyle(
                           color: Colors.white54,
                           fontSize: 11,
                           fontWeight: FontWeight.w800,

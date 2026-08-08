@@ -109,7 +109,7 @@ class EditClubScreen extends StatelessWidget {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "EDIT CLUB"),
+        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "editClub".tr.toUpperCase()),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -805,8 +805,8 @@ class EditClubScreen extends StatelessWidget {
           controller: tagController,
           autofocus: true,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
-            hintText: "Enter tag name",
+          decoration: InputDecoration(
+            hintText: "enterTagName".tr,
             hintStyle: TextStyle(color: Colors.white24),
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: AppColors.yellow),
@@ -828,7 +828,7 @@ class EditClubScreen extends StatelessWidget {
               }
               Get.back();
             },
-            child: const Text("ADD", style: TextStyle(color: AppColors.yellow)),
+            child: Text("add".tr.toUpperCase(), style: const TextStyle(color: AppColors.yellow)),
           ),
         ],
       ),
@@ -859,7 +859,7 @@ class EditClubScreen extends StatelessWidget {
             onPressed: () {
               controller.terminateClub();
             },
-            child: const Text("YES", style: TextStyle(color: Colors.red)),
+            child: Text("yes".tr.toUpperCase(), style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),

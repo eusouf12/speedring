@@ -23,9 +23,9 @@ class TrackUpdateScreen extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close, color: Colors.white),
           ),
-          title: const Text(
-            "CREATE TRACK UPDATE",
-            style: TextStyle(
+          title: Text(
+            "trackUpdate".tr,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w900,
@@ -38,7 +38,7 @@ class TrackUpdateScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             /// ── Circuit Selector ───────────────────────────────────────────
-            const _FieldLabel("SELECT CIRCUIT"),
+            _FieldLabel("circuit".tr),
             const SizedBox(height: 6),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
@@ -50,8 +50,8 @@ class TrackUpdateScreen extends StatelessWidget {
                 cursorColor: AppColors.yellow,
                 controller: homeCtrl.trackCircuitCtrl,
                 style: const TextStyle(color: Colors.white, fontSize: 13),
-                decoration: const InputDecoration(
-                  hintText: "Enter Circuit Name",
+                decoration: InputDecoration(
+                  hintText: "enterCircuitName".tr,
                   hintStyle: TextStyle(color: Colors.white38),
                   border: InputBorder.none,
                   isDense: true,
@@ -62,7 +62,7 @@ class TrackUpdateScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             /// ── Surface Conditions ─────────────────────────────────────────
-            const _FieldLabel("SURFACE CONDITION"),
+            _FieldLabel("surfaceCondition".tr),
             const SizedBox(height: 8),
             Obx(
               () => Row(
@@ -126,7 +126,7 @@ class TrackUpdateScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// ── Active Flags & Hazards ────────────────────────────────────
-            const _FieldLabel("ACTIVE FLAGS & HAZARDS"),
+            _FieldLabel("activeFlagsAndHazards".tr),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.all(8),
@@ -168,7 +168,7 @@ class TrackUpdateScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// ── Live Media Attachment ────────────────────────────────────
-            const _FieldLabel("LIVE PHOTO / VIDEO (OPTIONAL)"),
+            _FieldLabel("livePhotoVideo".tr),
             const SizedBox(height: 8),
             GestureDetector(
               onTap: () => homeCtrl.pickPostImage(homeCtrl.trackSelectedImage),
@@ -192,7 +192,7 @@ class TrackUpdateScreen extends StatelessWidget {
                             width: double.infinity,
                           ),
                         )
-                      : const Center(
+                      : Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -203,8 +203,8 @@ class TrackUpdateScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 6),
                               Text(
-                                "ATTACH CURRENT TRACK IMAGE",
-                                style: TextStyle(
+                                "attachCurrentTrackImage".tr,
+                                style: const TextStyle(
                                   color: Colors.white38,
                                   fontSize: 9,
                                   fontWeight: FontWeight.bold,
@@ -221,7 +221,7 @@ class TrackUpdateScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// ── Details/Notes ─────────────────────────────────────────────
-            const _FieldLabel("DETAILS / NOTES"),
+            _FieldLabel("detailsNotes".tr),
             const SizedBox(height: 6),
             Container(
               padding: const EdgeInsets.all(12),
@@ -238,9 +238,8 @@ class TrackUpdateScreen extends StatelessWidget {
                   fontSize: 13,
                   height: 1.5,
                 ),
-                decoration: const InputDecoration(
-                  hintText:
-                      "Add specific location, advice, or flag information...",
+                decoration: InputDecoration(
+                  hintText: "addSpecificLocation".tr,
                   hintStyle: TextStyle(color: Colors.white38),
                   border: InputBorder.none,
                   isDense: true,
@@ -251,11 +250,11 @@ class TrackUpdateScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// ── Visibility ───────────────────────────────────────────────
-            const _FieldLabel("UPDATE VISIBILITY"),
+            _FieldLabel("updateVisibility".tr),
             const SizedBox(height: 8),
             Obx(
               () => Row(
-                children: ["Public", "Followers", "Club Only"].map((opt) {
+                children: ["public".tr, "followers".tr, "clubOnly".tr].map((opt) {
                   final isSel = homeCtrl.trackSelectedVisibility.value == opt;
                   return Expanded(
                     child: GestureDetector(
@@ -335,8 +334,8 @@ class TrackUpdateScreen extends StatelessWidget {
                   child: Center(
                     child: Text(
                       homeCtrl.isPostCreating.value
-                          ? "PUBLISHING..."
-                          : "PUBLISH UPDATE",
+                          ? "publishing".tr
+                          : "publishUpdate".tr,
                       style: TextStyle(
                         color: homeCtrl.isPostCreating.value
                             ? Colors.white24

@@ -55,14 +55,14 @@ class _CustomNavBarState extends State<CustomNavBar> {
                     Expanded(
                       child: _buildNormalNavItem(
                         0,
-                        "HOME",
+                        "home".tr,
                         Icons.home_outlined,
                       ),
                     ),
                     Expanded(
                       child: _buildNormalNavItem(
                         1,
-                        "DISCOVER",
+                        "discover".tr,
                         Icons.explore_outlined,
                       ),
                     ),
@@ -72,14 +72,14 @@ class _CustomNavBarState extends State<CustomNavBar> {
                     Expanded(
                       child: _buildNormalNavItem(
                         3,
-                        "MARKET",
+                        "market".tr,
                         Icons.shopping_cart_outlined,
                       ),
                     ),
                     Expanded(
                       child: _buildNormalNavItem(
                         4,
-                        "PROFILE",
+                        "profile".tr,
                         Icons.person_outline,
                       ),
                     ),
@@ -123,7 +123,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "TRACK",
+                      "track".tr.toUpperCase(),
                       style: TextStyle(
                         color: AppColors.yellow,
                         fontSize: 9.sp,

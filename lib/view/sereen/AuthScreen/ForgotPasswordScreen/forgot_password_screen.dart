@@ -42,7 +42,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                 // ── Heading ───────────────────────────────────────────────
                 Center(
                   child: CustomText(
-                    text: 'Forgot Password?',
+                    text: 'forgotPassword'.tr,
                     color: Colors.white,
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -51,8 +51,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Center(
                   child: CustomText(
-                    text:
-                        'Enter your registered email and we\'ll send\nyou a reset code.',
+                    text: 'forgotSubtitle'.tr,
                     color: Colors.white54,
                     fontSize: 14,
                     maxLines: 2,
@@ -65,7 +64,7 @@ class ForgotPasswordScreen extends StatelessWidget {
 
                 // ── Email label ───────────────────────────────────────────
                 CustomText(
-                  text: 'EMAIL',
+                  text: 'email'.tr.toUpperCase(),
                   color: Colors.white60,
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
@@ -86,8 +85,8 @@ class ForgotPasswordScreen extends StatelessWidget {
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Enter your email';
-                    if (!GetUtils.isEmail(v)) return 'Enter a valid email';
+                    if (v == null || v.isEmpty) return 'emailRequired'.tr;
+                    if (!GetUtils.isEmail(v)) return 'emailValid'.tr;
                     return null;
                   },
                 ),
@@ -100,7 +99,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                       ? const CustomLoader()
                       : CustomButton(
                           onTap: () => controller.sendOtp(),
-                          title: 'SEND RESET CODE',
+                          title: 'sendResetCode'.tr.toUpperCase(),
                           fillColor: const Color(0xffF5C400),
                           textColor: Colors.black,
                           fontSize: 18,
@@ -118,14 +117,14 @@ class ForgotPasswordScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomText(
-                        text: 'Remember your password? ',
+                        text: 'rememberPassword'.tr,
                         color: Colors.white54,
                         fontSize: 14,
                       ),
                       GestureDetector(
                         onTap: () => Get.back(),
                         child: CustomText(
-                          text: 'Login',
+                          text: 'login'.tr,
                           color: const Color(0xffF5C400),
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

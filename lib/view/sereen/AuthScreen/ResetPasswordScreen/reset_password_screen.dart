@@ -57,8 +57,9 @@ class ResetPasswordScreen extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 // ── Heading ───────────────────────────────────────────────
+                // ── Heading ───────────────────────────────────────────────
                 CustomText(
-                  text: 'Your new password\nmust be secure.',
+                  text: 'resetPasswordTitle'.tr,
                   color: Colors.white,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -69,7 +70,7 @@ class ResetPasswordScreen extends StatelessWidget {
 
                 // ── New Password ──────────────────────────────────────────
                 CustomText(
-                  text: 'NEW PASSWORD',
+                  text: 'newPassword'.tr.toUpperCase(),
                   color: Colors.white60,
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
@@ -90,16 +91,16 @@ class ResetPasswordScreen extends StatelessWidget {
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Enter new password';
-                    if (v.length < 8) return 'Minimum 8 characters';
+                    if (v == null || v.isEmpty) return 'enterNewPassword'.tr;
+                    if (v.length < 8) return 'minChar8'.tr;
                     if (!v.contains(RegExp(r'[A-Z]'))) {
-                      return 'Must have an uppercase letter';
+                      return 'upperCaseLetterRequired'.tr;
                     }
                     if (!v.contains(RegExp(r'[0-9]'))) {
-                      return 'Must contain a number';
+                      return 'numberRequired'.tr;
                     }
                     if (!v.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'))) {
-                      return 'Must contain a special character';
+                      return 'specialCharRequired'.tr;
                     }
                     return null;
                   },
@@ -112,7 +113,7 @@ class ResetPasswordScreen extends StatelessWidget {
 
                 // ── Confirm New Password ──────────────────────────────────
                 CustomText(
-                  text: 'CONFIRM PASSWORD',
+                  text: 'confirmPassword'.tr.toUpperCase(),
                   color: Colors.white60,
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
@@ -134,9 +135,9 @@ class ResetPasswordScreen extends StatelessWidget {
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Confirm your password';
+                    if (v == null || v.isEmpty) return 'confirmPasswordRequired'.tr;
                     if (v != controller.newPasswordController.text) {
-                      return 'Passwords do not match';
+                      return 'passwordsDoNotMatch'.tr;
                     }
                     return null;
                   },
@@ -156,17 +157,17 @@ class ResetPasswordScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        _strengthRow('Minimum 8 characters', pwd.length >= 8),
+                        _strengthRow('minChar8'.tr, pwd.length >= 8),
                         const SizedBox(height: 10),
                         _strengthRow(
-                          'Uppercase letter',
+                          'upperCaseLetter'.tr,
                           pwd.contains(RegExp(r'[A-Z]')),
                         ),
                         const SizedBox(height: 10),
-                        _strengthRow('Number', pwd.contains(RegExp(r'[0-9]'))),
+                        _strengthRow('number'.tr, pwd.contains(RegExp(r'[0-9]'))),
                         const SizedBox(height: 10),
                         _strengthRow(
-                          'Special character',
+                          'specialChar'.tr,
                           pwd.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]')),
                         ),
                       ],
@@ -182,7 +183,7 @@ class ResetPasswordScreen extends StatelessWidget {
                       ? const CustomLoader()
                       : CustomButton(
                           onTap: () => controller.resetPassword(),
-                          title: 'UPDATE PASSWORD  ⚡',
+                          title: '${'updatePassword'.tr.toUpperCase()}  ⚡',
                           fillColor: const Color(0xffF5C400),
                           textColor: Colors.black,
                           fontSize: 18,
@@ -205,7 +206,7 @@ class ResetPasswordScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       CustomText(
-                        text: 'END-TO-END ENCRYPTED SYSTEM UPDATE',
+                        text: 'encryptedSystem'.tr.toUpperCase(),
                         color: Colors.white24,
                         fontSize: 10,
                         fontWeight: FontWeight.w600,

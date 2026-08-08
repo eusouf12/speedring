@@ -20,50 +20,50 @@ class SetupProfileScreen2 extends StatelessWidget {
     final List<Map<String, dynamic>> categories = [
       {
         'id': 'combustion',
-        'title': 'Combustion',
-        'subtitle': 'ICE PERFORMANCE',
+        'titleKey': 'combustion',
+        'subtitleKey': 'iceTelemetry',
         'icon': Icons.toys_outlined,
         'bgImage': AppImages.combustionBg,
       },
       {
         'id': 'electric',
-        'title': 'Electric',
-        'subtitle': 'VOLT TELEMETRY',
+        'titleKey': 'electric',
+        'subtitleKey': 'voltTelemetry',
         'icon': Icons.bolt,
         'bgImage': AppImages.electricBg,
       },
       {
         'id': 'motorcycle',
-        'title': 'Motorcycle',
-        'subtitle': 'TWO-WHEEL DYNAMICS',
+        'titleKey': 'motorcycle',
+        'subtitleKey': 'twoWheel',
         'icon': Icons.two_wheeler,
         'bgImage': AppImages.motorcycleBg,
       },
       {
         'id': 'karting',
-        'title': 'Karting',
-        'subtitle': 'CHASSIS AGILITY',
+        'titleKey': 'karting',
+        'subtitleKey': 'chassisAgility',
         'icon': Icons.flag_outlined,
         'bgImage': AppImages.kartingBg,
       },
       {
         'id': 'oldtimer',
-        'title': 'Oldtimer',
-        'subtitle': 'LEGACY ENGINES',
+        'titleKey': 'oldtimer',
+        'subtitleKey': 'legacyEngines',
         'icon': Icons.directions_car_filled_outlined,
         'bgImage': AppImages.oldtimerBg,
       },
       {
         'id': 'spotters',
-        'title': 'Spotters',
-        'subtitle': 'SPOTTERS INSIGHTS',
+        'titleKey': 'spotters',
+        'subtitleKey': 'spottersInsights',
         'icon': Icons.camera_alt,
         'bgImage': AppImages.spotters,
       },
       {
         'id': 'others',
-        'title': 'Others',
-        'subtitle': 'CUSTOM TELEMETRY',
+        'titleKey': 'others',
+        'subtitleKey': 'customTelemetry',
         'icon': Icons.stars,
         'bgImage': AppImages.others,
       },
@@ -81,11 +81,11 @@ class SetupProfileScreen2 extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /// ── Top Subtitle text ──────────────────────────────────
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
               child: Text(
-                'Choose your motorsport interests to personalize your technical telemetry feed.',
-                style: TextStyle(
+                'chooseInterests'.tr,
+                style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
@@ -119,7 +119,7 @@ class SetupProfileScreen2 extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 14),
                         height: 180,
                         decoration: BoxDecoration(
-                          color: Color(0xff1C1C1C),
+                          color: const Color(0xff1C1C1C),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: isSelected
@@ -175,7 +175,7 @@ class SetupProfileScreen2 extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item['subtitle'],
+                                        (item['subtitleKey'] as String).tr,
                                         style: const TextStyle(
                                           color: Colors.grey,
                                           fontSize: 9,
@@ -185,7 +185,7 @@ class SetupProfileScreen2 extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
-                                        item['title'],
+                                        (item['titleKey'] as String).tr,
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 20,
@@ -211,7 +211,7 @@ class SetupProfileScreen2 extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: CustomButton(
-                title: 'CONTINUE',
+                title: 'continueBtn'.tr,
                 height: 54,
                 borderRadius: 30,
                 fillColor: AppColors.yellow,

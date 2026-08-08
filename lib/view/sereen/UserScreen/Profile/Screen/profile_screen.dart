@@ -125,9 +125,9 @@ class ProfileScreen extends StatelessWidget {
                                   size: 12,
                                 ),
                                 SizedBox(width: 4.w),
-                                const Text(
-                                  "EDIT",
-                                  style: TextStyle(
+                                Text(
+                                  "edit".tr.toUpperCase(),
+                                  style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 8,
                                     fontWeight: FontWeight.bold,
@@ -322,7 +322,7 @@ class ProfileScreen extends StatelessWidget {
                           CustomButton(
                             height: 34.h,
                             width: 110.w,
-                            title: "SUPPORT",
+                            title: "support".tr.toUpperCase(),
                             fontSize: 10,
                             borderRadius: 18.r,
                             icon: const Icon(
@@ -352,14 +352,14 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      _buildStatItem("POSTS", "0"),
+                      _buildStatItem("posts".tr.toUpperCase(), "0"),
                       _buildStatDivider(),
                       _buildStatItem(
-                        "FOLLOWERS",
+                        "followers".tr.toUpperCase(),
                         "${profile?.followerCount ?? 0}",
                       ),
                       _buildStatDivider(),
-                      _buildStatItem("SESSIONS", "0"),
+                      _buildStatItem("sessions".tr.toUpperCase(), "0"),
                     ],
                   ),
                 ),
@@ -374,20 +374,20 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       _buildQuickActionCircle(
                         Icons.add,
-                        "CREATE",
+                        "create".tr.toUpperCase(),
                         isYellowBg: true,
                       ),
                       _buildQuickThumb(
                         "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
-                        "MY DRIVE",
+                        "myDrive".tr.toUpperCase(),
                       ),
                       _buildQuickThumb(
                         "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                        "TELEMETRY",
+                        "telemetry".tr.toUpperCase(),
                       ),
                       _buildQuickThumb(
                         "https://picsum.photos/seed/spalaps/100/100",
-                        "SPA LAPS",
+                        "spaLaps".tr.toUpperCase(),
                       ),
                     ],
                   ),
@@ -546,10 +546,10 @@ class ProfileScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildTabItem(0, "POSTS"),
-          _buildTabItem(1, "OVERVIEW"),
-          _buildTabItem(2, "GARAGE"),
-          _buildTabItem(3, "SUPPORT"),
+          _buildTabItem(0, "posts".tr.toUpperCase()),
+          _buildTabItem(1, "overview".tr.toUpperCase()),
+          _buildTabItem(2, "garage".tr.toUpperCase()),
+          _buildTabItem(3, "support".tr.toUpperCase()),
         ],
       ),
     );
@@ -611,7 +611,7 @@ class ProfileScreen extends StatelessWidget {
         children: [
           CustomButton(
             height: 44.h,
-            title: "ADD POST",
+            title: "addPost".tr.toUpperCase(),
             fontSize: 12,
             borderRadius: 8.r,
             icon: const Icon(
@@ -660,7 +660,7 @@ class ProfileScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomText(
-            text: "STABLE / RECENT ACTIVITY",
+            text: "stableRecentActivity".tr.toUpperCase(),
             color: AppColors.yellow,
             fontSize: 9,
             fontWeight: FontWeight.w900,
@@ -790,9 +790,9 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "SLOTS FILLED",
-                  style: TextStyle(
+                Text(
+                  "slotsFilled".tr.toUpperCase(),
+                  style: const TextStyle(
                     color: Colors.white38,
                     fontSize: 8,
                     fontWeight: FontWeight.bold,
@@ -832,7 +832,7 @@ class ProfileScreen extends StatelessWidget {
 
           CustomButton(
             height: 44.h,
-            title: "ADD VEHICLE",
+            title: "addVehicle".tr.toUpperCase(),
             fontSize: 12,
             borderRadius: 8.r,
             icon: const Icon(
@@ -846,7 +846,7 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(height: 24.h),
 
           CustomText(
-            text: "VEHICLE STABLE",
+            text: "vehicleStable".tr.toUpperCase(),
             color: AppColors.yellow,
             fontSize: 9,
             fontWeight: FontWeight.w900,
@@ -899,22 +899,26 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text(
-                      "REVENUE TELEMETRY",
-                      style: TextStyle(
+                      "revenueTelemetry".tr.toUpperCase(),
+                      style: const TextStyle(
                         color: AppColors.yellow,
                         fontSize: 8,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Icon(Icons.query_stats, color: AppColors.yellow, size: 16),
+                    const Icon(
+                      Icons.query_stats,
+                      color: AppColors.yellow,
+                      size: 16,
+                    ),
                   ],
                 ),
                 SizedBox(height: 6.h),
-                const Text(
-                  "FINANCIAL PERFORMANCE",
-                  style: TextStyle(
+                Text(
+                  "financialPerformance".tr.toUpperCase(),
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -923,16 +927,16 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(height: 20.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text(
-                      "SUPPORT RECEIVED (MTD)",
-                      style: TextStyle(
+                      "supportReceived".tr.toUpperCase(),
+                      style: const TextStyle(
                         color: Colors.white38,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
+                    const Text(
                       "€8,250 / €10,000",
                       style: TextStyle(
                         color: Colors.white70,
@@ -960,7 +964,7 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(height: 24.h),
           CustomButton(
             height: 48.h,
-            title: "SUPPORT THIS USER",
+            title: "supportThisUser".tr.toUpperCase(),
             fontSize: 13,
             borderRadius: 8.r,
             icon: const Icon(

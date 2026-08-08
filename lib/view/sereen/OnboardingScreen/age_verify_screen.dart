@@ -48,8 +48,8 @@ class AgeVerifyScreen extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     /// ── Title ─────────────────────────────────────
-                    const CustomText(
-                      text: 'AGE VERIFICATION',
+                    CustomText(
+                      text: 'ageVerification'.tr,
                       color: Colors.white,
                       fontSize: 28,
                       fontWeight: FontWeight.w900,
@@ -60,9 +60,8 @@ class AgeVerifyScreen extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     /// ── Subtitle ──────────────────────────────────
-                    const CustomText(
-                      text:
-                          'Speedring follows DACH youth\nprotection and GDPR standards.',
+                    CustomText(
+                      text: 'protectionStandard'.tr,
                       color: Colors.white54,
                       fontSize: 13,
                       textAlign: TextAlign.center,
@@ -78,23 +77,23 @@ class AgeVerifyScreen extends StatelessWidget {
                           _AgeOption(
                             isSelected: controller.selectedAge.value == 0,
                             onTap: () => controller.selectedAge.value = 0,
-                            label: '16+ Community Access',
-                            sublabel: 'SOCIAL FEED AND BASIC TRACKING.',
+                            label: 'sixteenCommunity'.tr,
+                            sublabel: 'socialFeedBasic'.tr,
                           ),
                           const SizedBox(height: 10),
                           _AgeOption(
                             isSelected: controller.selectedAge.value == 1,
                             onTap: () => controller.selectedAge.value = 1,
-                            label: '18+ Full Access',
-                            sublabel: 'MARKETPLACE, PRO, BUSINESS FEATURES.',
+                            label: 'eighteenFull'.tr,
+                            sublabel: 'marketplacePro'.tr,
                             highlighted: true,
                           ),
                           const SizedBox(height: 10),
                           _AgeOption(
                             isSelected: controller.selectedAge.value == 2,
                             onTap: () => controller.selectedAge.value = 2,
-                            label: 'Under 16',
-                            sublabel: 'PARENTAL CONSENT REQUIRED.',
+                            label: 'underSixteen'.tr,
+                            sublabel: 'parentalConsent'.tr,
                           ),
                         ],
                       ),
@@ -135,10 +134,9 @@ class AgeVerifyScreen extends StatelessWidget {
                                   : null,
                             ),
                             const SizedBox(width: 12),
-                            const Expanded(
+                            Expanded(
                               child: CustomText(
-                                text:
-                                    'I confirm that the information provided is accurate.',
+                                text: 'confirmInfo'.tr,
                                 color: Colors.white70,
                                 fontSize: 12,
                                 textAlign: TextAlign.left,
@@ -155,7 +153,7 @@ class AgeVerifyScreen extends StatelessWidget {
                     /// ── Continue Button ───────────────────────────
                     Obx(
                       () => CustomButton(
-                        title: 'CONTINUE  ›',
+                        title: '${'continueBtn'.tr}  ›',
                         height: 56,
                         borderRadius: 30,
                         fillColor: controller.confirmed.value

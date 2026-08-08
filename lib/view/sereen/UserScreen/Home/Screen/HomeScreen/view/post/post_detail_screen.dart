@@ -34,7 +34,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: const Color(0xff111111),
-        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "Details"),
+        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "postDetails".tr),
         body: Obx(() {
           if (controller.isPostDetailLoading.value) {
             return const Center(
@@ -43,12 +43,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           }
           final post = controller.currentPostDetail.value;
           if (post == null) {
-            return const Center(
-              child: CustomText(text: "Post not found", color: Colors.white),
+            return Center(
+              child: CustomText(text: "postNotFound".tr, color: Colors.white),
             );
           }
 
-          final userName = post.user?.userName ?? post.user?.name ?? "Unknown";
+          final userName =
+              post.user?.userName ?? post.user?.name ?? "unknown".tr;
           final profileImage = post.user?.profileImage;
           final imageUrls = (post.media ?? [])
               .map((e) => e.url ?? "")
@@ -190,8 +191,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                                   Icons.delete,
                                                   color: Colors.red,
                                                 ),
-                                                title: const CustomText(
-                                                  text: "Delete Post",
+                                                title: CustomText(
+                                                  text: "deletePost".tr,
                                                   color: Colors.red,
                                                 ),
                                                 onTap: () {
@@ -203,13 +204,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                                           const Color(
                                                             0xff1C1C1C,
                                                           ),
-                                                      title: const CustomText(
-                                                        text: "Delete Post",
+                                                      title: CustomText(
+                                                        text: "deletePost".tr,
                                                         color: Colors.white,
                                                       ),
-                                                      content: const CustomText(
+                                                      content: CustomText(
                                                         text:
-                                                            "Are you sure you want to delete this post?",
+                                                            "confirmDeletePost"
+                                                                .tr,
                                                         color: Colors.white70,
                                                       ),
                                                       actions: [
@@ -218,12 +220,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                                               Navigator.pop(
                                                                 context,
                                                               ),
-                                                          child:
-                                                              const CustomText(
-                                                                text: "Cancel",
-                                                                color:
-                                                                    Colors.grey,
-                                                              ),
+                                                          child: CustomText(
+                                                            text: "cancel".tr,
+                                                            color: Colors.grey,
+                                                          ),
                                                         ),
                                                         TextButton(
                                                           onPressed: () {
@@ -238,12 +238,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                                                   post.id!,
                                                                 );
                                                           },
-                                                          child:
-                                                              const CustomText(
-                                                                text: "Delete",
-                                                                color:
-                                                                    Colors.red,
-                                                              ),
+                                                          child: CustomText(
+                                                            text: "delete".tr,
+                                                            color: Colors.red,
+                                                          ),
                                                         ),
                                                       ],
                                                     ),

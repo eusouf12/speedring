@@ -51,16 +51,16 @@ class OnboardingScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children: [
                         CustomText(
-                          text: "WELCOME TO",
+                          text: "welcomeTo".tr,
                           color: Colors.white,
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
                         CustomText(
-                          text: " SPEEDRING",
-                          color: Color(0xffF5C400),
+                          text: " ${"speedring".tr}",
+                          color: const Color(0xffF5C400),
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
@@ -70,8 +70,8 @@ class OnboardingScreen extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  const CustomText(
-                    text: "The social network for motorsport\nenthusiasts.",
+                  CustomText(
+                    text: "onboardingSubtitle".tr,
                     color: Colors.white,
                     fontSize: 18,
                     textAlign: TextAlign.center,
@@ -80,15 +80,14 @@ class OnboardingScreen extends StatelessWidget {
                   const SizedBox(height: 25),
 
                   CustomText(
-                    text:
-                        "Track sessions. Share experiences. Discover cars, riders, clubs and motorsport events.",
+                    text: "onboardingDesc".tr,
                     color: Colors.white.withValues(alpha: .75),
                     fontSize: 14,
                     textAlign: TextAlign.center,
                     maxLines: 2,
                   ),
 
-                  Spacer(),
+                  const Spacer(),
 
                   /// PAGEVIEW
                   SizedBox(
@@ -101,10 +100,9 @@ class OnboardingScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: CustomOnboardingCard(
                             icon: Icons.speed,
-                            label: "Track Mode",
-                            title: "Telemetry",
-                            description:
-                                "Real-time lap timing and precise performance data tracking.",
+                            label: "trackMode".tr,
+                            title: "telemetry".tr,
+                            description: "trackModeDesc".tr,
                           ),
                         ),
 
@@ -112,10 +110,9 @@ class OnboardingScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: CustomOnboardingCard(
                             icon: Icons.directions_car,
-                            label: "GARAGE",
-                            title: "Vehicles",
-                            description:
-                                "Manage your collection and service history in one digital vault",
+                            label: "garage".tr,
+                            title: "vehicles".tr,
+                            description: "garageDesc".tr,
                           ),
                         ),
 
@@ -123,10 +120,9 @@ class OnboardingScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: CustomOnboardingCard(
                             icon: Icons.location_on,
-                            label: "SPOTTING",
-                            title: "World Wide",
-                            description:
-                                "Discover and share exotic car sightings fromacross the globe",
+                            label: "spotting".tr,
+                            title: "worldWide".tr,
+                            description: "spottingDesc".tr,
                           ),
                         ),
                       ],
@@ -161,7 +157,7 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                   ),
 
-                  Spacer(),
+                  const Spacer(),
                   //btn
                   SizedBox(
                     width: double.infinity,
@@ -177,17 +173,17 @@ class OnboardingScreen extends StatelessWidget {
                       onPressed: () {
                         Get.toNamed(AppRoutes.ageVerifyScreen);
                       },
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CustomText(
-                            text: "GET STARTED",
+                            text: "getStarted".tr,
                             color: Colors.black,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
-                          SizedBox(width: 8),
-                          Icon(Icons.arrow_forward),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_forward),
                         ],
                       ),
                     ),
@@ -199,8 +195,8 @@ class OnboardingScreen extends StatelessWidget {
                     onTap: () {
                       Get.toNamed(AppRoutes.loginScreen);
                     },
-                    child: const CustomText(
-                      text: "I ALREADY HAVE AN ACCOUNT",
+                    child: CustomText(
+                      text: "alreadyHaveAccount".tr,
                       color: Colors.white70,
                       fontSize: 11,
                       fontWeight: FontWeight.w500,

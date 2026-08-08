@@ -100,8 +100,11 @@ class CreateClubScreen extends StatelessWidget {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "CREATE NEW CLUB"),
-          body: SingleChildScrollView(
+        appBar: CustomRoyelAppbar(
+          leftIcon: true,
+          titleName: "createNewClub".tr.toUpperCase(),
+        ),
+        body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +112,7 @@ class CreateClubScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               /// SECTION 01 - IDENTITY
-              _buildSectionHeader("SECTION 01 - IDENTITY"),
+              _buildSectionHeader("sectionIdentity".tr.toUpperCase()),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -117,9 +120,9 @@ class CreateClubScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "CLUB NAME",
-                      style: TextStyle(
+                    Text(
+                      "clubName".tr.toUpperCase(),
+                      style: const TextStyle(
                         color: Colors.white38,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -128,13 +131,13 @@ class CreateClubScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     _buildTextField(
-                      "e.g., SYNDICATE RACING",
+                      "syndicateRacingHint".tr,
                       controller: controller.clubNameController,
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      "INPUT DETAILS",
-                      style: TextStyle(
+                    Text(
+                      "inputDetails".tr.toUpperCase(),
+                      style: const TextStyle(
                         color: Colors.white38,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -143,7 +146,7 @@ class CreateClubScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     _buildTextField(
-                      "Describe About Club",
+                      "describeClub".tr,
                       maxLines: 3,
                       controller: controller.descriptionController,
                     ),
@@ -153,7 +156,7 @@ class CreateClubScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               /// SECTION 02 - CLASSIFICATION
-              _buildSectionHeader("SECTION 02 - CLASSIFICATION"),
+              _buildSectionHeader("sectionClassification".tr.toUpperCase()),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -200,7 +203,7 @@ class CreateClubScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                cat['name'],
+                                (cat['name'] as String).tr,
                                 style: TextStyle(
                                   color: isSelected
                                       ? AppColors.yellow
@@ -220,7 +223,7 @@ class CreateClubScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               /// SECTION 03 - VISIBILITY
-              _buildSectionHeader("SECTION 03 - VISIBILITY"),
+              _buildSectionHeader("sectionVisibility".tr.toUpperCase()),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -228,9 +231,9 @@ class CreateClubScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "ACCESS TYPE",
-                      style: TextStyle(
+                    Text(
+                      "accessType".tr.toUpperCase(),
+                      style: const TextStyle(
                         color: Colors.white38,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -238,9 +241,12 @@ class CreateClubScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      "Define entry protocol",
-                      style: TextStyle(color: Colors.white60, fontSize: 11),
+                    Text(
+                      "defineEntryProtocol".tr,
+                      style: const TextStyle(
+                        color: Colors.white60,
+                        fontSize: 11,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     Obx(
@@ -248,6 +254,11 @@ class CreateClubScreen extends StatelessWidget {
                         children: ["PUBLIC", "APPROVAL", "INVITE"].map((type) {
                           final bool isSel =
                               type == controller.selectedAccess.value;
+                          final String label = type == "PUBLIC"
+                              ? 'public'.tr.toUpperCase()
+                              : type == "APPROVAL"
+                              ? 'approval'.tr.toUpperCase()
+                              : 'invite'.tr.toUpperCase();
                           return Expanded(
                             child: GestureDetector(
                               onTap: () {
@@ -270,7 +281,7 @@ class CreateClubScreen extends StatelessWidget {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    type,
+                                    label,
                                     style: TextStyle(
                                       color: isSel
                                           ? AppColors.yellow
@@ -293,7 +304,7 @@ class CreateClubScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               /// SECTION 04 - VISUALS
-              _buildSectionHeader("SECTION 04 - VISUALS"),
+              _buildSectionHeader("sectionVisuals".tr.toUpperCase()),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -301,9 +312,9 @@ class CreateClubScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "IDENTITY LOGO (1:1)",
-                      style: TextStyle(
+                    Text(
+                      "identityLogo".tr.toUpperCase(),
+                      style: const TextStyle(
                         color: Colors.white38,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -357,9 +368,9 @@ class CreateClubScreen extends StatelessWidget {
                       }),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      "CINEMATIC BANNER (16:9)",
-                      style: TextStyle(
+                    Text(
+                      "cinematicBanner".tr.toUpperCase(),
+                      style: const TextStyle(
                         color: Colors.white38,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -395,16 +406,16 @@ class CreateClubScreen extends StatelessWidget {
                               ? Center(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(
+                                    children: [
+                                      const Icon(
                                         Icons.add_photo_alternate_outlined,
                                         color: Colors.white70,
                                         size: 28,
                                       ),
-                                      SizedBox(height: 6),
+                                      const SizedBox(height: 6),
                                       Text(
-                                        "DEPLOY BANNER ASSET",
-                                        style: TextStyle(
+                                        "deployBanner".tr.toUpperCase(),
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 11,
                                           fontWeight: FontWeight.w900,
@@ -447,8 +458,8 @@ class CreateClubScreen extends StatelessWidget {
                                     .trim()
                                     .isEmpty) {
                               Get.snackbar(
-                                "Error",
-                                "Club Name and Description are required.",
+                                "error".tr,
+                                "clubNameDescRequired".tr,
                                 snackPosition: SnackPosition.BOTTOM,
                                 backgroundColor: const Color(0xff181818),
                                 colorText: Colors.white,
@@ -483,9 +494,9 @@ class CreateClubScreen extends StatelessWidget {
                               strokeWidth: 2.0,
                             ),
                           )
-                        : const Text(
-                            "CREATE CLUB",
-                            style: TextStyle(
+                        : Text(
+                            "createClub".tr.toUpperCase(),
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w900,
                               letterSpacing: 1.0,
@@ -500,9 +511,9 @@ class CreateClubScreen extends StatelessWidget {
               Center(
                 child: TextButton(
                   onPressed: () => Get.back(),
-                  child: const Text(
-                    "CANCEL",
-                    style: TextStyle(
+                  child: Text(
+                    "cancel".tr.toUpperCase(),
+                    style: const TextStyle(
                       color: Colors.white38,
                       fontSize: 11,
                       fontWeight: FontWeight.w900,
@@ -581,21 +592,21 @@ class CreateClubScreen extends StatelessWidget {
       builder: (context) {
         return AlertDialog(
           backgroundColor: const Color(0xff1C1C1C),
-          title: const Text(
-            "Add Custom Category",
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            "addCustomCategory".tr,
+            style: const TextStyle(color: Colors.white),
           ),
           content: TextField(
             controller: textController,
             cursorColor: AppColors.yellow,
             style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              hintText: "Enter category name",
-              hintStyle: TextStyle(color: Colors.white38),
-              enabledBorder: UnderlineInputBorder(
+            decoration: InputDecoration(
+              hintText: "enterCategoryName".tr,
+              hintStyle: const TextStyle(color: Colors.white38),
+              enabledBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.white24),
               ),
-              focusedBorder: UnderlineInputBorder(
+              focusedBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(color: AppColors.yellow),
               ),
             ),
@@ -603,9 +614,9 @@ class CreateClubScreen extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "CANCEL",
-                style: TextStyle(color: Colors.white54),
+              child: Text(
+                "cancel".tr.toUpperCase(),
+                style: const TextStyle(color: Colors.white54),
               ),
             ),
             TextButton(
@@ -615,9 +626,9 @@ class CreateClubScreen extends StatelessWidget {
                   Navigator.pop(context);
                 }
               },
-              child: const Text(
-                "ADD",
-                style: TextStyle(color: AppColors.yellow),
+              child: Text(
+                "add".tr.toUpperCase(),
+                style: const TextStyle(color: AppColors.yellow),
               ),
             ),
           ],

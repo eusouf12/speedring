@@ -51,7 +51,7 @@ class SplashScreen extends StatelessWidget {
                               Text(
                                 controller.statusMessages[controller
                                     .statusIndex
-                                    .value],
+                                    .value].tr,
                                 style: const TextStyle(
                                   color: Color(0xFFFFC107), // Amber/Yellow
                                   fontFamily: 'Courier',

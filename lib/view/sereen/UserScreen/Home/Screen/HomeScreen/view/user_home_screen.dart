@@ -61,10 +61,10 @@ class UserHomeScreen extends StatelessWidget {
                             autofocus: true,
                             decoration: InputDecoration(
                               hintText: controller.rxActiveTab.value == 1
-                                  ? "Search events..."
+                                  ? "searchEventsHint".tr
                                   : controller.rxActiveTab.value == 2
-                                      ? "Search clubs..."
-                                      : "Search posts...",
+                                  ? "searchClubsHint".tr
+                                  : "searchPostsHint".tr,
                               hintStyle: const TextStyle(color: Colors.white30),
                               prefixIcon: const Icon(
                                 Icons.search,
@@ -78,9 +78,11 @@ class UserHomeScreen extends StatelessWidget {
                                 onPressed: () {
                                   if (controller.rxActiveTab.value == 0) {
                                     controller.getPost(searchTerm: "");
-                                  } else if (controller.rxActiveTab.value == 1) {
+                                  } else if (controller.rxActiveTab.value ==
+                                      1) {
                                     controller.getEvents(searchTerm: "");
-                                  } else if (controller.rxActiveTab.value == 2) {
+                                  } else if (controller.rxActiveTab.value ==
+                                      2) {
                                     controller.getAllClubs(searchTerm: "");
                                   }
                                   controller.showSearchBar.value = false;
@@ -140,9 +142,9 @@ class UserHomeScreen extends StatelessWidget {
                                   ),
                                 );
                               },
-                              child: const StoryItem(
+                              child: StoryItem(
                                 isMe: true,
-                                name: 'CREATE',
+                                name: 'create'.tr.toUpperCase(),
                                 imageSrc: null,
                                 icon: Icons.add,
                               ),
@@ -219,7 +221,7 @@ class UserHomeScreen extends StatelessWidget {
                               return Column(
                                 children: [
                                   AddPostButton(
-                                    label: "ADD POST",
+                                    label: "addPost".tr.toUpperCase(),
                                     onTap: () =>
                                         Get.toNamed(AppRoutes.createPostScreen),
                                   ),
@@ -347,9 +349,9 @@ class UserHomeScreen extends StatelessWidget {
                                                         Icons.delete,
                                                         color: Colors.red,
                                                       ),
-                                                      title: const Text(
-                                                        "Delete Post",
-                                                        style: TextStyle(
+                                                      title: Text(
+                                                        "deletePost".tr,
+                                                        style: const TextStyle(
                                                           color: Colors.red,
                                                         ),
                                                       ),
@@ -362,19 +364,22 @@ class UserHomeScreen extends StatelessWidget {
                                                                 const Color(
                                                                   0xff1C1C1C,
                                                                 ),
-                                                            title: const Text(
-                                                              "Delete Post",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
+                                                            title: Text(
+                                                              "deletePost".tr,
+                                                              style:
+                                                                  const TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
                                                             ),
-                                                            content: const Text(
-                                                              "Are you sure you want to delete this post?",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white70,
-                                                              ),
+                                                            content: Text(
+                                                              "deletePostConfirm"
+                                                                  .tr,
+                                                              style:
+                                                                  const TextStyle(
+                                                                    color: Colors
+                                                                        .white70,
+                                                                  ),
                                                             ),
                                                             actions: [
                                                               TextButton(
@@ -382,9 +387,9 @@ class UserHomeScreen extends StatelessWidget {
                                                                     Navigator.pop(
                                                                       context,
                                                                     ),
-                                                                child: const Text(
-                                                                  "Cancel",
-                                                                  style: TextStyle(
+                                                                child: Text(
+                                                                  "cancel".tr,
+                                                                  style: const TextStyle(
                                                                     color: Colors
                                                                         .grey,
                                                                   ),
@@ -400,9 +405,9 @@ class UserHomeScreen extends StatelessWidget {
                                                                         post.id!,
                                                                       );
                                                                 },
-                                                                child: const Text(
-                                                                  "Delete",
-                                                                  style: TextStyle(
+                                                                child: Text(
+                                                                  "delete".tr,
+                                                                  style: const TextStyle(
                                                                     color: Colors
                                                                         .red,
                                                                   ),
@@ -436,10 +441,10 @@ class UserHomeScreen extends StatelessWidget {
                         ),
                       )
                     : controller.eventsList.isEmpty
-                    ? const Center(
+                    ? Center(
                         child: Text(
-                          "No events found",
-                          style: TextStyle(color: Colors.white54),
+                          "noEventsFound".tr,
+                          style: const TextStyle(color: Colors.white54),
                         ),
                       )
                     : RefreshIndicator(
@@ -455,7 +460,7 @@ class UserHomeScreen extends StatelessWidget {
                               return Column(
                                 children: [
                                   AddPostButton(
-                                    label: "ADD EVENT",
+                                    label: "addEvent".tr,
                                     onTap: () {
                                       Get.toNamed(AppRoutes.createEventScreen);
                                     },
@@ -552,162 +557,164 @@ class UserHomeScreen extends StatelessWidget {
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
-                    const SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
-                    /// YOUR CLUBS Header
-                    const Text(
-                      "YOUR CLUBS",
-                      style: TextStyle(
-                        color: AppColors.yellow,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-
-                    /// Your Clubs List (Horizontal scroll)
-                    Obx(() {
-                      if (controller.isMyClubsLoading.value) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.yellow,
-                          ),
-                        );
-                      }
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        clipBehavior: Clip.none,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            /// Add New Club Button
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: GestureDetector(
-                                onTap: () =>
-                                    Get.toNamed(AppRoutes.createClubScreen),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: 60,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: AppColors.yellow,
-                                          width: 1.5,
-                                          style: BorderStyle.solid,
-                                        ),
-                                      ),
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.add,
-                                          color: AppColors.yellow,
-                                          size: 22,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    const Text(
-                                      "NEW CLUB",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            ...controller.myClubs.map((club) {
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 20),
-                                child: _buildCircularClubItem(
-                                  name: club.clubName ?? "Unknown",
-                                  imageUrl:
-                                      club.logo != null && club.logo!.isNotEmpty
-                                      ? (club.logo!.startsWith('http')
-                                            ? club.logo!
-                                            : "${ApiUrl.imageUrl}${club.logo}")
-                                      : "", // Fallback
-                                  onTap: () => Get.toNamed(
-                                    AppRoutes.clubDetailsScreen,
-                                    arguments: {"id": club.id},
-                                  ),
-                                ),
-                              );
-                            }),
-                          ],
+                      /// YOUR CLUBS Header
+                      Text(
+                        "yourClubs".tr.toUpperCase(),
+                        style: const TextStyle(
+                          color: AppColors.yellow,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.0,
                         ),
-                      );
-                    }),
-                    const SizedBox(height: 28),
-
-                    /// BROWSE ALL CLUBS Header
-                    const Text(
-                      "BROWSE ALL CLUBS",
-                      style: TextStyle(
-                        color: AppColors.yellow,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.0,
                       ),
-                    ),
-                    const SizedBox(height: 16),
+                      const SizedBox(height: 14),
 
-                    /// Browse Clubs List
-                    Obx(() {
-                      if (controller.isClubsLoading.value) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.yellow,
-                          ),
-                        );
-                      }
-                      if (controller.allClubs.isEmpty) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          child: Center(
-                            child: Text(
-                              "No clubs found.",
-                              style: TextStyle(color: Colors.white54),
-                            ),
-                          ),
-                        );
-                      }
-                      return Column(
-                        children: controller.allClubs.map((club) {
-                          return _buildBrowseClubCard(
-                            name: club.clubName ?? "Unknown",
-                            members: "${club.members?.length ?? 0}",
-                            imageUrl: club.logo != null && club.logo!.isNotEmpty
-                                ? (club.logo!.startsWith('http')
-                                      ? club.logo!
-                                      : "${ApiUrl.imageUrl}${club.logo}")
-                                : "", // Fallback
-                            isJoined: club.isClubJoined ?? false,
-                            isPending: club.isJoinRequestPending ?? false,
-                            onJoinTap: () {
-                              if (club.id != null) {
-                                controller.joinClub(club.id!);
-                              }
-                            },
-                            onTap: () => Get.toNamed(
-                              (club.isClubJoined == true)
-                                  ? AppRoutes.clubDetailsScreen
-                                  : AppRoutes.clubDetaislScreenNonMy,
-                              arguments: {"id": club.id},
+                      /// Your Clubs List (Horizontal scroll)
+                      Obx(() {
+                        if (controller.isMyClubsLoading.value) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.yellow,
                             ),
                           );
-                        }).toList(),
-                      );
-                    }),
-                    const SizedBox(height: 30),
-                  ],
-                ),
+                        }
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          clipBehavior: Clip.none,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /// Add New Club Button
+                              Padding(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: GestureDetector(
+                                  onTap: () =>
+                                      Get.toNamed(AppRoutes.createClubScreen),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 60,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: AppColors.yellow,
+                                            width: 1.5,
+                                            style: BorderStyle.solid,
+                                          ),
+                                        ),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.add,
+                                            color: AppColors.yellow,
+                                            size: 22,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "newClub".tr.toUpperCase(),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              ...controller.myClubs.map((club) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 20),
+                                  child: _buildCircularClubItem(
+                                    name: club.clubName ?? "Unknown",
+                                    imageUrl:
+                                        club.logo != null &&
+                                            club.logo!.isNotEmpty
+                                        ? (club.logo!.startsWith('http')
+                                              ? club.logo!
+                                              : "${ApiUrl.imageUrl}${club.logo}")
+                                        : "", // Fallback
+                                    onTap: () => Get.toNamed(
+                                      AppRoutes.clubDetailsScreen,
+                                      arguments: {"id": club.id},
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 28),
+
+                      /// BROWSE ALL CLUBS Header
+                      Text(
+                        "browseAllClubs".tr.toUpperCase(),
+                        style: const TextStyle(
+                          color: AppColors.yellow,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      /// Browse Clubs List
+                      Obx(() {
+                        if (controller.isClubsLoading.value) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.yellow,
+                            ),
+                          );
+                        }
+                        if (controller.allClubs.isEmpty) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Center(
+                              child: Text(
+                                "noClubsFound".tr,
+                                style: const TextStyle(color: Colors.white54),
+                              ),
+                            ),
+                          );
+                        }
+                        return Column(
+                          children: controller.allClubs.map((club) {
+                            return _buildBrowseClubCard(
+                              name: club.clubName ?? "Unknown",
+                              members: "${club.members?.length ?? 0}",
+                              imageUrl:
+                                  club.logo != null && club.logo!.isNotEmpty
+                                  ? (club.logo!.startsWith('http')
+                                        ? club.logo!
+                                        : "${ApiUrl.imageUrl}${club.logo}")
+                                  : "", // Fallback
+                              isJoined: club.isClubJoined ?? false,
+                              isPending: club.isJoinRequestPending ?? false,
+                              onJoinTap: () {
+                                if (club.id != null) {
+                                  controller.joinClub(club.id!);
+                                }
+                              },
+                              onTap: () => Get.toNamed(
+                                (club.isClubJoined == true)
+                                    ? AppRoutes.clubDetailsScreen
+                                    : AppRoutes.clubDetaislScreenNonMy,
+                                arguments: {"id": club.id},
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      }),
+                      const SizedBox(height: 30),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -785,18 +792,18 @@ class UserHomeScreen extends StatelessWidget {
     bool isPending = false,
     VoidCallback? onJoinTap,
   }) {
-    String btnText = "JOIN CLUB";
+    String btnText = "joinClub".tr.toUpperCase();
     Color btnColor = AppColors.yellow;
     Color textColor = Colors.black;
     Border? btnBorder;
 
     if (isJoined == true && isPending == false) {
-      btnText = "JOINED";
+      btnText = "joined".tr.toUpperCase();
       btnColor = Colors.transparent;
       textColor = AppColors.yellow;
       btnBorder = Border.all(color: AppColors.yellow, width: 1);
     } else if (isJoined == false && isPending == true) {
-      btnText = "PENDING REQUEST";
+      btnText = "pendingRequest".tr.toUpperCase();
       btnColor = Colors.white24;
       textColor = Colors.white54;
     }
@@ -852,9 +859,9 @@ class UserHomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Text(
-                        "ACTIVE MEMBERS",
-                        style: TextStyle(
+                      Text(
+                        "activeMembers".tr.toUpperCase(),
+                        style: const TextStyle(
                           color: Colors.white38,
                           fontSize: 9,
                           fontWeight: FontWeight.bold,
@@ -1134,23 +1141,25 @@ class _EventCard extends StatelessWidget {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  title: const Text(
-                                    "Delete Event",
-                                    style: TextStyle(
+                                  title: Text(
+                                    "deleteEvent".tr,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  content: const Text(
-                                    "Are you sure you want to delete this event?",
-                                    style: TextStyle(color: Colors.white70),
+                                  content: Text(
+                                    "deleteEventConfirm".tr,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                    ),
                                   ),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Get.back(),
-                                      child: const Text(
-                                        "NO",
-                                        style: TextStyle(
+                                      child: Text(
+                                        "no".tr.toUpperCase(),
+                                        style: const TextStyle(
                                           color: Colors.white54,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -1161,9 +1170,9 @@ class _EventCard extends StatelessWidget {
                                         Get.back(); // close dialog
                                         onDelete?.call();
                                       },
-                                      child: const Text(
-                                        "YES",
-                                        style: TextStyle(
+                                      child: Text(
+                                        "yes".tr.toUpperCase(),
+                                        style: const TextStyle(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -1199,7 +1208,9 @@ class _EventCard extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Text(
-                                  isJoined ? "JOINED" : "JOIN",
+                                  isJoined
+                                      ? "joined".tr.toUpperCase()
+                                      : "join".tr.toUpperCase(),
                                   style: TextStyle(
                                     color: isJoined
                                         ? Colors.white60
@@ -1444,19 +1455,19 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               tabBuilder(
-                "POST",
+                "post".tr.toUpperCase(),
                 controller.rxActiveTab.value == 0,
                 () => controller.changeTab(0),
               ),
               const SizedBox(width: 10),
               tabBuilder(
-                "EVENTS",
+                "events".tr.toUpperCase(),
                 controller.rxActiveTab.value == 1,
                 () => controller.changeTab(1),
               ),
               const SizedBox(width: 10),
               tabBuilder(
-                "CLUBS",
+                "clubs".tr.toUpperCase(),
                 controller.rxActiveTab.value == 2,
                 () => controller.changeTab(2),
               ),

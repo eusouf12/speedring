@@ -81,7 +81,7 @@ class ClubGroupPostScreen extends StatelessWidget {
                 if (!isShareMedia) ...[
                   CustomTextField(
                     textEditingController: controller.clubGroupPostTextCtrl,
-                    hintText: "What's on your mind?",
+                    hintText: "whatsOnYourMind".tr,
                     maxLines: 5,
                     fillColor: const Color(0xff111111),
                   ),
@@ -149,7 +149,7 @@ class ClubGroupPostScreen extends StatelessWidget {
                     children: [
                       _MediaButton(
                         icon: Icons.photo_library,
-                        label: "Photo",
+                        label: "photo".tr,
                         onTap: () => controller.pickClubGroupMedia(
                           ImageSource.gallery,
                           isVideo: false,
@@ -158,7 +158,7 @@ class ClubGroupPostScreen extends StatelessWidget {
                       const SizedBox(width: 12),
                       _MediaButton(
                         icon: Icons.videocam,
-                        label: "Video",
+                        label: "video".tr,
                         onTap: () => controller.pickClubGroupMedia(
                           ImageSource.gallery,
                           isVideo: true,
@@ -167,7 +167,7 @@ class ClubGroupPostScreen extends StatelessWidget {
                       const SizedBox(width: 12),
                       _MediaButton(
                         icon: Icons.camera_alt,
-                        label: "Camera",
+                        label: "camera".tr,
                         onTap: () => controller.pickClubGroupMedia(
                           ImageSource.camera,
                           isVideo: false,

@@ -34,7 +34,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "Event Details"),
+        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "eventDetails".tr),
         body: Obx(() {
           if (controller.isEventDetailLoading.value) {
             return const Center(
@@ -100,8 +100,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// Live Mission Header Tag
-                      const Text(
-                        "LIVE MISSION",
+                      Text(
+                        "liveMission".tr,
                         style: TextStyle(
                           color: AppColors.yellow,
                           fontSize: 11,
@@ -160,7 +160,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
                       /// Event Description
                       Text(
-                        event.briefing ?? "No description provided.",
+                        event.briefing ?? "noDescriptionProvided".tr,
                         style: const TextStyle(
                           color: Colors.white60,
                           fontSize: 13,
@@ -204,7 +204,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             onTap: () => showEventCommentSheet(context, event),
                             child: Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.chat_bubble_outline,
                                   color: Colors.white70,
                                   size: 20,
@@ -228,7 +228,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                               shareEventLink(event);
                             },
                             child: Row(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.share_outlined,
                                   color: Colors.white70,
@@ -236,7 +236,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                 ),
                                 SizedBox(width: 6),
                                 Text(
-                                  "SHARE",
+                                  "share".tr,
                                   style: TextStyle(
                                     color: Colors.white70,
                                     fontSize: 12,
@@ -267,7 +267,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                 /// Deployment Date Row
                                 _buildLogisticsRow(
                                   icon: Icons.calendar_today_outlined,
-                                  label: 'DEPLOYMENT DATE',
+                                  label: 'deploymentDate'.tr,
                                   value: date,
                                 ),
                                 const SizedBox(height: 16),
@@ -275,7 +275,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                 /// Time Window Row
                                 _buildLogisticsRow(
                                   icon: Icons.access_time,
-                                  label: 'TIME_WINDOW',
+                                  label: 'timeWindow'.tr,
                                   value: timeWindow,
                                 ),
                                 const SizedBox(height: 16),
@@ -283,7 +283,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                 /// Location Row
                                 _buildLogisticsRow(
                                   icon: Icons.location_on_outlined,
-                                  label: 'LOCATION',
+                                  label: 'location'.tr,
                                   value: location,
                                 ),
                               ],

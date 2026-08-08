@@ -22,9 +22,9 @@ class SpotPostScreen extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close, color: Colors.white),
           ),
-          title: const Text(
-            "CREATE SPOT",
-            style: TextStyle(
+          title: Text(
+            "spotPost".tr,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w900,
@@ -51,7 +51,7 @@ class SpotPostScreen extends StatelessWidget {
                             homeCtrl.spotSelectedImage.value!,
                             fit: BoxFit.cover,
                           )
-                        : const Center(
+                        : Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -62,7 +62,7 @@ class SpotPostScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  "ADD SPOT PHOTO",
+                                  "addSpotPhoto".tr,
                                   style: TextStyle(
                                     color: AppColors.yellow,
                                     fontSize: 10,
@@ -79,9 +79,9 @@ class SpotPostScreen extends StatelessWidget {
             ),
 
             /// ── SECTION 1: VEHICLE IDENTIFICATION ──────────────────────────
-            const _SectionHeader("VEHICLE IDENTIFICATION"),
+            _SectionHeader("vehicleIdentification".tr),
 
-            const _FieldLabel("LICENSE PLATE"),
+            _FieldLabel("licensePlate".tr),
             const SizedBox(height: 6),
             _CustomInputRow(
               controller: homeCtrl.spotLicensePlateCtrl,
@@ -93,7 +93,7 @@ class SpotPostScreen extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              hint: "ENTER PLATE ID",
+              hint: "enterPlateId".tr,
             ),
 
             const SizedBox(height: 14),
@@ -103,7 +103,7 @@ class SpotPostScreen extends StatelessWidget {
             _CustomInputRow(
               controller: homeCtrl.spotRegionCtrl,
               icon: const Icon(Icons.public, color: AppColors.yellow, size: 20),
-              hint: "SELECT REGION",
+              hint: "selectRegion".tr,
             ),
 
             const SizedBox(height: 14),
@@ -124,7 +124,7 @@ class SpotPostScreen extends StatelessWidget {
             const _SectionHeader("SPECIFICATION OVERRIDE"),
 
             _SpecBox(
-              label: "ENGINE",
+              label: "engine".tr,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -137,8 +137,8 @@ class SpotPostScreen extends StatelessWidget {
                       fontWeight: FontWeight.w900,
                       letterSpacing: 1.5,
                     ),
-                    decoration: const InputDecoration(
-                      hintText: "ENGINE",
+                    decoration: InputDecoration(
+                      hintText: "engine".tr,
                       hintStyle: TextStyle(
                         color: AppColors.yellow,
                         fontSize: 22,
@@ -155,7 +155,7 @@ class SpotPostScreen extends StatelessWidget {
             ),
 
             _SpecBox(
-              label: "POWER (HP)",
+              label: "powerHp".tr,
               child: Row(
                 children: [
                   const Icon(Icons.flash_on, color: AppColors.yellow, size: 20),
@@ -169,8 +169,8 @@ class SpotPostScreen extends StatelessWidget {
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
-                      decoration: const InputDecoration(
-                        hintText: "E.G. 525",
+                      decoration: InputDecoration(
+                        hintText: "eg525".tr,
                         hintStyle: TextStyle(
                           color: Colors.white38,
                           fontSize: 14,
@@ -232,7 +232,7 @@ class SpotPostScreen extends StatelessWidget {
                     child: Text(
                       homeCtrl.isPostCreating.value
                           ? "PUBLISHING..."
-                          : "PUBLISH SPOT",
+                          : "publishSpot".tr,
                       style: TextStyle(
                         color: homeCtrl.isPostCreating.value
                             ? Colors.white24

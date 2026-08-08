@@ -38,7 +38,7 @@ class VerifyOtpScreen extends StatelessWidget {
               // ── Heading ──────────────────────────────────────────────────
               Center(
                 child: CustomText(
-                  text: 'Verify Your Email',
+                  text: 'verifyEmail'.tr,
                   color: Colors.white,
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -56,10 +56,10 @@ class VerifyOtpScreen extends StatelessWidget {
                       fontFamily: 'Barlow',
                     ),
                     children: [
-                      const TextSpan(text: 'We sent a 4-digit code to\n'),
+                      TextSpan(text: 'weSentCode'.tr),
                       TextSpan(
                         text: controller.forgotEmailController.text.isEmpty
-                            ? 'your email'
+                            ? 'yourEmail'.tr
                             : controller.forgotEmailController.text,
                         style: const TextStyle(
                           color: Color(0xffF5C400),
@@ -80,7 +80,7 @@ class VerifyOtpScreen extends StatelessWidget {
                   return _OtpBox(
                     controller: controller.otpControllers[i],
                     focusNode: controller.otpFocusNodes[i],
-                    nextFocus: i < 5 ? controller.otpFocusNodes[i + 1] : null,
+                    nextFocus: i < 3 ? controller.otpFocusNodes[i + 1] : null,
                     prevFocus: i > 0 ? controller.otpFocusNodes[i - 1] : null,
                   );
                 }),
@@ -94,7 +94,7 @@ class VerifyOtpScreen extends StatelessWidget {
                     ? const CustomLoader()
                     : CustomButton(
                         onTap: () => controller.verifyOtp(),
-                        title: 'VERIFY CODE',
+                        title: 'verifyCode'.tr.toUpperCase(),
                         fillColor: const Color(0xffF5C400),
                         textColor: Colors.black,
                         fontSize: 18,
@@ -117,9 +117,9 @@ class VerifyOtpScreen extends StatelessWidget {
                               fontSize: 14,
                             ),
                             children: [
-                              const TextSpan(text: 'Resend code in '),
+                              TextSpan(text: 'resendCodeIn'.tr),
                               TextSpan(
-                                text: '${seconds}s',
+                                  text: ' ${seconds}s',
                                 style: const TextStyle(
                                   color: Color(0xffF5C400),
                                   fontWeight: FontWeight.w600,
@@ -136,16 +136,16 @@ class VerifyOtpScreen extends StatelessWidget {
                             }
                           },
                           child: RichText(
-                            text: const TextSpan(
-                              style: TextStyle(
+                            text: TextSpan(
+                              style: const TextStyle(
                                 color: Colors.white54,
                                 fontSize: 14,
                               ),
                               children: [
-                                TextSpan(text: "Didn't receive a code? "),
+                                TextSpan(text: 'didntReceiveCode'.tr),
                                 TextSpan(
-                                  text: 'Resend',
-                                  style: TextStyle(
+                                  text: 'resend'.tr,
+                                  style: const TextStyle(
                                     color: Color(0xffF5C400),
                                     fontWeight: FontWeight.w600,
                                   ),

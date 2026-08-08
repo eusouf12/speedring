@@ -48,8 +48,8 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
             ),
             onPressed: () => Get.back(),
           ),
-          title: const Text(
-            "CLUB DETAILS",
+          title: Text(
+            "clubDetails".tr,
             style: TextStyle(
               color: AppColors.yellow,
               fontSize: 16,
@@ -148,8 +148,8 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                 controller.leaveClub(club.id!);
                               }
                             },
-                            child: const Text(
-                              "YES",
+                            child: Text(
+                              "yes".tr,
                               style: TextStyle(color: Colors.red),
                             ),
                           ),
@@ -175,55 +175,55 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                 itemBuilder: (context) {
                   if (isAdmin) {
                     return [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'edit',
                         child: Text(
-                          'Edit Group',
+                          'editGroup'.tr,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'delete',
                         child: Text(
-                          'Delete Group',
+                          'deleteGroup'.tr,
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'requests',
                         child: Text(
-                          'View Join Requests',
+                          'viewJoinRequests'.tr,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'members',
                         child: Text(
-                          'View Members',
+                          'viewMembers'.tr,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'leave',
                         child: Text(
-                          'Leave Group',
+                          'leaveGroup'.tr,
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
                     ];
                   } else {
                     return [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'members',
                         child: Text(
-                          'View Members',
+                          'viewMembers'.tr,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'leave',
                         child: Text(
-                          'Leave Group',
+                          'leaveGroup'.tr,
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
@@ -243,14 +243,14 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
           }
           final club = controller.currentClubDetail.value;
           if (club == null) {
-            return const Center(
+            return Center(
               child: Text(
-                "Club not found",
+                "clubNotFound".tr,
                 style: TextStyle(color: Colors.white),
               ),
             );
           }
-          final String clubName = club.clubName ?? "Unknown";
+          final String clubName = club.clubName ?? "unknown".tr;
           final String membersCount =
               "${club.totalMembersCount ?? club.members?.length ?? 0}";
 
@@ -363,7 +363,7 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
 
                       /// Verified Member Badge Row
                       Text(
-                        "ACTIVE MEMBERS: $membersCount",
+                        "${"activeMembers".tr} $membersCount",
                         style: const TextStyle(
                           color: Colors.white54,
                           fontSize: 12,
@@ -388,7 +388,7 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                               children: [
                                 /// Group Chat Button (solid yellow)
                                 _buildCommandButton(
-                                  label: "GROUP CHAT",
+                                  label: "groupChat".tr,
                                   icon: Icons.chat_bubble_outline,
                                   isYellow: true,
                                   onPressed: () {
@@ -399,13 +399,20 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
 
                                 /// Create Post Button
                                 _buildCommandButton(
-                                  label: "CREATE POST",
+                                  label: "createPost".tr,
                                   icon: Icons.edit_outlined,
                                   isYellow: false,
                                   onPressed: () {
                                     Get.toNamed(
                                       AppRoutes.clubGroupPostScreen,
-                                      arguments: {'id': controller.currentClubDetail.value?.id ?? ''},
+                                      arguments: {
+                                        'id':
+                                            controller
+                                                .currentClubDetail
+                                                .value
+                                                ?.id ??
+                                            '',
+                                      },
                                     );
                                   },
                                 ),
@@ -413,14 +420,19 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
 
                                 /// Share Media Button
                                 _buildCommandButton(
-                                  label: "SHARE MEDIA",
+                                  label: "shareMedia".tr,
                                   icon: Icons.photo_library_outlined,
                                   isYellow: false,
                                   onPressed: () {
                                     Get.toNamed(
                                       AppRoutes.clubGroupPostScreen,
                                       arguments: {
-                                        'id': controller.currentClubDetail.value?.id ?? '',
+                                        'id':
+                                            controller
+                                                .currentClubDetail
+                                                .value
+                                                ?.id ??
+                                            '',
                                         'mode': 'SHARE_MEDIA',
                                       },
                                     );
@@ -440,9 +452,9 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                 vertical: 3,
                               ),
                               color: Colors.black,
-                              child: const Text(
-                                "COMMAND CENTER",
-                                style: TextStyle(
+                              child: Text(
+                                "commandCenter".tr,
+                                style: const TextStyle(
                                   color: AppColors.yellow,
                                   fontSize: 9,
                                   fontWeight: FontWeight.w900,
@@ -458,10 +470,10 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                       /// Collective Feed Header
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           Text(
-                            "COLLECTIVE FEED",
-                            style: TextStyle(
+                            "collectiveFeed".tr,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w900,
@@ -469,8 +481,8 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                             ),
                           ),
                           Text(
-                            "LIVE_STREAM_v2.0",
-                            style: TextStyle(
+                            "liveStreamVersion".tr,
+                            style: const TextStyle(
                               color: Colors.white38,
                               fontSize: 9,
                               fontWeight: FontWeight.bold,
@@ -492,12 +504,12 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                         }
 
                         if (controller.clubPosts.isEmpty) {
-                          return const Center(
+                          return Center(
                             child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 40),
+                              padding: const EdgeInsets.symmetric(vertical: 40),
                               child: Text(
-                                "No posts yet. Be the first to post!",
-                                style: TextStyle(color: Colors.white54),
+                                "noPostsYet".tr,
+                                style: const TextStyle(color: Colors.white54),
                               ),
                             ),
                           );
@@ -531,7 +543,7 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                       : loc)
                                 : (categoryLabel.isNotEmpty
                                       ? categoryLabel
-                                      : 'Unknown Location');
+                                      : 'unknownLocation'.tr);
                             final imageUrl =
                                 post.media != null && post.media!.isNotEmpty
                                 ? post.media!.first.url ?? ''
@@ -576,7 +588,7 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                     ShareParams(
                                       text:
                                           "Check out this post on Speedring:\n\n$postLink",
-                                      subject: "Speedring Post",
+                                      subject: "sharePostSubject".tr,
                                     ),
                                   );
                                 },

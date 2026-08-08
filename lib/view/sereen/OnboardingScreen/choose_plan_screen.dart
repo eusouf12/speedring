@@ -91,16 +91,16 @@ class ChoosePlanScreen extends StatelessWidget {
 
               return Column(
                 children: [
-                  const CustomText(
-                    text: 'Choose Your Plan',
+                  CustomText(
+                    text: 'choosePlan'.tr,
                     color: Colors.white,
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 4),
-                  const CustomText(
-                    text: 'Start your motorsport journey.',
+                  CustomText(
+                    text: 'startJourney'.tr,
                     color: Colors.white54,
                     fontSize: 13,
                     textAlign: TextAlign.center,
@@ -108,10 +108,10 @@ class ChoosePlanScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   if (setupController.plansList.isEmpty) ...[
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                       child: CustomText(
-                        text: 'No plans available.',
+                        text: 'noPlans'.tr,
                         color: Colors.white54,
                         fontSize: 14,
                       ),
@@ -167,7 +167,7 @@ class ChoosePlanScreen extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: CustomButton(
-              title: 'Continue',
+              title: 'continue'.tr,
               height: 56,
               borderRadius: 30,
               isLoading: setupController.isBuyPlanLoading.value,
@@ -209,8 +209,8 @@ class ChoosePlanScreen extends StatelessWidget {
 
         const SizedBox(height: 10),
 
-        const CustomText(
-          text: 'CHANGE ANYTIME IN SETTINGS',
+        CustomText(
+          text: 'changeAnytime'.tr,
           color: Colors.white38,
           fontSize: 10,
           fontWeight: FontWeight.w500,
@@ -456,8 +456,8 @@ class _ProBadgeRow extends StatelessWidget {
             border: Border.all(color: AppColors.yellow, width: 0.8),
             borderRadius: BorderRadius.circular(4),
           ),
-          child: const CustomText(
-            text: 'PRO BADGE',
+          child: CustomText(
+            text: 'proBadge'.tr,
             color: AppColors.yellow,
             fontSize: 9,
             fontWeight: FontWeight.bold,

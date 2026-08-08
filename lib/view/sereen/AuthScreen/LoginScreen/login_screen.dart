@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_images/app_images.dart';
+import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_image/custom_image.dart';
@@ -10,6 +11,7 @@ import 'package:speedring/view/components/custom_loader/custom_loader.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_text_field/custom_text_field.dart';
 import 'package:speedring/view/sereen/AuthScreen/controller/auth_controller.dart';
+import 'package:speedring/view/language/language_helper.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -21,224 +23,258 @@ class LoginScreen extends StatelessWidget {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Form(
-            key: controller.formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ── Logo ────────────────────────────────────────────────
-                CustomImage(
-                  imageSrc: AppImages.splashLogo,
-                  imageType: ImageType.png,
-                  height: 180,
-                  width: double.infinity,
-                  fit: BoxFit.contain,
-                ),
-
-                // ── Welcome back ────────────────────────────────────────
-                Center(
-                  child: CustomText(
-                    text: 'Welcome Back',
-                    color: Colors.white,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Center(
-                  child: CustomText(
-                    text: 'Log in to continue your motorsport \njourney.',
-                    color: Colors.white54,
-                    fontSize: 15,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    fontFamily: "Barlow",
-                  ),
-                ),
-
-                const SizedBox(height: 36),
-
-                // ── Email label ──────────────────────────────────────────
-                CustomText(
-                  text: 'EMAIL OR USERNAME',
-                  color: Colors.white60,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.4,
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 8),
-                CustomTextField(
-                  textEditingController: controller.emailController,
-                  hintText: 'driver@speedring.com',
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.all(14),
-                    child: Icon(
-                      Icons.mail_outline_rounded,
-                      color: Colors.white38,
-                      size: 20,
-                    ),
-                  ),
-                  validator: (v) {
-                    if (v == null || v.isEmpty) return 'Enter your email';
-                    if (!GetUtils.isEmail(v)) return 'Enter a valid email';
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 20),
-
-                // ── Password label + forgot ──────────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomText(
-                      text: 'PASSWORD',
-                      color: Colors.white60,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.4,
-                      textAlign: TextAlign.left,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.toNamed(AppRoutes.forgotPasswordScreen);
-                      },
-                      child: CustomText(
-                        text: 'Forgot?',
-                        color: const Color(0xffF5C400),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                CustomTextField(
-                  textEditingController: controller.passwordController,
-                  hintText: '••••••••',
-                  isPassword: true,
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.all(14),
-                    child: Icon(
-                      Icons.lock_outline_rounded,
-                      color: Colors.white38,
-                      size: 20,
-                    ),
-                  ),
-                  validator: (v) {
-                    if (v == null || v.isEmpty) return 'Enter your password';
-                    if (v.length < 6) return 'Minimum 6 characters';
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 32),
-
-                // ── LOGIN button ─────────────────────────────────────────
-                Obx(() {
-                  return controller.isLoading.value
-                      ? const CustomLoader()
-                      : CustomButton(
-                          onTap: () {
-                            controller.loginValidator();
-                          },
-                          title: 'LOGIN',
-                          fillColor: const Color(0xffF5C400),
-                          textColor: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          borderRadius: 16,
-                        );
-                }),
-                const SizedBox(height: 28),
-
-                // ── OR divider ───────────────────────────────────────────
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(color: Colors.white12, thickness: 1),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: CustomText(
-                        text: 'OR',
-                        color: Colors.white38,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(color: Colors.white12, thickness: 1),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 24),
-
-                // ── Continue with Google ─────────────────────────────────
-                CustomButton(
-                  onTap: () {},
-                  title: "CONTINUE WITH GOOGLE",
-                  fillColor: Color(0xFF1A1A1A),
-                  textColor: Colors.white,
-                  fontSize: 14,
-                  borderRadius: 16,
-                  isBorder: true,
-                  borderColor: Colors.white10,
-                  icon: _googleIcon(),
-                ),
-
-                const SizedBox(height: 12),
-
-                // ── Continue with Apple ──────────────────────────────────
-                CustomButton(
-                  onTap: () {},
-                  title: "CONTINUE WITH APPLE",
-                  fillColor: Color(0xFF1A1A1A),
-                  textColor: Colors.white,
-                  fontSize: 14,
-                  borderRadius: 16,
-                  isBorder: true,
-                  borderColor: Colors.white10,
-                  icon: Icon(Icons.apple, color: Colors.white, size: 22),
-                ),
-
-                const SizedBox(height: 40),
-
-                // ── Sign up prompt ───────────────────────────────────────
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomText(
-                        text: "Don't have an account? ",
-                        color: Colors.white54,
-                        fontSize: 14,
+                      // ── Logo ────────────────────────────────────────────────
+                      CustomImage(
+                        imageSrc: AppImages.splashLogo,
+                        imageType: ImageType.png,
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.contain,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Get.toNamed(AppRoutes.signupScreen);
-                        },
+
+                      // ── Welcome back ────────────────────────────────────────
+                      Center(
                         child: CustomText(
-                          text: 'Sign Up',
-                          color: const Color(0xffF5C400),
-                          fontSize: 14,
+                          text: 'welcomeBack'.tr,
+                          color: Colors.white,
+                          fontSize: 36,
                           fontWeight: FontWeight.bold,
+                          textAlign: TextAlign.center,
                         ),
                       ),
+                      const SizedBox(height: 6),
+                      Center(
+                        child: CustomText(
+                          text: 'loginSubtitle'.tr,
+                          color: Colors.white54,
+                          fontSize: 15,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          fontFamily: "Barlow",
+                        ),
+                      ),
+
+                      const SizedBox(height: 36),
+
+                      // ── Email label ──────────────────────────────────────────
+                      CustomText(
+                        text: 'emailOrUsername'.tr,
+                        color: Colors.white60,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1.4,
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(height: 8),
+                      CustomTextField(
+                        textEditingController: controller.emailController,
+                        hintText: 'driver@speedring.com',
+                        keyboardType: TextInputType.emailAddress,
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.all(14),
+                          child: Icon(
+                            Icons.mail_outline_rounded,
+                            color: Colors.white38,
+                            size: 20,
+                          ),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'emailRequired'.tr;
+                          if (!GetUtils.isEmail(v)) return 'emailValid'.tr;
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // ── Password label + forgot ──────────────────────────────
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(
+                            text: 'password'.tr,
+                            color: Colors.white60,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 1.4,
+                            textAlign: TextAlign.left,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Get.toNamed(AppRoutes.forgotPasswordScreen);
+                            },
+                            child: CustomText(
+                              text: 'forgot'.tr,
+                              color: const Color(0xffF5C400),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      CustomTextField(
+                        textEditingController: controller.passwordController,
+                        hintText: '••••••••',
+                        isPassword: true,
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.all(14),
+                          child: Icon(
+                            Icons.lock_outline_rounded,
+                            color: Colors.white38,
+                            size: 20,
+                          ),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'passwordRequired'.tr;
+                          if (v.length < 6) return 'minChar'.tr;
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 32),
+
+                      // ── LOGIN button ─────────────────────────────────────────
+                      Obx(() {
+                        return controller.isLoading.value
+                            ? const CustomLoader()
+                            : CustomButton(
+                                onTap: () {
+                                  controller.loginValidator();
+                                },
+                                title: 'login'.tr.toUpperCase(),
+                                fillColor: const Color(0xffF5C400),
+                                textColor: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                borderRadius: 16,
+                              );
+                      }),
+                      const SizedBox(height: 28),
+
+                      // ── OR divider ───────────────────────────────────────────
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Divider(color: Colors.white12, thickness: 1),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: CustomText(
+                              text: 'or'.tr.toUpperCase(),
+                              color: Colors.white38,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                          const Expanded(
+                            child: Divider(color: Colors.white12, thickness: 1),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // ── Continue with Google ─────────────────────────────────
+                      CustomButton(
+                        onTap: () {},
+                        title: "continueGoogle".tr,
+                        fillColor: const Color(0xFF1A1A1A),
+                        textColor: Colors.white,
+                        fontSize: 14,
+                        borderRadius: 16,
+                        isBorder: true,
+                        borderColor: Colors.white10,
+                        icon: _googleIcon(),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      // ── Continue with Apple ──────────────────────────────────
+                      CustomButton(
+                        onTap: () {},
+                        title: "continueApple".tr,
+                        fillColor: const Color(0xFF1A1A1A),
+                        textColor: Colors.white,
+                        fontSize: 14,
+                        borderRadius: 16,
+                        isBorder: true,
+                        borderColor: Colors.white10,
+                        icon: const Icon(Icons.apple, color: Colors.white, size: 22),
+                      ),
+
+                      const SizedBox(height: 40),
+
+                      // ── Sign up prompt ───────────────────────────────────────
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomText(
+                              text: "dontHaveAccount".tr,
+                              color: Colors.white54,
+                              fontSize: 14,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Get.toNamed(AppRoutes.signupScreen);
+                              },
+                              child: CustomText(
+                                text: 'signUp'.tr,
+                                color: const Color(0xffF5C400),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
-
-                const SizedBox(height: 24),
-              ],
-            ),
+              ),
+              Positioned(
+                top: 10,
+                right: 15,
+                child: GestureDetector(
+                  onTap: () => LanguageHelper.showLanguageDialog(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.language, color: AppColors.yellow, size: 14),
+                        const SizedBox(width: 4),
+                        CustomText(
+                          text: (Get.locale?.languageCode ?? 'en') == 'gr' ? 'DE' : 'EN',
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

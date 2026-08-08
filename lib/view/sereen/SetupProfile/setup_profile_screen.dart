@@ -34,9 +34,9 @@ class SetupProfileScreen1 extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// ── Title ─────────────────────────────────────────────
-              const Center(
+              Center(
                 child: CustomText(
-                  text: 'SET UP YOUR PROFILE',
+                  text: 'setUpProfile'.tr,
                   color: Colors.white70,
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
@@ -119,11 +119,11 @@ class SetupProfileScreen1 extends StatelessWidget {
               const SizedBox(height: 16),
 
               /// ── Bio / Driver Stats ────────────────────────────────
-              _SectionLabel(label: 'Bio / Driver Stats'),
+              _SectionLabel(label: 'bioStats'.tr),
               const SizedBox(height: 6),
               CustomTextField(
                 textEditingController: controller.bioCtrl,
-                hintText: 'Tell the paddock about your journey...',
+                hintText: 'bioHint'.tr,
                 fillColor: _cardBg,
                 maxLines: 4,
                 textAlignVertical: TextAlignVertical.top,
@@ -133,11 +133,11 @@ class SetupProfileScreen1 extends StatelessWidget {
               const SizedBox(height: 16),
 
               /// ── User Role / Identity ──────────────────────────────
-              _SectionLabel(label: 'User Role / Identity'),
+              _SectionLabel(label: 'userRole'.tr),
               const SizedBox(height: 6),
               CustomTextField(
                 textEditingController: controller.roleCtrl,
-                hintText: 'e.g., Spotter, Racer, Journalist...',
+                hintText: 'roleHint'.tr,
                 fillColor: _cardBg,
               ),
 
@@ -156,8 +156,8 @@ class SetupProfileScreen1 extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const CustomText(
-                        text: 'DISPLAY ROLE PUBLICLY',
+                      CustomText(
+                        text: 'displayRole'.tr,
                         color: Colors.white70,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -182,21 +182,21 @@ class SetupProfileScreen1 extends StatelessWidget {
               const SizedBox(height: 16),
 
               /// ── Nationality / Origin ──────────────────────────────
-              _SectionLabel(label: 'Nationality / Origin'),
+              _SectionLabel(label: 'nationality'.tr),
               const SizedBox(height: 6),
               Container(
                 decoration: BoxDecoration(
                   color: _cardBg,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: CustomTextField(hintText: 'Germany', fillColor: _cardBg),
+                child: CustomTextField(hintText: 'germany'.tr, fillColor: _cardBg),
               ),
 
               const SizedBox(height: 20),
 
               /// ── Social Telemetry ──────────────────────────────────
-              const CustomText(
-                text: 'Social Telemetry',
+              CustomText(
+                text: 'socialTelemetry'.tr,
                 color: AppColors.yellow1,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -207,25 +207,25 @@ class SetupProfileScreen1 extends StatelessWidget {
               _SocialField(
                 controller: controller.instagramCtrl,
                 icon: Icons.camera_alt_outlined,
-                hint: 'Instagram',
+                hint: 'instagram'.tr,
               ),
               const SizedBox(height: 8),
               _SocialField(
                 controller: controller.tiktokCtrl,
                 icon: Icons.music_note_outlined,
-                hint: 'TikTok',
+                hint: 'tiktok'.tr,
               ),
               const SizedBox(height: 8),
               _SocialField(
                 controller: controller.youtubeCtrl,
                 icon: Icons.play_circle_outline,
-                hint: 'YouTube',
+                hint: 'youtube'.tr,
               ),
               const SizedBox(height: 8),
               _SocialField(
                 controller: controller.facebookCtrl,
                 icon: Icons.facebook_outlined,
-                hint: 'Facebook',
+                hint: 'facebook'.tr,
               ),
 
               const SizedBox(height: 20),
@@ -290,7 +290,7 @@ class SetupProfileScreen1 extends StatelessWidget {
 
               /// ── Continue Button ───────────────────────────────────
               CustomButton(
-                title: 'CONTINUE',
+                title: 'continueBtn'.tr,
                 height: 56,
                 borderRadius: 30,
                 fillColor: AppColors.yellow,

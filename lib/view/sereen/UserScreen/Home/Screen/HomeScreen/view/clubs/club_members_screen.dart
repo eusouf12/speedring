@@ -32,8 +32,8 @@ class ClubMembersScreen extends StatelessWidget {
             icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
             onPressed: () => Get.back(),
           ),
-          title: const CustomText(
-            text: "CLUB MEMBERS",
+          title: CustomText(
+            text: "clubMembers".tr.toUpperCase(),
             color: AppColors.yellow,
             fontSize: 16,
             fontWeight: FontWeight.w900,
@@ -59,9 +59,9 @@ class ClubMembersScreen extends StatelessWidget {
           }
 
           if (controller.clubMembersList.isEmpty) {
-            return const Center(
+            return Center(
               child: CustomText(
-                text: "No members found",
+                text: "noMembersFound".tr,
                 color: Colors.white54,
                 fontSize: 14,
               ),
@@ -121,7 +121,7 @@ class ClubMembersScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           CustomText(
-                            text: role,
+                            text: role.toString().tr.toUpperCase(),
                             color: AppColors.yellow,
                             fontSize: 10,
                             fontWeight: FontWeight.w900,
@@ -140,25 +140,25 @@ class ClubMembersScreen extends StatelessWidget {
                             Get.dialog(
                               AlertDialog(
                                 backgroundColor: const Color(0xff181818),
-                                title: const Text(
-                                  "Change Role?",
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                title: Text(
+                                  "changeRoleQuest".tr,
+                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                                 ),
                                 content: Text(
-                                  "Are you sure you want to make $name a $newRole?",
+                                  "changeRoleConfirm".trParams({'name': name, 'role': newRole.tr}),
                                   style: const TextStyle(color: Colors.white70),
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Get.back(),
-                                    child: const Text("CANCEL", style: TextStyle(color: Colors.white54)),
+                                    child: Text("cancel".tr.toUpperCase(), style: const TextStyle(color: Colors.white54)),
                                   ),
                                   TextButton(
                                     onPressed: () {
                                       Get.back();
                                       controller.changeMemberRole(clubId: clubId, memberId: memberId, role: newRole);
                                     },
-                                    child: const Text("YES", style: TextStyle(color: AppColors.yellow)),
+                                    child: Text("yes".tr.toUpperCase(), style: const TextStyle(color: AppColors.yellow)),
                                   ),
                                 ],
                               ),
@@ -167,25 +167,25 @@ class ClubMembersScreen extends StatelessWidget {
                             Get.dialog(
                               AlertDialog(
                                 backgroundColor: const Color(0xff181818),
-                                title: const Text(
-                                  "Remove Member?",
-                                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                title: Text(
+                                  "removeMemberQuest".tr,
+                                  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                                 ),
                                 content: Text(
-                                  "Are you sure you want to remove $name from this club?",
+                                  "removeMemberConfirm".trParams({'name': name}),
                                   style: const TextStyle(color: Colors.white70),
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Get.back(),
-                                    child: const Text("CANCEL", style: TextStyle(color: Colors.white54)),
+                                    child: Text("cancel".tr.toUpperCase(), style: const TextStyle(color: Colors.white54)),
                                   ),
                                   TextButton(
                                     onPressed: () {
                                       Get.back();
                                       controller.removeClubMember(clubId: clubId, memberId: memberId);
                                     },
-                                    child: const Text("YES", style: TextStyle(color: Colors.red)),
+                                    child: Text("yes".tr.toUpperCase(), style: const TextStyle(color: Colors.red)),
                                   ),
                                 ],
                               ),
@@ -196,15 +196,15 @@ class ClubMembersScreen extends StatelessWidget {
                           PopupMenuItem(
                             value: 'toggle_role',
                             child: Text(
-                              role == 'ADMIN' ? 'Make Member' : 'Make Admin',
+                              role == 'ADMIN' ? 'makeMember'.tr : 'makeAdmin'.tr,
                               style: const TextStyle(color: Colors.white),
                             ),
                           ),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'remove',
                             child: Text(
-                              'Remove User',
-                              style: TextStyle(color: Colors.red),
+                              'removeUser'.tr,
+                              style: const TextStyle(color: Colors.red),
                             ),
                           ),
                         ],

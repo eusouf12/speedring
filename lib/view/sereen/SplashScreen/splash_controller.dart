@@ -21,10 +21,10 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
 
   // ── Constants ──
   final List<String> statusMessages = const [
-    'INITIALIZING TELEMETRY',
-    'CONNECTING TO NETWORK',
-    'LOADING DATA',
-    'READY TO RACE',
+    'initializingTelemetry',
+    'connectingToNetwork',
+    'loadingData',
+    'readyToRace',
   ];
 
   Timer? _statusTimer;

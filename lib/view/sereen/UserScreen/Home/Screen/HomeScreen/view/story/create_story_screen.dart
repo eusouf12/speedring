@@ -37,7 +37,7 @@ class CreateStoryScreen extends StatelessWidget {
               const SizedBox(height: 20),
               _SheetOption(
                 icon: Icons.photo_library_outlined,
-                label: "Choose Photo",
+                label: "choosePhoto".tr,
                 onTap: () {
                   Navigator.pop(context);
                   controller.pickMedia(isVideoVal: false);
@@ -46,7 +46,7 @@ class CreateStoryScreen extends StatelessWidget {
               const SizedBox(height: 12),
               _SheetOption(
                 icon: Icons.camera_alt_outlined,
-                label: "Take Photo",
+                label: "takePhoto".tr,
                 onTap: () {
                   Navigator.pop(context);
                   controller.pickMedia(isVideoVal: false, fromCamera: true);
@@ -55,7 +55,7 @@ class CreateStoryScreen extends StatelessWidget {
               const SizedBox(height: 12),
               _SheetOption(
                 icon: Icons.videocam_outlined,
-                label: "Choose Video",
+                label: "chooseVideo".tr,
                 onTap: () {
                   Navigator.pop(context);
                   controller.pickMedia(isVideoVal: true);
@@ -112,9 +112,9 @@ class EmptyUploadView extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.close, color: Colors.white),
         ),
-        title: const Text(
-          "Create Story",
-          style: TextStyle(
+        title: Text(
+          "createStory".tr,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -151,9 +151,9 @@ class EmptyUploadView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  "Upload a photo or video",
-                  style: TextStyle(
+                Text(
+                  "uploadPhotoOrVideoHint".tr,
+                  style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -161,8 +161,8 @@ class EmptyUploadView extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  "Tap to browse gallery",
-                  style: TextStyle(color: Colors.white30, fontSize: 11),
+                  "tapToBrowseGallery".tr,
+                  style: const TextStyle(color: Colors.white30, fontSize: 11),
                 ),
               ],
             ),
@@ -217,15 +217,15 @@ class PreviewView extends StatelessWidget {
               ),
             ),
           ),
-          title: const Text(
-            "Create Story",
-            style: TextStyle(
-              color: AppColors.yellow,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
+          title: Text(
+          "createStory".tr,
+          style: const TextStyle(
+            color: AppColors.yellow,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
           ),
+        ),
         ),
 
         body: Obx(
@@ -397,18 +397,18 @@ class PreviewView extends StatelessWidget {
                   bottom: MediaQuery.of(context).padding.bottom + 90,
                   child: Column(
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "VIDEO TRIMMER",
-                            style: TextStyle(
+                            "videoTrimmer".tr.toUpperCase(),
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text(
+                          const Text(
                             "00:15 / 00:30",
                             style: TextStyle(
                               color: Colors.white,
@@ -444,20 +444,20 @@ class PreviewView extends StatelessWidget {
                           color: Colors.white12,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.equalizer,
                                   color: Colors.white,
                                   size: 16,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
-                                  "AUDIO MIXER",
-                                  style: TextStyle(
+                                  "audioMixer".tr.toUpperCase(),
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
@@ -465,7 +465,7 @@ class PreviewView extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Icon(
+                            const Icon(
                               Icons.arrow_forward_ios,
                               color: Colors.white,
                               size: 12,
@@ -484,7 +484,7 @@ class PreviewView extends StatelessWidget {
                 bottom: MediaQuery.of(context).padding.bottom + 24,
                 child: CustomButton(
                   onTap: isCreating ? () {} : onShare,
-                  title: isCreating ? "SHARING..." : "SHARE STORY",
+                  title: isCreating ? "sharing".tr.toUpperCase() : "shareStory".tr.toUpperCase(),
                   borderRadius: 30,
                 ),
               ),
@@ -585,9 +585,9 @@ void _showMusicSelectionSheet(BuildContext context, HomeController controller) {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            "Music",
-            style: TextStyle(
+          Text(
+            "music".tr,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -598,7 +598,7 @@ void _showMusicSelectionSheet(BuildContext context, HomeController controller) {
             onChanged: (val) => controller.searchMusic(val),
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              hintText: "Search music",
+              hintText: "searchMusicHint".tr,
               hintStyle: const TextStyle(color: Colors.white54),
               prefixIcon: const Icon(Icons.search, color: Colors.white54),
               filled: true,
@@ -618,10 +618,10 @@ void _showMusicSelectionSheet(BuildContext context, HomeController controller) {
                 );
               }
               if (controller.musicList.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
-                    "No music found",
-                    style: TextStyle(color: Colors.white54),
+                    "noMusicFound".tr,
+                    style: const TextStyle(color: Colors.white54),
                   ),
                 );
               }
@@ -711,9 +711,9 @@ void _showLocationSelectionSheet(
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            "Location",
-            style: TextStyle(
+          Text(
+            "location".tr,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -724,7 +724,7 @@ void _showLocationSelectionSheet(
             onChanged: (val) => controller.searchLocation(val),
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              hintText: "Search location",
+              hintText: "searchLocationHint".tr,
               hintStyle: const TextStyle(color: Colors.white54),
               prefixIcon: const Icon(Icons.search, color: Colors.white54),
               filled: true,
@@ -746,9 +746,9 @@ void _showLocationSelectionSheet(
               ),
               child: const Icon(Icons.my_location, color: AppColors.yellow),
             ),
-            title: const Text(
-              "Use Current Location",
-              style: TextStyle(
+            title: Text(
+              "useCurrentLocation".tr,
+              style: const TextStyle(
                 color: AppColors.yellow,
                 fontWeight: FontWeight.bold,
               ),
@@ -766,10 +766,10 @@ void _showLocationSelectionSheet(
                 );
               }
               if (controller.locationList.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
-                    "Search for a location",
-                    style: TextStyle(color: Colors.white54),
+                    "searchForLocationHint".tr,
+                    style: const TextStyle(color: Colors.white54),
                   ),
                 );
               }

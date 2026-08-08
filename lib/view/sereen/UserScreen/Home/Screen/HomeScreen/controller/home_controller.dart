@@ -193,7 +193,9 @@ class HomeController extends GetxController {
       return;
     }
 
-    final originalPost = globalIndex != -1 ? postsList[globalIndex] : clubPosts[clubIndex];
+    final originalPost = globalIndex != -1
+        ? postsList[globalIndex]
+        : clubPosts[clubIndex];
     final alreadyLiked = originalPost.isReacted ?? false;
 
     List<PostReact> updatedReacts = List.from(originalPost.reacts ?? []);
@@ -287,7 +289,8 @@ class HomeController extends GetxController {
             updatedAt: originalPost.updatedAt,
           );
 
-          if (globalIndex != -1) postsList[globalIndex] = backendUpdatedPostModel;
+          if (globalIndex != -1)
+            postsList[globalIndex] = backendUpdatedPostModel;
           if (clubIndex != -1) clubPosts[clubIndex] = backendUpdatedPostModel;
           if (currentPostDetail.value?.id == postId) {
             currentPostDetail.value = backendUpdatedPostModel;
@@ -675,7 +678,10 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> pickClubGroupMedia(ImageSource source, {bool isVideo = false}) async {
+  Future<void> pickClubGroupMedia(
+    ImageSource source, {
+    bool isVideo = false,
+  }) async {
     try {
       final ImagePicker picker = ImagePicker();
       XFile? pickedFile;

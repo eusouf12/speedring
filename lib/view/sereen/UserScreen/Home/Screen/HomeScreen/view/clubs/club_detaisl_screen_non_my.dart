@@ -33,8 +33,8 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
         backgroundColor: Colors.black,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          "CLUB DETAILS",
+        title: Text(
+          "clubDetails".tr,
           style: TextStyle(
             color: Colors.amber,
             fontWeight: FontWeight.bold,
@@ -52,10 +52,10 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
 
         final club = controller.currentClubDetail.value;
         if (club == null) {
-          return const Center(
+          return Center(
             child: Text(
-              "Club details not found",
-              style: TextStyle(color: Colors.white54),
+              "clubDetailsNotFound".tr,
+              style: const TextStyle(color: Colors.white54),
             ),
           );
         }
@@ -139,7 +139,7 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  club.clubName?.toUpperCase() ?? "UNKNOWN CLUB",
+                  club.clubName?.toUpperCase() ?? "unknownClub".tr,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 26,
@@ -172,16 +172,16 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.check_circle,
                               color: AppColors.yellow,
                               size: 20,
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text(
-                              "JOINED",
-                              style: TextStyle(
+                              "joinedStatus".tr,
+                              style: const TextStyle(
                                 color: AppColors.yellow,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
@@ -204,16 +204,16 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.access_time_filled,
                               color: AppColors.yellow,
                               size: 20,
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text(
-                              "PENDING REQUEST",
-                              style: TextStyle(
+                              "pendingRequestStatus".tr,
+                              style: const TextStyle(
                                 color: AppColors.yellow,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
@@ -248,9 +248,9 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
                                     strokeWidth: 2,
                                   ),
                                 )
-                              : const Text(
-                                  "JOIN CLUB",
-                                  style: TextStyle(
+                              : Text(
+                                  "joinClub".tr,
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
@@ -275,9 +275,9 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          const Text(
-                            "MEMBERS",
-                            style: TextStyle(color: Colors.grey, fontSize: 10),
+                          Text(
+                            "membersCountLabel".tr,
+                            style: const TextStyle(color: Colors.grey, fontSize: 10),
                           ),
                           const SizedBox(height: 5),
                           Text(
@@ -297,9 +297,9 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          const Text(
-                            "ACCESS",
-                            style: TextStyle(color: Colors.grey, fontSize: 10),
+                          Text(
+                            "accessLabel".tr,
+                            style: const TextStyle(color: Colors.grey, fontSize: 10),
                           ),
                           const SizedBox(height: 5),
                           Text(
@@ -328,16 +328,16 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "About",
-                      style: TextStyle(
+                    Text(
+                      "aboutLabel".tr,
+                      style: const TextStyle(
                         color: Colors.amber,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      club.description ?? "No description available.",
+                      club.description ?? "noDescriptionAvailable".tr,
                       style: const TextStyle(
                         color: Colors.white70,
                         height: 1.6,

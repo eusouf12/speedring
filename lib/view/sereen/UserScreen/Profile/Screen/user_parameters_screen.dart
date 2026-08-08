@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/view/language/language_helper.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
 import '../../../../../core/app_routes/app_routes.dart';
@@ -27,14 +28,14 @@ class UserParametersScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               CustomText(
-                text: "SYSTEM CONFIGURATION",
+                text: "systemConfig".tr.toUpperCase(),
                 color: AppColors.yellow,
                 fontSize: 8.sp,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.0,
               ),
               CustomText(
-                text: "USER PARAMETERS",
+                text: "userParams".tr.toUpperCase(),
                 color: Colors.white,
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w900,
@@ -76,15 +77,15 @@ class UserParametersScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          text: "DRIVER PROFILE",
+                          text: "driverProfile".tr.toUpperCase(),
                           color: Colors.white38,
                           fontSize: 8.sp,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.5,
                         ),
                         SizedBox(height: 4.h),
-                        const CustomText(
-                          text: "PRO CERTIFIED",
+                        CustomText(
+                          text: "proCertified".tr.toUpperCase(),
                           color: AppColors.yellow,
                           fontSize: 14,
                           fontWeight: FontWeight.w900,
@@ -108,8 +109,16 @@ class UserParametersScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     _buildSettingsTile(
+                      icon: Icons.language,
+                      title: "appLanguageOption".tr.toUpperCase(),
+                      onTap: () {
+                        LanguageHelper.showLanguageDialog(context);
+                      },
+                      showDivider: true,
+                    ),
+                    _buildSettingsTile(
                       icon: Icons.settings_outlined,
-                      title: "CHANGE PASSWORD",
+                      title: "changePasswordOption".tr.toUpperCase(),
                       onTap: () {
                         Get.toNamed(AppRoutes.changePasswordScreen);
                       },
@@ -117,14 +126,14 @@ class UserParametersScreen extends StatelessWidget {
                     ),
                     _buildSettingsTile(
                       icon: Icons.tune,
-                      title: "PERSONALIZE YOUR INTERTEST    ",
+                      title: "personalizeInterest".tr.toUpperCase(),
                       onTap: () =>
                           Get.toNamed(AppRoutes.personalizeInterestScreen),
                       showDivider: true,
                     ),
                     _buildSettingsTile(
                       icon: Icons.workspace_premium_outlined,
-                      title: "SUBSCRIPTION",
+                      title: "subscription".tr.toUpperCase(),
                       onTap: () {
                         Get.toNamed(AppRoutes.choosePlanScreen);
                       },
@@ -132,7 +141,7 @@ class UserParametersScreen extends StatelessWidget {
                     ),
                     _buildSettingsTile(
                       icon: Icons.gavel_outlined,
-                      title: "TERMS & CONDITIONS",
+                      title: "termsConditions".tr.toUpperCase(),
                       onTap: () {
                         Get.toNamed(AppRoutes.termsScreen);
                       },
@@ -140,7 +149,7 @@ class UserParametersScreen extends StatelessWidget {
                     ),
                     _buildSettingsTile(
                       icon: Icons.security_outlined,
-                      title: "PRIVACY POLICY",
+                      title: "privacyPolicyOption".tr.toUpperCase(),
                       onTap: () {
                         Get.toNamed(AppRoutes.privacyScreen);
                       },
@@ -148,7 +157,7 @@ class UserParametersScreen extends StatelessWidget {
                     ),
                     _buildSettingsTile(
                       icon: Icons.help_outline,
-                      title: "HELP & SUPPORT",
+                      title: "helpSupport".tr.toUpperCase(),
                       onTap: () {
                         Get.toNamed(AppRoutes.helpSupportScreen);
                       },
@@ -156,7 +165,7 @@ class UserParametersScreen extends StatelessWidget {
                     ),
                     _buildSettingsTile(
                       icon: Icons.info_outline,
-                      title: "ABOUT",
+                      title: "about".tr.toUpperCase(),
                       onTap: () {
                         Get.toNamed(AppRoutes.aboutScreen);
                       },
@@ -190,9 +199,9 @@ class UserParametersScreen extends StatelessWidget {
                         size: 18,
                       ),
                       SizedBox(width: 8.w),
-                      const CustomText(
-                        text: "TERMINATE SESSION",
-                        color: Color(0xffFF8A8A),
+                      CustomText(
+                        text: "terminateSession".tr.toUpperCase(),
+                        color: const Color(0xffFF8A8A),
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,

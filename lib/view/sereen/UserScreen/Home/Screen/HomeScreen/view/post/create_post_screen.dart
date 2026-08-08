@@ -81,7 +81,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         backgroundColor: Colors.black,
 
         /// ── AppBar ─────────────────────────────────────────────────────────
-        appBar: CustomRoyelAppbar(titleName: "Create Post", leftIcon: true),
+        appBar: CustomRoyelAppbar(titleName: "createPost".tr, leftIcon: true),
 
         body: Column(
           children: [
@@ -97,6 +97,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     ...List.generate(filteredTypes.length, (i) {
                       final type = filteredTypes[i];
                       final isSelected = _selectedIndex == i;
+                      final String translatedTitle = type.title == 'SESSION POST' ? 'sessionPost'.tr.toUpperCase()
+                          : type.title == 'SPOT POST' ? 'spotPost'.tr.toUpperCase()
+                          : type.title == 'TRACK UPDATE' ? 'trackUpdate'.tr.toUpperCase()
+                          : type.title == 'CLUB POST' ? 'clubPost'.tr.toUpperCase()
+                          : 'businessPost'.tr.toUpperCase();
+                      final String translatedDesc = type.title == 'SESSION POST' ? 'sessionPostDesc'.tr
+                          : type.title == 'SPOT POST' ? 'spotPostDesc'.tr
+                          : type.title == 'TRACK UPDATE' ? 'trackUpdateDesc'.tr
+                          : type.title == 'CLUB POST' ? 'clubPostDesc'.tr
+                          : 'businessPostDesc'.tr;
                       return GestureDetector(
                         onTap: () => setState(() => _selectedIndex = i),
                         child: AnimatedContainer(
@@ -143,7 +153,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      type.title,
+                                      translatedTitle,
                                       style: TextStyle(
                                         color: isSelected
                                             ? AppColors.yellow
@@ -155,7 +165,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      type.description,
+                                      translatedDesc,
                                       style: const TextStyle(
                                         color: Colors.white38,
                                         fontSize: 11,
@@ -236,7 +246,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          "CONTINUE  →",
+                          "${'continueBtn'.tr}  →",
                           style: TextStyle(
                             color: _selectedIndex != null
                                 ? Colors.black
@@ -252,10 +262,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
                   const SizedBox(height: 12),
 
-                  const Text(
-                    "SELECT A CATEGORY TO PROCEED TO THE EDITOR",
+                  Text(
+                    "selectCategoryToProceed".tr.toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white24,
                       fontSize: 9,
                       letterSpacing: 1,

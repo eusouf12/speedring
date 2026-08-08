@@ -185,7 +185,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             onPressed: () => Get.back(),
           ),
           title: Text(
-            "CREATE EVENT",
+            "createEvent".tr,
             style: TextStyle(
               color: AppColors.yellow,
               fontSize: 13.sp,
@@ -298,7 +298,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   validator: (v) {
                     if (v == null || v.trim().isEmpty) return "Required";
                     if (int.tryParse(v.trim()) == null) {
-                      return "Must be a number";
+                      return "mustBeNumber".tr;
                     }
                     return null;
                   },
@@ -316,7 +316,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 SizedBox(height: 6.h),
                 _buildTextField(
                   controller: _briefingCtrl,
-                  hint: "EXECUTE HIGH-INTENSITY TECHNICAL SEQUENCES...",
+                  hint: "briefingHint".tr,
                   maxLines: 5,
                   validator: (v) =>
                       v == null || v.trim().isEmpty ? "Required" : null,
@@ -346,7 +346,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               ),
                             )
                           : Text(
-                              "CREATE YOUR EVENT",
+                              "createYourEvent".tr,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 12.sp,
@@ -408,7 +408,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            "CHANGE",
+                            "change".tr,
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 9.sp,
@@ -431,7 +431,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    "TAP TO UPLOAD BANNER",
+                    "tapToUploadBanner".tr,
                     style: TextStyle(
                       color: Colors.white24,
                       fontSize: 9.sp,
@@ -441,7 +441,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    "RECOMMENDED: 16:9 RATIO",
+                    "recommendedRatio".tr,
                     style: TextStyle(
                       color: Colors.white12,
                       fontSize: 8.sp,
@@ -620,12 +620,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w700,
                 ),
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: "PUBLIC (OPEN TO ALL)",
-                    child: Text("PUBLIC (OPEN TO ALL)"),
+                    child: Text("publicOpenToAll".tr),
                   ),
-                  DropdownMenuItem(value: "PRIVATE", child: Text("PRIVATE")),
+                  DropdownMenuItem(value: "PRIVATE", child: Text("private".tr)),
                 ],
                 onChanged: (val) =>
                     setState(() => _accessType = val ?? _accessType),
