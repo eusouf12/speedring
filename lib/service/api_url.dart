@@ -1,6 +1,8 @@
 class ApiUrl {
-  static const String baseUrl = "http://10.10.28.90:4050/api/v1";
-  static const String imageUrl = "http://10.10.28.90:4050";
+  // static const String baseUrl = "http://10.10.28.90:4050/api/v1";
+  // static const String imageUrl = "http://10.10.28.90:4050";
+  static const String baseUrl = "http://10.0.2.2:4050/api/v1";
+  static const String imageUrl = "http://10.0.2.2:4050";
   static String socketUrl = baseUrl;
   static String mapKey = "AIzaSyCHBKvR2Wgc4eF53nYTlGYxULSQuVpb9t4";
 
@@ -126,39 +128,71 @@ class ApiUrl {
     }
     return url;
   }
-  static String updateClub({required String clubId}) => "/clubs/update-club/$clubId";
-  static String deleteClub({required String clubId}) => "/clubs/delete-club/$clubId";
+
+  static String updateClub({required String clubId}) =>
+      "/clubs/update-club/$clubId";
+  static String deleteClub({required String clubId}) =>
+      "/clubs/delete-club/$clubId";
   static String joinClub({required String clubId}) => "/clubs/$clubId/join";
   static String leaveClub({required String clubId}) => "/clubs/$clubId/leave";
-  static String getSingleClub({required String clubId}) => "/clubs/view-club/$clubId";
-  static String changeRole({required String clubId}) => "/clubs/$clubId/change-role";
-  static String removeMember({required String clubId, required String memberId}) => "/clubs/$clubId/remove-member/$memberId";
-  static String handleRequest({required String clubId}) => "/clubs/$clubId/handle-request";
+  static String getSingleClub({required String clubId}) =>
+      "/clubs/view-club/$clubId";
+  static String changeRole({required String clubId}) =>
+      "/clubs/$clubId/change-role";
+  static String removeMember({
+    required String clubId,
+    required String memberId,
+  }) => "/clubs/$clubId/remove-member/$memberId";
+  static String handleRequest({required String clubId}) =>
+      "/clubs/$clubId/handle-request";
   static String shareClub({required String clubId}) => "/clubs/$clubId/share";
-  static String createClubPost({required String clubId}) => "/clubs/$clubId/create-post";
-  static String getClubMembers({required String clubId}) => "/clubs/$clubId/members";
-  static String getJoinRequests({required String clubId}) => "/clubs/$clubId/join-requests";
+  static String createClubPost({required String clubId}) =>
+      "/clubs/$clubId/create-post";
+  static String getClubMembers({required String clubId}) =>
+      "/clubs/$clubId/members";
+  static String getJoinRequests({required String clubId}) =>
+      "/clubs/$clubId/join-requests";
 
   // static String getRecommendedCountries ({required String page}) => "/recommendations/history?page=$page&limit=10";
-  
+
   // ============ Discover =========
   static const String createDiscoverPost = "/discovers/create-discover-post";
-  static String getAllDiscoverPosts({int page = 1, int limit = 10, String searchTerm = ''}) {
-    final q = searchTerm.isNotEmpty ? '&searchTerm=${Uri.encodeComponent(searchTerm)}' : '';
+  static String getAllDiscoverPosts({
+    int page = 1,
+    int limit = 10,
+    String searchTerm = '',
+  }) {
+    final q = searchTerm.isNotEmpty
+        ? '&searchTerm=${Uri.encodeComponent(searchTerm)}'
+        : '';
     return "/discovers/get-all-discover-posts?page=$page&limit=$limit$q";
   }
-  static String editDiscoverPost({required String postId}) => "/discovers/edit-discover-post/$postId";
-  static String deleteDiscoverPost({required String postId}) => "/discovers/delete-my-post/$postId";
+
+  static String editDiscoverPost({required String postId}) =>
+      "/discovers/edit-discover-post/$postId";
+  static String deleteDiscoverPost({required String postId}) =>
+      "/discovers/delete-my-post/$postId";
 
   // ============ Videos =========
   static const String createVideoPost = "/videos/create-video-post";
-  static String getAllVideos({int page = 1, int limit = 10, String classification = '', String searchTerm = ''}) {
+  static String getAllVideos({
+    int page = 1,
+    int limit = 10,
+    String classification = '',
+    String searchTerm = '',
+  }) {
     var q = "page=$page&limit=$limit";
-    if (classification.isNotEmpty && classification != 'All') q += '&classification=${Uri.encodeComponent(classification)}';
-    if (searchTerm.isNotEmpty) q += '&searchTerm=${Uri.encodeComponent(searchTerm)}';
+    if (classification.isNotEmpty && classification != 'All')
+      q += '&classification=${Uri.encodeComponent(classification)}';
+    if (searchTerm.isNotEmpty)
+      q += '&searchTerm=${Uri.encodeComponent(searchTerm)}';
     return "/videos/get-all-videos?$q";
   }
-  static String deleteVideo({required String videoId}) => "/videos/delete-video/$videoId";
-  static String shareVideo({required String videoId}) => "/videos/share-video/$videoId";
-  static String incrementVideoViews({required String videoId}) => "/videos/increment-views/$videoId";
+
+  static String deleteVideo({required String videoId}) =>
+      "/videos/delete-video/$videoId";
+  static String shareVideo({required String videoId}) =>
+      "/videos/share-video/$videoId";
+  static String incrementVideoViews({required String videoId}) =>
+      "/videos/increment-views/$videoId";
 }
