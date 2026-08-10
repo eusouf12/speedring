@@ -98,8 +98,7 @@ class DiscoverController extends GetxController {
             ? json.decode(response.body)
             : response.body;
         final res = DiscoverPostResponse.fromJson(data);
-        totalPages =
-            res.meta?.totalPage ?? 1;
+        totalPages = res.meta?.totalPage ?? 1;
         if (currentPage == 1) discoverPosts.clear();
         discoverPosts.addAll(res.data ?? []);
         currentPage++;
@@ -195,6 +194,7 @@ class DiscoverController extends GetxController {
     } catch (_) {}
   }
 
+  //======================= Discover post ================================
   Future<void> createDiscoverPost({
     required Map<String, String> fields,
     List<XFile>? mediaFiles,
