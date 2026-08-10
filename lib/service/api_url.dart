@@ -1,8 +1,8 @@
 class ApiUrl {
-  // static const String baseUrl = "http://10.10.28.90:4050/api/v1";
-  // static const String imageUrl = "http://10.10.28.90:4050";
-  static const String baseUrl = "http://10.0.2.2:4050/api/v1";
-  static const String imageUrl = "http://10.0.2.2:4050";
+  static const String baseUrl = "http://10.10.28.90:4050/api/v1";
+  static const String imageUrl = "http://10.10.28.90:4050";
+  // static const String baseUrl = "http://10.0.2.2:4050/api/v1";
+  // static const String imageUrl = "http://10.0.2.2:4050";
   static String socketUrl = baseUrl;
   static String mapKey = "AIzaSyCHBKvR2Wgc4eF53nYTlGYxULSQuVpb9t4";
 
@@ -182,15 +182,19 @@ class ApiUrl {
     String searchTerm = '',
   }) {
     var q = "page=$page&limit=$limit";
-    if (classification.isNotEmpty && classification != 'All')
+    if (classification.isNotEmpty && classification != 'All') {
       q += '&classification=${Uri.encodeComponent(classification)}';
-    if (searchTerm.isNotEmpty)
+    }
+    if (searchTerm.isNotEmpty) {
       q += '&searchTerm=${Uri.encodeComponent(searchTerm)}';
+    }
     return "/videos/get-all-videos?$q";
   }
 
   static String deleteVideo({required String videoId}) =>
       "/videos/delete-video/$videoId";
+  static String editVideo({required String videoId}) =>
+      "/videos/edit-video/$videoId";
   static String shareVideo({required String videoId}) =>
       "/videos/share-video/$videoId";
   static String incrementVideoViews({required String videoId}) =>

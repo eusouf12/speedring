@@ -37,7 +37,7 @@ class LoginScreen extends StatelessWidget {
                       CustomImage(
                         imageSrc: AppImages.splashLogo,
                         imageType: ImageType.png,
-                        height: 180,
+                        height: 160,
                         width: double.infinity,
                         fit: BoxFit.contain,
                       ),
@@ -64,7 +64,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 36),
+                      const SizedBox(height: 20),
 
                       // ── Email label ──────────────────────────────────────────
                       CustomText(
@@ -95,7 +95,7 @@ class LoginScreen extends StatelessWidget {
                         },
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       // ── Password label + forgot ──────────────────────────────
                       Row(
@@ -136,13 +136,14 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'passwordRequired'.tr;
+                          if (v == null || v.isEmpty)
+                            return 'passwordRequired'.tr;
                           if (v.length < 6) return 'minChar'.tr;
                           return null;
                         },
                       ),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 20),
 
                       // ── LOGIN button ─────────────────────────────────────────
                       Obx(() {
@@ -160,7 +161,7 @@ class LoginScreen extends StatelessWidget {
                                 borderRadius: 16,
                               );
                       }),
-                      const SizedBox(height: 28),
+                      const SizedBox(height: 16),
 
                       // ── OR divider ───────────────────────────────────────────
                       Row(
@@ -184,7 +185,7 @@ class LoginScreen extends StatelessWidget {
                         ],
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
 
                       // ── Continue with Google ─────────────────────────────────
                       CustomButton(
@@ -199,7 +200,7 @@ class LoginScreen extends StatelessWidget {
                         icon: _googleIcon(),
                       ),
 
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 10),
 
                       // ── Continue with Apple ──────────────────────────────────
                       CustomButton(
@@ -211,10 +212,14 @@ class LoginScreen extends StatelessWidget {
                         borderRadius: 16,
                         isBorder: true,
                         borderColor: Colors.white10,
-                        icon: const Icon(Icons.apple, color: Colors.white, size: 22),
+                        icon: const Icon(
+                          Icons.apple,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                       ),
 
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 20),
 
                       // ── Sign up prompt ───────────────────────────────────────
                       Center(
@@ -252,7 +257,10 @@ class LoginScreen extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => LanguageHelper.showLanguageDialog(context),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(20),
@@ -261,10 +269,16 @@ class LoginScreen extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.language, color: AppColors.yellow, size: 14),
+                        const Icon(
+                          Icons.language,
+                          color: AppColors.yellow,
+                          size: 14,
+                        ),
                         const SizedBox(width: 4),
                         CustomText(
-                          text: (Get.locale?.languageCode ?? 'en') == 'gr' ? 'DE' : 'EN',
+                          text: (Get.locale?.languageCode ?? 'en') == 'gr'
+                              ? 'DE'
+                              : 'EN',
                           color: Colors.white,
                           fontSize: 11,
                           fontWeight: FontWeight.bold,

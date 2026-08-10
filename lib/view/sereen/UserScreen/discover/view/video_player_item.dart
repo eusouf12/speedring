@@ -7,6 +7,7 @@ import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/model/video_model.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/view/full_screen_video.dart';
+import 'package:speedring/view/sereen/UserScreen/discover/view/edit_video_screen.dart';
 
 class VideoPlayerItem extends StatefulWidget {
   final VideoPost video;
@@ -30,6 +31,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
   bool _isExpanded = false;
   bool _hasError = false;
   bool _isInitializing = false;
+  bool _hasIncrementedView = false;
   final DiscoverController _discoverController = Get.find<DiscoverController>();
 
   @override
@@ -88,6 +90,10 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
       _controller!.pause();
     } else {
       _controller!.play();
+      if (!_hasIncrementedView && widget.video.id != null) {
+        _hasIncrementedView = true;
+        _discoverController.incrementVideoViews(widget.video.id!);
+      }
     }
     setState(() {});
   }
@@ -95,8 +101,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
   @override
   Widget build(BuildContext context) {
     final details = widget.video.videoDetails;
-    final thumbnailUrl = details?.thumbnail ??
-        "https://picsum.photos/seed/${widget.video.id ?? 'video'}/600/350";
+    final thumbnailUrl = details?.thumbnail ?? "";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
@@ -112,11 +117,19 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                 if (!_isInitialized && !_isInitializing && !_hasError) {
                   _initializeVideo();
                 }
-                if (_isInitialized && _controller != null && !_controller!.value.isPlaying) {
+                if (_isInitialized &&
+                    _controller != null &&
+                    !_controller!.value.isPlaying) {
                   _controller!.play();
+                  if (!_hasIncrementedView && widget.video.id != null) {
+                    _hasIncrementedView = true;
+                    _discoverController.incrementVideoViews(widget.video.id!);
+                  }
                 }
               } else {
-                if (_isInitialized && _controller != null && _controller!.value.isPlaying) {
+                if (_isInitialized &&
+                    _controller != null &&
+                    _controller!.value.isPlaying) {
                   _controller!.pause();
                 }
               }
@@ -154,7 +167,9 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                   ),
                 ),
                 // Play/Pause Overlay
-                if (_isInitialized && _controller != null && !_controller!.value.isPlaying)
+                if (_isInitialized &&
+                    _controller != null &&
+                    !_controller!.value.isPlaying)
                   Positioned.fill(
                     child: GestureDetector(
                       onTap: _togglePlay,
@@ -249,6 +264,26 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                       color: const Color(0xff1C1C1C),
                       itemBuilder: (_) => [
                         const PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.edit_outlined,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                'Edit',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const PopupMenuItem(
                           value: 'delete',
                           child: Row(
                             children: [
@@ -260,7 +295,10 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                               SizedBox(width: 8),
                               Text(
                                 'Delete',
-                                style: TextStyle(color: Colors.red, fontSize: 13),
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 13,
+                                ),
                               ),
                             ],
                           ),
@@ -269,6 +307,8 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                       onSelected: (value) {
                         if (value == 'delete') {
                           _showDeleteDialog(widget.video.id!);
+                        } else if (value == 'edit') {
+                          Get.to(() => EditVideoScreen(video: widget.video));
                         }
                       },
                     ),
@@ -281,10 +321,12 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                     right: 10,
                     child: GestureDetector(
                       onTap: () {
-                        Get.to(() => FullScreenVideoScreen(
-                              controller: _controller!,
-                              videoTitle: details?.title ?? "Video",
-                            ));
+                        Get.to(
+                          () => FullScreenVideoScreen(
+                            controller: _controller!,
+                            videoTitle: details?.title ?? "Video",
+                          ),
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.all(6),
@@ -479,7 +521,11 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        const Icon(Icons.visibility, color: Colors.white38, size: 12),
+                        const Icon(
+                          Icons.visibility,
+                          color: Colors.white38,
+                          size: 12,
+                        ),
                         const SizedBox(width: 3),
                         Text(
                           "${widget.video.views ?? 0}",
@@ -548,7 +594,10 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text("Cancel", style: TextStyle(color: Colors.white54)),
+            child: const Text(
+              "Cancel",
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(

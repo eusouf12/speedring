@@ -12,27 +12,10 @@ import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:speedring/service/api_client.dart';
 
 class DiscoverController extends GetxController {
-  // ─── Spotting (Discover) ───
-  var isDiscoverLoading = false.obs;
-  var isMoreLoading = false.obs;
-  int currentPage = 1;
-  int totalPages = 1;
-  var discoverPosts = <DiscoverPost>[].obs;
-  var currentUserId = "".obs;
-
-  // ─── Videos ───
-  var isVideoLoading = false.obs;
-  var isMoreVideoLoading = false.obs;
-  int _videoPage = 1;
-  int _videoTotalPages = 1;
-  var videoPosts = <VideoPost>[].obs;
-
   // ─── Search ───
   var showSearchBar = false.obs;
   var discoverSearchTerm = "".obs;
   var videoSearchTerm = "".obs;
-
-  // ─── Tab / Tag ───
   var activeSubTab = 0.obs; // 0: Spotting, 1: Videos, 2: Network
   var activeTag = "Trending".obs;
   var activeVideoTag = "All".obs;
@@ -73,54 +56,13 @@ class DiscoverController extends GetxController {
     }
   }
 
-  // ─── Spotting CRUD ───
-
-  Future<void> getAllDiscoverPosts({bool refresh = false}) async {
-    if (refresh) {
-      currentPage = 1;
-      totalPages = 1;
-    }
-    if (currentPage > totalPages) return;
-
-    currentPage == 1
-        ? isDiscoverLoading.value = true
-        : isMoreLoading.value = true;
-
-    try {
-      var response = await ApiClient.getData(
-        ApiUrl.getAllDiscoverPosts(
-          page: currentPage,
-          searchTerm: discoverSearchTerm.value,
-        ),
-      );
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = response.body is String
-            ? json.decode(response.body)
-            : response.body;
-        final res = DiscoverPostResponse.fromJson(data);
-        totalPages = res.meta?.totalPage ?? 1;
-        if (currentPage == 1) discoverPosts.clear();
-        discoverPosts.addAll(res.data ?? []);
-        currentPage++;
-      } else {
-        showCustomSnackBar("Failed to fetch discover posts", isError: true);
-      }
-    } catch (e, stack) {
-      debugPrint("--- Error fetching discover posts: $e");
-      debugPrint(stack.toString());
-    } finally {
-      isDiscoverLoading.value = false;
-      isMoreLoading.value = false;
-    }
-  }
-
-  void searchDiscoverPosts(String term) {
-    discoverSearchTerm.value = term;
-    getAllDiscoverPosts(refresh: true);
-  }
-
   // ─── Videos ───
-
+  var isVideoLoading = false.obs;
+  var isMoreVideoLoading = false.obs;
+  var isVideoUploading = false.obs;
+  int _videoPage = 1;
+  int _videoTotalPages = 1;
+  var videoPosts = <VideoPost>[].obs;
   Future<void> getAllVideoPosts({bool refresh = false}) async {
     if (refresh) {
       _videoPage = 1;
@@ -194,7 +136,197 @@ class DiscoverController extends GetxController {
     } catch (_) {}
   }
 
+  Future<void> createVideoPost({
+    required Map<String, String> fields,
+    XFile? videoFile,
+    XFile? thumbnailFile,
+  }) async {
+    isVideoUploading.value = true;
+    try {
+      final Map<String, dynamic> videoDetails = {};
+      fields.forEach((key, value) {
+        if (value.isNotEmpty) {
+          final fieldName = key.replaceFirst('videoDetails.', '');
+          videoDetails[fieldName] = value;
+        }
+      });
+
+      final Map<String, dynamic> body = {'videoDetails': videoDetails};
+
+      final List<MultipartBody> multipartFiles = [];
+      if (videoFile != null) {
+        multipartFiles.add(MultipartBody('media', File(videoFile.path)));
+      }
+      if (thumbnailFile != null) {
+        multipartFiles.add(
+          MultipartBody('thumbnail', File(thumbnailFile.path)),
+        );
+      }
+
+      dynamic response;
+      if (multipartFiles.isNotEmpty) {
+        response = await ApiClient.postMultipartData(ApiUrl.createVideoPost, {
+          'data': jsonEncode(body),
+        }, multipartBody: multipartFiles);
+      } else {
+        response = await ApiClient.postData(
+          ApiUrl.createVideoPost,
+          jsonEncode(body),
+        );
+      }
+
+      Map<String, dynamic> jsonResponse = {};
+      try {
+        jsonResponse = response.body is String
+            ? jsonDecode(response.body)
+            : response.body as Map<String, dynamic>;
+      } catch (_) {}
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar(
+          jsonResponse['message']?.toString() ??
+              "Video published successfully!",
+          isError: false,
+        );
+        await getAllVideoPosts(refresh: true);
+        Get.back();
+      } else {
+        showCustomSnackBar(
+          jsonResponse['message']?.toString() ?? "Failed to publish video",
+          isError: true,
+        );
+      }
+    } catch (e, stack) {
+      debugPrint("--- createVideoPost error: $e");
+      debugPrint(stack.toString());
+      showCustomSnackBar(e.toString(), isError: true);
+    } finally {
+      isVideoUploading.value = false;
+    }
+  }
+
+  Future<void> editVideoPost({
+    required String videoId,
+    required Map<String, String> fields,
+    XFile? videoFile,
+    XFile? thumbnailFile,
+  }) async {
+    isVideoUploading.value = true;
+    try {
+      final Map<String, dynamic> videoDetails = {};
+      fields.forEach((key, value) {
+        if (value.isNotEmpty) {
+          final fieldName = key.replaceFirst('videoDetails.', '');
+          videoDetails[fieldName] = value;
+        }
+      });
+
+      final Map<String, dynamic> body = {'videoDetails': videoDetails};
+
+      final List<MultipartBody> multipartFiles = [];
+      if (videoFile != null) {
+        multipartFiles.add(MultipartBody('media', File(videoFile.path)));
+      }
+      if (thumbnailFile != null) {
+        multipartFiles.add(
+          MultipartBody('thumbnail', File(thumbnailFile.path)),
+        );
+      }
+
+      dynamic response;
+      if (multipartFiles.isNotEmpty) {
+        response = await ApiClient.patchMultipartData(
+          ApiUrl.editVideo(videoId: videoId),
+          {'data': jsonEncode(body)},
+          multipartBody: multipartFiles,
+        );
+      } else {
+        response = await ApiClient.patchData(
+          ApiUrl.editVideo(videoId: videoId),
+          jsonEncode(body),
+        );
+      }
+
+      Map<String, dynamic> jsonResponse = {};
+      try {
+        jsonResponse = response.body is String
+            ? jsonDecode(response.body)
+            : response.body as Map<String, dynamic>;
+      } catch (_) {}
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar(
+          jsonResponse['message']?.toString() ?? "Video updated successfully!",
+          isError: false,
+        );
+        await getAllVideoPosts(refresh: true);
+        Navigator.pop(Get.context!);
+      } else {
+        showCustomSnackBar(
+          jsonResponse['message']?.toString() ?? "Failed to update video",
+          isError: true,
+        );
+      }
+    } catch (e, stack) {
+      debugPrint("--- editVideoPost error: $e");
+      debugPrint(stack.toString());
+      showCustomSnackBar(e.toString(), isError: true);
+    } finally {
+      isVideoUploading.value = false;
+    }
+  }
+
   //======================= Discover post ================================
+  var isDiscoverLoading = false.obs;
+  var isMoreLoading = false.obs;
+  int currentPage = 1;
+  int totalPages = 1;
+  var discoverPosts = <DiscoverPost>[].obs;
+  var currentUserId = "".obs;
+  Future<void> getAllDiscoverPosts({bool refresh = false}) async {
+    if (refresh) {
+      currentPage = 1;
+      totalPages = 1;
+    }
+    if (currentPage > totalPages) return;
+
+    currentPage == 1
+        ? isDiscoverLoading.value = true
+        : isMoreLoading.value = true;
+
+    try {
+      var response = await ApiClient.getData(
+        ApiUrl.getAllDiscoverPosts(
+          page: currentPage,
+          searchTerm: discoverSearchTerm.value,
+        ),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.body is String
+            ? json.decode(response.body)
+            : response.body;
+        final res = DiscoverPostResponse.fromJson(data);
+        totalPages = res.meta?.totalPage ?? 1;
+        if (currentPage == 1) discoverPosts.clear();
+        discoverPosts.addAll(res.data ?? []);
+        currentPage++;
+      } else {
+        showCustomSnackBar("Failed to fetch discover posts", isError: true);
+      }
+    } catch (e, stack) {
+      debugPrint("--- Error fetching discover posts: $e");
+      debugPrint(stack.toString());
+    } finally {
+      isDiscoverLoading.value = false;
+      isMoreLoading.value = false;
+    }
+  }
+
+  void searchDiscoverPosts(String term) {
+    discoverSearchTerm.value = term;
+    getAllDiscoverPosts(refresh: true);
+  }
+
   Future<void> createDiscoverPost({
     required Map<String, String> fields,
     List<XFile>? mediaFiles,

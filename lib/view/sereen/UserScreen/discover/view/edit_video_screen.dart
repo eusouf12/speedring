@@ -4,91 +4,56 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/discover/model/video_model.dart';
 
-class AddVideoScreen extends StatefulWidget {
-  const AddVideoScreen({super.key});
+class EditVideoScreen extends StatefulWidget {
+  final VideoPost video;
+  const EditVideoScreen({super.key, required this.video});
 
   @override
-  State<AddVideoScreen> createState() => _AddVideoScreenState();
+  State<EditVideoScreen> createState() => _EditVideoScreenState();
 }
 
-class _AddVideoScreenState extends State<AddVideoScreen> {
-  final DiscoverController controller = Get.find<DiscoverController>();
+class _EditVideoScreenState extends State<EditVideoScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   String selectedClassification = "ONBOARD";
 
-  File? _videoFile;
-  File? _thumbnailFile;
+  XFile? _selectedVideo;
+  XFile? _selectedThumbnail;
   final ImagePicker _picker = ImagePicker();
+  final DiscoverController _discoverController = Get.find<DiscoverController>();
 
-  Future<void> _pickMedia(bool isVideo, ImageSource source) async {
-    try {
-      if (isVideo) {
-        final XFile? video = await _picker.pickVideo(source: source);
-        if (video != null) {
-          setState(() {
-            _videoFile = File(video.path);
-          });
-        }
-      } else {
-        final XFile? image = await _picker.pickImage(source: source);
-        if (image != null) {
-          setState(() {
-            _thumbnailFile = File(image.path);
-          });
-        }
+  @override
+  void initState() {
+    super.initState();
+    final details = widget.video.videoDetails;
+    if (details != null) {
+      _titleController.text = details.title ?? "";
+      _descController.text = details.description ?? "";
+      if (details.classification != null) {
+        selectedClassification = details.classification!;
       }
-    } catch (e) {
-      debugPrint("Error picking media: \$e");
     }
   }
 
-  void _showMediaPickerOptions(bool isVideo) {
-    Get.bottomSheet(
-      Container(
-        decoration: const BoxDecoration(
-          color: Color(0xff181818),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-          ),
-        ),
-        child: SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.camera_alt, color: AppColors.yellow),
-                title: const Text(
-                  'Camera',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onTap: () {
-                  Get.back();
-                  _pickMedia(isVideo, ImageSource.camera);
-                },
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.photo_library,
-                  color: AppColors.yellow,
-                ),
-                title: const Text(
-                  'Gallery',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onTap: () {
-                  Get.back();
-                  _pickMedia(isVideo, ImageSource.gallery);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  Future<void> _pickVideo() async {
+    final XFile? video = await _picker.pickVideo(source: ImageSource.gallery);
+    if (video != null) {
+      setState(() {
+        _selectedVideo = video;
+      });
+    }
+  }
+
+  Future<void> _pickThumbnail() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedThumbnail = image;
+      });
+    }
   }
 
   @override
@@ -100,10 +65,33 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final details = widget.video.videoDetails;
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "ADD NEW VIDEO"),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          elevation: 0,
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColors.yellow,
+              size: 24,
+            ),
+            onPressed: () => Get.back(),
+          ),
+          title: const Text(
+            "EDIT VIDEO",
+            style: TextStyle(
+              color: AppColors.yellow,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.0,
+            ),
+          ),
+        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,14 +99,14 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
               /// 1. PRIMARY MEDIA
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: _buildSectionHeader("PRIMARY MEDIA"),
+                child: _buildSectionHeader("PRIMARY MEDIA (OPTIONAL)"),
               ),
               const SizedBox(height: 8),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: GestureDetector(
-                  onTap: () => _showMediaPickerOptions(true),
+                  onTap: _pickVideo,
                   child: Container(
                     width: double.infinity,
                     height: 150,
@@ -129,56 +117,35 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                       borderRadius: BorderRadius.circular(4),
                       color: const Color(0xff111111),
                     ),
-                    child: _videoFile != null
-                        ? Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              const Icon(
-                                Icons.video_file,
-                                color: Colors.white54,
-                                size: 50,
-                              ),
-                              Positioned(
-                                bottom: 10,
-                                child: Text(
-                                  _videoFile!.path.split('/').last,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
+                    child: _selectedVideo != null
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "New Video Selected:\n${_selectedVideo!.name}",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: AppColors.yellow,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Positioned(
-                                top: 5,
-                                right: 5,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _videoFile = null;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
+                            ),
                           )
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
                               Icon(
                                 Icons.videocam_outlined,
-                                color: AppColors.yellow,
+                                color: Colors.white54,
                                 size: 36,
                               ),
                               SizedBox(height: 12),
                               Text(
-                                "UPLOAD VIDEO (MAX 2GB)",
+                                "TAP TO REPLACE VIDEO (MAX 2GB)\nLeave empty to keep current video",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: Colors.white70,
+                                  color: Colors.white54,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: 0.5,
@@ -194,14 +161,14 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
               /// 2. THUMBNAIL
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: _buildSectionHeader("THUMBNAIL"),
+                child: _buildSectionHeader("THUMBNAIL (OPTIONAL)"),
               ),
               const SizedBox(height: 8),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: GestureDetector(
-                  onTap: () => _showMediaPickerOptions(false),
+                  onTap: _pickThumbnail,
                   child: Container(
                     width: double.infinity,
                     height: 150,
@@ -212,55 +179,43 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                       borderRadius: BorderRadius.circular(4),
                       color: const Color(0xff111111),
                     ),
-                    child: _thumbnailFile != null
-                        ? Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                child: Image.file(
-                                  _thumbnailFile!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Positioned(
-                                top: 5,
-                                right: 5,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _thumbnailFile = null;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
+                    child: _selectedThumbnail != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: Image.file(
+                              File(_selectedThumbnail!.path),
+                              fit: BoxFit.cover,
+                            ),
                           )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(
-                                Icons.add_photo_alternate_outlined,
-                                color: AppColors.yellow,
-                                size: 36,
-                              ),
-                              SizedBox(height: 12),
-                              Text(
-                                "UPLOAD CUSTOM THUMBNAIL",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
+                        : (details?.thumbnail != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: Image.network(
+                                    details!.thumbnail!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.add_photo_alternate_outlined,
+                                      color: Colors.white54,
+                                      size: 36,
+                                    ),
+                                    SizedBox(height: 12),
+                                    Text(
+                                      "TAP TO REPLACE THUMBNAIL",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white54,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                )),
                   ),
                 ),
               ),
@@ -374,76 +329,51 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
               /// Bottom Publish Button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Obx(() {
-                  final isUploading = controller.isVideoUploading.value;
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isUploading ? Colors.grey : AppColors.yellow,
-                        foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        elevation: 0,
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.yellow,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      onPressed: isUploading
-                          ? null
-                          : () {
-                              if (_titleController.text.trim().isEmpty) {
-                                Get.snackbar(
-                                  'Error',
-                                  'Please enter a video title',
-                                  backgroundColor: Colors.redAccent,
-                                  colorText: Colors.white,
-                                );
-                                return;
-                              }
-                              if (_videoFile == null) {
-                                Get.snackbar(
-                                  'Error',
-                                  'Please select a video file to upload',
-                                  backgroundColor: Colors.redAccent,
-                                  colorText: Colors.white,
-                                );
-                                return;
-                              }
-
-                              final fields = {
-                                'videoDetails.title': _titleController.text.trim(),
-                                'videoDetails.description': _descController.text.trim(),
-                                'videoDetails.classification': selectedClassification,
-                              };
-
-                              controller.createVideoPost(
-                                fields: fields,
-                                videoFile: XFile(_videoFile!.path),
-                                thumbnailFile: _thumbnailFile != null
-                                    ? XFile(_thumbnailFile!.path)
-                                    : null,
-                              );
-                            },
-                      child: isUploading
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                              ),
-                            )
-                          : const Text(
-                              "PUBLISH VIDEO",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 1.0,
-                              ),
-                            ),
+                      elevation: 0,
                     ),
-                  );
-                }),
+                    onPressed: () {
+                      if (_titleController.text.isEmpty) {
+                        Get.snackbar(
+                          "Required",
+                          "Please enter a video title",
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: const Color(0xff181818),
+                          colorText: Colors.red,
+                        );
+                        return;
+                      }
+
+                      _discoverController.editVideoPost(
+                        videoId: widget.video.id!,
+                        fields: {
+                          'videoDetails.title': _titleController.text,
+                          'videoDetails.description': _descController.text,
+                          'videoDetails.classification': selectedClassification,
+                        },
+                        videoFile: _selectedVideo,
+                        thumbnailFile: _selectedThumbnail,
+                      );
+                    },
+                    child: const Text(
+                      "UPDATE VIDEO",
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 40),
             ],
