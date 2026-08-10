@@ -6,6 +6,7 @@ import 'package:speedring/view/sereen/UserScreen/MarketPlace/controller/marketpa
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_nav_bar/navbar.dart';
 import '../../../../../../core/app_routes/app_routes.dart';
+import '../../../../../utils/app_colors/app_colors.dart';
 import '../widgets/marketplace_item_card.dart';
 
 class MarketplaceListingFeedScreen extends StatelessWidget {
@@ -18,10 +19,6 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-
-        // =====================================================
-        // APP BAR
-        // =====================================================
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
@@ -45,6 +42,8 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
 
                   Expanded(
                     child: TextField(
+                      controller: controller.searchController,
+                      onChanged: (val) => controller.searchQuery.value = val,
                       style: const TextStyle(color: Colors.white, fontSize: 13),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -63,15 +62,8 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
             ),
           ),
         ),
-
-        // =====================================================
-        // BODY
-        // =====================================================
         body: Column(
           children: [
-            // =================================================
-            // HEADER BUTTONS
-            // =================================================
             Obx(() {
               /// Hide completely when scrolling
               if (controller.isHeaderButtonHidden.value) {
@@ -99,20 +91,20 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
               );
             }),
 
-            // =================================================
-            // FEED LIST
-            // =================================================
             Expanded(
               child: Obx(() {
                 if (controller.isLoadingFeed.value &&
                     controller.listings.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
                 }
 
                 return RefreshIndicator(
+                  color: AppColors.yellow,
+                  backgroundColor: Colors.black,
                   onRefresh: () async =>
                       controller.fetchListings(refresh: true),
                   child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     controller: controller.scrollController,
                     padding: EdgeInsets.symmetric(
                       horizontal: 16.w,
@@ -132,25 +124,29 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                       final item = controller.listings[idx];
 
                       String imageUrl = "";
-                      if (item["visualAssets"] != null &&
-                          (item["visualAssets"] as List).isNotEmpty) {
-                        imageUrl = item["visualAssets"][0];
+                      if (item.visualAssets != null &&
+                          item.visualAssets!.isNotEmpty) {
+                        imageUrl = item.visualAssets![0];
                       }
 
                       return MarketplaceItemCard(
                         imageUrl: imageUrl,
-                        title: item["title"]?.toString() ?? "No Title",
-                        price: "\$${item["price"] ?? '0'}",
-                        subtitle: item["condition"]?.toString() ?? "",
-                        tag: item["category"]?.toString() ?? "",
+                        title: item.modelDesignation ?? "No Title",
+                        price: "\$${item.askingPrice ?? '0'}",
+                        subtitle: item.brand ?? "",
+                        tag: item.itemType ?? "",
+                        year: item.productionYear.toString(),
 
                         // ===================================
                         // VIEW DETAILS
                         // ===================================
                         onViewDetails: () {
+                          if (item.id != null) {
+                            controller.fetchListingDetails(item.id!);
+                          }
                           Get.toNamed(
                             AppRoutes.itemDetailScreen,
-                            arguments: {'id': item["id"]},
+                            arguments: {'id': item.id},
                           );
                         },
 

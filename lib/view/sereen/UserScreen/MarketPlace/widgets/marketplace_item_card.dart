@@ -8,6 +8,7 @@ class MarketplaceItemCard extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String price;
+  final String year;
   final String subtitle;
   final String tag;
   final VoidCallback onViewDetails;
@@ -22,6 +23,7 @@ class MarketplaceItemCard extends StatelessWidget {
     required this.onViewDetails,
     required this.onChatTap,
     super.key,
+    required this.year,
   });
 
   @override
@@ -111,11 +113,40 @@ class MarketplaceItemCard extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 4.h),
-                CustomText(
-                  text: subtitle,
-                  color: Colors.white38,
-                  fontSize: 11,
-                  textAlign: TextAlign.start,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (subtitle.isNotEmpty)
+                      CustomText(
+                        text: subtitle,
+                        color: Colors.white54,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    if (subtitle.isNotEmpty && year.isNotEmpty && year != 'null')
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
+                        child: Icon(
+                          Icons.circle,
+                          color: Colors.white24,
+                          size: 4.sp,
+                        ),
+                      ),
+                    if (year.isNotEmpty && year != 'null')
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                        child: CustomText(
+                          text: year,
+                          color: Colors.white70,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                  ],
                 ),
                 SizedBox(height: 16.h),
 

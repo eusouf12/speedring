@@ -216,10 +216,14 @@ class ApiUrl {
     int page = 1,
     int limit = 10,
     String? category,
+    String? searchTerm,
   }) {
     String url = "/marketplaces/get-all-listings?page=$page&limit=$limit";
     if (category != null && category.isNotEmpty) {
       url += "&category=${Uri.encodeComponent(category)}";
+    }
+    if (searchTerm != null && searchTerm.isNotEmpty) {
+      url += "&searchTerm=${Uri.encodeComponent(searchTerm)}";
     }
     return url;
   }

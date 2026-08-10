@@ -190,6 +190,7 @@ class DiscoverScreen extends StatelessWidget {
         onNotification: (ScrollNotification scrollInfo) {
           if (!controller.isDiscoverLoading.value &&
               !controller.isMoreLoading.value &&
+              scrollInfo.metrics.maxScrollExtent > 0 &&
               scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
             controller.getAllDiscoverPosts();
             return true;
@@ -609,6 +610,7 @@ class DiscoverScreen extends StatelessWidget {
         onNotification: (scrollInfo) {
           if (!controller.isVideoLoading.value &&
               !controller.isMoreVideoLoading.value &&
+              scrollInfo.metrics.maxScrollExtent > 0 &&
               scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
             controller.getAllVideoPosts();
             return true;
@@ -788,6 +790,7 @@ class DiscoverScreen extends StatelessWidget {
         onNotification: (scrollInfo) {
           if (!controller.isNetworkLoading.value &&
               !controller.isMoreNetworkLoading.value &&
+              scrollInfo.metrics.maxScrollExtent > 0 &&
               scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
             controller.getNetworkUsers();
             return true;
@@ -795,6 +798,7 @@ class DiscoverScreen extends StatelessWidget {
           return false;
         },
         child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const Text(

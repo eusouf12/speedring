@@ -9,6 +9,8 @@ import '../../../../../../utils/app_colors/app_colors.dart';
 import '../../../../../../core/app_routes/app_routes.dart';
 import '../controller/marketpace_controller.dart';
 import '../widgets/spec_tile.dart';
+import '../widgets/marketplace_map.dart';
+import 'edit_listing_screen.dart';
 
 class ItemDetailScreen extends StatelessWidget {
   const ItemDetailScreen({super.key});
@@ -16,441 +18,554 @@ class ItemDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MarketplaceFeedController>();
-    
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
-            onPressed: () => Get.back(),
-          ),
-          title: Image.network(
-            "https://picsum.photos/seed/speedringlogo/130/40",
-            height: 30,
-            width: 100,
-            fit: BoxFit.contain,
-            errorBuilder: (context, _, _) => const Text(
-              "SPEEDRING",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.0,
-              ),
-            ),
-          ),
           centerTitle: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.share, color: AppColors.yellow),
-              onPressed: () {},
+          leading: const BackButton(color: AppColors.yellow),
+          title: const Text(
+            "Listing Details",
+            style: TextStyle(
+              color: AppColors.yellow,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
             ),
-            Obx(() => IconButton(
-              icon: Icon(
-                controller.listingData['isFavorite'] == true ? Icons.favorite : Icons.favorite_border,
-                color: AppColors.yellow,
-              ),
-              onPressed: () {
-                // Add favorite logic if needed
-              },
-            )),
-          ],
-        ),
-        body: Obx(() {
-          if (controller.isLoadingDetail.value) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
-          }
+          ),
+          actions: [
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert, color: AppColors.yellow),
+              color: Colors.black,
+              onSelected: (value) {
+                final item = controller.itemDetail.value;
+                if (item == null) return;
 
-          final data = controller.listingData;
-          if (data.isEmpty) {
-            return const Center(child: Text("Listing not found", style: TextStyle(color: Colors.white)));
-          }
-
-          final visualAssets = data['visualAssets'] as List?;
-          final String imageUrl = (visualAssets != null && visualAssets.isNotEmpty) ? visualAssets[0] : "";
-          final brand = data['brand'] ?? "";
-          final modelDesignation = data['modelDesignation'] ?? "";
-          final title = "$brand $modelDesignation".trim().toUpperCase();
-          final price = "\$${data['askingPrice'] ?? '0'}";
-          final description = data['description'] ?? "";
-
-          // Metrics
-          final power = data['powerHP'] ?? "N/A";
-          final weight = data['weightKG'] ?? "N/A";
-          final speed = data['zeroToHundred'] ?? "N/A";
-
-          return SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Showcase Image
-              Container(
-                height: 220.h,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: Colors.white10),
-                  image: imageUrl.isNotEmpty ? DecorationImage(
-                    image: NetworkImage(imageUrl),
-                    fit: BoxFit.cover,
-                  ) : null,
-                ),
-                child: imageUrl.isEmpty ? const Icon(Icons.image, color: Colors.white38) : null,
-              ),
-              SizedBox(height: 16.h),
-
-              /// Title & Price
-              CustomText(
-                text: title.isEmpty ? "LISTING" : title,
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.5,
-                textAlign: TextAlign.start,
-              ),
-              SizedBox(height: 4.h),
-              CustomText(
-                text: price,
-                color: AppColors.yellow,
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.5,
-                textAlign: TextAlign.start,
-              ),
-              SizedBox(height: 24.h),
-
-              /// Purchase & Offer Actions
-              CustomButton(
-                height: 48.h,
-                title: "MESSAGE SELLER",
-                fontSize: 13,
-                borderRadius: 8.r,
-                onTap: () {
-                  Get.toNamed(
-                    AppRoutes.inboxScreen,
-                    arguments: {
-                      "userName": "Anderson Racing",
-                      "avatarUrl":
-                          "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                      "isOnline": true,
-                    },
+                if (value == 'edit') {
+                  controller.prepareEdit(item);
+                  Get.to(
+                    () => EditListingScreen(
+                      listingId: item.id!,
+                      itemType: item.itemType ?? 'MOTORCYCLES',
+                    ),
                   );
-                },
-              ),
-              SizedBox(height: 12.h),
-              CustomButton(
-                height: 48.h,
-                title: "SEND OFFER",
-                fontSize: 13,
-                fillColor: Colors.black,
-                textColor: AppColors.yellow,
-                isBorder: true,
-                borderColor: AppColors.yellow,
-                borderRadius: 8.r,
-                onTap: () {
-                  Get.snackbar(
-                    "Offer Sent",
-                    "Your offer has been submitted to the seller.",
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: const Color(0xff181818),
-                    colorText: Colors.white,
-                    borderColor: AppColors.yellow,
-                    borderWidth: 1,
-                  );
-                },
-              ),
-              SizedBox(height: 24.h),
-
-              /// PHASE 01: TECH SPECS
-              _buildSectionHeader("PHASE 01: TECH SPECS"),
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                crossAxisSpacing: 12.w,
-                mainAxisSpacing: 12.h,
-                childAspectRatio: 2.2,
-                children: [
-                  if (data['productionYear'] != null) SpecTile(label: "YEAR", value: "${data['productionYear']}"),
-                  if (data['mileageKM'] != null) SpecTile(label: "MILEAGE", value: "${data['mileageKM']} KM"),
-                  if (data['transmission'] != null) SpecTile(label: "TRANSMISSION", value: "${data['transmission']}"),
-                  if (data['engineType'] != null) SpecTile(label: "ENGINE", value: "${data['engineType']}"),
-                  if (data['displacementCC'] != null) SpecTile(label: "DISPLACEMENT", value: "${data['displacementCC']} CC"),
-                  if (data['location'] != null) SpecTile(label: "LOCATION", value: "${data['location']}"),
-                ],
-              ),
-              SizedBox(height: 24.h),
-
-              /// PHASE 02: NARRATIVE
-              _buildSectionHeader("PHASE 02: NARRATIVE"),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xff111111),
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: "DESCRIPTION",
-                      color: AppColors.yellow,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                      textAlign: TextAlign.start,
-                    ),
-                    SizedBox(height: 8.h),
-                    CustomText(
-                      text: description,
-                      color: Colors.white70,
-                      fontSize: 11,
-                      textAlign: TextAlign.start,
-                      height: 1.5,
-                    ),
-                    SizedBox(height: 16.h),
-                    Container(height: 1, color: Colors.white10),
-                    SizedBox(height: 16.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildMetricCol("$power HP", "POWER"),
-                        _buildMetricCol("${speed}s", "0-100 KM/H"),
-                        _buildMetricCol("$weight KG", "WEIGHT"),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 24.h),
-
-              /// VERIFIED SELLER
-              CustomText(
-                text: "VERIFIED SELLER",
-                color: Colors.white38,
-                fontSize: 9,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-                textAlign: TextAlign.start,
-              ),
-              SizedBox(height: 8.h),
-              Container(
-                padding: EdgeInsets.all(12.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xff111111),
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white10),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 44.w,
-                          height: 44.w,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                              ),
-                              fit: BoxFit.cover,
-                            ),
+                } else if (value == 'delete') {
+                  final id = item.id;
+                  if (id != null) {
+                    Get.dialog(
+                      AlertDialog(
+                        backgroundColor: const Color(0xff1e1e1e), // Match dark grey from screenshot
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        title: const Text(
+                          "Delete Listing",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(
-                                text: data['seller'] != null ? data['seller']['username']?.toString().toUpperCase() ?? "UNKNOWN" : "SELLER",
-                                color: Colors.white,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w900,
-                                textAlign: TextAlign.start,
-                                letterSpacing: 0.5,
-                              ),
-                              SizedBox(height: 2.h),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: AppColors.yellow,
-                                    size: 12,
-                                  ),
-                                  SizedBox(width: 4.w),
-                                  const CustomText(
-                                    text: "4.9 / 5.0",
-                                    color: Colors.white60,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ],
-                              ),
-                            ],
+                        content: const Text(
+                          "Are you sure you want to delete this listing?",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            controller.toggleFollow();
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 6.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: controller.isFollowing.value
-                                  ? Colors.transparent
-                                  : Colors.black,
-                              border: Border.all(color: AppColors.yellow),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: CustomText(
-                              text: controller.isFollowing.value ? "FOLLOWING" : "FOLLOW",
-                              color: controller.isFollowing.value
-                                  ? Colors.white70
-                                  : AppColors.yellow,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 12.h),
-                    Container(height: 1, color: Colors.white10),
-                    SizedBox(height: 12.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildSellerCount("12", "ACTIVE LISTINGS"),
-                        _buildSellerCount("142", "SUCCESSFUL SALES"),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 24.h),
-
-              /// LOCATION TELEMETRY
-              Container(
-                margin: EdgeInsets.only(bottom: 30.h),
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xff111111),
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: Colors.white10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        CustomText(
-                          text: "LOCATION TELEMETRY",
-                          color: Colors.white38,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                        CustomText(
-                          text: "STUTTGART, DE",
-                          color: Colors.white70,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 12.h),
-
-                    /// Styled map placeholder
-                    Container(
-                      height: 180.h,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8.r),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.05),
-                        ),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: CustomPaint(painter: MapWireframePainter()),
-                          ),
-                          Center(
-                            child: Container(
-                              width: 14.w,
-                              height: 14.w,
-                              decoration: BoxDecoration(
-                                color: AppColors.yellow,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.yellow.withValues(
-                                      alpha: 0.5,
-                                    ),
-                                    blurRadius: 10,
-                                    spreadRadius: 3,
-                                  ),
-                                ],
+                        actions: [
+                          TextButton(
+                            onPressed: () => Get.back(),
+                            child: const Text(
+                              "NO",
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          Positioned(
-                            bottom: 12.h,
-                            left: 12.w,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                CustomText(
-                                  text: "LAT 48.7826 N",
-                                  color: AppColors.yellow,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                CustomText(
-                                  text: "LON 9.1853 E",
-                                  color: AppColors.yellow,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ],
+                          TextButton(
+                            onPressed: () {
+                              Get.back();
+                              controller.deleteListing(id);
+                            },
+                            child: const Text(
+                              "YES",
+                              style: TextStyle(
+                                color: Color(0xffE53935), // Red color matching screenshot
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(height: 12.h),
-                    CustomText(
-                      text:
-                          "Stuttgart Performance District. Secured climate-controlled facility with 24/7 technical monitoring.",
-                      color: Colors.white38,
-                      fontSize: 10,
-                      textAlign: TextAlign.start,
-                    ),
+                    );
+                  }
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'edit',
+                  child: Text('Edit', style: TextStyle(color: Colors.white)),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Text('Delete', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            ),
+          ],
+        ),
+        body: Obx(() {
+          if (controller.isLoadingDetail.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.yellow),
+            );
+          }
+
+          final data = controller.itemDetail.value;
+          if (data == null) {
+            return const Center(
+              child: Text(
+                "Listing not found",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+
+          final visualAssets = data.visualAssets;
+          final String imageUrl =
+              (visualAssets != null && visualAssets.isNotEmpty)
+              ? visualAssets[0]
+              : "";
+          final brand = data.brand ?? "";
+          final modelDesignation = data.modelDesignation ?? "";
+          final title = "$brand $modelDesignation".trim().toUpperCase();
+          final price = "\$${data.askingPrice ?? '0'}";
+          final description = data.description ?? "";
+
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Showcase Image
+                Container(
+                  height: 220.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(color: Colors.white10),
+                    image: imageUrl.isNotEmpty
+                        ? DecorationImage(
+                            image: NetworkImage(imageUrl),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: imageUrl.isEmpty
+                      ? const Icon(Icons.image, color: Colors.white38)
+                      : null,
+                ),
+                SizedBox(height: 16.h),
+
+                /// Title & Price
+                CustomText(
+                  text: title.isEmpty ? "LISTING" : title,
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
+                  textAlign: TextAlign.start,
+                ),
+                SizedBox(height: 4.h),
+                CustomText(
+                  text: price,
+                  color: AppColors.yellow,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
+                  textAlign: TextAlign.start,
+                ),
+                SizedBox(height: 24.h),
+
+                /// Purchase & Offer Actions
+                CustomButton(
+                  height: 48.h,
+                  title: "MESSAGE SELLER",
+                  fontSize: 13,
+                  borderRadius: 8.r,
+                  onTap: () {
+                    Get.toNamed(
+                      AppRoutes.inboxScreen,
+                      arguments: {
+                        "userName": "Anderson Racing",
+                        "avatarUrl":
+                            "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                        "isOnline": true,
+                      },
+                    );
+                  },
+                ),
+                SizedBox(height: 12.h),
+                CustomButton(
+                  height: 48.h,
+                  title: "SEND OFFER",
+                  fontSize: 13,
+                  fillColor: Colors.black,
+                  textColor: AppColors.yellow,
+                  isBorder: true,
+                  borderColor: AppColors.yellow,
+                  borderRadius: 8.r,
+                  onTap: () {
+                    Get.snackbar(
+                      "Offer Sent",
+                      "Your offer has been submitted to the seller.",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: const Color(0xff181818),
+                      colorText: Colors.white,
+                      borderColor: AppColors.yellow,
+                      borderWidth: 1,
+                    );
+                  },
+                ),
+                SizedBox(height: 24.h),
+
+                /// PHASE 01: TECH SPECS
+                _buildSectionHeader("PHASE 01: TECH SPECS"),
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12.w,
+                  mainAxisSpacing: 12.h,
+                  childAspectRatio: 2.2,
+                  children: [
+                    if (data.productionYear != null)
+                      SpecTile(label: "YEAR", value: "${data.productionYear}"),
+                    if (data.mileageKM != null)
+                      SpecTile(label: "MILEAGE", value: "${data.mileageKM} KM"),
+                    if (data.transmission != null)
+                      SpecTile(
+                        label: "TRANSMISSION",
+                        value: "${data.transmission}",
+                      ),
+                    if (data.engineType != null)
+                      SpecTile(label: "ENGINE", value: "${data.engineType}"),
+                    if (data.displacementCC != null)
+                      SpecTile(
+                        label: "DISPLACEMENT",
+                        value: "${data.displacementCC} CC",
+                      ),
+                    if (data.location != null)
+                      SpecTile(label: "LOCATION", value: "${data.location}"),
+                    if (data.itemType != null)
+                      SpecTile(label: "TYPE", value: "${data.itemType}"),
+                    if (data.status != null)
+                      SpecTile(label: "STATUS", value: "${data.status}"),
+                    if (data.drivetrain != null)
+                      SpecTile(
+                        label: "DRIVETRAIN",
+                        value: "${data.drivetrain}",
+                      ),
+                    if (data.suspension != null)
+                      SpecTile(
+                        label: "SUSPENSION",
+                        value: "${data.suspension}",
+                      ),
+                    if (data.brakingSystem != null)
+                      SpecTile(label: "BRAKES", value: "${data.brakingSystem}"),
+                    if (data.engineConfiguration != null)
+                      SpecTile(
+                        label: "CONFIGURATION",
+                        value: "${data.engineConfiguration}",
+                      ),
+                    if (data.aerodynamicsBody != null)
+                      SpecTile(
+                        label: "AERODYNAMICS",
+                        value: "${data.aerodynamicsBody}",
+                      ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        );
-      }),
-      bottomNavigationBar: const CustomNavBar(currentIndex: 3),
-    ),
-  );
-}
+                SizedBox(height: 24.h),
+
+                /// PHASE 02: NARRATIVE
+                _buildSectionHeader("PHASE 02: NARRATIVE"),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff111111),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: Colors.white10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: "DESCRIPTION",
+                        color: AppColors.yellow,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                        textAlign: TextAlign.start,
+                      ),
+                      SizedBox(height: 8.h),
+                      CustomText(
+                        text: description,
+                        color: Colors.white70,
+                        fontSize: 11,
+                        textAlign: TextAlign.start,
+                        height: 1.5,
+                      ),
+                      SizedBox(height: 16.h),
+                      Container(height: 1, color: Colors.white10),
+                      SizedBox(height: 16.h),
+                      Wrap(
+                        spacing: 16.w,
+                        runSpacing: 16.h,
+                        alignment: WrapAlignment.spaceEvenly,
+                        children: [
+                          if (data.powerHP != null)
+                            _buildMetricCol("${data.powerHP} HP", "POWER"),
+                          if (data.zeroToHundred != null)
+                            _buildMetricCol(
+                              "${data.zeroToHundred}s",
+                              "0-100 KM/H",
+                            ),
+                          if (data.weightKG != null)
+                            _buildMetricCol("${data.weightKG} KG", "WEIGHT"),
+                          if (data.torqueNM != null)
+                            _buildMetricCol("${data.torqueNM} NM", "TORQUE"),
+                          if (data.topSpeed != null)
+                            _buildMetricCol("${data.topSpeed}", "TOP SPEED"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 24.h),
+
+                /// VERIFIED SELLER
+                CustomText(
+                  text: "VERIFIED SELLER",
+                  color: Colors.white38,
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                  textAlign: TextAlign.start,
+                ),
+                SizedBox(height: 8.h),
+                Container(
+                  padding: EdgeInsets.all(12.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff111111),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: Colors.white10),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 44.w,
+                            height: 44.w,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  data.seller?.profileImage ?? "",
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: data.seller != null
+                                      ? data.seller!.name
+                                                ?.toString()
+                                                .toUpperCase() ??
+                                            "UNKNOWN"
+                                      : "SELLER",
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w900,
+                                  textAlign: TextAlign.start,
+                                  letterSpacing: 0.5,
+                                ),
+                                SizedBox(height: 2.h),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              controller.toggleFollow();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                                vertical: 6.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: controller.isFollowing.value
+                                    ? Colors.transparent
+                                    : Colors.black,
+                                border: Border.all(color: AppColors.yellow),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: CustomText(
+                                text: controller.isFollowing.value
+                                    ? "FOLLOWING"
+                                    : "FOLLOW",
+                                color: controller.isFollowing.value
+                                    ? Colors.white70
+                                    : AppColors.yellow,
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
+                      Container(height: 1, color: Colors.white10),
+                      SizedBox(height: 12.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _buildSellerCount(
+                            data.seller?.activeListing?.toString() ?? "0",
+                            "ACTIVE LISTINGS",
+                          ),
+                          _buildSellerCount(
+                            data.seller?.totalSell?.toString() ?? "0",
+                            "SUCCESSFUL SALES",
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 24.h),
+
+                /// LOCATION TELEMETRY
+                Container(
+                  margin: EdgeInsets.only(bottom: 30.h),
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff111111),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: Colors.white10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const CustomText(
+                            text: "LOCATION TELEMETRY",
+                            color: Colors.white38,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                          CustomText(
+                            text:
+                                data.location?.toUpperCase() ??
+                                "UNKNOWN LOCATION",
+                            color: Colors.white70,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
+
+                      /// Styled map placeholder
+                      Container(
+                        height: 180.h,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.05),
+                          ),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child:
+                            data.location != null && data.location!.isNotEmpty
+                            ? MarketplaceMap(location: data.location!)
+                            : Stack(
+                                children: [
+                                  Positioned.fill(
+                                    child: CustomPaint(
+                                      painter: MapWireframePainter(),
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Container(
+                                      width: 14.w,
+                                      height: 14.w,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.yellow,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: AppColors.yellow.withValues(
+                                              alpha: 0.5,
+                                            ),
+                                            blurRadius: 10,
+                                            spreadRadius: 3,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 12.h,
+                                    left: 12.w,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: const [
+                                        CustomText(
+                                          text: "LAT 48.7826 N",
+                                          color: AppColors.yellow,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        CustomText(
+                                          text: "LON 9.1853 E",
+                                          color: AppColors.yellow,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+        bottomNavigationBar: const CustomNavBar(currentIndex: 3),
+      ),
+    );
+  }
 
   Widget _buildSectionHeader(String title) {
     return Padding(

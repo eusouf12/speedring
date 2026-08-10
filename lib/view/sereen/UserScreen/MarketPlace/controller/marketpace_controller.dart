@@ -5,23 +5,108 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speedring/service/api_client.dart';
 import 'package:speedring/service/api_url.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
+import '../model/listing_model.dart';
+import '../model/item_detail_model.dart';
 
 class MarketplaceFeedController extends GetxController {
-  // ===========================================================================
-  // 1. FEED SECTION
-  // ===========================================================================
+  Future<void> pickImages() async {
+    try {
+      final List<XFile> images = await _picker.pickMultiImage();
+      if (images.isNotEmpty) {
+        selectedImages.addAll(images);
+      }
+    } catch (e) {
+      // showCustomSnackBar("Failed to pick images", isError: true);
+    }
+  }
+
+  void removeImage(int index) {
+    selectedImages.removeAt(index);
+  }
+
+  void _scrollListener() {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      fetchListings();
+    }
+    if (scrollController.offset > 0) {
+      if (!isHeaderButtonHidden.value) isHeaderButtonHidden.value = true;
+    } else {
+      if (isHeaderButtonHidden.value) isHeaderButtonHidden.value = false;
+    }
+  }
+
+  // ===============================get All Listing============================================
+
   final ScrollController scrollController = ScrollController();
   final RxBool isHeaderButtonHidden = false.obs;
   var isLoadingFeed = false.obs;
   var isMoreLoadingFeed = false.obs;
   int _page = 1;
   int _totalPages = 1;
-  final RxList<Map<String, dynamic>> listings = <Map<String, dynamic>>[].obs;
+  var listings = <MarketplaceListing>[].obs;
+  final TextEditingController searchController = TextEditingController();
+  var searchQuery = "".obs;
 
-  // ===========================================================================
-  // 2. CREATE LISTING SECTION
-  // ===========================================================================
+  Future<void> fetchListings({bool refresh = false}) async {
+    if (isLoadingFeed.value || isMoreLoadingFeed.value) return;
+
+    if (refresh) {
+      _page = 1;
+      _totalPages = 1;
+    }
+    if (_page > _totalPages) return;
+
+    _page == 1 ? isLoadingFeed.value = true : isMoreLoadingFeed.value = true;
+
+    try {
+      final response = await ApiClient.getData(
+        ApiUrl.getAllMarketplaceListings(
+          page: _page,
+          searchTerm: searchQuery.value,
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.body is String
+            ? jsonDecode(response.body)
+            : response.body;
+
+        final listingResponse = MarketplaceListingResponse.fromJson(data);
+        _totalPages = listingResponse.meta?.totalPage ?? 1;
+
+        if (_page == 1) listings.clear();
+
+        if (listingResponse.data != null) {
+          listings.addAll(listingResponse.data!);
+        }
+        _page++;
+      }
+    } catch (e) {
+      debugPrint("Error fetching marketplace listings: $e");
+    } finally {
+      isLoadingFeed.value = false;
+      isMoreLoadingFeed.value = false;
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    scrollController.addListener(_scrollListener);
+    debounce(
+      searchQuery,
+      (_) => fetchListings(refresh: true),
+      time: const Duration(milliseconds: 500),
+    );
+    fetchListings();
+  }
+
+  // ==============================CREATE LISTING SECTION=============================================
+
   var isCreating = false.obs;
+  var isEditing = false.obs;
   final askingPriceController = TextEditingController();
   final locationController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -45,126 +130,118 @@ class MarketplaceFeedController extends GetxController {
   var selectedImages = <XFile>[].obs;
   final ImagePicker _picker = ImagePicker();
 
-  // ===========================================================================
-  // 3. MY LISTINGS SECTION
-  // ===========================================================================
-  var isLoadingMyListings = false.obs;
-  var isDeleting = false.obs;
-  var myListings = <Map<String, dynamic>>[].obs;
-  var currentPageMyListings = 1.obs;
-  var hasMoreDataMyListings = true.obs;
-  var currentCategoryMyListings = "ALL".obs;
-
-  // ===========================================================================
-  // 4. ITEM DETAIL SECTION
-  // ===========================================================================
-  var isLoadingDetail = false.obs;
-  var listingData = <String, dynamic>{}.obs;
-  var isFollowing = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    scrollController.addListener(_scrollListener);
-    fetchListings();
+  void prepareEdit(ItemDetailModel item) {
+    askingPriceController.text = item.askingPrice?.toString() ?? '';
+    locationController.text = item.location ?? '';
+    descriptionController.text = item.description ?? '';
+    brandController.text = item.brand ?? '';
+    modelDesignationController.text = item.modelDesignation ?? '';
+    productionYearController.text = item.productionYear?.toString() ?? '';
+    powerHpController.text = item.powerHP?.toString() ?? '';
+    zeroToHundredController.text = item.zeroToHundred?.toString() ?? '';
+    topSpeedController.text = item.topSpeed?.toString() ?? '';
+    weightKgController.text = item.weightKG?.toString() ?? '';
+    mileageKmController.text = item.mileageKM?.toString() ?? '';
+    engineConfigurationController.text = item.engineConfiguration ?? '';
+    transmissionController.text = item.transmission ?? '';
+    drivetrainController.text = item.drivetrain ?? '';
+    aerodynamicsBodyController.text = item.aerodynamicsBody ?? '';
+    torqueNmController.text = item.torqueNM?.toString() ?? '';
+    engineTypeController.text = item.engineType ?? '';
+    displacementCcController.text = item.displacementCC?.toString() ?? '';
+    suspensionController.text = item.suspension ?? '';
+    brakingSystemController.text = item.brakingSystem ?? '';
+    selectedImages
+        .clear(); // Cannot easily prepopulate network images as XFile without downloading
   }
 
-  // ===========================================================================
-  // FEED METHODS
-  // ===========================================================================
-  Future<void> fetchListings({bool refresh = false}) async {
-    if (isLoadingFeed.value || isMoreLoadingFeed.value) return;
-
-    if (refresh) {
-      _page = 1;
-      _totalPages = 1;
+  Future<void> editListing(String id, String itemType) async {
+    if (askingPriceController.text.isEmpty ||
+        locationController.text.isEmpty ||
+        descriptionController.text.isEmpty ||
+        brandController.text.isEmpty ||
+        modelDesignationController.text.isEmpty ||
+        productionYearController.text.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Please fill all required fields",
+        colorText: Colors.white,
+      );
+      return;
     }
-    if (_page > _totalPages) return;
 
-    _page == 1 ? isLoadingFeed.value = true : isMoreLoadingFeed.value = true;
-
+    isEditing.value = true;
     try {
-      final response = await ApiClient.getData(
-        ApiUrl.getAllMarketplaceListings(page: _page),
+      Map<String, String> body = {
+        "itemType": itemType,
+        "askingPrice": askingPriceController.text,
+        "location": locationController.text,
+        "description": descriptionController.text,
+        "brand": brandController.text,
+        "modelDesignation": modelDesignationController.text,
+        "productionYear": productionYearController.text,
+      };
+
+      if (powerHpController.text.isNotEmpty)
+        body["powerHP"] = powerHpController.text;
+      if (zeroToHundredController.text.isNotEmpty)
+        body["zeroToHundred"] = zeroToHundredController.text;
+      if (topSpeedController.text.isNotEmpty)
+        body["topSpeed"] = topSpeedController.text;
+      if (weightKgController.text.isNotEmpty)
+        body["weightKG"] = weightKgController.text;
+      if (mileageKmController.text.isNotEmpty)
+        body["mileageKM"] = mileageKmController.text;
+      if (engineConfigurationController.text.isNotEmpty)
+        body["engineConfiguration"] = engineConfigurationController.text;
+      if (transmissionController.text.isNotEmpty)
+        body["transmission"] = transmissionController.text;
+      if (drivetrainController.text.isNotEmpty)
+        body["drivetrain"] = drivetrainController.text;
+      if (aerodynamicsBodyController.text.isNotEmpty)
+        body["aerodynamicsBody"] = aerodynamicsBodyController.text;
+      if (torqueNmController.text.isNotEmpty)
+        body["torqueNm"] = torqueNmController.text;
+      if (engineTypeController.text.isNotEmpty)
+        body["engineType"] = engineTypeController.text;
+      if (displacementCcController.text.isNotEmpty)
+        body["displacementCc"] = displacementCcController.text;
+      if (suspensionController.text.isNotEmpty)
+        body["suspension"] = suspensionController.text;
+      if (brakingSystemController.text.isNotEmpty)
+        body["brakingSystem"] = brakingSystemController.text;
+
+      List<MultipartBody> multipartImages = selectedImages.map((image) {
+        return MultipartBody('visualAssets', File(image.path));
+      }).toList();
+
+      final response = await ApiClient.patchMultipartData(
+        ApiUrl.editListing(id),
+        body,
+        multipartBody: multipartImages,
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = response.body is String
-            ? jsonDecode(response.body)
-            : response.body;
-        final resData = data['data'] as List?;
-        final meta = data['meta'];
-        _totalPages = meta?['totalPage'] ?? 1;
-
-        if (_page == 1) listings.clear();
-
-        if (resData != null) {
-          listings.addAll(
-            resData.map((e) => e as Map<String, dynamic>).toList(),
-          );
-        }
-        _page++;
+      if (response.statusCode == 200) {
+        Get.back(); // close edit screen
+        fetchListingDetails(id); // Refresh detail screen
+        fetchListings(refresh: true); // Refresh feed
+        Get.snackbar(
+          "Success",
+          "Listing updated successfully",
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          "Error",
+          "Failed to update listing",
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
-      debugPrint("Error fetching marketplace listings: $e");
+      Get.snackbar("Error", "Error updating listing", colorText: Colors.white);
     } finally {
-      isLoadingFeed.value = false;
-      isMoreLoadingFeed.value = false;
+      isEditing.value = false;
     }
-  }
-
-  void _scrollListener() {
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
-      fetchListings();
-    }
-    if (scrollController.offset > 0) {
-      if (!isHeaderButtonHidden.value) isHeaderButtonHidden.value = true;
-    } else {
-      if (isHeaderButtonHidden.value) isHeaderButtonHidden.value = false;
-    }
-  }
-
-  // ===========================================================================
-  // CREATE LISTING METHODS
-  // ===========================================================================
-  Future<void> pickImages() async {
-    try {
-      final List<XFile> images = await _picker.pickMultiImage();
-      if (images.isNotEmpty) {
-        selectedImages.addAll(images);
-      }
-    } catch (e) {
-      // showCustomSnackBar("Failed to pick images", isError: true);
-    }
-  }
-
-  void removeImage(int index) {
-    selectedImages.removeAt(index);
-  }
-
-  void clearCreateForm() {
-    askingPriceController.clear();
-    locationController.clear();
-    descriptionController.clear();
-    brandController.clear();
-    modelDesignationController.clear();
-    productionYearController.clear();
-    powerHpController.clear();
-    zeroToHundredController.clear();
-    topSpeedController.clear();
-    weightKgController.clear();
-    mileageKmController.clear();
-    engineConfigurationController.clear();
-    transmissionController.clear();
-    drivetrainController.clear();
-    aerodynamicsBodyController.clear();
-    torqueNmController.clear();
-    engineTypeController.clear();
-    displacementCcController.clear();
-    suspensionController.clear();
-    brakingSystemController.clear();
-    selectedImages.clear();
   }
 
   Future<void> createListing(String itemType) async {
@@ -288,9 +365,46 @@ class MarketplaceFeedController extends GetxController {
     }
   }
 
+  void clearCreateForm() {
+    askingPriceController.clear();
+    locationController.clear();
+    descriptionController.clear();
+    brandController.clear();
+    modelDesignationController.clear();
+    productionYearController.clear();
+    powerHpController.clear();
+    zeroToHundredController.clear();
+    topSpeedController.clear();
+    weightKgController.clear();
+    mileageKmController.clear();
+    engineConfigurationController.clear();
+    transmissionController.clear();
+    drivetrainController.clear();
+    aerodynamicsBodyController.clear();
+    torqueNmController.clear();
+    engineTypeController.clear();
+    displacementCcController.clear();
+    suspensionController.clear();
+    brakingSystemController.clear();
+    selectedImages.clear();
+  }
+
   // ===========================================================================
-  // MY LISTINGS METHODS
+  // 3. MY LISTINGS SECTION
   // ===========================================================================
+  var isLoadingMyListings = false.obs;
+  var isDeleting = false.obs;
+  var myListings = <Map<String, dynamic>>[].obs;
+  var currentPageMyListings = 1.obs;
+  var hasMoreDataMyListings = true.obs;
+  var currentCategoryMyListings = "ALL".obs;
+
+  // =============================MyListing==============================================
+
+  var isLoadingDetail = false.obs;
+  var itemDetail = Rxn<ItemDetailModel>();
+  var isFollowing = false.obs;
+
   Future<void> fetchMyListings({bool isRefresh = false}) async {
     if (isLoadingMyListings.value) return;
 
@@ -355,20 +469,23 @@ class MarketplaceFeedController extends GetxController {
       if (response.statusCode == 200) {
         myListings.removeWhere((item) => item['id'] == id);
         fetchListings(refresh: true); // Refresh feed to reflect deletion
-        // showCustomSnackBar("Listing deleted successfully", isError: false);
+        Get.back(); // Pop the detail screen
+        showCustomSnackBar(
+          "Success ,Listing deleted successfully",
+          isError: false,
+        );
       } else {
-        // showCustomSnackBar("Failed to delete listing", isError: true);
+        showCustomSnackBar("Failed to delete listing", isError: true);
       }
     } catch (e) {
-      // showCustomSnackBar("Error deleting listing: $e", isError: true);
+      showCustomSnackBar("Error deleting listing: $e", isError: true);
     } finally {
       isDeleting.value = false;
     }
   }
 
-  // ===========================================================================
-  // ITEM DETAIL METHODS
-  // ===========================================================================
+  // ================================Follow user===========================================
+
   void toggleFollow() {
     isFollowing.value = !isFollowing.value;
   }
@@ -387,13 +504,14 @@ class MarketplaceFeedController extends GetxController {
         }
 
         if (responseData['success'] == true && responseData['data'] != null) {
-          listingData.value = responseData['data'];
+          final parsed = ItemDetailModel.fromJson(responseData['data']);
+          itemDetail.value = parsed;
         }
       } else {
-        // showCustomSnackBar("Failed to load listing details.", isError: true);
+        itemDetail.value = null;
       }
     } catch (e) {
-      // showCustomSnackBar("Error: $e", isError: true);
+      itemDetail.value = null;
     } finally {
       isLoadingDetail.value = false;
     }
@@ -403,6 +521,7 @@ class MarketplaceFeedController extends GetxController {
   void onClose() {
     scrollController.removeListener(_scrollListener);
     scrollController.dispose();
+    searchController.dispose();
     askingPriceController.dispose();
     locationController.dispose();
     descriptionController.dispose();
