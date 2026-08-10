@@ -4,6 +4,7 @@ import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controll
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
 import '../../view/sereen/SetupProfile/setup_profile_controller.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/Controller/business_dashboard_controller.dart';
+import '../../view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 import '../../view/sereen/UserScreen/Profile/controller/profile_controller.dart';
 
 class DependencyInjection extends Bindings {
@@ -15,6 +16,7 @@ class DependencyInjection extends Bindings {
     Get.lazyPut(() => ProfileScreenController(), fenix: true);
     Get.lazyPut(() => HomeController(), fenix: true);
     Get.lazyPut(() => DiscoverController(), fenix: true);
+    Get.lazyPut(() => MarketplaceFeedController(), fenix: true);
     Get.put(BusinessDashboardController(), permanent: true);
   }
 }

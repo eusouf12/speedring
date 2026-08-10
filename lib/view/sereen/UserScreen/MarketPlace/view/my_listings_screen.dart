@@ -7,18 +7,14 @@ import '../../../../components/custom_text/custom_text.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
 import '../../../../../core/app_routes/app_routes.dart';
 
-class MyListingsScreen extends StatefulWidget {
+import '../controller/marketpace_controller.dart';
+
+class MyListingsScreen extends StatelessWidget {
   const MyListingsScreen({super.key});
 
   @override
-  State<MyListingsScreen> createState() => _MyListingsScreenState();
-}
-
-class _MyListingsScreenState extends State<MyListingsScreen> {
-  String activeCategory = "ALL";
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.find<MarketplaceFeedController>();
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -118,70 +114,70 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
               /// Categories chips
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Row(
+                child: Obx(() => Row(
                   children: [
-                    _buildCategoryChip("ALL", "ALL (3)"),
+                    _buildCategoryChip("ALL", "ALL", controller),
                     SizedBox(width: 8.w),
-                    _buildCategoryChip("VEHICLES", "VEHICLES (1)"),
+                    _buildCategoryChip("VEHICLES", "VEHICLES", controller),
                     SizedBox(width: 8.w),
-                    _buildCategoryChip("MOTORCYCLES", "MOTORCYCLES (1)"),
+                    _buildCategoryChip("MOTORCYCLES", "MOTORCYCLES", controller),
                     SizedBox(width: 8.w),
-                    _buildCategoryChip("PARTS", "PARTS (1)"),
+                    _buildCategoryChip("PERFORMANCE_PARTS", "PARTS", controller),
                   ],
-                ),
+                )),
               ),
               SizedBox(height: 20.h),
 
               /// Listings items list
-              if (activeCategory == "ALL" || activeCategory == "VEHICLES") ...[
-                _buildListingCard(
-                  imageUrl:
-                      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
-                  statusLabel: "ACTIVE",
-                  statusColor: AppColors.yellow,
-                  statusTextColor: Colors.black,
-                  title: "Porsche 911 GT3 RS",
-                  idLabel: "VEHICLE ID: #GT3-992-04",
-                  price: "\$285,000",
-                  priceColor: AppColors.yellow,
-                  specs: {"ENGINE OUTPUT": "525 HP", "DISPLACEMENT": "3996 CC"},
-                  isEditButton: true,
-                ),
-                SizedBox(height: 16.h),
-              ],
-              if (activeCategory == "ALL" ||
-                  activeCategory == "MOTORCYCLES") ...[
-                _buildListingCard(
-                  imageUrl:
-                      "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500&fit=crop",
-                  statusLabel: "PENDING VERIFICATION",
-                  statusColor: Colors.orange,
-                  statusTextColor: Colors.white,
-                  title: "Ducati Panigale V4 R",
-                  idLabel: "MOTO ID: #V4R-DU-01",
-                  price: "\$45,000",
-                  priceColor: Colors.white,
-                  specs: {"MAX POWER": "240 HP", "CAPACITY": "998 CC"},
-                  isEditButton: false,
-                ),
-                SizedBox(height: 16.h),
-              ],
-              if (activeCategory == "ALL" || activeCategory == "PARTS") ...[
-                _buildListingCard(
-                  imageUrl:
-                      "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=500&fit=crop",
-                  statusLabel: "SOLD",
-                  statusColor: Colors.white24,
-                  statusTextColor: Colors.white60,
-                  title: "BREMBO GTR BRAKING SYSTEM",
-                  idLabel: "PART ID: #B-GTR-092",
-                  price: "\$12,500",
-                  priceColor: Colors.white54,
-                  specs: {"SPECIFICATION": "6-Piston Front"},
-                  isEditButton: false,
-                ),
-                SizedBox(height: 16.h),
-              ],
+              Obx(() {
+                if (controller.isLoadingMyListings.value && controller.myListings.isEmpty) {
+                  return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
+                }
+                if (controller.myListings.isEmpty) {
+                  return const Center(
+                    child: CustomText(
+                      text: "No listings found.",
+                      color: Colors.white54,
+                      fontSize: 14,
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: controller.myListings.length,
+                  separatorBuilder: (c, i) => SizedBox(height: 16.h),
+                  itemBuilder: (context, index) {
+                    final item = controller.myListings[index];
+                    final String imageUrl = (item['visualAssets'] != null && (item['visualAssets'] as List).isNotEmpty)
+                        ? item['visualAssets'][0]
+                        : "";
+                    final title = item['brand'] != null ? "${item['brand']} ${item['modelDesignation']}" : "Listing";
+                    final type = item['itemType'] ?? "ITEM";
+                    
+                    Map<String, String> specs = {};
+                    if (item['powerHP'] != null) specs["POWER"] = "${item['powerHP']} HP";
+                    if (item['displacementCC'] != null) specs["DISPLACEMENT"] = "${item['displacementCC']} CC";
+                    if (item['productionYear'] != null) specs["YEAR"] = "${item['productionYear']}";
+                    
+                    return _buildListingCard(
+                      id: item['id'] ?? "",
+                      controller: controller,
+                      imageUrl: imageUrl,
+                      statusLabel: "ACTIVE",
+                      statusColor: AppColors.yellow,
+                      statusTextColor: Colors.black,
+                      title: title,
+                      idLabel: "$type ID: #${item['id']?.toString().substring(0, 8).toUpperCase()}",
+                      price: "\$${item['askingPrice']}",
+                      priceColor: AppColors.yellow,
+                      specs: specs,
+                      isEditButton: true,
+                    );
+                  },
+                );
+              }),
             ],
           ),
         ),
@@ -189,13 +185,11 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
     );
   }
 
-  Widget _buildCategoryChip(String categoryId, String label) {
-    final bool isSelected = activeCategory == categoryId;
+  Widget _buildCategoryChip(String categoryId, String label, MarketplaceFeedController controller) {
+    final bool isSelected = controller.currentCategoryMyListings.value == categoryId;
     return GestureDetector(
       onTap: () {
-        setState(() {
-          activeCategory = categoryId;
-        });
+        controller.changeCategory(categoryId);
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
@@ -217,6 +211,8 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
   }
 
   Widget _buildListingCard({
+    required String id,
+    required MarketplaceFeedController controller,
     required String imageUrl,
     required String statusLabel,
     required Color statusColor,
@@ -242,12 +238,19 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-                child: Image.network(
-                  imageUrl,
-                  height: 180.h,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                child: imageUrl.isNotEmpty
+                    ? Image.network(
+                        imageUrl,
+                        height: 180.h,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        height: 180.h,
+                        width: double.infinity,
+                        color: Colors.white10,
+                        child: const Icon(Icons.image, color: Colors.white38),
+                      ),
               ),
               Positioned(
                 top: 12.h,
@@ -357,7 +360,9 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                                 border: Border.all(color: Colors.white10),
                               ),
                               child: InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  Get.toNamed(AppRoutes.itemDetailScreen, arguments: {'id': id});
+                                },
                                 borderRadius: BorderRadius.circular(6.r),
                                 child: const Center(
                                   child: CustomText(
@@ -370,7 +375,6 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                               ),
                             ),
                     ),
-                    SizedBox(width: 8.w),
                     Container(
                       height: 38.h,
                       width: 44.w,
@@ -381,14 +385,18 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                           color: Colors.red.withValues(alpha: 0.2),
                         ),
                       ),
-                      child: IconButton(
+                      child: Obx(() => controller.isDeleting.value
+                          ? const Center(child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.red, strokeWidth: 2)))
+                          : IconButton(
                         icon: const Icon(
                           Icons.delete_outline,
                           color: Colors.redAccent,
                           size: 18,
                         ),
-                        onPressed: () {},
-                      ),
+                        onPressed: () {
+                          controller.deleteListing(id);
+                        },
+                      )),
                     ),
                   ],
                 ),

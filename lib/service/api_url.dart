@@ -210,4 +210,30 @@ class ApiUrl {
       "/videos/share-video/$videoId";
   static String incrementVideoViews({required String videoId}) =>
       "/videos/increment-views/$videoId";
+
+  // ============ Marketplace =========
+  static String getAllMarketplaceListings({
+    int page = 1,
+    int limit = 10,
+    String? category,
+  }) {
+    String url = "/marketplaces/get-all-listings?page=$page&limit=$limit";
+    if (category != null && category.isNotEmpty) {
+      url += "&category=${Uri.encodeComponent(category)}";
+    }
+    return url;
+  }
+
+  static String get createMarketplaceListing => "/marketplaces/create-listing";
+  static String getMyListings({int page = 1, String? category}) {
+    String url = "/marketplaces/get-my-listings?page=$page&limit=10";
+    if (category != null && category.isNotEmpty && category != "ALL") {
+      url += "&category=${Uri.encodeComponent(category)}";
+    }
+    return url;
+  }
+
+  static String viewListing(String id) => "/marketplaces/view-listing/$id";
+  static String editListing(String id) => "/marketplaces/edit-listing/$id";
+  static String deleteListing(String id) => "/marketplaces/delete-listing/$id";
 }

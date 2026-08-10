@@ -80,11 +80,10 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
       return;
     }
     setState(() => _isSubmitting = true);
-    final List<XFile> mediaFiles = [
-      if (_primaryImage != null) _primaryImage!,
-      if (_secondaryImage1 != null) _secondaryImage1!,
-      if (_secondaryImage2 != null) _secondaryImage2!,
-    ];
+    final List<XFile> mediaFiles = [];
+    if (_primaryImage != null) mediaFiles.add(_primaryImage!);
+    if (_secondaryImage1 != null) mediaFiles.add(_secondaryImage1!);
+    if (_secondaryImage2 != null) mediaFiles.add(_secondaryImage2!);
     await _controller.createDiscoverPost(
       fields: {
         'spotDetails.licensePlate': _plateController.text.trim(),

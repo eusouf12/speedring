@@ -136,8 +136,9 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.isEmpty)
+                          if (v == null || v.isEmpty) {
                             return 'passwordRequired'.tr;
+                          }
                           if (v.length < 6) return 'minChar'.tr;
                           return null;
                         },

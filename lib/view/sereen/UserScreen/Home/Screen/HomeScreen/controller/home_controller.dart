@@ -289,9 +289,12 @@ class HomeController extends GetxController {
             updatedAt: originalPost.updatedAt,
           );
 
-          if (globalIndex != -1)
+          if (globalIndex != -1) {
             postsList[globalIndex] = backendUpdatedPostModel;
-          if (clubIndex != -1) clubPosts[clubIndex] = backendUpdatedPostModel;
+          }
+          if (clubIndex != -1) {
+            clubPosts[clubIndex] = backendUpdatedPostModel;
+          }
           if (currentPostDetail.value?.id == postId) {
             currentPostDetail.value = backendUpdatedPostModel;
           }

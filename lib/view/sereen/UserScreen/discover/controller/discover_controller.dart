@@ -17,6 +17,7 @@ class DiscoverController extends GetxController {
   var showSearchBar = false.obs;
   var discoverSearchTerm = "".obs;
   var videoSearchTerm = "".obs;
+  var networkSearchTerm = "".obs;
   var activeSubTab = 0.obs; // 0: Spotting, 1: Videos, 2: Network
   var activeTag = "Trending".obs;
   var activeVideoTag = "All".obs;
@@ -482,6 +483,8 @@ class DiscoverController extends GetxController {
   var networkUsers = <NetworkUser>[].obs;
 
   Future<void> getNetworkUsers({bool refresh = false}) async {
+    if (isNetworkLoading.value || isMoreNetworkLoading.value) return;
+
     if (refresh) {
       _networkPage = 1;
       _networkTotalPages = 1;
@@ -496,7 +499,7 @@ class DiscoverController extends GetxController {
       var response = await ApiClient.getData(
         ApiUrl.getDiscoverNetworkUsers(
           page: _networkPage,
-          // You can also add search logic here if needed
+          searchTerm: networkSearchTerm.value,
         ),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -506,7 +509,14 @@ class DiscoverController extends GetxController {
         final res = NetworkUserResponse.fromJson(data);
         _networkTotalPages = res.meta?.totalPage ?? 1;
         if (_networkPage == 1) networkUsers.clear();
-        networkUsers.addAll(res.data ?? []);
+        
+        final newUsers = res.data ?? [];
+        for (var user in newUsers) {
+          if (!networkUsers.any((u) => u.id == user.id)) {
+            networkUsers.add(user);
+          }
+        }
+        
         _networkPage++;
       } else {
         showCustomSnackBar("Failed to fetch network users", isError: true);
@@ -518,6 +528,11 @@ class DiscoverController extends GetxController {
       isNetworkLoading.value = false;
       isMoreNetworkLoading.value = false;
     }
+  }
+
+  void searchNetworkUsers(String term) {
+    networkSearchTerm.value = term;
+    getNetworkUsers(refresh: true);
   }
 
   Future<void> toggleFollowUser(String userId) async {

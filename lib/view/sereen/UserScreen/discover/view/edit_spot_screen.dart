@@ -113,11 +113,10 @@ class _EditSpotScreenState extends State<EditSpotScreen> {
 
     setState(() => _isSubmitting = true);
 
-    final List<XFile> mediaFiles = [
-      if (_primaryImage != null) _primaryImage!,
-      if (_secondaryImage1 != null) _secondaryImage1!,
-      if (_secondaryImage2 != null) _secondaryImage2!,
-    ];
+    final List<XFile> mediaFiles = [];
+    if (_primaryImage != null) mediaFiles.add(_primaryImage!);
+    if (_secondaryImage1 != null) mediaFiles.add(_secondaryImage1!);
+    if (_secondaryImage2 != null) mediaFiles.add(_secondaryImage2!);
 
     await _controller.editDiscoverPost(
       postId: post!.id!,

@@ -7,21 +7,16 @@ import '../../../../components/custom_text/custom_text.dart';
 import '../../../../components/custom_nav_bar/navbar.dart';
 import '../../../../../../utils/app_colors/app_colors.dart';
 import '../../../../../../core/app_routes/app_routes.dart';
+import '../controller/marketpace_controller.dart';
 import '../widgets/spec_tile.dart';
 
-class ItemDetailScreen extends StatefulWidget {
+class ItemDetailScreen extends StatelessWidget {
   const ItemDetailScreen({super.key});
 
   @override
-  State<ItemDetailScreen> createState() => _ItemDetailScreenState();
-}
-
-class _ItemDetailScreenState extends State<ItemDetailScreen> {
-  bool isFollowing = false;
-  bool isFavorite = false;
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.find<MarketplaceFeedController>();
+    
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -53,20 +48,41 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               icon: const Icon(Icons.share, color: AppColors.yellow),
               onPressed: () {},
             ),
-            IconButton(
+            Obx(() => IconButton(
               icon: Icon(
-                isFavorite ? Icons.favorite : Icons.favorite_border,
+                controller.listingData['isFavorite'] == true ? Icons.favorite : Icons.favorite_border,
                 color: AppColors.yellow,
               ),
               onPressed: () {
-                setState(() {
-                  isFavorite = !isFavorite;
-                });
+                // Add favorite logic if needed
               },
-            ),
+            )),
           ],
         ),
-        body: SingleChildScrollView(
+        body: Obx(() {
+          if (controller.isLoadingDetail.value) {
+            return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
+          }
+
+          final data = controller.listingData;
+          if (data.isEmpty) {
+            return const Center(child: Text("Listing not found", style: TextStyle(color: Colors.white)));
+          }
+
+          final visualAssets = data['visualAssets'] as List?;
+          final String imageUrl = (visualAssets != null && visualAssets.isNotEmpty) ? visualAssets[0] : "";
+          final brand = data['brand'] ?? "";
+          final modelDesignation = data['modelDesignation'] ?? "";
+          final title = "$brand $modelDesignation".trim().toUpperCase();
+          final price = "\$${data['askingPrice'] ?? '0'}";
+          final description = data['description'] ?? "";
+
+          // Metrics
+          final power = data['powerHP'] ?? "N/A";
+          final weight = data['weightKG'] ?? "N/A";
+          final speed = data['zeroToHundred'] ?? "N/A";
+
+          return SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,19 +94,18 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.r),
                   border: Border.all(color: Colors.white10),
-                  image: const DecorationImage(
-                    image: NetworkImage(
-                      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&fit=crop",
-                    ),
+                  image: imageUrl.isNotEmpty ? DecorationImage(
+                    image: NetworkImage(imageUrl),
                     fit: BoxFit.cover,
-                  ),
+                  ) : null,
                 ),
+                child: imageUrl.isEmpty ? const Icon(Icons.image, color: Colors.white38) : null,
               ),
               SizedBox(height: 16.h),
 
               /// Title & Price
               CustomText(
-                text: "2024 PORSCHE 911 GT3 RS",
+                text: title.isEmpty ? "LISTING" : title,
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
@@ -99,7 +114,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               ),
               SizedBox(height: 4.h),
               CustomText(
-                text: "\$324,500",
+                text: price,
                 color: AppColors.yellow,
                 fontSize: 18,
                 fontWeight: FontWeight.w900,
@@ -159,11 +174,13 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 crossAxisSpacing: 12.w,
                 mainAxisSpacing: 12.h,
                 childAspectRatio: 2.2,
-                children: const [
-                  SpecTile(label: "FUEL TYPE", value: "98 Octane"),
-                  SpecTile(label: "TRANSMISSION", value: "7-Speed PDK"),
-                  SpecTile(label: "COLORWAY", value: "GT Silver"),
-                  SpecTile(label: "INTERIOR", value: "Race-Tex"),
+                children: [
+                  if (data['productionYear'] != null) SpecTile(label: "YEAR", value: "${data['productionYear']}"),
+                  if (data['mileageKM'] != null) SpecTile(label: "MILEAGE", value: "${data['mileageKM']} KM"),
+                  if (data['transmission'] != null) SpecTile(label: "TRANSMISSION", value: "${data['transmission']}"),
+                  if (data['engineType'] != null) SpecTile(label: "ENGINE", value: "${data['engineType']}"),
+                  if (data['displacementCC'] != null) SpecTile(label: "DISPLACEMENT", value: "${data['displacementCC']} CC"),
+                  if (data['location'] != null) SpecTile(label: "LOCATION", value: "${data['location']}"),
                 ],
               ),
               SizedBox(height: 24.h),
@@ -182,7 +199,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      text: "PRECISION ENGINEERED HISTORY",
+                      text: "DESCRIPTION",
                       color: AppColors.yellow,
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
@@ -191,11 +208,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                     ),
                     SizedBox(height: 8.h),
                     CustomText(
-                      text:
-                          "This 2024 iteration of the 911 GT3 RS represents the pinnacle of naturally aspirated performance. "
-                          "Delivered in January 2024 to a private collection in Stuttgart, the vehicle has undergone strict "
-                          "run-in procedures under professional supervision. Every component, from the DRS-enabled rear wing "
-                          "to the carbon-fiber reinforced plastic doors, remains in showroom condition.",
+                      text: description,
                       color: Colors.white70,
                       fontSize: 11,
                       textAlign: TextAlign.start,
@@ -207,9 +220,9 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildMetricCol("518 HP", "POWER"),
-                        _buildMetricCol("3.2s", "0-60 MPH"),
-                        _buildMetricCol("3,260 LB", "WEIGHT"),
+                        _buildMetricCol("$power HP", "POWER"),
+                        _buildMetricCol("${speed}s", "0-100 KM/H"),
+                        _buildMetricCol("$weight KG", "WEIGHT"),
                       ],
                     ),
                   ],
@@ -257,7 +270,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CustomText(
-                                text: "ANDERSON RACING",
+                                text: data['seller'] != null ? data['seller']['username']?.toString().toUpperCase() ?? "UNKNOWN" : "SELLER",
                                 color: Colors.white,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w900,
@@ -286,9 +299,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            setState(() {
-                              isFollowing = !isFollowing;
-                            });
+                            controller.toggleFollow();
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(
@@ -296,15 +307,15 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                               vertical: 6.h,
                             ),
                             decoration: BoxDecoration(
-                              color: isFollowing
+                              color: controller.isFollowing.value
                                   ? Colors.transparent
                                   : Colors.black,
                               border: Border.all(color: AppColors.yellow),
                               borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: CustomText(
-                              text: isFollowing ? "FOLLOWING" : "FOLLOW",
-                              color: isFollowing
+                              text: controller.isFollowing.value ? "FOLLOWING" : "FOLLOW",
+                              color: controller.isFollowing.value
                                   ? Colors.white70
                                   : AppColors.yellow,
                               fontSize: 9,
@@ -434,11 +445,12 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               ),
             ],
           ),
-        ),
-        bottomNavigationBar: const CustomNavBar(currentIndex: 3),
-      ),
-    );
-  }
+        );
+      }),
+      bottomNavigationBar: const CustomNavBar(currentIndex: 3),
+    ),
+  );
+}
 
   Widget _buildSectionHeader(String title) {
     return Padding(

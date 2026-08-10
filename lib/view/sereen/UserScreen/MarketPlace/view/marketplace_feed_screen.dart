@@ -2,98 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-
+import 'package:speedring/view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_nav_bar/navbar.dart';
 import '../../../../../../core/app_routes/app_routes.dart';
 import '../widgets/marketplace_item_card.dart';
-
-class MarketplaceFeedController extends GetxController {
-  /// Scroll Controller
-  final ScrollController scrollController = ScrollController();
-
-  /// Header buttons visibility
-  final RxBool isHeaderButtonHidden = false.obs;
-
-  /// Marketplace Listings
-  final RxList<Map<String, String>> listings = [
-    {
-      "imageUrl":
-          "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&fit=crop",
-      "title": "APEX-7 TURBO S",
-      "price": "\$245,000",
-      "subtitle": "2024 PRODUCTION MODEL",
-      "tag": "VEHICLE",
-    },
-    {
-      "imageUrl":
-          "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&fit=crop",
-      "title": "V-CORE 1100R",
-      "price": "\$42,900",
-      "subtitle": "RACING SPECIFICATION",
-      "tag": "MOTORCYCLE",
-    },
-    {
-      "imageUrl": "https://picsum.photos/seed/stratosgt3/600/400",
-      "title": "STRATOS GT3",
-      "price": "\$510,000",
-      "subtitle": "TRACK ONLY EDITION",
-      "tag": "VEHICLE",
-    },
-    {
-      "imageUrl":
-          "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&fit=crop",
-      "title": "FORGED CARBON SET",
-      "price": "\$18,500",
-      "subtitle": "ULTRA-LIGHTWEIGHT COMPONENTS",
-      "tag": "PARTS",
-    },
-    {
-      "imageUrl":
-          "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&fit=crop",
-      "title": "MASTER SUSPENSION TUNING",
-      "price": "\$250/hr",
-      "subtitle": "Pit Garage Service",
-      "tag": "SERVICES",
-    },
-  ].obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-
-    scrollController.addListener(_scrollListener);
-  }
-
-  void _scrollListener() {
-    /// Hide buttons when list starts scrolling
-    if (scrollController.offset > 0) {
-      if (!isHeaderButtonHidden.value) {
-        isHeaderButtonHidden.value = true;
-      }
-    } else {
-      /// Show buttons again when back to top
-      if (isHeaderButtonHidden.value) {
-        isHeaderButtonHidden.value = false;
-      }
-    }
-  }
-
-  @override
-  void onClose() {
-    scrollController.removeListener(_scrollListener);
-    scrollController.dispose();
-
-    super.onClose();
-  }
-}
 
 class MarketplaceListingFeedScreen extends StatelessWidget {
   const MarketplaceListingFeedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(MarketplaceFeedController());
+    final controller = Get.find<MarketplaceFeedController>();
 
     return CustomGradient(
       child: Scaffold(
@@ -160,52 +80,21 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
 
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                child: Row(
-                  children: [
-                    // =======================================
-                    // START LISTING
-                    // =======================================
-                    Expanded(
-                      child: CustomButton(
-                        height: 40.h,
-                        title: "START LISTING",
-                        fontSize: 12,
-                        borderRadius: 8.r,
+                child: CustomButton(
+                  height: 40.h,
+                  title: "START LISTING",
+                  fontSize: 12,
+                  borderRadius: 8.r,
 
-                        icon: const Icon(
-                          Icons.add_circle_outline,
-                          color: Colors.black,
-                          size: 16,
-                        ),
+                  icon: const Icon(
+                    Icons.add_circle_outline,
+                    color: Colors.black,
+                    size: 16,
+                  ),
 
-                        onTap: () {
-                          Get.toNamed(AppRoutes.selectCategoryScreen);
-                        },
-                      ),
-                    ),
-
-                    SizedBox(width: 12.w),
-
-                    // =======================================
-                    // SELECT CATEGORY
-                    // =======================================
-                    Expanded(
-                      child: CustomButton(
-                        height: 40.h,
-                        title: "SELECT CATEGORY",
-                        fontSize: 12,
-                        fillColor: const Color(0xff1e1e1e),
-                        textColor: Colors.white70,
-                        isBorder: true,
-                        borderColor: Colors.white10,
-                        borderRadius: 8.r,
-
-                        onTap: () {
-                          Get.toNamed(AppRoutes.selectCategoryScreen);
-                        },
-                      ),
-                    ),
-                  ],
+                  onTap: () {
+                    Get.toNamed(AppRoutes.selectCategoryScreen);
+                  },
                 ),
               );
             }),
@@ -214,54 +103,76 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
             // FEED LIST
             // =================================================
             Expanded(
-              child: Obx(
-                () => ListView.builder(
-                  controller: controller.scrollController,
+              child: Obx(() {
+                if (controller.isLoadingFeed.value &&
+                    controller.listings.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 12.h,
-                  ),
-
-                  itemCount: controller.listings.length,
-
-                  itemBuilder: (context, idx) {
-                    final item = controller.listings[idx];
-
-                    return MarketplaceItemCard(
-                      imageUrl: item["imageUrl"]!,
-                      title: item["title"]!,
-                      price: item["price"]!,
-                      subtitle: item["subtitle"]!,
-                      tag: item["tag"]!,
-
-                      // ===================================
-                      // VIEW DETAILS
-                      // ===================================
-                      onViewDetails: () {
-                        Get.toNamed(AppRoutes.itemDetailScreen);
-                      },
-
-                      // ===================================
-                      // CHAT
-                      // ===================================
-                      onChatTap: () {
-                        Get.toNamed(
-                          AppRoutes.inboxScreen,
-                          arguments: {
-                            "userName": "Anderson Racing",
-
-                            "avatarUrl":
-                                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-
-                            "isOnline": true,
-                          },
+                return RefreshIndicator(
+                  onRefresh: () async =>
+                      controller.fetchListings(refresh: true),
+                  child: ListView.builder(
+                    controller: controller.scrollController,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 12.h,
+                    ),
+                    itemCount:
+                        controller.listings.length +
+                        (controller.isMoreLoadingFeed.value ? 1 : 0),
+                    itemBuilder: (context, idx) {
+                      if (idx == controller.listings.length) {
+                        return const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Center(child: CircularProgressIndicator()),
                         );
-                      },
-                    );
-                  },
-                ),
-              ),
+                      }
+
+                      final item = controller.listings[idx];
+
+                      String imageUrl = "";
+                      if (item["visualAssets"] != null &&
+                          (item["visualAssets"] as List).isNotEmpty) {
+                        imageUrl = item["visualAssets"][0];
+                      }
+
+                      return MarketplaceItemCard(
+                        imageUrl: imageUrl,
+                        title: item["title"]?.toString() ?? "No Title",
+                        price: "\$${item["price"] ?? '0'}",
+                        subtitle: item["condition"]?.toString() ?? "",
+                        tag: item["category"]?.toString() ?? "",
+
+                        // ===================================
+                        // VIEW DETAILS
+                        // ===================================
+                        onViewDetails: () {
+                          Get.toNamed(
+                            AppRoutes.itemDetailScreen,
+                            arguments: {'id': item["id"]},
+                          );
+                        },
+
+                        // ===================================
+                        // CHAT
+                        // ===================================
+                        onChatTap: () {
+                          Get.toNamed(
+                            AppRoutes.inboxScreen,
+                            arguments: {
+                              "userName": "Anderson Racing",
+                              "avatarUrl":
+                                  "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                              "isOnline": true,
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                );
+              }),
             ),
           ],
         ),

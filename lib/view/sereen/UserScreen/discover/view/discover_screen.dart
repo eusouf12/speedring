@@ -40,9 +40,11 @@ class DiscoverScreen extends StatelessWidget {
           children: [
             // ── Search Bar ──
             Obx(() {
-              if (!controller.showSearchBar.value)
+              if (!controller.showSearchBar.value) {
                 return const SizedBox.shrink();
+              }
               final isVideo = controller.activeSubTab.value == 1;
+              final isNetwork = controller.activeSubTab.value == 2;
               return Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                 child: Container(
@@ -56,7 +58,9 @@ class DiscoverScreen extends StatelessWidget {
                     decoration: InputDecoration(
                       hintText: isVideo
                           ? "Search videos..."
-                          : "Search spots...",
+                          : isNetwork
+                              ? "Search users..."
+                              : "Search spots...",
                       hintStyle: const TextStyle(color: Colors.white30),
                       prefixIcon: const Icon(
                         Icons.search,
@@ -67,6 +71,8 @@ class DiscoverScreen extends StatelessWidget {
                         onPressed: () {
                           if (isVideo) {
                             controller.searchVideoPosts("");
+                          } else if (isNetwork) {
+                            controller.searchNetworkUsers("");
                           } else {
                             controller.searchDiscoverPosts("");
                           }
@@ -79,6 +85,8 @@ class DiscoverScreen extends StatelessWidget {
                     onChanged: (val) {
                       if (isVideo) {
                         controller.searchVideoPosts(val);
+                      } else if (isNetwork) {
+                        controller.searchNetworkUsers(val);
                       } else {
                         controller.searchDiscoverPosts(val);
                       }
@@ -121,7 +129,15 @@ class DiscoverScreen extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () {
+          if (controller.activeSubTab.value == index) return;
           controller.activeSubTab.value = index;
+          if (index == 0) {
+            controller.getAllDiscoverPosts(refresh: true);
+          } else if (index == 1) {
+            controller.getAllVideoPosts(refresh: true);
+          } else if (index == 2) {
+            controller.getNetworkUsers(refresh: true);
+          }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),

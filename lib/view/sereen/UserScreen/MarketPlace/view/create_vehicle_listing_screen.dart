@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import '../../../../../core/app_routes/app_routes.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_text/custom_text.dart';
+
+import '../controller/marketpace_controller.dart';
+import 'dart:io';
 
 class CreateVehicleListingScreen extends StatelessWidget {
   const CreateVehicleListingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<MarketplaceFeedController>();
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -50,32 +53,37 @@ class CreateVehicleListingScreen extends StatelessWidget {
               SizedBox(height: 12.h),
               _buildFormCard([
                 _buildFieldLabel("BRAND / MANUFACTURER"),
-                _buildWhiteTextField("e.g. Porsche"),
+                _buildWhiteTextField("e.g. Porsche", controller: controller.brandController),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("MODEL VARIANT"),
-                _buildWhiteTextField("e.g. 911 GT3 RS"),
+                _buildWhiteTextField("e.g. 911 GT3 RS", controller: controller.modelDesignationController),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("PRODUCTION YEAR"),
                 _buildWhiteTextField(
                   "2024",
                   keyboardType: TextInputType.number,
+                  controller: controller.productionYearController,
                 ),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("LISTING PRICE (USD)"),
-                _buildWhitePriceField("0.00"),
+                _buildWhitePriceField("0.00", controller: controller.askingPriceController),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("LOCATION / DEPOT"),
-                _buildWhiteLocationField("City, Country"),
+                _buildWhiteLocationField("City, Country", controller: controller.locationController),
               ]),
               SizedBox(height: 28.h),
 
+              _buildFieldLabel("DESCRIPTION"),
+              _buildWhiteTextField("Details about the vehicle", controller: controller.descriptionController),
+              SizedBox(height: 28.h),
+              
               // Performance Telemetry Section
               _buildSectionHeader(
                 "PERFORMANCE TELEMETRY",
                 "Precision engineering data points for verified enthusiasts.",
               ),
               SizedBox(height: 12.h),
-              _buildTelemetryCard(),
+              _buildTelemetryCard(controller),
               SizedBox(height: 28.h),
 
               // Media Assets Section
@@ -84,7 +92,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
                 "High-fidelity imagery and kinematic content.",
               ),
               SizedBox(height: 12.h),
-              _buildMediaAssetsCard(),
+              _buildMediaAssetsCard(controller),
               SizedBox(height: 32.h),
 
               // Actions Bottom Bar
@@ -117,24 +125,26 @@ class CreateVehicleListingScreen extends StatelessWidget {
                   SizedBox(width: 16.w),
                   Expanded(
                     flex: 3,
-                    child: CustomButton(
+                    child: Obx(() => CustomButton(
                       height: 44.h,
-                      title: "PUBLISH LISTING",
+                      title: controller.isCreating.value ? "PUBLISHING..." : "PUBLISH LISTING",
                       fontSize: 11.sp,
                       fillColor: AppColors.yellow,
                       textColor: Colors.black,
                       borderRadius: 8.r,
                       isImageRight: true,
-                      icon: const Icon(
+                      icon: controller.isCreating.value 
+                          ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2))
+                          : const Icon(
                         Icons.publish_rounded,
                         color: Colors.black,
                         size: 16,
                       ),
                       onTap: () {
-                        // Navigate to asset configuration flow
-                        Get.toNamed(AppRoutes.configureAssetScreen);
+                        if (controller.isCreating.value) return;
+                        controller.createListing('VEHICLES');
                       },
-                    ),
+                    )),
                   ),
                 ],
               ),
@@ -198,7 +208,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWhiteTextField(String hint, {TextInputType? keyboardType}) {
+  Widget _buildWhiteTextField(String hint, {TextInputType? keyboardType, TextEditingController? controller}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -206,6 +216,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: TextFormField(
+        controller: controller,
         keyboardType: keyboardType,
         style: const TextStyle(
           color: Colors.black,
@@ -226,7 +237,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWhitePriceField(String hint) {
+  Widget _buildWhitePriceField(String hint, {TextEditingController? controller}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -245,6 +256,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
           ),
           Expanded(
             child: TextFormField(
+              controller: controller,
               keyboardType: TextInputType.number,
               style: const TextStyle(
                 color: Colors.black,
@@ -268,7 +280,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWhiteLocationField(String hint) {
+  Widget _buildWhiteLocationField(String hint, {TextEditingController? controller}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -285,6 +297,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
           SizedBox(width: 8.w),
           Expanded(
             child: TextFormField(
+              controller: controller,
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 13,
@@ -307,7 +320,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTelemetryCard() {
+  Widget _buildTelemetryCard(MarketplaceFeedController controller) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -317,17 +330,21 @@ class CreateVehicleListingScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildTelemetryRow("POWER OUTPUT (HP)", "000"),
+          _buildTelemetryRow("POWER OUTPUT (HP)", controller.powerHpController),
           SizedBox(height: 12.h),
-          _buildTelemetryRow("0-100 KM/H (SEC)", "0.0"),
+          _buildTelemetryRow("0-100 KM/H (SEC)", controller.zeroToHundredController, hint: "0.0"),
           SizedBox(height: 12.h),
-          _buildTelemetryRow("TOP SPEED (KM/H)", "000"),
+          _buildTelemetryRow("TOP SPEED (KM/H)", controller.topSpeedController),
+          SizedBox(height: 12.h),
+          _buildTelemetryRow("WEIGHT (KG)", controller.weightKgController),
+          SizedBox(height: 12.h),
+          _buildTelemetryRow("MILEAGE (KM)", controller.mileageKmController),
         ],
       ),
     );
   }
 
-  Widget _buildTelemetryRow(String label, String value) {
+  Widget _buildTelemetryRow(String label, TextEditingController? controller, {String hint = "000"}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -339,20 +356,31 @@ class CreateVehicleListingScreen extends StatelessWidget {
           letterSpacing: 0.5,
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+          width: 100.w,
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
           decoration: BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.circular(6.r),
             border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
-          child: Text(
-            value,
+          child: TextFormField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: const Color(0xff4A5260),
-              fontSize: 22.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w900,
-              fontFamily: 'Courier', // Monospace digital-like font
+              fontFamily: 'Courier', 
               letterSpacing: 1.5,
+            ),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: hint,
+              hintStyle: TextStyle(
+                color: const Color(0xff4A5260).withValues(alpha: 0.5),
+              ),
+              isDense: true,
             ),
           ),
         ),
@@ -360,7 +388,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMediaAssetsCard() {
+  Widget _buildMediaAssetsCard(MarketplaceFeedController controller) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -369,82 +397,78 @@ class CreateVehicleListingScreen extends StatelessWidget {
         border: Border.all(color: Colors.white10),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Main studio image box
-          Container(
-            height: 120.h,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(
-                color: Colors.white10,
-                style: BorderStyle.solid,
+          GestureDetector(
+            onTap: controller.pickImages,
+            child: Container(
+              height: 120.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                  color: Colors.white10,
+                  style: BorderStyle.solid,
+                ),
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.add_a_photo_outlined,
-                  color: AppColors.yellow,
-                  size: 28,
-                ),
-                SizedBox(height: 8.h),
-                CustomText(
-                  text: "MAIN STUDIO SHOT",
-                  color: Colors.white60,
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
-                ),
-              ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.add_a_photo_outlined,
+                    color: AppColors.yellow,
+                    size: 28,
+                  ),
+                  SizedBox(height: 8.h),
+                  CustomText(
+                    text: "ADD IMAGES",
+                    color: Colors.white60,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(height: 16.h),
-
-          // Upload tiles row
-          Row(
-            children: [
-              Expanded(child: _buildSmallMediaUploadTile("INTERIOR")),
-              SizedBox(width: 8.w),
-              Expanded(child: _buildSmallMediaUploadTile("REAR VIEW")),
-              SizedBox(width: 8.w),
-              Expanded(child: _buildSmallMediaUploadTile("ENGINE")),
-              SizedBox(width: 8.w),
-              Expanded(child: _buildSmallMediaUploadTile("VIDEO REEL")),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSmallMediaUploadTile(String label) {
-    return Container(
-      height: 60.h,
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(6.r),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.upload_file_outlined,
-            color: Colors.white24,
-            size: 16,
-          ),
-          SizedBox(height: 4.h),
-          CustomText(
-            text: label,
-            color: Colors.white38,
-            fontSize: 7.sp,
-            fontWeight: FontWeight.bold,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          Obx(() => Wrap(
+            spacing: 8.w,
+            runSpacing: 8.h,
+            children: List.generate(controller.selectedImages.length, (index) {
+              return Stack(
+                children: [
+                  Container(
+                    width: 60.w,
+                    height: 60.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      image: DecorationImage(
+                        image: FileImage(File(controller.selectedImages[index].path)),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: GestureDetector(
+                      onTap: () => controller.removeImage(index),
+                      child: Container(
+                        padding: EdgeInsets.all(2.w),
+                        decoration: const BoxDecoration(
+                          color: Colors.black54,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.close, color: Colors.white, size: 12),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
+          )),
         ],
       ),
     );
