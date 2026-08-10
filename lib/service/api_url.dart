@@ -172,6 +172,17 @@ class ApiUrl {
       "/discovers/edit-discover-post/$postId";
   static String deleteDiscoverPost({required String postId}) =>
       "/discovers/delete-my-post/$postId";
+  static String toggleFollow({required String userId}) =>
+      "/users/$userId/toggle-follow";
+  static String getDiscoverNetworkUsers({
+    int page = 1,
+    String searchTerm = '',
+  }) {
+    final q = searchTerm.isNotEmpty
+        ? '&searchTerm=${Uri.encodeComponent(searchTerm)}'
+        : '';
+    return "/users/discover?page=$page&limit=20$q";
+  }
 
   // ============ Videos =========
   static const String createVideoPost = "/videos/create-video-post";

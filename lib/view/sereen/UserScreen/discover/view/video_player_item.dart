@@ -142,7 +142,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                   decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(12),
-                    image: (!_isInitialized || _controller == null)
+                    image: (!_isInitialized || _controller == null) && thumbnailUrl.isNotEmpty
                         ? DecorationImage(
                             image: NetworkImage(thumbnailUrl),
                             fit: BoxFit.cover,
@@ -484,10 +484,10 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
               CircleAvatar(
                 radius: 18,
                 backgroundColor: Colors.white12,
-                backgroundImage: widget.video.user?.profileImage != null
+                backgroundImage: widget.video.user?.profileImage != null && widget.video.user!.profileImage!.isNotEmpty
                     ? NetworkImage(widget.video.user!.profileImage!)
                     : null,
-                child: widget.video.user?.profileImage == null
+                child: (widget.video.user?.profileImage == null || widget.video.user!.profileImage!.isEmpty)
                     ? const Icon(Icons.person, color: Colors.white54)
                     : null,
               ),

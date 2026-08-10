@@ -8,6 +8,7 @@ import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/model/discover_model.dart';
+import 'package:speedring/view/sereen/UserScreen/discover/model/network_user_model.dart';
 
 import 'package:speedring/view/sereen/UserScreen/discover/view/video_player_item.dart';
 
@@ -763,100 +764,84 @@ class DiscoverScreen extends StatelessWidget {
 
   /// ==================== 3. NETWORK TAB ====================
   Widget _buildNetworkTab() {
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      children: [
-        /// Quick Action Row
-        Row(
+    return RefreshIndicator(
+      color: AppColors.yellow,
+      backgroundColor: Colors.black,
+      onRefresh: () async => controller.getNetworkUsers(refresh: true),
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (scrollInfo) {
+          if (!controller.isNetworkLoading.value &&
+              !controller.isMoreNetworkLoading.value &&
+              scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+            controller.getNetworkUsers();
+            return true;
+          }
+          return false;
+        },
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            Expanded(
-              child: _buildNetworkActionBtn(
-                icon: Icons.person_add_outlined,
-                label: "CONNECT",
+            const Text(
+              "SUGGESTED CONNECTIONS",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.0,
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildNetworkActionBtn(
-                icon: Icons.qr_code_scanner,
-                label: "SCAN ID",
-              ),
-            ),
+            const SizedBox(height: 16),
+            Obx(() {
+              if (controller.isNetworkLoading.value &&
+                  controller.networkUsers.isEmpty) {
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.yellow),
+                );
+              }
+              if (controller.networkUsers.isEmpty) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 40),
+                    child: Text(
+                      "No suggested connections found",
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                  ),
+                );
+              }
+              return Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.networkUsers.length,
+                    itemBuilder: (context, index) {
+                      final user = controller.networkUsers[index];
+                      return _buildUserTile(user: user);
+                    },
+                  ),
+                  if (controller.isMoreNetworkLoading.value)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: CircularProgressIndicator(color: AppColors.yellow),
+                    ),
+                ],
+              );
+            }),
+            const SizedBox(height: 30),
           ],
         ),
-        const SizedBox(height: 24),
-
-        /// SUGGESTED CONNECTIONS Header
-        const Text(
-          "SUGGESTED CONNECTIONS",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 11,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.0,
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        /// Users list
-        _buildUserTile(
-          name: "Alex V.",
-          username: "@alex_gt3",
-          carInfo: "992 GT3 / RS6 Avant",
-          avatarUrl: "https://i.pravatar.cc/150?img=11",
-        ),
-        _buildUserTile(
-          name: "Sarah M.",
-          username: "@speed_sarah",
-          carInfo: "Huracan STO",
-          avatarUrl: "https://i.pravatar.cc/150?img=9",
-        ),
-        _buildUserTile(
-          name: "Mark T.",
-          username: "@mark_turbo",
-          carInfo: "911 Turbo S",
-          avatarUrl: "https://i.pravatar.cc/150?img=15",
-        ),
-        const SizedBox(height: 30),
-      ],
-    );
-  }
-
-  Widget _buildNetworkActionBtn({
-    required IconData icon,
-    required String label,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xff111111),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: AppColors.yellow, size: 24),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
-          ),
-        ],
       ),
     );
   }
 
-  Widget _buildUserTile({
-    required String name,
-    required String username,
-    required String carInfo,
-    required String avatarUrl,
-  }) {
+  Widget _buildUserTile({required NetworkUser user}) {
+    String name = user.name ?? "Unknown";
+    String username = user.userName != null ? "@${user.userName}" : "";
+    String carInfo = user.role?.toUpperCase() ?? "USER";
+    String avatarUrl = user.profileImage ?? "";
+    bool isFollowing = user.isFollowing;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
@@ -869,8 +854,13 @@ class DiscoverScreen extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 24,
-            backgroundImage: NetworkImage(avatarUrl),
+            backgroundImage: avatarUrl.isNotEmpty
+                ? NetworkImage(avatarUrl)
+                : null,
             backgroundColor: Colors.white12,
+            child: avatarUrl.isEmpty
+                ? const Icon(Icons.person, color: Colors.white54)
+                : null,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -884,10 +874,14 @@ class DiscoverScreen extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   username,
                   style: const TextStyle(color: Colors.white54, fontSize: 11),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -901,19 +895,26 @@ class DiscoverScreen extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white12,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text(
-              "CONNECT",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 9,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
+          GestureDetector(
+            onTap: () {
+              if (user.id != null) {
+                controller.toggleFollowUser(user.id!);
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: isFollowing ? AppColors.yellow : Colors.white12,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                isFollowing ? "FOLLOWING" : "Follow",
+                style: TextStyle(
+                  color: isFollowing ? Colors.black : Colors.white,
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
           ),

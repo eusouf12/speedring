@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:speedring/service/api_client.dart';
+import 'package:speedring/view/sereen/UserScreen/discover/model/network_user_model.dart';
 
 class DiscoverController extends GetxController {
   // ─── Search ───
@@ -26,6 +27,7 @@ class DiscoverController extends GetxController {
     _loadUserId();
     getAllDiscoverPosts();
     getAllVideoPosts();
+    getNetworkUsers();
     // Reactive: reload videos when tag changes
     ever(activeVideoTag, (_) => getAllVideoPosts(refresh: true));
   }
@@ -469,6 +471,89 @@ class DiscoverController extends GetxController {
       }
     } catch (e) {
       Get.snackbar("Error", e.toString(), colorText: Colors.white);
+    }
+  }
+
+  // ======================= Network Users ================================
+  var isNetworkLoading = false.obs;
+  var isMoreNetworkLoading = false.obs;
+  int _networkPage = 1;
+  int _networkTotalPages = 1;
+  var networkUsers = <NetworkUser>[].obs;
+
+  Future<void> getNetworkUsers({bool refresh = false}) async {
+    if (refresh) {
+      _networkPage = 1;
+      _networkTotalPages = 1;
+    }
+    if (_networkPage > _networkTotalPages) return;
+
+    _networkPage == 1
+        ? isNetworkLoading.value = true
+        : isMoreNetworkLoading.value = true;
+
+    try {
+      var response = await ApiClient.getData(
+        ApiUrl.getDiscoverNetworkUsers(
+          page: _networkPage,
+          // You can also add search logic here if needed
+        ),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.body is String
+            ? json.decode(response.body)
+            : response.body;
+        final res = NetworkUserResponse.fromJson(data);
+        _networkTotalPages = res.meta?.totalPage ?? 1;
+        if (_networkPage == 1) networkUsers.clear();
+        networkUsers.addAll(res.data ?? []);
+        _networkPage++;
+      } else {
+        showCustomSnackBar("Failed to fetch network users", isError: true);
+      }
+    } catch (e, stack) {
+      debugPrint("--- Error fetching network users: $e");
+      debugPrint(stack.toString());
+    } finally {
+      isNetworkLoading.value = false;
+      isMoreNetworkLoading.value = false;
+    }
+  }
+
+  Future<void> toggleFollowUser(String userId) async {
+    try {
+      // Optimistic UI update
+      final index = networkUsers.indexWhere((u) => u.id == userId);
+      if (index != -1) {
+        networkUsers[index].isFollowing = !networkUsers[index].isFollowing;
+        networkUsers.refresh();
+      }
+
+      final response = await ApiClient.patchData(
+        ApiUrl.toggleFollow(userId: userId),
+        jsonEncode({}),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Map<String, dynamic> body = response.body is String ? jsonDecode(response.body) : response.body;
+        // String message = body['message'] ?? "Updated follow status";
+        // showCustomSnackBar(message, isError: false);
+      } else {
+        // Revert UI update if failed
+        if (index != -1) {
+          networkUsers[index].isFollowing = !networkUsers[index].isFollowing;
+          networkUsers.refresh();
+        }
+        showCustomSnackBar("Failed to follow/unfollow user", isError: true);
+      }
+    } catch (e) {
+      // Revert UI update if failed
+      final index = networkUsers.indexWhere((u) => u.id == userId);
+      if (index != -1) {
+        networkUsers[index].isFollowing = !networkUsers[index].isFollowing;
+        networkUsers.refresh();
+      }
+      showCustomSnackBar(e.toString(), isError: true);
     }
   }
 }
