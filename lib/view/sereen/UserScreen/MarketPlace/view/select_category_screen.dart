@@ -6,6 +6,8 @@ import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../../../utils/app_colors/app_colors.dart';
 import '../../../../../../core/app_routes/app_routes.dart';
+import 'create_performance_parts_listing_screen.dart';
+import 'create_expert_services_listing_screen.dart';
 
 class SelectCategoryScreen extends StatefulWidget {
   const SelectCategoryScreen({super.key});
@@ -39,14 +41,14 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       "title": "PERFORMANCE PARTS",
       "description": "Engine components, aero kits, and technical hardware.",
       "image":
-          "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=500&fit=crop",
+          "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=500&fit=crop",
     },
     {
       "code": "CAT-04",
       "title": "EXPERT SERVICES",
       "description": "Tuning, coaching, track-side support, and logistics.",
       "image":
-          "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=500&fit=crop",
+          "https://images.unsplash.com/photo-1621252179027-94459d278660?w=500&fit=crop",
     },
   ];
 
@@ -203,16 +205,10 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                       Get.toNamed(AppRoutes.createVehicleListingScreen);
                     } else if (selectedIndex == 1) {
                       Get.toNamed(AppRoutes.createMotorcycleListingScreen);
-                    } else {
-                      Get.snackbar(
-                        "Listing Category Selected",
-                        "Listing category details: ${categories[selectedIndex]["title"]}",
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: const Color(0xff181818),
-                        colorText: Colors.white,
-                        borderColor: AppColors.yellow,
-                        borderWidth: 1,
-                      );
+                    } else if (selectedIndex == 2) {
+                      Get.to(() => const CreatePerformancePartsListingScreen());
+                    } else if (selectedIndex == 3) {
+                      Get.to(() => const CreateExpertServicesListingScreen());
                     }
                   },
                 ),

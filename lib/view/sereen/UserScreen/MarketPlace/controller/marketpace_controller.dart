@@ -127,6 +127,26 @@ class MarketplaceFeedController extends GetxController {
   final displacementCcController = TextEditingController();
   final suspensionController = TextEditingController();
   final brakingSystemController = TextEditingController();
+  
+  // Performance Parts
+  final partNameController = TextEditingController();
+  final categoryController = TextEditingController();
+  final compatibilityController = TextEditingController();
+  final conditionController = TextEditingController();
+  final weightReductionKgController = TextEditingController();
+  final performanceGainController = TextEditingController();
+  final materialController = TextEditingController();
+  final partNumberController = TextEditingController();
+  final shippingStrategyController = TextEditingController();
+
+  // Expert Services
+  final listingTitleController = TextEditingController();
+  final providerNameController = TextEditingController();
+  final hourlyRateUsdController = TextEditingController();
+  final locationTypeController = TextEditingController();
+  final trackSpecializationsController = TextEditingController();
+  final experienceYearsController = TextEditingController();
+
   var selectedImages = <XFile>[].obs;
   final ImagePicker _picker = ImagePicker();
 
@@ -245,18 +265,39 @@ class MarketplaceFeedController extends GetxController {
   }
 
   Future<void> createListing(String itemType) async {
+    // Base required fields
     if (askingPriceController.text.isEmpty ||
         locationController.text.isEmpty ||
-        descriptionController.text.isEmpty ||
-        brandController.text.isEmpty ||
-        modelDesignationController.text.isEmpty ||
-        productionYearController.text.isEmpty) {
-      // showCustomSnackBar("Please fill all required fields", isError: true);
+        descriptionController.text.isEmpty) {
+      Get.snackbar("Error", "Please fill base required fields", colorText: Colors.white);
       return;
     }
 
+    if (itemType == "VEHICLES" || itemType == "MOTORCYCLES") {
+      if (brandController.text.isEmpty ||
+          modelDesignationController.text.isEmpty ||
+          productionYearController.text.isEmpty) {
+        Get.snackbar("Error", "Please fill vehicle required fields", colorText: Colors.white);
+        return;
+      }
+    } else if (itemType == "PERFORMANCE_PARTS") {
+      if (partNameController.text.isEmpty ||
+          categoryController.text.isEmpty ||
+          brandController.text.isEmpty) {
+        Get.snackbar("Error", "Please fill part required fields", colorText: Colors.white);
+        return;
+      }
+    } else if (itemType == "EXPERT_SERVICES") {
+      if (listingTitleController.text.isEmpty ||
+          categoryController.text.isEmpty ||
+          providerNameController.text.isEmpty) {
+        Get.snackbar("Error", "Please fill service required fields", colorText: Colors.white);
+        return;
+      }
+    }
+
     if (selectedImages.isEmpty) {
-      // showCustomSnackBar("Please add at least one image", isError: true);
+      Get.snackbar("Error", "Please add at least one image", colorText: Colors.white);
       return;
     }
 
@@ -267,68 +308,55 @@ class MarketplaceFeedController extends GetxController {
         "askingPrice": double.tryParse(askingPriceController.text) ?? 0,
         "location": locationController.text,
         "description": descriptionController.text,
-        "brand": brandController.text,
-        "modelDesignation": modelDesignationController.text,
-        "productionYear":
-            int.tryParse(productionYearController.text) ?? DateTime.now().year,
       };
 
-      if (itemType == "VEHICLES") {
-        if (powerHpController.text.isNotEmpty) {
-          body["powerHP"] = powerHpController.text;
+      if (itemType == "VEHICLES" || itemType == "MOTORCYCLES") {
+        body["brand"] = brandController.text;
+        body["modelDesignation"] = modelDesignationController.text;
+        body["productionYear"] = int.tryParse(productionYearController.text) ?? DateTime.now().year;
+
+        if (itemType == "VEHICLES") {
+          if (powerHpController.text.isNotEmpty) body["powerHP"] = powerHpController.text;
+          if (zeroToHundredController.text.isNotEmpty) body["zeroToHundred"] = zeroToHundredController.text;
+          if (topSpeedController.text.isNotEmpty) body["topSpeed"] = topSpeedController.text;
+          if (weightKgController.text.isNotEmpty) body["weightKG"] = int.tryParse(weightKgController.text);
+          if (mileageKmController.text.isNotEmpty) body["mileageKM"] = int.tryParse(mileageKmController.text);
+          if (engineConfigurationController.text.isNotEmpty) body["engineConfiguration"] = engineConfigurationController.text;
+          if (transmissionController.text.isNotEmpty) body["transmission"] = transmissionController.text;
+          if (drivetrainController.text.isNotEmpty) body["drivetrain"] = drivetrainController.text;
+          if (aerodynamicsBodyController.text.isNotEmpty) body["aerodynamicsBody"] = aerodynamicsBodyController.text;
+        } else if (itemType == "MOTORCYCLES") {
+          if (engineTypeController.text.isNotEmpty) body["engineType"] = engineTypeController.text;
+          if (powerHpController.text.isNotEmpty) body["powerHP"] = powerHpController.text;
+          if (torqueNmController.text.isNotEmpty) body["torqueNM"] = torqueNmController.text;
+          if (weightKgController.text.isNotEmpty) body["weightKG"] = int.tryParse(weightKgController.text);
+          if (zeroToHundredController.text.isNotEmpty) body["zeroToHundred"] = zeroToHundredController.text;
+          if (displacementCcController.text.isNotEmpty) body["displacementCC"] = displacementCcController.text;
+          if (transmissionController.text.isNotEmpty) body["transmission"] = transmissionController.text;
+          if (suspensionController.text.isNotEmpty) body["suspension"] = suspensionController.text;
+          if (brakingSystemController.text.isNotEmpty) body["brakingSystem"] = brakingSystemController.text;
         }
-        if (zeroToHundredController.text.isNotEmpty) {
-          body["zeroToHundred"] = zeroToHundredController.text;
+      } else if (itemType == "PERFORMANCE_PARTS") {
+        body["partName"] = partNameController.text;
+        body["category"] = categoryController.text;
+        body["brand"] = brandController.text;
+        if (compatibilityController.text.isNotEmpty) body["compatibility"] = compatibilityController.text;
+        if (conditionController.text.isNotEmpty) body["condition"] = conditionController.text;
+        if (weightReductionKgController.text.isNotEmpty) body["weightReductionKG"] = int.tryParse(weightReductionKgController.text);
+        if (performanceGainController.text.isNotEmpty) body["performanceGain"] = performanceGainController.text;
+        if (materialController.text.isNotEmpty) body["material"] = materialController.text;
+        if (partNumberController.text.isNotEmpty) body["partNumber"] = partNumberController.text;
+        if (shippingStrategyController.text.isNotEmpty) body["shippingStrategy"] = shippingStrategyController.text;
+      } else if (itemType == "EXPERT_SERVICES") {
+        body["listingTitle"] = listingTitleController.text;
+        body["category"] = categoryController.text;
+        body["providerName"] = providerNameController.text;
+        if (hourlyRateUsdController.text.isNotEmpty) body["hourlyRateUSD"] = int.tryParse(hourlyRateUsdController.text);
+        if (locationTypeController.text.isNotEmpty) body["locationType"] = locationTypeController.text;
+        if (trackSpecializationsController.text.isNotEmpty) {
+          body["trackSpecializations"] = trackSpecializationsController.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
         }
-        if (topSpeedController.text.isNotEmpty) {
-          body["topSpeed"] = topSpeedController.text;
-        }
-        if (weightKgController.text.isNotEmpty) {
-          body["weightKG"] = int.tryParse(weightKgController.text);
-        }
-        if (mileageKmController.text.isNotEmpty) {
-          body["mileageKM"] = int.tryParse(mileageKmController.text);
-        }
-        if (engineConfigurationController.text.isNotEmpty) {
-          body["engineConfiguration"] = engineConfigurationController.text;
-        }
-        if (transmissionController.text.isNotEmpty) {
-          body["transmission"] = transmissionController.text;
-        }
-        if (drivetrainController.text.isNotEmpty) {
-          body["drivetrain"] = drivetrainController.text;
-        }
-        if (aerodynamicsBodyController.text.isNotEmpty) {
-          body["aerodynamicsBody"] = aerodynamicsBodyController.text;
-        }
-      } else if (itemType == "MOTORCYCLES") {
-        if (engineTypeController.text.isNotEmpty) {
-          body["engineType"] = engineTypeController.text;
-        }
-        if (powerHpController.text.isNotEmpty) {
-          body["powerHP"] = powerHpController.text;
-        }
-        if (torqueNmController.text.isNotEmpty) {
-          body["torqueNM"] = torqueNmController.text;
-        }
-        if (weightKgController.text.isNotEmpty) {
-          body["weightKG"] = int.tryParse(weightKgController.text);
-        }
-        if (zeroToHundredController.text.isNotEmpty) {
-          body["zeroToHundred"] = zeroToHundredController.text;
-        }
-        if (displacementCcController.text.isNotEmpty) {
-          body["displacementCC"] = displacementCcController.text;
-        }
-        if (transmissionController.text.isNotEmpty) {
-          body["transmission"] = transmissionController.text;
-        }
-        if (suspensionController.text.isNotEmpty) {
-          body["suspension"] = suspensionController.text;
-        }
-        if (brakingSystemController.text.isNotEmpty) {
-          body["brakingSystem"] = brakingSystemController.text;
-        }
+        if (experienceYearsController.text.isNotEmpty) body["experienceYears"] = int.tryParse(experienceYearsController.text);
       }
 
       final List<MultipartBody> multipartFiles = selectedImages
@@ -342,12 +370,12 @@ class MarketplaceFeedController extends GetxController {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // showCustomSnackBar("Listing created successfully!", isError: false);
+        Get.snackbar("Success", "Listing created successfully!", colorText: Colors.white);
         clearCreateForm();
         fetchListings(refresh: true); // Refresh feed
         Get.back();
       } else {
-        // Map<String, dynamic> jsonResponse = {};
+        Get.snackbar("Error", "Failed to create listing", colorText: Colors.white);
         // try {
         //   jsonResponse = response.body is String
         //       ? jsonDecode(response.body)
@@ -386,6 +414,26 @@ class MarketplaceFeedController extends GetxController {
     displacementCcController.clear();
     suspensionController.clear();
     brakingSystemController.clear();
+    
+    // Performance Parts
+    partNameController.clear();
+    categoryController.clear();
+    compatibilityController.clear();
+    conditionController.clear();
+    weightReductionKgController.clear();
+    performanceGainController.clear();
+    materialController.clear();
+    partNumberController.clear();
+    shippingStrategyController.clear();
+
+    // Expert Services
+    listingTitleController.clear();
+    providerNameController.clear();
+    hourlyRateUsdController.clear();
+    locationTypeController.clear();
+    trackSpecializationsController.clear();
+    experienceYearsController.clear();
+
     selectedImages.clear();
   }
 
@@ -542,6 +590,21 @@ class MarketplaceFeedController extends GetxController {
     displacementCcController.dispose();
     suspensionController.dispose();
     brakingSystemController.dispose();
+    partNameController.dispose();
+    categoryController.dispose();
+    compatibilityController.dispose();
+    conditionController.dispose();
+    weightReductionKgController.dispose();
+    performanceGainController.dispose();
+    materialController.dispose();
+    partNumberController.dispose();
+    shippingStrategyController.dispose();
+    listingTitleController.dispose();
+    providerNameController.dispose();
+    hourlyRateUsdController.dispose();
+    locationTypeController.dispose();
+    trackSpecializationsController.dispose();
+    experienceYearsController.dispose();
 
     super.onClose();
   }
