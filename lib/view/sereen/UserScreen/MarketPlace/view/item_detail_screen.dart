@@ -11,6 +11,7 @@ import '../controller/marketpace_controller.dart';
 import '../widgets/spec_tile.dart';
 import '../widgets/marketplace_map.dart';
 import 'edit_listing_screen.dart';
+import '../../Profile/controller/profile_controller.dart';
 
 class ItemDetailScreen extends StatelessWidget {
   const ItemDetailScreen({super.key});
@@ -18,6 +19,7 @@ class ItemDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MarketplaceFeedController>();
+    final profileController = Get.find<ProfileScreenController>();
 
     return CustomGradient(
       child: Scaffold(
@@ -36,87 +38,90 @@ class ItemDetailScreen extends StatelessWidget {
             ),
           ),
           actions: [
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert, color: AppColors.yellow),
-              color: Colors.black,
-              onSelected: (value) {
-                final item = controller.itemDetail.value;
-                if (item == null) return;
-
-                if (value == 'edit') {
-                  controller.prepareEdit(item);
-                  Get.to(
-                    () => EditListingScreen(
-                      listingId: item.id!,
-                      itemType: item.itemType ?? 'MOTORCYCLES',
-                    ),
-                  );
-                } else if (value == 'delete') {
-                  final id = item.id;
-                  if (id != null) {
-                    Get.dialog(
-                      AlertDialog(
-                        backgroundColor: const Color(
-                          0xff1e1e1e,
-                        ), // Match dark grey from screenshot
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        title: Text(
-                          'deleteListingTitle'.tr,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        content: Text(
-                          'deleteListingConfirm'.tr,
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Get.back(),
-                            child: Text(
-                              'no'.tr,
-                              style: TextStyle(
-                                color: Colors.white54,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.back();
-                              controller.deleteListing(id);
-                            },
-                            child: Text(
-                              'yes'.tr,
-                              style: TextStyle(
-                                color: Color(
-                                  0xffE53935,
-                                ), // Red color matching screenshot
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
+            Obx(() {
+              final item = controller.itemDetail.value;
+              if (item == null || item.seller?.id != profileController.profileData.value?.id) {
+                return const SizedBox.shrink();
+              }
+              return PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert, color: AppColors.yellow),
+                color: Colors.black,
+                onSelected: (value) {
+                  if (value == 'edit') {
+                    controller.prepareEdit(item);
+                    Get.to(
+                      () => EditListingScreen(
+                        listingId: item.id!,
+                        itemType: item.itemType ?? 'MOTORCYCLES',
                       ),
                     );
+                  } else if (value == 'delete') {
+                    final id = item.id;
+                    if (id != null) {
+                      Get.dialog(
+                        AlertDialog(
+                          backgroundColor: const Color(
+                            0xff1e1e1e,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          title: Text(
+                            'deleteListingTitle'.tr,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          content: Text(
+                            'deleteListingConfirm'.tr,
+                            style: TextStyle(color: Colors.white70, fontSize: 14),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Get.back(),
+                              child: Text(
+                                'no'.tr,
+                                style: TextStyle(
+                                  color: Colors.white54,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Get.back();
+                                controller.deleteListing(id);
+                              },
+                              child: Text(
+                                'yes'.tr,
+                                style: TextStyle(
+                                  color: Color(
+                                    0xffD4FB54,
+                                  ),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   }
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'edit',
-                  child: Text('edit'.tr, style: TextStyle(color: Colors.white)),
-                ),
-                PopupMenuItem<String>(
-                  value: 'delete',
-                  child: Text('delete'.tr, style: TextStyle(color: Colors.red)),
-                ),
-              ],
-            ),
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: 'edit',
+                    child: Text('edit'.tr, style: TextStyle(color: Colors.white)),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'delete',
+                    child: Text('delete'.tr, style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              );
+            }),
           ],
         ),
         body: Obx(() {
@@ -498,35 +503,36 @@ class ItemDetailScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              controller.toggleFollow();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                                vertical: 6.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: controller.isFollowing.value
-                                    ? Colors.transparent
-                                    : Colors.black,
-                                border: Border.all(color: AppColors.yellow),
-                                borderRadius: BorderRadius.circular(6.r),
-                              ),
-                              child: CustomText(
-                                text: controller.isFollowing.value
-                                    ? 'following'.tr
-                                    : 'follow'.tr,
-                                color: controller.isFollowing.value
-                                    ? Colors.white70
-                                    : AppColors.yellow,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.5,
+                          if (data.seller?.id != null && data.seller?.id != profileController.profileData.value?.id)
+                            GestureDetector(
+                              onTap: () {
+                                controller.toggleFollow();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w,
+                                  vertical: 6.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: controller.isFollowing.value
+                                      ? Colors.transparent
+                                      : Colors.black,
+                                  border: Border.all(color: AppColors.yellow),
+                                  borderRadius: BorderRadius.circular(6.r),
+                                ),
+                                child: CustomText(
+                                  text: controller.isFollowing.value
+                                      ? 'following'.tr
+                                      : 'follow'.tr,
+                                  color: controller.isFollowing.value
+                                      ? Colors.white70
+                                      : AppColors.yellow,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                       SizedBox(height: 12.h),

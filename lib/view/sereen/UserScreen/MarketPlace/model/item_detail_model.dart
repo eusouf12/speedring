@@ -177,6 +177,7 @@ class Seller {
   final String? profileImage;
   final num? activeListing;
   final num? totalSell;
+  final bool? isFollowing;
 
   Seller({
     this.id,
@@ -185,6 +186,7 @@ class Seller {
     this.profileImage,
     this.activeListing,
     this.totalSell,
+    this.isFollowing,
   });
 
   factory Seller.fromJson(Map<String, dynamic> json) {
@@ -195,6 +197,7 @@ class Seller {
       profileImage: json['profileImage'] as String?,
       activeListing: num.tryParse(json['activeListing']?.toString() ?? ''),
       totalSell: num.tryParse(json['totalSell']?.toString() ?? ''),
+      isFollowing: json['isFollowing'] == true || json['isFollowing'] == 'true',
     );
   }
 }

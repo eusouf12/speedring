@@ -684,6 +684,7 @@ class MarketplaceFeedController extends GetxController {
         if (responseData['success'] == true && responseData['data'] != null) {
           final parsed = ItemDetailModel.fromJson(responseData['data']);
           itemDetail.value = parsed;
+          isFollowing.value = parsed.seller?.isFollowing ?? false;
         }
       } else {
         itemDetail.value = null;
