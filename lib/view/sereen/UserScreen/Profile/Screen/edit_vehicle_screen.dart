@@ -14,8 +14,7 @@ import '../model/profile_model.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditVehicleScreen extends StatefulWidget {
-  final Vehicle vehicle;
-  const EditVehicleScreen({super.key, required this.vehicle});
+  const EditVehicleScreen({super.key});
 
   @override
   State<EditVehicleScreen> createState() => _EditVehicleScreenState();
@@ -23,6 +22,7 @@ class EditVehicleScreen extends StatefulWidget {
 
 class _EditVehicleScreenState extends State<EditVehicleScreen> {
   final ProfileScreenController profileController = Get.find<ProfileScreenController>();
+  late final Vehicle vehicle;
   
   late String selectedPropulsion;
 
@@ -38,13 +38,14 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
   @override
   void initState() {
     super.initState();
-    selectedPropulsion = widget.vehicle.engineType ?? "Combustion";
-    vehicleNameCtrl = TextEditingController(text: widget.vehicle.vehicleName);
-    brandCtrl = TextEditingController(text: widget.vehicle.brand);
-    modelCtrl = TextEditingController(text: widget.vehicle.model);
-    numberPlateCtrl = TextEditingController(text: widget.vehicle.numberPlate);
-    yearCtrl = TextEditingController(text: widget.vehicle.year);
-    hpCtrl = TextEditingController(text: widget.vehicle.hp);
+    vehicle = Get.arguments as Vehicle;
+    selectedPropulsion = vehicle.engineType ?? "Combustion";
+    vehicleNameCtrl = TextEditingController(text: vehicle.vehicleName);
+    brandCtrl = TextEditingController(text: vehicle.brand);
+    modelCtrl = TextEditingController(text: vehicle.model);
+    numberPlateCtrl = TextEditingController(text: vehicle.numberPlate);
+    yearCtrl = TextEditingController(text: vehicle.year);
+    hpCtrl = TextEditingController(text: vehicle.hp);
   }
 
   Future<void> _pickImage() async {
@@ -74,9 +75,9 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
       localImageFile: selectedImage,
     );
 
-    if (widget.vehicle.id == null) return;
+    if (vehicle.id == null) return;
 
-    final success = await profileController.updateVehicle(widget.vehicle.id!, updatedVehicle);
+    final success = await profileController.updateVehicle(vehicle.id!, updatedVehicle);
     if (success) {
       Get.back();
     }
@@ -121,7 +122,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                           )
                         : null,
                   ),
-                  child: selectedImage == null && widget.vehicle.vehicleImage == null
+                  child: selectedImage == null && vehicle.vehicleImage == null
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -140,11 +141,11 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                             ),
                           ],
                         )
-                      : selectedImage == null && widget.vehicle.vehicleImage != null
+                      : selectedImage == null && vehicle.vehicleImage != null
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(16.r),
                               child: Image.network(
-                                widget.vehicle.vehicleImage!,
+                                vehicle.vehicleImage!,
                                 width: double.infinity,
                                 height: 160.h,
                                 fit: BoxFit.cover,

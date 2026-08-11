@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../core/app_routes/app_routes.dart' show AppRoutes;
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
 import 'package:get/get.dart';
-
 import '../model/profile_model.dart';
 import '../controller/profile_controller.dart';
-import '../Screen/edit_vehicle_screen.dart';
 import '../../../../components/custom_button/custom_button.dart';
 
 class GarageVehicleCard extends StatelessWidget {
   final Vehicle vehicle;
 
-  const GarageVehicleCard({
-    required this.vehicle,
-    super.key,
-  });
+  const GarageVehicleCard({required this.vehicle, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +59,10 @@ class GarageVehicleCard extends StatelessWidget {
                     color: const Color(0xff1c1c1c),
                     onSelected: (value) {
                       if (value == 'edit') {
-                        Get.to(() => EditVehicleScreen(vehicle: vehicle));
+                        Get.toNamed(
+                          AppRoutes.editVehicleScreen,
+                          arguments: vehicle,
+                        );
                       } else if (value == 'delete') {
                         _showDeleteConfirmDialog(context);
                       }
@@ -71,11 +70,17 @@ class GarageVehicleCard extends StatelessWidget {
                     itemBuilder: (context) => [
                       PopupMenuItem(
                         value: 'edit',
-                        child: Text("edit".tr, style: TextStyle(color: Colors.white)),
+                        child: Text(
+                          "edit".tr,
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                       PopupMenuItem(
                         value: 'delete',
-                        child: Text("delete".tr, style: TextStyle(color: Colors.redAccent)),
+                        child: Text(
+                          "delete".tr,
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
                       ),
                     ],
                   ),
@@ -99,7 +104,8 @@ class GarageVehicleCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
-                            text: (vehicle.brand ?? "unknownBrand".tr).toUpperCase(),
+                            text: (vehicle.brand ?? "unknownBrand".tr)
+                                .toUpperCase(),
                             color: AppColors.yellow,
                             fontSize: 8,
                             fontWeight: FontWeight.w900,
@@ -108,7 +114,8 @@ class GarageVehicleCard extends StatelessWidget {
                           ),
                           SizedBox(height: 4.h),
                           CustomText(
-                            text: (vehicle.vehicleName ?? "unknownVehicle".tr).toUpperCase(),
+                            text: (vehicle.vehicleName ?? "unknownVehicle".tr)
+                                .toUpperCase(),
                             color: Colors.white,
                             fontSize: 14,
                             fontWeight: FontWeight.w900,
@@ -144,11 +151,16 @@ class GarageVehicleCard extends StatelessWidget {
                 /// Technical Specs Matrix
                 Row(
                   children: [
-                    _buildSpecCol("model".tr.toUpperCase(), vehicle.model ?? "N/A"),
+                    _buildSpecCol(
+                      "model".tr.toUpperCase(),
+                      vehicle.model ?? "N/A",
+                    ),
                     _buildVerticalDivider(),
                     _buildSpecCol(
                       "hp".tr.toUpperCase(),
-                      (vehicle.hp != null && vehicle.hp!.isNotEmpty) ? "${vehicle.hp} HP" : "N/A",
+                      (vehicle.hp != null && vehicle.hp!.isNotEmpty)
+                          ? "${vehicle.hp} HP"
+                          : "N/A",
                     ),
                     _buildVerticalDivider(),
                     _buildSpecCol(
@@ -161,7 +173,10 @@ class GarageVehicleCard extends StatelessWidget {
                 SizedBox(height: 12.h),
                 Row(
                   children: [
-                    _buildSpecCol("plateNumber".tr.toUpperCase(), vehicle.numberPlate ?? "N/A"),
+                    _buildSpecCol(
+                      "plateNumber".tr.toUpperCase(),
+                      vehicle.numberPlate ?? "N/A",
+                    ),
                     _buildVerticalDivider(),
                     const Expanded(child: SizedBox.shrink()),
                     _buildVerticalDivider(),
@@ -234,7 +249,10 @@ class GarageVehicleCard extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("cancel".tr, style: const TextStyle(color: Colors.white54)),
+              child: Text(
+                "cancel".tr,
+                style: const TextStyle(color: Colors.white54),
+              ),
             ),
             CustomButton(
               title: "delete".tr,
@@ -243,7 +261,8 @@ class GarageVehicleCard extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop();
                 if (vehicle.id != null) {
-                  final ProfileScreenController profileController = Get.find<ProfileScreenController>();
+                  final ProfileScreenController profileController =
+                      Get.find<ProfileScreenController>();
                   profileController.deleteVehicle(vehicle.id!);
                 }
               },
