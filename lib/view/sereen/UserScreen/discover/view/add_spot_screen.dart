@@ -72,7 +72,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
     if (_modelController.text.trim().isEmpty) {
       Get.snackbar(
         'Validation',
-        'Make & Model is required',
+        'makeModelRequired'.tr,
         backgroundColor: const Color(0xff1C1C1C),
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -115,8 +115,8 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
             ),
             onPressed: () => Get.back(),
           ),
-          title: const Text(
-            "NEW VEHICLE SPOT",
+          title: Text(
+            'newVehicleSpot'.tr,
             style: TextStyle(
               color: AppColors.yellow,
               fontSize: 16,
@@ -132,7 +132,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
               /// 1. MEDIA CAPTURE
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: _buildSectionHeader("MEDIA CAPTURE"),
+                child: _buildSectionHeader('mediaCapture'.tr),
               ),
               const SizedBox(height: 8),
 
@@ -192,7 +192,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                                 )
                               : Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     Icon(
                                       Icons.add_a_photo_outlined,
                                       color: AppColors.yellow,
@@ -200,7 +200,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                                     ),
                                     SizedBox(height: 12),
                                     Text(
-                                      "UPLOAD PRIMARY ASSET",
+                                      'uploadPrimaryAsset'.tr,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 11,
@@ -210,7 +210,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                                     ),
                                     SizedBox(height: 4),
                                     Text(
-                                      "TAP TO SELECT FROM GALLERY",
+                                      'tapToSelectFromGallery'.tr,
                                       style: TextStyle(
                                         color: Colors.white38,
                                         fontSize: 8,
@@ -250,7 +250,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
               /// 2. VEHICLE IDENTIFICATION
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: _buildSectionHeader("VEHICLE IDENTIFICATION"),
+                child: _buildSectionHeader('vehicleIdentification'.tr),
               ),
               const SizedBox(height: 8),
 
@@ -263,8 +263,8 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "LICENSE PLATE",
+                      Text(
+                        'licensePlateUpper'.tr,
                         style: TextStyle(
                           color: Colors.white38,
                           fontSize: 9,
@@ -275,13 +275,13 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                       const SizedBox(height: 8),
                       _buildInputField(
                         controller: _plateController,
-                        hint: "ENTER PLATE ID",
+                        hint: 'enterPlateId'.tr,
                         icon: Icons.tag,
                       ),
                       const SizedBox(height: 16),
 
-                      const Text(
-                        "REGION / COUNTRY",
+                      Text(
+                        'regionCountryUpper'.tr,
                         style: TextStyle(
                           color: Colors.white38,
                           fontSize: 9,
@@ -292,13 +292,13 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                       const SizedBox(height: 8),
                       _buildInputField(
                         controller: _regionController,
-                        hint: "ENTER REGION",
+                        hint: 'enterRegion'.tr,
                         icon: Icons.public,
                       ),
                       const SizedBox(height: 16),
 
-                      const Text(
-                        "MAKE & MODEL",
+                      Text(
+                        'makeAndModelUpper'.tr,
                         style: TextStyle(
                           color: Colors.white38,
                           fontSize: 9,
@@ -309,7 +309,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                       const SizedBox(height: 8),
                       _buildInputField(
                         controller: _modelController,
-                        hint: "E.G. PORSCHE 911 GT3 RS",
+                        hint: 'egPorsche'.tr,
                         icon: Icons.directions_car,
                       ),
                     ],
@@ -321,7 +321,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
               /// 3. SPECIFICATION OVERRIDE
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: _buildSectionHeader("SPECIFICATION OVERRIDE"),
+                child: _buildSectionHeader('specificationOverride'.tr),
               ),
               const SizedBox(height: 8),
 
@@ -335,8 +335,8 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// Engine Field
-                      const Text(
-                        "ENGINE",
+                      Text(
+                        'engine'.tr,
                         style: TextStyle(
                           color: AppColors.yellow,
                           fontSize: 9,
@@ -347,13 +347,13 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                       const SizedBox(height: 8),
                       _buildSpecField(
                         controller: _engineController,
-                        hint: "E.G. 4.0L FLAT-6",
+                        hint: 'egFlat6'.tr,
                       ),
                       const SizedBox(height: 16),
 
                       /// Power Field
                       Row(
-                        children: const [
+                        children: [
                           Icon(
                             Icons.flash_on,
                             color: AppColors.yellow,
@@ -361,7 +361,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                           ),
                           SizedBox(width: 4),
                           Text(
-                            "POWER (HP)",
+                            'powerHpUpper'.tr,
                             style: TextStyle(
                               color: Colors.white38,
                               fontSize: 9,
@@ -374,13 +374,13 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                       const SizedBox(height: 8),
                       _buildSpecField(
                         controller: _powerController,
-                        hint: "E.G. 525",
+                        hint: 'eg525'.tr,
                       ),
                       const SizedBox(height: 16),
 
                       /// 0-100 Field
                       Row(
-                        children: const [
+                        children: [
                           Icon(
                             Icons.timer_outlined,
                             color: AppColors.yellow,
@@ -388,7 +388,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                           ),
                           SizedBox(width: 4),
                           Text(
-                            "0-100 KM/H (S)",
+                            'zeroToHundredKmh'.tr,
                             style: TextStyle(
                               color: Colors.white38,
                               fontSize: 9,
@@ -401,7 +401,7 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                       const SizedBox(height: 8),
                       _buildSpecField(
                         controller: _zeroToHundredController,
-                        hint: "E.G. 3.2",
+                        hint: 'eg3_2'.tr,
                       ),
                     ],
                   ),
@@ -434,8 +434,8 @@ class _AddSpotScreenState extends State<AddSpotScreen> {
                               color: AppColors.yellow,
                             ),
                           )
-                        : const Text(
-                            "PUBLISH SPOT",
+                        : Text(
+                            'publishSpot'.tr,
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w900,

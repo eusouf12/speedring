@@ -437,8 +437,7 @@ class ItemDetailScreen extends StatelessWidget {
                                     spec.toUpperCase(),
                                     'specialization'.tr,
                                   ),
-                                )
-                                .toList(),
+                                ),
                           ],
                         ],
                       ),

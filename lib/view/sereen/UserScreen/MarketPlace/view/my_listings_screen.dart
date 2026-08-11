@@ -174,12 +174,15 @@ class MyListingsScreen extends StatelessWidget {
                     final type = item['itemType'] ?? "ITEM";
 
                     Map<String, String> specs = {};
-                    if (item['powerHP'] != null)
+                    if (item['powerHP'] != null) {
                       specs["POWER"] = "${item['powerHP']} HP";
-                    if (item['displacementCC'] != null)
+                    }
+                    if (item['displacementCC'] != null) {
                       specs["DISPLACEMENT"] = "${item['displacementCC']} CC";
-                    if (item['productionYear'] != null)
+                    }
+                    if (item['productionYear'] != null) {
                       specs["YEAR"] = "${item['productionYear']}";
+                    }
 
                     return _buildListingCard(
                       id: item['id'] ?? "",

@@ -42,7 +42,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
         }
       }
     } catch (e) {
-      debugPrint("Error picking media: \$e");
+      debugPrint(('\$e'));
     }
   }
 
@@ -61,10 +61,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt, color: AppColors.yellow),
-                title: const Text(
-                  'Camera',
-                  style: TextStyle(color: Colors.white),
-                ),
+                title: Text('Camera'.tr, style: TextStyle(color: Colors.white)),
                 onTap: () {
                   Get.back();
                   _pickMedia(isVideo, ImageSource.camera);
@@ -75,8 +72,8 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                   Icons.photo_library,
                   color: AppColors.yellow,
                 ),
-                title: const Text(
-                  'Gallery',
+                title: Text(
+                  'Gallery'.tr,
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
@@ -103,7 +100,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "ADD NEW VIDEO"),
+        appBar: CustomRoyelAppbar(leftIcon: true, titleName: 'addNewVideo'.tr),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +108,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
               /// 1. PRIMARY MEDIA
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: _buildSectionHeader("PRIMARY MEDIA"),
+                child: _buildSectionHeader('primaryMedia'.tr),
               ),
               const SizedBox(height: 8),
 
@@ -167,7 +164,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                           )
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.videocam_outlined,
                                 color: AppColors.yellow,
@@ -175,7 +172,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                               ),
                               SizedBox(height: 12),
                               Text(
-                                "UPLOAD VIDEO (MAX 2GB)",
+                                'uploadVideo'.tr,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white70,
@@ -242,7 +239,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                           )
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.add_photo_alternate_outlined,
                                 color: AppColors.yellow,
@@ -250,7 +247,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                               ),
                               SizedBox(height: 12),
                               Text(
-                                "UPLOAD CUSTOM THUMBNAIL",
+                                'uploadCustomThumbnail'.tr,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white70,
@@ -277,11 +274,11 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// Inner Header tag
-                      _buildInnerTag("VIDEO IDENTITY"),
+                      _buildInnerTag('videoIdentity'.tr),
                       const SizedBox(height: 16),
 
-                      const Text(
-                        "VIDEO TITLE",
+                      Text(
+                        'videoTitleUpper'.tr,
                         style: TextStyle(
                           color: Colors.white38,
                           fontSize: 9,
@@ -290,14 +287,11 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      _buildTextField(
-                        _titleController,
-                        "ENTER SESSION NAME...",
-                      ),
+                      _buildTextField(_titleController, 'enterSessionName'.tr),
                       const SizedBox(height: 20),
 
-                      const Text(
-                        "DESCRIPTION",
+                      Text(
+                        'descriptionUpper'.tr,
                         style: TextStyle(
                           color: Colors.white38,
                           fontSize: 9,
@@ -308,7 +302,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                       const SizedBox(height: 8),
                       _buildTextField(
                         _descController,
-                        "ADD SESSION NOTES, WEATHER CONDITIONS, OR LAP TIMES...",
+                        'addSessionNotes'.tr,
                         maxLines: 4,
                       ),
                     ],
@@ -381,7 +375,9 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                     height: 52,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isUploading ? Colors.grey : AppColors.yellow,
+                        backgroundColor: isUploading
+                            ? Colors.grey
+                            : AppColors.yellow,
                         foregroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -394,7 +390,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                               if (_titleController.text.trim().isEmpty) {
                                 Get.snackbar(
                                   'Error',
-                                  'Please enter a video title',
+                                  'enterVideoTitle'.tr,
                                   backgroundColor: Colors.redAccent,
                                   colorText: Colors.white,
                                 );
@@ -403,7 +399,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                               if (_videoFile == null) {
                                 Get.snackbar(
                                   'Error',
-                                  'Please select a video file to upload',
+                                  'selectVideoUpload'.tr,
                                   backgroundColor: Colors.redAccent,
                                   colorText: Colors.white,
                                 );
@@ -411,9 +407,12 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                               }
 
                               final fields = {
-                                'videoDetails.title': _titleController.text.trim(),
-                                'videoDetails.description': _descController.text.trim(),
-                                'videoDetails.classification': selectedClassification,
+                                'videoDetails.title': _titleController.text
+                                    .trim(),
+                                'videoDetails.description': _descController.text
+                                    .trim(),
+                                'videoDetails.classification':
+                                    selectedClassification,
                               };
 
                               controller.createVideoPost(
@@ -430,11 +429,13 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
                               height: 24,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.5,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.black,
+                                ),
                               ),
                             )
-                          : const Text(
-                              "PUBLISH VIDEO",
+                          : Text(
+                              'publishVideo'.tr,
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w900,

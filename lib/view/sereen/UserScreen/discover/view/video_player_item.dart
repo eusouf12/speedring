@@ -263,7 +263,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                       ),
                       color: const Color(0xff1C1C1C),
                       itemBuilder: (_) => [
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'edit',
                           child: Row(
                             children: [
@@ -274,7 +274,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                               ),
                               SizedBox(width: 8),
                               Text(
-                                'Edit',
+                                'edit'.tr,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 13,
@@ -283,7 +283,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                             ],
                           ),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'delete',
                           child: Row(
                             children: [
@@ -294,7 +294,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                               ),
                               SizedBox(width: 8),
                               Text(
-                                'Delete',
+                                'delete'.tr,
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontSize: 13,
@@ -528,7 +528,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                         ),
                         const SizedBox(width: 3),
                         Text(
-                          "${widget.video.views ?? 0}",
+                          '${widget.video.views ?? 0}',
                           style: const TextStyle(
                             color: Colors.white54,
                             fontSize: 10,
@@ -554,7 +554,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                       "https://speedring.com/discover/${widget.video.id}";
                   SharePlus.instance.share(
                     ShareParams(
-                      text: "Check out this video on Speedring:\n\n$link",
+                      text: ('checkOutVideo'.tr + link),
                       subject: "Speedring Video",
                     ),
                   );
@@ -583,19 +583,19 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
     Get.dialog(
       AlertDialog(
         backgroundColor: const Color(0xff181818),
-        title: const Text(
-          "Delete Video",
+        title: Text(
+          'deleteVideo'.tr,
           style: TextStyle(color: Colors.white),
         ),
-        content: const Text(
-          "Are you sure you want to delete this video?",
+        content: Text(
+          'deleteVideoConfirm'.tr,
           style: TextStyle(color: Colors.white70),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text(
-              "Cancel",
+            child: Text(
+              'cancel'.tr,
               style: TextStyle(color: Colors.white54),
             ),
           ),
@@ -608,7 +608,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
               Get.back(); // close dialog
               _discoverController.deleteVideo(id);
             },
-            child: const Text("Delete"),
+            child: Text('delete'.tr),
           ),
         ],
       ),

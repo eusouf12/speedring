@@ -115,9 +115,9 @@ class DiscoverScreen extends StatelessWidget {
       child: Obx(
         () => Row(
           children: [
-            _buildTabItem(0, "Spotting"),
-            _buildTabItem(1, "Videos"),
-            _buildTabItem(2, "Network"),
+            _buildTabItem(0, 'spottingTab'.tr),
+            _buildTabItem(1, 'videosTab'.tr),
+            _buildTabItem(2, 'networkTab'.tr),
           ],
         ),
       ),
@@ -216,11 +216,11 @@ class DiscoverScreen extends StatelessWidget {
                 onPressed: () => Get.toNamed(AppRoutes.addSpotScreen),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(Icons.add_circle_outline, size: 18),
                     SizedBox(width: 8),
                     Text(
-                      "ADD NEW SPOT",
+                      'addNewSpot'.tr,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w900,
@@ -242,9 +242,9 @@ class DiscoverScreen extends StatelessWidget {
                 );
               }
               if (controller.discoverPosts.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
-                    "No posts found",
+                    'noPostsFound'.tr,
                     style: TextStyle(color: Colors.white54),
                   ),
                 );
@@ -376,7 +376,7 @@ class DiscoverScreen extends StatelessWidget {
                       }
                     },
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'edit',
                         child: Row(
                           children: [
@@ -386,11 +386,11 @@ class DiscoverScreen extends StatelessWidget {
                               size: 16,
                             ),
                             SizedBox(width: 10),
-                            Text('Edit', style: TextStyle(color: Colors.white)),
+                            Text('edit'.tr, style: TextStyle(color: Colors.white)),
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'delete',
                         child: Row(
                           children: [
@@ -400,7 +400,7 @@ class DiscoverScreen extends StatelessWidget {
                               size: 16,
                             ),
                             SizedBox(width: 10),
-                            Text('Delete', style: TextStyle(color: Colors.red)),
+                            Text('delete'.tr, style: TextStyle(color: Colors.red)),
                           ],
                         ),
                       ),
@@ -493,7 +493,7 @@ class DiscoverScreen extends StatelessWidget {
                         SharePlus.instance.share(
                           ShareParams(
                             text:
-                                "Check out this car spot on Speedring:\n\n$link",
+                                'checkOutSpot'.tr + link,
                             subject: "Speedring Car Spot",
                           ),
                         );
@@ -543,22 +543,22 @@ class DiscoverScreen extends StatelessWidget {
     Get.dialog(
       AlertDialog(
         backgroundColor: const Color(0xff181818),
-        title: const Text("Delete Post", style: TextStyle(color: Colors.white)),
-        content: const Text(
-          "Are you sure you want to delete this spot?",
+        title: Text('deletePost'.tr, style: TextStyle(color: Colors.white)),
+        content: Text(
+          'deleteSpotConfirm'.tr,
           style: TextStyle(color: Colors.white70),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text("No", style: TextStyle(color: Colors.white54)),
+            child: Text('no'.tr, style: TextStyle(color: Colors.white54)),
           ),
           TextButton(
             onPressed: () {
               Get.back();
               controller.deleteDiscoverPost(postId);
             },
-            child: const Text("Yes", style: TextStyle(color: Colors.red)),
+            child: Text('yes'.tr, style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -646,7 +646,7 @@ class DiscoverScreen extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            tag,
+                            tag == 'All' ? 'all'.tr : tag == 'Onboard' ? 'onboard'.tr : tag == 'Technical' ? 'technical'.tr : tag == 'Vlogs' ? 'vlogs'.tr : tag.tr,
                             style: TextStyle(
                               color: isSel ? Colors.black : Colors.white70,
                               fontSize: 10,
@@ -678,11 +678,11 @@ class DiscoverScreen extends StatelessWidget {
                 onPressed: () => Get.toNamed(AppRoutes.addVideoScreen),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(Icons.add_circle_outline, size: 18),
                     SizedBox(width: 8),
                     Text(
-                      "ADD NEW VIDEO",
+                      'addNewVideo'.tr,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w900,
@@ -697,9 +697,9 @@ class DiscoverScreen extends StatelessWidget {
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
-                  "LATEST UPLOADS",
+                  'latestUploads'.tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -720,11 +720,11 @@ class DiscoverScreen extends StatelessWidget {
                 );
               }
               if (controller.videoPosts.isEmpty) {
-                return const Center(
+                return Center(
                   child: Padding(
                     padding: EdgeInsets.only(top: 40),
                     child: Text(
-                      "No videos found",
+                      'noVideosFound'.tr,
                       style: TextStyle(color: Colors.white54),
                     ),
                   ),
@@ -801,8 +801,8 @@ class DiscoverScreen extends StatelessWidget {
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            const Text(
-              "SUGGESTED CONNECTIONS",
+            Text(
+              'suggestedConnections'.tr,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 11,
@@ -819,11 +819,11 @@ class DiscoverScreen extends StatelessWidget {
                 );
               }
               if (controller.networkUsers.isEmpty) {
-                return const Center(
+                return Center(
                   child: Padding(
                     padding: EdgeInsets.only(top: 40),
                     child: Text(
-                      "No suggested connections found",
+                      'noSuggestedConnections'.tr,
                       style: TextStyle(color: Colors.white54),
                     ),
                   ),
@@ -928,7 +928,7 @@ class DiscoverScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                isFollowing ? "FOLLOWING" : "Follow",
+                isFollowing ? 'followingUpper'.tr : 'follow'.tr,
                 style: TextStyle(
                   color: isFollowing ? Colors.black : Colors.white,
                   fontSize: 9,

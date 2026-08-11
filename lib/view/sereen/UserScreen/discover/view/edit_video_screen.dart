@@ -82,8 +82,8 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
             ),
             onPressed: () => Get.back(),
           ),
-          title: const Text(
-            "EDIT VIDEO",
+          title: Text(
+            'editVideoUpper'.tr,
             style: TextStyle(
               color: AppColors.yellow,
               fontSize: 16,
@@ -99,7 +99,7 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
               /// 1. PRIMARY MEDIA
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: _buildSectionHeader("PRIMARY MEDIA (OPTIONAL)"),
+                child: _buildSectionHeader('${'primaryMedia'.tr} (${'optional'.tr})'),
               ),
               const SizedBox(height: 8),
 
@@ -122,7 +122,7 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                "New Video Selected:\n${_selectedVideo!.name}",
+                                ('${'newVideoSelected'.tr}\\n${_selectedVideo!.name}'),
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: AppColors.yellow,
@@ -134,7 +134,7 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                           )
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.videocam_outlined,
                                 color: Colors.white54,
@@ -142,7 +142,7 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                               ),
                               SizedBox(height: 12),
                               Text(
-                                "TAP TO REPLACE VIDEO (MAX 2GB)\nLeave empty to keep current video",
+                                'tapToReplaceVideo'.tr,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white54,
@@ -197,7 +197,7 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                                 )
                               : Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     Icon(
                                       Icons.add_photo_alternate_outlined,
                                       color: Colors.white54,
@@ -205,7 +205,7 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                                     ),
                                     SizedBox(height: 12),
                                     Text(
-                                      "TAP TO REPLACE THUMBNAIL",
+                                      'tapToReplaceThumbnail'.tr,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white54,
@@ -232,11 +232,11 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// Inner Header tag
-                      _buildInnerTag("VIDEO IDENTITY"),
+                      _buildInnerTag('videoIdentity'.tr),
                       const SizedBox(height: 16),
 
-                      const Text(
-                        "VIDEO TITLE",
+                      Text(
+                        'videoTitleUpper'.tr,
                         style: TextStyle(
                           color: Colors.white38,
                           fontSize: 9,
@@ -247,12 +247,12 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                       const SizedBox(height: 8),
                       _buildTextField(
                         _titleController,
-                        "ENTER SESSION NAME...",
+                        'enterSessionName'.tr,
                       ),
                       const SizedBox(height: 20),
 
-                      const Text(
-                        "DESCRIPTION",
+                      Text(
+                        'descriptionUpper'.tr,
                         style: TextStyle(
                           color: Colors.white38,
                           fontSize: 9,
@@ -263,7 +263,7 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                       const SizedBox(height: 8),
                       _buildTextField(
                         _descController,
-                        "ADD SESSION NOTES, WEATHER CONDITIONS, OR LAP TIMES...",
+                        'addSessionNotes'.tr,
                         maxLines: 4,
                       ),
                     ],
@@ -345,7 +345,7 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                       if (_titleController.text.isEmpty) {
                         Get.snackbar(
                           "Required",
-                          "Please enter a video title",
+                          'enterVideoTitle'.tr,
                           snackPosition: SnackPosition.BOTTOM,
                           backgroundColor: const Color(0xff181818),
                           colorText: Colors.red,
@@ -364,8 +364,8 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
                         thumbnailFile: _selectedThumbnail,
                       );
                     },
-                    child: const Text(
-                      "UPDATE VIDEO",
+                    child: Text(
+                      'updateVideo'.tr,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w900,

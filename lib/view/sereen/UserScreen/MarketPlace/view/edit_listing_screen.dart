@@ -120,7 +120,7 @@ class EditListingScreen extends StatelessWidget {
                               ),
                             ),
                           );
-                        }).toList(),
+                        }),
                       // Display newly selected images
                       ...List.generate(controller.selectedImages.length, (
                         index,
