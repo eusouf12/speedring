@@ -56,7 +56,9 @@ class ItemDetailScreen extends StatelessWidget {
                   if (id != null) {
                     Get.dialog(
                       AlertDialog(
-                        backgroundColor: const Color(0xff1e1e1e), // Match dark grey from screenshot
+                        backgroundColor: const Color(
+                          0xff1e1e1e,
+                        ), // Match dark grey from screenshot
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -70,10 +72,7 @@ class ItemDetailScreen extends StatelessWidget {
                         ),
                         content: const Text(
                           "Are you sure you want to delete this listing?",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                          ),
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
                         actions: [
                           TextButton(
@@ -94,7 +93,9 @@ class ItemDetailScreen extends StatelessWidget {
                             child: const Text(
                               "YES",
                               style: TextStyle(
-                                color: Color(0xffE53935), // Red color matching screenshot
+                                color: Color(
+                                  0xffE53935,
+                                ), // Red color matching screenshot
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -140,10 +141,20 @@ class ItemDetailScreen extends StatelessWidget {
               (visualAssets != null && visualAssets.isNotEmpty)
               ? visualAssets[0]
               : "";
-          final brand = data.brand ?? "";
-          final modelDesignation = data.modelDesignation ?? "";
-          final title = "$brand $modelDesignation".trim().toUpperCase();
-          final price = "\$${data.askingPrice ?? '0'}";
+          String title = "";
+          if (data.itemType == "PERFORMANCE_PARTS") {
+            title = data.partName?.toUpperCase() ?? "PART";
+          } else if (data.itemType == "EXPERT_SERVICES") {
+            title = data.listingTitle?.toUpperCase() ?? "SERVICE";
+          } else {
+            final brand = data.brand ?? "";
+            final modelDesignation = data.modelDesignation ?? "";
+            title = "$brand $modelDesignation".trim().toUpperCase();
+            if (title.isEmpty) title = "VEHICLE";
+          }
+          final price = data.itemType == "EXPERT_SERVICES"
+              ? "\$${data.hourlyRateUSD ?? '0'}/HR"
+              : "\$${data.askingPrice ?? '0'}";
           final description = data.description ?? "";
 
           return SingleChildScrollView(
@@ -210,28 +221,6 @@ class ItemDetailScreen extends StatelessWidget {
                   },
                 ),
                 SizedBox(height: 12.h),
-                CustomButton(
-                  height: 48.h,
-                  title: "SEND OFFER",
-                  fontSize: 13,
-                  fillColor: Colors.black,
-                  textColor: AppColors.yellow,
-                  isBorder: true,
-                  borderColor: AppColors.yellow,
-                  borderRadius: 8.r,
-                  onTap: () {
-                    Get.snackbar(
-                      "Offer Sent",
-                      "Your offer has been submitted to the seller.",
-                      snackPosition: SnackPosition.BOTTOM,
-                      backgroundColor: const Color(0xff181818),
-                      colorText: Colors.white,
-                      borderColor: AppColors.yellow,
-                      borderWidth: 1,
-                    );
-                  },
-                ),
-                SizedBox(height: 24.h),
 
                 /// PHASE 01: TECH SPECS
                 _buildSectionHeader("PHASE 01: TECH SPECS"),
@@ -243,50 +232,104 @@ class ItemDetailScreen extends StatelessWidget {
                   mainAxisSpacing: 12.h,
                   childAspectRatio: 2.2,
                   children: [
-                    if (data.productionYear != null)
-                      SpecTile(label: "YEAR", value: "${data.productionYear}"),
-                    if (data.mileageKM != null)
-                      SpecTile(label: "MILEAGE", value: "${data.mileageKM} KM"),
-                    if (data.transmission != null)
-                      SpecTile(
-                        label: "TRANSMISSION",
-                        value: "${data.transmission}",
-                      ),
-                    if (data.engineType != null)
-                      SpecTile(label: "ENGINE", value: "${data.engineType}"),
-                    if (data.displacementCC != null)
-                      SpecTile(
-                        label: "DISPLACEMENT",
-                        value: "${data.displacementCC} CC",
-                      ),
-                    if (data.location != null)
-                      SpecTile(label: "LOCATION", value: "${data.location}"),
-                    if (data.itemType != null)
-                      SpecTile(label: "TYPE", value: "${data.itemType}"),
-                    if (data.status != null)
-                      SpecTile(label: "STATUS", value: "${data.status}"),
-                    if (data.drivetrain != null)
-                      SpecTile(
-                        label: "DRIVETRAIN",
-                        value: "${data.drivetrain}",
-                      ),
-                    if (data.suspension != null)
-                      SpecTile(
-                        label: "SUSPENSION",
-                        value: "${data.suspension}",
-                      ),
-                    if (data.brakingSystem != null)
-                      SpecTile(label: "BRAKES", value: "${data.brakingSystem}"),
-                    if (data.engineConfiguration != null)
-                      SpecTile(
-                        label: "CONFIGURATION",
-                        value: "${data.engineConfiguration}",
-                      ),
-                    if (data.aerodynamicsBody != null)
-                      SpecTile(
-                        label: "AERODYNAMICS",
-                        value: "${data.aerodynamicsBody}",
-                      ),
+                    if (data.itemType == "VEHICLES" ||
+                        data.itemType == "MOTORCYCLES") ...[
+                      if (data.productionYear != null)
+                        SpecTile(
+                          label: "YEAR",
+                          value: "${data.productionYear}",
+                        ),
+                      if (data.mileageKM != null)
+                        SpecTile(
+                          label: "MILEAGE",
+                          value: "${data.mileageKM} KM",
+                        ),
+                      if (data.transmission != null)
+                        SpecTile(
+                          label: "TRANSMISSION",
+                          value: "${data.transmission}",
+                        ),
+                      if (data.engineType != null)
+                        SpecTile(label: "ENGINE", value: "${data.engineType}"),
+                      if (data.displacementCC != null)
+                        SpecTile(
+                          label: "DISPLACEMENT",
+                          value: "${data.displacementCC} CC",
+                        ),
+                      if (data.location != null)
+                        SpecTile(label: "LOCATION", value: "${data.location}"),
+                      if (data.itemType != null)
+                        SpecTile(label: "TYPE", value: "${data.itemType}"),
+                      if (data.status != null)
+                        SpecTile(label: "STATUS", value: "${data.status}"),
+                      if (data.drivetrain != null)
+                        SpecTile(
+                          label: "DRIVETRAIN",
+                          value: "${data.drivetrain}",
+                        ),
+                      if (data.suspension != null)
+                        SpecTile(
+                          label: "SUSPENSION",
+                          value: "${data.suspension}",
+                        ),
+                      if (data.brakingSystem != null)
+                        SpecTile(
+                          label: "BRAKES",
+                          value: "${data.brakingSystem}",
+                        ),
+                      if (data.engineConfiguration != null)
+                        SpecTile(
+                          label: "CONFIGURATION",
+                          value: "${data.engineConfiguration}",
+                        ),
+                      if (data.aerodynamicsBody != null)
+                        SpecTile(
+                          label: "AERODYNAMICS",
+                          value: "${data.aerodynamicsBody}",
+                        ),
+                    ] else if (data.itemType == "PERFORMANCE_PARTS") ...[
+                      if (data.brand != null)
+                        SpecTile(label: "BRAND", value: "${data.brand}"),
+                      if (data.category != null)
+                        SpecTile(label: "CATEGORY", value: "${data.category}"),
+                      if (data.compatibility != null)
+                        SpecTile(
+                          label: "COMPATIBILITY",
+                          value: "${data.compatibility}",
+                        ),
+                      if (data.condition != null)
+                        SpecTile(
+                          label: "CONDITION",
+                          value: "${data.condition}",
+                        ),
+                      if (data.partNumber != null)
+                        SpecTile(label: "PART NO", value: "${data.partNumber}"),
+                      if (data.material != null)
+                        SpecTile(label: "MATERIAL", value: "${data.material}"),
+                      if (data.shippingStrategy != null)
+                        SpecTile(
+                          label: "SHIPPING",
+                          value: "${data.shippingStrategy}",
+                        ),
+                    ] else if (data.itemType == "EXPERT_SERVICES") ...[
+                      if (data.providerName != null)
+                        SpecTile(
+                          label: "PROVIDER",
+                          value: "${data.providerName}",
+                        ),
+                      if (data.category != null)
+                        SpecTile(label: "CATEGORY", value: "${data.category}"),
+                      if (data.locationType != null)
+                        SpecTile(
+                          label: "LOCATION",
+                          value: "${data.locationType}",
+                        ),
+                      if (data.experienceYears != null)
+                        SpecTile(
+                          label: "EXPERIENCE",
+                          value: "${data.experienceYears} YRS",
+                        ),
+                    ],
                   ],
                 ),
                 SizedBox(height: 24.h),
@@ -328,19 +371,43 @@ class ItemDetailScreen extends StatelessWidget {
                         runSpacing: 16.h,
                         alignment: WrapAlignment.spaceEvenly,
                         children: [
-                          if (data.powerHP != null)
-                            _buildMetricCol("${data.powerHP} HP", "POWER"),
-                          if (data.zeroToHundred != null)
-                            _buildMetricCol(
-                              "${data.zeroToHundred}s",
-                              "0-100 KM/H",
-                            ),
-                          if (data.weightKG != null)
-                            _buildMetricCol("${data.weightKG} KG", "WEIGHT"),
-                          if (data.torqueNM != null)
-                            _buildMetricCol("${data.torqueNM} NM", "TORQUE"),
-                          if (data.topSpeed != null)
-                            _buildMetricCol("${data.topSpeed}", "TOP SPEED"),
+                          if (data.itemType == "VEHICLES" ||
+                              data.itemType == "MOTORCYCLES") ...[
+                            if (data.powerHP != null)
+                              _buildMetricCol("${data.powerHP} HP", "POWER"),
+                            if (data.zeroToHundred != null)
+                              _buildMetricCol(
+                                "${data.zeroToHundred}s",
+                                "0-100 KM/H",
+                              ),
+                            if (data.weightKG != null)
+                              _buildMetricCol("${data.weightKG} KG", "WEIGHT"),
+                            if (data.torqueNM != null)
+                              _buildMetricCol("${data.torqueNM} NM", "TORQUE"),
+                            if (data.topSpeed != null)
+                              _buildMetricCol("${data.topSpeed}", "TOP SPEED"),
+                          ] else if (data.itemType == "PERFORMANCE_PARTS") ...[
+                            if (data.weightReductionKG != null)
+                              _buildMetricCol(
+                                "${data.weightReductionKG} KG",
+                                "WEIGHT REDUCTION",
+                              ),
+                            if (data.performanceGain != null)
+                              _buildMetricCol(
+                                "${data.performanceGain}",
+                                "PERFORMANCE GAIN",
+                              ),
+                          ] else if (data.itemType == "EXPERT_SERVICES" &&
+                              data.trackSpecializations != null) ...[
+                            ...data.trackSpecializations!
+                                .map(
+                                  (spec) => _buildMetricCol(
+                                    spec.toUpperCase(),
+                                    "SPECIALIZATION",
+                                  ),
+                                )
+                                .toList(),
+                          ],
                         ],
                       ),
                     ],

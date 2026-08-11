@@ -127,7 +127,7 @@ class MarketplaceFeedController extends GetxController {
   final displacementCcController = TextEditingController();
   final suspensionController = TextEditingController();
   final brakingSystemController = TextEditingController();
-  
+
   // Performance Parts
   final partNameController = TextEditingController();
   final categoryController = TextEditingController();
@@ -171,6 +171,26 @@ class MarketplaceFeedController extends GetxController {
     displacementCcController.text = item.displacementCC?.toString() ?? '';
     suspensionController.text = item.suspension ?? '';
     brakingSystemController.text = item.brakingSystem ?? '';
+
+    // Performance Parts
+    partNameController.text = item.partName ?? '';
+    categoryController.text = item.category ?? '';
+    compatibilityController.text = item.compatibility ?? '';
+    conditionController.text = item.condition ?? '';
+    weightReductionKgController.text = item.weightReductionKG?.toString() ?? '';
+    performanceGainController.text = item.performanceGain ?? '';
+    materialController.text = item.material ?? '';
+    partNumberController.text = item.partNumber ?? '';
+    shippingStrategyController.text = item.shippingStrategy ?? '';
+
+    // Expert Services
+    listingTitleController.text = item.listingTitle ?? '';
+    providerNameController.text = item.providerName ?? '';
+    hourlyRateUsdController.text = item.hourlyRateUSD?.toString() ?? '';
+    locationTypeController.text = item.locationType ?? '';
+    trackSpecializationsController.text = item.trackSpecializations?.join(', ') ?? '';
+    experienceYearsController.text = item.experienceYears?.toString() ?? '';
+
     selectedImages
         .clear(); // Cannot easily prepopulate network images as XFile without downloading
   }
@@ -202,34 +222,48 @@ class MarketplaceFeedController extends GetxController {
         "productionYear": productionYearController.text,
       };
 
-      if (powerHpController.text.isNotEmpty)
+      if (powerHpController.text.isNotEmpty) {
         body["powerHP"] = powerHpController.text;
-      if (zeroToHundredController.text.isNotEmpty)
+      }
+      if (zeroToHundredController.text.isNotEmpty) {
         body["zeroToHundred"] = zeroToHundredController.text;
-      if (topSpeedController.text.isNotEmpty)
+      }
+      if (topSpeedController.text.isNotEmpty) {
         body["topSpeed"] = topSpeedController.text;
-      if (weightKgController.text.isNotEmpty)
+      }
+      if (weightKgController.text.isNotEmpty) {
         body["weightKG"] = weightKgController.text;
-      if (mileageKmController.text.isNotEmpty)
+      }
+      if (mileageKmController.text.isNotEmpty) {
         body["mileageKM"] = mileageKmController.text;
-      if (engineConfigurationController.text.isNotEmpty)
+      }
+      if (engineConfigurationController.text.isNotEmpty) {
         body["engineConfiguration"] = engineConfigurationController.text;
-      if (transmissionController.text.isNotEmpty)
+      }
+      if (transmissionController.text.isNotEmpty) {
         body["transmission"] = transmissionController.text;
-      if (drivetrainController.text.isNotEmpty)
+      }
+      if (drivetrainController.text.isNotEmpty) {
         body["drivetrain"] = drivetrainController.text;
-      if (aerodynamicsBodyController.text.isNotEmpty)
+      }
+      if (aerodynamicsBodyController.text.isNotEmpty) {
         body["aerodynamicsBody"] = aerodynamicsBodyController.text;
-      if (torqueNmController.text.isNotEmpty)
+      }
+      if (torqueNmController.text.isNotEmpty) {
         body["torqueNm"] = torqueNmController.text;
-      if (engineTypeController.text.isNotEmpty)
+      }
+      if (engineTypeController.text.isNotEmpty) {
         body["engineType"] = engineTypeController.text;
-      if (displacementCcController.text.isNotEmpty)
+      }
+      if (displacementCcController.text.isNotEmpty) {
         body["displacementCc"] = displacementCcController.text;
-      if (suspensionController.text.isNotEmpty)
+      }
+      if (suspensionController.text.isNotEmpty) {
         body["suspension"] = suspensionController.text;
-      if (brakingSystemController.text.isNotEmpty)
+      }
+      if (brakingSystemController.text.isNotEmpty) {
         body["brakingSystem"] = brakingSystemController.text;
+      }
 
       List<MultipartBody> multipartImages = selectedImages.map((image) {
         return MultipartBody('visualAssets', File(image.path));
@@ -269,7 +303,10 @@ class MarketplaceFeedController extends GetxController {
     if (askingPriceController.text.isEmpty ||
         locationController.text.isEmpty ||
         descriptionController.text.isEmpty) {
-      Get.snackbar("Error", "Please fill base required fields", colorText: Colors.white);
+      showCustomSnackBar(
+        "Error, Please fill base required fields",
+        isError: true,
+      );
       return;
     }
 
@@ -277,27 +314,36 @@ class MarketplaceFeedController extends GetxController {
       if (brandController.text.isEmpty ||
           modelDesignationController.text.isEmpty ||
           productionYearController.text.isEmpty) {
-        Get.snackbar("Error", "Please fill vehicle required fields", colorText: Colors.white);
+        showCustomSnackBar(
+          "Error, Please fill vehicle required fields",
+          isError: true,
+        );
         return;
       }
     } else if (itemType == "PERFORMANCE_PARTS") {
       if (partNameController.text.isEmpty ||
           categoryController.text.isEmpty ||
           brandController.text.isEmpty) {
-        Get.snackbar("Error", "Please fill part required fields", colorText: Colors.white);
+        showCustomSnackBar(
+          "Error, Please fill part required fields",
+          isError: true,
+        );
         return;
       }
     } else if (itemType == "EXPERT_SERVICES") {
       if (listingTitleController.text.isEmpty ||
           categoryController.text.isEmpty ||
           providerNameController.text.isEmpty) {
-        Get.snackbar("Error", "Please fill service required fields", colorText: Colors.white);
+        showCustomSnackBar(
+          "Error, Please fill service required fields",
+          isError: true,
+        );
         return;
       }
     }
 
     if (selectedImages.isEmpty) {
-      Get.snackbar("Error", "Please add at least one image", colorText: Colors.white);
+      showCustomSnackBar("Error, Please add at least one image", isError: true);
       return;
     }
 
@@ -313,50 +359,115 @@ class MarketplaceFeedController extends GetxController {
       if (itemType == "VEHICLES" || itemType == "MOTORCYCLES") {
         body["brand"] = brandController.text;
         body["modelDesignation"] = modelDesignationController.text;
-        body["productionYear"] = int.tryParse(productionYearController.text) ?? DateTime.now().year;
+        body["productionYear"] =
+            int.tryParse(productionYearController.text) ?? DateTime.now().year;
 
         if (itemType == "VEHICLES") {
-          if (powerHpController.text.isNotEmpty) body["powerHP"] = powerHpController.text;
-          if (zeroToHundredController.text.isNotEmpty) body["zeroToHundred"] = zeroToHundredController.text;
-          if (topSpeedController.text.isNotEmpty) body["topSpeed"] = topSpeedController.text;
-          if (weightKgController.text.isNotEmpty) body["weightKG"] = int.tryParse(weightKgController.text);
-          if (mileageKmController.text.isNotEmpty) body["mileageKM"] = int.tryParse(mileageKmController.text);
-          if (engineConfigurationController.text.isNotEmpty) body["engineConfiguration"] = engineConfigurationController.text;
-          if (transmissionController.text.isNotEmpty) body["transmission"] = transmissionController.text;
-          if (drivetrainController.text.isNotEmpty) body["drivetrain"] = drivetrainController.text;
-          if (aerodynamicsBodyController.text.isNotEmpty) body["aerodynamicsBody"] = aerodynamicsBodyController.text;
+          if (powerHpController.text.isNotEmpty) {
+            body["powerHP"] = powerHpController.text;
+          }
+          if (zeroToHundredController.text.isNotEmpty) {
+            body["zeroToHundred"] = zeroToHundredController.text;
+          }
+          if (topSpeedController.text.isNotEmpty) {
+            body["topSpeed"] = topSpeedController.text;
+          }
+          if (weightKgController.text.isNotEmpty) {
+            body["weightKG"] = int.tryParse(weightKgController.text);
+          }
+          if (mileageKmController.text.isNotEmpty) {
+            body["mileageKM"] = int.tryParse(mileageKmController.text);
+          }
+          if (engineConfigurationController.text.isNotEmpty) {
+            body["engineConfiguration"] = engineConfigurationController.text;
+          }
+          if (transmissionController.text.isNotEmpty) {
+            body["transmission"] = transmissionController.text;
+          }
+          if (drivetrainController.text.isNotEmpty) {
+            body["drivetrain"] = drivetrainController.text;
+          }
+          if (aerodynamicsBodyController.text.isNotEmpty) {
+            body["aerodynamicsBody"] = aerodynamicsBodyController.text;
+          }
         } else if (itemType == "MOTORCYCLES") {
-          if (engineTypeController.text.isNotEmpty) body["engineType"] = engineTypeController.text;
-          if (powerHpController.text.isNotEmpty) body["powerHP"] = powerHpController.text;
-          if (torqueNmController.text.isNotEmpty) body["torqueNM"] = torqueNmController.text;
-          if (weightKgController.text.isNotEmpty) body["weightKG"] = int.tryParse(weightKgController.text);
-          if (zeroToHundredController.text.isNotEmpty) body["zeroToHundred"] = zeroToHundredController.text;
-          if (displacementCcController.text.isNotEmpty) body["displacementCC"] = displacementCcController.text;
-          if (transmissionController.text.isNotEmpty) body["transmission"] = transmissionController.text;
-          if (suspensionController.text.isNotEmpty) body["suspension"] = suspensionController.text;
-          if (brakingSystemController.text.isNotEmpty) body["brakingSystem"] = brakingSystemController.text;
+          if (engineTypeController.text.isNotEmpty) {
+            body["engineType"] = engineTypeController.text;
+          }
+          if (powerHpController.text.isNotEmpty) {
+            body["powerHP"] = powerHpController.text;
+          }
+          if (torqueNmController.text.isNotEmpty) {
+            body["torqueNM"] = torqueNmController.text;
+          }
+          if (weightKgController.text.isNotEmpty) {
+            body["weightKG"] = int.tryParse(weightKgController.text);
+          }
+          if (zeroToHundredController.text.isNotEmpty) {
+            body["zeroToHundred"] = zeroToHundredController.text;
+          }
+          if (displacementCcController.text.isNotEmpty) {
+            body["displacementCC"] = displacementCcController.text;
+          }
+          if (transmissionController.text.isNotEmpty) {
+            body["transmission"] = transmissionController.text;
+          }
+          if (suspensionController.text.isNotEmpty) {
+            body["suspension"] = suspensionController.text;
+          }
+          if (brakingSystemController.text.isNotEmpty) {
+            body["brakingSystem"] = brakingSystemController.text;
+          }
         }
       } else if (itemType == "PERFORMANCE_PARTS") {
         body["partName"] = partNameController.text;
         body["category"] = categoryController.text;
         body["brand"] = brandController.text;
-        if (compatibilityController.text.isNotEmpty) body["compatibility"] = compatibilityController.text;
-        if (conditionController.text.isNotEmpty) body["condition"] = conditionController.text;
-        if (weightReductionKgController.text.isNotEmpty) body["weightReductionKG"] = int.tryParse(weightReductionKgController.text);
-        if (performanceGainController.text.isNotEmpty) body["performanceGain"] = performanceGainController.text;
-        if (materialController.text.isNotEmpty) body["material"] = materialController.text;
-        if (partNumberController.text.isNotEmpty) body["partNumber"] = partNumberController.text;
-        if (shippingStrategyController.text.isNotEmpty) body["shippingStrategy"] = shippingStrategyController.text;
+        if (compatibilityController.text.isNotEmpty) {
+          body["compatibility"] = compatibilityController.text;
+        }
+        if (conditionController.text.isNotEmpty) {
+          body["condition"] = conditionController.text;
+        }
+        if (weightReductionKgController.text.isNotEmpty) {
+          body["weightReductionKG"] = int.tryParse(
+            weightReductionKgController.text,
+          );
+        }
+        if (performanceGainController.text.isNotEmpty) {
+          body["performanceGain"] = performanceGainController.text;
+        }
+        if (materialController.text.isNotEmpty) {
+          body["material"] = materialController.text;
+        }
+        if (partNumberController.text.isNotEmpty) {
+          body["partNumber"] = partNumberController.text;
+        }
+        if (shippingStrategyController.text.isNotEmpty) {
+          body["shippingStrategy"] = shippingStrategyController.text;
+        }
       } else if (itemType == "EXPERT_SERVICES") {
         body["listingTitle"] = listingTitleController.text;
         body["category"] = categoryController.text;
         body["providerName"] = providerNameController.text;
-        if (hourlyRateUsdController.text.isNotEmpty) body["hourlyRateUSD"] = int.tryParse(hourlyRateUsdController.text);
-        if (locationTypeController.text.isNotEmpty) body["locationType"] = locationTypeController.text;
-        if (trackSpecializationsController.text.isNotEmpty) {
-          body["trackSpecializations"] = trackSpecializationsController.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+        if (hourlyRateUsdController.text.isNotEmpty) {
+          body["hourlyRateUSD"] = int.tryParse(hourlyRateUsdController.text);
         }
-        if (experienceYearsController.text.isNotEmpty) body["experienceYears"] = int.tryParse(experienceYearsController.text);
+        if (locationTypeController.text.isNotEmpty) {
+          body["locationType"] = locationTypeController.text;
+        }
+        if (trackSpecializationsController.text.isNotEmpty) {
+          body["trackSpecializations"] = trackSpecializationsController.text
+              .split(',')
+              .map((e) => e.trim())
+              .where((e) => e.isNotEmpty)
+              .toList();
+        }
+        if (experienceYearsController.text.isNotEmpty) {
+          body["experienceYears"] = int.tryParse(
+            experienceYearsController.text,
+          );
+        }
       }
 
       final List<MultipartBody> multipartFiles = selectedImages
@@ -370,24 +481,15 @@ class MarketplaceFeedController extends GetxController {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar("Success", "Listing created successfully!", colorText: Colors.white);
+        showCustomSnackBar("Listing created successfully!", isError: false);
         clearCreateForm();
         fetchListings(refresh: true); // Refresh feed
-        Get.back();
+        Get.close(2);
       } else {
-        Get.snackbar("Error", "Failed to create listing", colorText: Colors.white);
-        // try {
-        //   jsonResponse = response.body is String
-        //       ? jsonDecode(response.body)
-        //       : response.body;
-        // } catch (_) {}
-        // showCustomSnackBar(
-        //   jsonResponse['message'] ?? "Failed to create listing",
-        //   isError: true,
-        // );
+        showCustomSnackBar("Error, Failed to create listing", isError: true);
       }
     } catch (e) {
-      // showCustomSnackBar("Error: $e", isError: true);
+      showCustomSnackBar("Error: $e", isError: true);
     } finally {
       isCreating.value = false;
     }
@@ -414,7 +516,7 @@ class MarketplaceFeedController extends GetxController {
     displacementCcController.clear();
     suspensionController.clear();
     brakingSystemController.clear();
-    
+
     // Performance Parts
     partNameController.clear();
     categoryController.clear();

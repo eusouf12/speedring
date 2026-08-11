@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
@@ -53,10 +54,16 @@ class CreateVehicleListingScreen extends StatelessWidget {
               SizedBox(height: 12.h),
               _buildFormCard([
                 _buildFieldLabel("BRAND / MANUFACTURER"),
-                _buildWhiteTextField("e.g. Porsche", controller: controller.brandController),
+                _buildWhiteTextField(
+                  "e.g. Porsche",
+                  controller: controller.brandController,
+                ),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("MODEL VARIANT"),
-                _buildWhiteTextField("e.g. 911 GT3 RS", controller: controller.modelDesignationController),
+                _buildWhiteTextField(
+                  "e.g. 911 GT3 RS",
+                  controller: controller.modelDesignationController,
+                ),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("PRODUCTION YEAR"),
                 _buildWhiteTextField(
@@ -66,17 +73,27 @@ class CreateVehicleListingScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("LISTING PRICE (USD)"),
-                _buildWhitePriceField("0.00", controller: controller.askingPriceController),
+                _buildWhitePriceField(
+                  "0.00",
+                  controller: controller.askingPriceController,
+                ),
                 SizedBox(height: 16.h),
                 _buildFieldLabel("LOCATION / DEPOT"),
-                _buildWhiteLocationField("City, Country", controller: controller.locationController),
+                _buildWhiteLocationField(
+                  "City, Country",
+                  controller: controller.locationController,
+                ),
               ]),
               SizedBox(height: 28.h),
 
               _buildFieldLabel("DESCRIPTION"),
-              _buildWhiteTextField("Details about the vehicle", controller: controller.descriptionController),
+              _buildWhiteTextField(
+                "Details about the vehicle",
+                controller: controller.descriptionController,
+                maxLines: 4,
+              ),
               SizedBox(height: 28.h),
-              
+
               // Performance Telemetry Section
               _buildSectionHeader(
                 "PERFORMANCE TELEMETRY",
@@ -96,57 +113,36 @@ class CreateVehicleListingScreen extends StatelessWidget {
               SizedBox(height: 32.h),
 
               // Actions Bottom Bar
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: GestureDetector(
-                      onTap: () => Get.back(),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.cancel_outlined,
-                            color: Colors.white60,
-                            size: 16,
+              Obx(
+                () => CustomButton(
+                  height: 44.h,
+                  title: controller.isCreating.value
+                      ? "PUBLISHING..."
+                      : "PUBLISH LISTING",
+                  fontSize: 11.sp,
+                  fillColor: AppColors.yellow,
+                  textColor: Colors.black,
+                  borderRadius: 8.r,
+                  isImageRight: true,
+                  icon: controller.isCreating.value
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                            strokeWidth: 2,
                           ),
-                          SizedBox(width: 6.w),
-                          CustomText(
-                            text: "CANCEL",
-                            color: Colors.white60,
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    flex: 3,
-                    child: Obx(() => CustomButton(
-                      height: 44.h,
-                      title: controller.isCreating.value ? "PUBLISHING..." : "PUBLISH LISTING",
-                      fontSize: 11.sp,
-                      fillColor: AppColors.yellow,
-                      textColor: Colors.black,
-                      borderRadius: 8.r,
-                      isImageRight: true,
-                      icon: controller.isCreating.value 
-                          ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2))
-                          : const Icon(
-                        Icons.publish_rounded,
-                        color: Colors.black,
-                        size: 16,
-                      ),
-                      onTap: () {
-                        if (controller.isCreating.value) return;
-                        controller.createListing('VEHICLES');
-                      },
-                    )),
-                  ),
-                ],
+                        )
+                      : const Icon(
+                          Icons.publish_rounded,
+                          color: Colors.black,
+                          size: 16,
+                        ),
+                  onTap: () {
+                    if (controller.isCreating.value) return;
+                    controller.createListing('VEHICLES');
+                  },
+                ),
               ),
               SizedBox(height: 24.h),
             ],
@@ -208,7 +204,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWhiteTextField(String hint, {TextInputType? keyboardType, TextEditingController? controller}) {
+  Widget _buildWhiteTextField(String hint, {TextInputType? keyboardType, TextEditingController? controller, int maxLines = 1}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -217,7 +213,12 @@ class CreateVehicleListingScreen extends StatelessWidget {
       ),
       child: TextFormField(
         controller: controller,
-        keyboardType: keyboardType,
+        keyboardType: maxLines > 1 ? TextInputType.multiline : keyboardType,
+        maxLines: maxLines,
+        minLines: 1,
+        inputFormatters: keyboardType == TextInputType.number
+            ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))]
+            : null,
         style: const TextStyle(
           color: Colors.black,
           fontSize: 13,
@@ -237,7 +238,10 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWhitePriceField(String hint, {TextEditingController? controller}) {
+  Widget _buildWhitePriceField(
+    String hint, {
+    TextEditingController? controller,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -258,6 +262,9 @@ class CreateVehicleListingScreen extends StatelessWidget {
             child: TextFormField(
               controller: controller,
               keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 13,
@@ -280,7 +287,10 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWhiteLocationField(String hint, {TextEditingController? controller}) {
+  Widget _buildWhiteLocationField(
+    String hint, {
+    TextEditingController? controller,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -332,7 +342,11 @@ class CreateVehicleListingScreen extends StatelessWidget {
         children: [
           _buildTelemetryRow("POWER OUTPUT (HP)", controller.powerHpController),
           SizedBox(height: 12.h),
-          _buildTelemetryRow("0-100 KM/H (SEC)", controller.zeroToHundredController, hint: "0.0"),
+          _buildTelemetryRow(
+            "0-100 KM/H (SEC)",
+            controller.zeroToHundredController,
+            hint: "0.0",
+          ),
           SizedBox(height: 12.h),
           _buildTelemetryRow("TOP SPEED (KM/H)", controller.topSpeedController),
           SizedBox(height: 12.h),
@@ -344,7 +358,11 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTelemetryRow(String label, TextEditingController? controller, {String hint = "000"}) {
+  Widget _buildTelemetryRow(
+    String label,
+    TextEditingController? controller, {
+    String hint = "000",
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -366,20 +384,21 @@ class CreateVehicleListingScreen extends StatelessWidget {
           child: TextFormField(
             controller: controller,
             keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+            ],
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: const Color(0xff4A5260),
+              color: Colors.white,
               fontSize: 16.sp,
               fontWeight: FontWeight.w900,
-              fontFamily: 'Courier', 
+              fontFamily: 'Courier',
               letterSpacing: 1.5,
             ),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: hint,
-              hintStyle: TextStyle(
-                color: const Color(0xff4A5260).withValues(alpha: 0.5),
-              ),
+              hintStyle: const TextStyle(color: Colors.white24),
               isDense: true,
             ),
           ),
@@ -433,42 +452,52 @@ class CreateVehicleListingScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16.h),
-          Obx(() => Wrap(
-            spacing: 8.w,
-            runSpacing: 8.h,
-            children: List.generate(controller.selectedImages.length, (index) {
-              return Stack(
-                children: [
-                  Container(
-                    width: 60.w,
-                    height: 60.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.r),
-                      image: DecorationImage(
-                        image: FileImage(File(controller.selectedImages[index].path)),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: GestureDetector(
-                      onTap: () => controller.removeImage(index),
-                      child: Container(
-                        padding: EdgeInsets.all(2.w),
-                        decoration: const BoxDecoration(
-                          color: Colors.black54,
-                          shape: BoxShape.circle,
+          Obx(
+            () => Wrap(
+              spacing: 8.w,
+              runSpacing: 8.h,
+              children: List.generate(controller.selectedImages.length, (
+                index,
+              ) {
+                return Stack(
+                  children: [
+                    Container(
+                      width: 60.w,
+                      height: 60.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        image: DecorationImage(
+                          image: FileImage(
+                            File(controller.selectedImages[index].path),
+                          ),
+                          fit: BoxFit.cover,
                         ),
-                        child: const Icon(Icons.close, color: Colors.white, size: 12),
                       ),
                     ),
-                  ),
-                ],
-              );
-            }),
-          )),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: GestureDetector(
+                        onTap: () => controller.removeImage(index),
+                        child: Container(
+                          padding: EdgeInsets.all(2.w),
+                          decoration: const BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ),
         ],
       ),
     );

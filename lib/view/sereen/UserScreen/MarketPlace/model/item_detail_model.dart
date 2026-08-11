@@ -52,6 +52,25 @@ class ItemDetailModel {
   final bool? isFeatured;
   final String? map;
 
+  // Additional fields for PERFORMANCE_PARTS
+  final String? partName;
+  final String? category;
+  final String? compatibility;
+  final String? condition;
+  final num? weightReductionKG;
+  final String? performanceGain;
+  final String? material;
+  final String? partNumber;
+  final String? shippingStrategy;
+
+  // Additional fields for EXPERT_SERVICES
+  final String? listingTitle;
+  final String? providerName;
+  final num? hourlyRateUSD;
+  final String? locationType;
+  final List<String>? trackSpecializations;
+  final num? experienceYears;
+
   ItemDetailModel({
     this.id,
     this.seller,
@@ -83,6 +102,21 @@ class ItemDetailModel {
     this.moderationStatus,
     this.isFeatured,
     this.map,
+    this.partName,
+    this.category,
+    this.compatibility,
+    this.condition,
+    this.weightReductionKG,
+    this.performanceGain,
+    this.material,
+    this.partNumber,
+    this.shippingStrategy,
+    this.listingTitle,
+    this.providerName,
+    this.hourlyRateUSD,
+    this.locationType,
+    this.trackSpecializations,
+    this.experienceYears,
   });
 
   factory ItemDetailModel.fromJson(Map<String, dynamic> json) {
@@ -117,6 +151,21 @@ class ItemDetailModel {
       moderationStatus: json['moderationStatus']?.toString(),
       isFeatured: json['isFeatured'] == true || json['isFeatured'] == 'true',
       map: json['map']?.toString(),
+      partName: json['partName']?.toString(),
+      category: json['category']?.toString(),
+      compatibility: json['compatibility']?.toString(),
+      condition: json['condition']?.toString(),
+      weightReductionKG: num.tryParse(json['weightReductionKG']?.toString() ?? ''),
+      performanceGain: json['performanceGain']?.toString(),
+      material: json['material']?.toString(),
+      partNumber: json['partNumber']?.toString(),
+      shippingStrategy: json['shippingStrategy']?.toString(),
+      listingTitle: json['listingTitle']?.toString(),
+      providerName: json['providerName']?.toString(),
+      hourlyRateUSD: num.tryParse(json['hourlyRateUSD']?.toString() ?? ''),
+      locationType: json['locationType']?.toString(),
+      trackSpecializations: (json['trackSpecializations'] as List?)?.map((e) => e.toString()).toList(),
+      experienceYears: num.tryParse(json['experienceYears']?.toString() ?? ''),
     );
   }
 }

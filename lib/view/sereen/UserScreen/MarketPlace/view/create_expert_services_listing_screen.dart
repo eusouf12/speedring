@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
@@ -85,6 +86,7 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
                 _buildOutlineField(
                   controller.descriptionController,
                   "Details about the service",
+                  maxLines: 4,
                 ),
               ]),
               SizedBox(height: 24.h),
@@ -158,97 +160,86 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
 
-                Obx(() => Wrap(
-                  spacing: 8.w,
-                  runSpacing: 8.h,
-                  children: List.generate(controller.selectedImages.length, (index) {
-                    return Stack(
-                      children: [
-                        Container(
-                          width: 60.w,
-                          height: 60.w,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.r),
-                            image: DecorationImage(
-                              image: FileImage(File(controller.selectedImages[index].path)),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: GestureDetector(
-                            onTap: () => controller.removeImage(index),
-                            child: Container(
-                              padding: EdgeInsets.all(2.w),
-                              decoration: const BoxDecoration(
-                                color: Colors.black54,
-                                shape: BoxShape.circle,
+                Obx(
+                  () => Wrap(
+                    spacing: 8.w,
+                    runSpacing: 8.h,
+                    children: List.generate(controller.selectedImages.length, (
+                      index,
+                    ) {
+                      return Stack(
+                        children: [
+                          Container(
+                            width: 60.w,
+                            height: 60.w,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+                              image: DecorationImage(
+                                image: FileImage(
+                                  File(controller.selectedImages[index].path),
+                                ),
+                                fit: BoxFit.cover,
                               ),
-                              child: const Icon(Icons.close, color: Colors.white, size: 12),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  }),
-                )),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: GestureDetector(
+                              onTap: () => controller.removeImage(index),
+                              child: Container(
+                                padding: EdgeInsets.all(2.w),
+                                decoration: const BoxDecoration(
+                                  color: Colors.black54,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                ),
               ]),
               SizedBox(height: 32.h),
 
               // Bottom Actions
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: GestureDetector(
-                      onTap: () => Get.back(),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.cancel_outlined,
-                            color: Colors.white60,
-                            size: 16,
+              Obx(
+                () => CustomButton(
+                  height: 44.h,
+                  title: controller.isCreating.value
+                      ? "PUBLISHING..."
+                      : "PUBLISH LISTING",
+                  fontSize: 11.sp,
+                  fillColor: AppColors.yellow,
+                  textColor: Colors.black,
+                  borderRadius: 8.r,
+                  isImageRight: true,
+                  icon: controller.isCreating.value
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                            strokeWidth: 2,
                           ),
-                          SizedBox(width: 6.w),
-                          CustomText(
-                            text: "CANCEL",
-                            color: Colors.white60,
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    flex: 3,
-                    child: Obx(() => CustomButton(
-                      height: 44.h,
-                      title: controller.isCreating.value ? "PUBLISHING..." : "PUBLISH LISTING",
-                      fontSize: 11.sp,
-                      fillColor: AppColors.yellow,
-                      textColor: Colors.black,
-                      borderRadius: 8.r,
-                      isImageRight: true,
-                      icon: controller.isCreating.value 
-                          ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2))
-                          : const Icon(
-                        Icons.publish_rounded,
-                        color: Colors.black,
-                        size: 16,
-                      ),
-                      onTap: () {
-                        if (controller.isCreating.value) return;
-                        controller.createListing('EXPERT_SERVICES');
-                      },
-                    )),
-                  ),
-                ],
+                        )
+                      : const Icon(
+                          Icons.publish_rounded,
+                          color: Colors.black,
+                          size: 16,
+                        ),
+                  onTap: () {
+                    if (controller.isCreating.value) return;
+                    controller.createListing('EXPERT_SERVICES');
+                  },
+                ),
               ),
               SizedBox(height: 24.h),
             ],
@@ -300,7 +291,7 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOutlineField(TextEditingController textController, String hint) {
+  Widget _buildOutlineField(TextEditingController textController, String hint, {int maxLines = 1}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -310,6 +301,9 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
       ),
       child: TextFormField(
         controller: textController,
+        keyboardType: maxLines > 1 ? TextInputType.multiline : null,
+        maxLines: maxLines,
+        minLines: 1,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 13,
@@ -350,6 +344,9 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
             child: TextFormField(
               controller: textController,
               keyboardType: keyboardType,
+              inputFormatters: keyboardType == TextInputType.number
+                  ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))]
+                  : null,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 13,
