@@ -70,23 +70,26 @@ class EditProfileScreen extends StatelessWidget {
                             : Image.network(
                                 profile?.profileBanner ?? '',
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Container(
-                                  color: const Color(0xff1C1C1C),
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.image,
-                                      color: Colors.white24,
-                                      size: 48,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                      color: const Color(0xff1C1C1C),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.image,
+                                          color: Colors.white24,
+                                          size: 48,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
                               ),
                       ),
                       // Edit banner icon
                       Positioned(
                         top: 12.h,
                         right: 12.w,
-                        child: _editIconButton(onTap: () => controller.pickBannerImage()),
+                        child: _editIconButton(
+                          onTap: () => controller.pickBannerImage(),
+                        ),
                       ),
 
                       // Avatar
@@ -100,25 +103,36 @@ class EditProfileScreen extends StatelessWidget {
                               height: 100.w,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(color: Colors.black, width: 4),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 4,
+                                ),
                                 color: Colors.black,
                               ),
                               child: ClipOval(
                                 child: pickedAvatar != null
-                                    ? Image.file(pickedAvatar, fit: BoxFit.cover)
-                                    : Image.network(
-                                        profile?.profileImage ?? AppConstants.profileImage,
+                                    ? Image.file(
+                                        pickedAvatar,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) => Container(
-                                          color: const Color(0xff222222),
-                                          child: const Center(
-                                            child: Icon(
-                                              Icons.person,
-                                              color: Colors.white24,
-                                              size: 40,
-                                            ),
-                                          ),
-                                        ),
+                                      )
+                                    : Image.network(
+                                        profile?.profileImage ??
+                                            AppConstants.profileImage,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Container(
+                                                  color: const Color(
+                                                    0xff222222,
+                                                  ),
+                                                  child: const Center(
+                                                    child: Icon(
+                                                      Icons.person,
+                                                      color: Colors.white24,
+                                                      size: 40,
+                                                    ),
+                                                  ),
+                                                ),
                                       ),
                               ),
                             ),
@@ -358,151 +372,6 @@ class EditProfileScreen extends StatelessWidget {
                     ]),
                     SizedBox(height: 20.h),
 
-                    /// ── GARAGE / VEHICLES ─────────────────────────────
-                    _sectionHeader('GARAGE / VEHICLES'),
-                    Obx(
-                      () => controller.vehicles.isEmpty
-                          ? _card([
-                              Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                                  child: Column(
-                                    children: [
-                                      const Icon(
-                                        Icons.directions_car_outlined,
-                                        color: Colors.white24,
-                                        size: 36,
-                                      ),
-                                      SizedBox(height: 8.h),
-                                      CustomText(
-                                        text: 'No vehicles added yet',
-                                        color: Colors.white38,
-                                        fontSize: 12,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ])
-                          : ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: controller.vehicles.length,
-                              separatorBuilder: (context, index) =>
-                                  SizedBox(height: 10.h),
-                              itemBuilder: (context, index) {
-                                final vehicle = controller.vehicles[index];
-                                return _card([
-                                  Row(
-                                    children: [
-                                      // Vehicle image thumbnail
-                                      if (vehicle.localImageFile != null)
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            8.r,
-                                          ),
-                                          child: Image.file(
-                                            vehicle.localImageFile!,
-                                            width: 56.w,
-                                            height: 56.w,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) =>
-                                                _vehicleIconBox(),
-                                          ),
-                                        )
-                                      else if (vehicle.vehicleImage != null &&
-                                          vehicle.vehicleImage!.isNotEmpty)
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            8.r,
-                                          ),
-                                          child: Image.network(
-                                            vehicle.vehicleImage!,
-                                            width: 56.w,
-                                            height: 56.w,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) =>
-                                                _vehicleIconBox(),
-                                          ),
-                                        )
-                                      else
-                                        _vehicleIconBox(),
-                                      SizedBox(width: 12.w),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            CustomText(
-                                              text:
-                                                  vehicle.vehicleName
-                                                      ?.toUpperCase() ??
-                                                  'UNKNOWN',
-                                              color: Colors.white,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            SizedBox(height: 4.h),
-                                            CustomText(
-                                              text:
-                                                  '${vehicle.year ?? ''} ${vehicle.brand ?? ''} ${vehicle.model ?? ''}'
-                                                      .trim(),
-                                              color: Colors.white54,
-                                              fontSize: 11,
-                                            ),
-                                            if (vehicle.engineType != null &&
-                                                vehicle
-                                                    .engineType!
-                                                    .isNotEmpty) ...[
-                                              SizedBox(height: 2.h),
-                                              CustomText(
-                                                text: vehicle.engineType!,
-                                                color: AppColors.yellow,
-                                                fontSize: 10,
-                                              ),
-                                            ],
-                                          ],
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.edit,
-                                          color: AppColors.yellow,
-                                          size: 18,
-                                        ),
-                                        onPressed: () =>
-                                            controller.showVehicleDialog(
-                                              vehicle: vehicle,
-                                              index: index,
-                                            ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.delete_outline,
-                                          color: Colors.redAccent,
-                                          size: 18,
-                                        ),
-                                        onPressed: () =>
-                                            controller.vehicles.removeAt(index),
-                                      ),
-                                    ],
-                                  ),
-                                ]);
-                              },
-                            ),
-                    ),
-                    SizedBox(height: 10.h),
-                    CustomButton(
-                      height: 40.h,
-                      title: '+ ADD VEHICLE',
-                      fontSize: 11,
-                      textColor: Colors.black,
-                      fillColor: AppColors.yellow,
-                      borderRadius: 8.r,
-                      onTap: () => controller.showVehicleDialog(),
-                    ),
-                    SizedBox(height: 32.h),
-
                     /// ── SAVE CHANGES ──────────────────────────────────
                     Obx(
                       () => controller.isUpdating.value
@@ -714,22 +583,6 @@ class EditProfileScreen extends StatelessWidget {
             inactiveTrackColor: Colors.white12,
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _vehicleIconBox() {
-    return Container(
-      width: 56.w,
-      height: 56.w,
-      decoration: BoxDecoration(
-        color: const Color(0xff1d1d1d),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: const Icon(
-        Icons.directions_car_outlined,
-        color: Colors.white24,
-        size: 28,
       ),
     );
   }

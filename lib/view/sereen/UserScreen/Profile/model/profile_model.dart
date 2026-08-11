@@ -1,5 +1,3 @@
-import 'dart:io';
-
 class ProfileResponse {
   final int? statusCode;
   final bool? success;
@@ -113,8 +111,8 @@ class ProfileData {
       profileBanner: json['profileBanner'],
       status: json['status'],
       stripeCustomerId: json['stripeCustomerId'],
-      subscriptionPlan: json['subscriptionPlan'] is Map 
-          ? json['subscriptionPlan']['name'] 
+      subscriptionPlan: json['subscriptionPlan'] is Map
+          ? json['subscriptionPlan']['name']
           : json['subscriptionPlan'],
       stripeSubscriptionId: json['stripeSubscriptionId'],
       following: json['following'] != null
@@ -170,7 +168,6 @@ class DriverInfo {
   final bool? isRolePublic;
   final String? nationality;
   final List<String>? favoriteVehicles;
-  final List<Vehicle>? vehicles;
 
   DriverInfo({
     this.socialLinks,
@@ -181,7 +178,6 @@ class DriverInfo {
     this.isRolePublic,
     this.nationality,
     this.favoriteVehicles,
-    this.vehicles,
   });
 
   factory DriverInfo.fromJson(Map<String, dynamic> json) {
@@ -200,9 +196,6 @@ class DriverInfo {
       favoriteVehicles: json['favoriteVehicles'] != null
           ? List<String>.from(json['favoriteVehicles'])
           : null,
-      vehicles: json['vehicles'] != null
-          ? (json['vehicles'] as List).map((e) => Vehicle.fromJson(e)).toList()
-          : null,
     );
   }
 
@@ -216,7 +209,6 @@ class DriverInfo {
       'isRolePublic': isRolePublic,
       'nationality': nationality,
       'favoriteVehicles': favoriteVehicles,
-      'vehicles': vehicles?.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -285,55 +277,55 @@ class NotificationPreferences {
 }
 
 class Vehicle {
+  final String? id;
   final String? vehicleName;
   final String? brand;
   final String? model;
   final String? year;
   final String? hp;
   final String? engineType;
-  final String? vehicleImage;
-  final String? id;
   final String? numberPlate;
-  final File? localImageFile;
+  final String? vehicleImage;
+  final dynamic localImageFile; // Used for uploading
 
   Vehicle({
+    this.id,
     this.vehicleName,
     this.brand,
     this.model,
     this.year,
     this.hp,
     this.engineType,
-    this.vehicleImage,
-    this.id,
     this.numberPlate,
+    this.vehicleImage,
     this.localImageFile,
   });
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     return Vehicle(
+      id: json['_id'],
       vehicleName: json['vehicleName'],
       brand: json['brand'],
       model: json['model'],
       year: json['year'],
       hp: json['hp'],
       engineType: json['engineType'],
-      vehicleImage: json['vehicleImage'],
-      id: json['_id'],
       numberPlate: json['numberPlate'],
+      vehicleImage: json['vehicleImage'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'vehicleName': vehicleName,
-      'brand': brand,
-      'model': model,
-      'year': year,
-      'hp': hp,
-      'engineType': engineType,
-      if (vehicleImage != null) 'vehicleImage': vehicleImage,
       if (id != null) '_id': id,
+      if (vehicleName != null) 'vehicleName': vehicleName,
+      if (brand != null) 'brand': brand,
+      if (model != null) 'model': model,
+      if (year != null) 'year': year,
+      if (hp != null) 'hp': hp,
+      if (engineType != null) 'engineType': engineType,
       if (numberPlate != null) 'numberPlate': numberPlate,
+      if (vehicleImage != null) 'vehicleImage': vehicleImage,
     };
   }
 }

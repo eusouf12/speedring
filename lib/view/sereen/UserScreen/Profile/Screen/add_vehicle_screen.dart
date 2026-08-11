@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
+
+import 'dart:io';
+import '../../../../../utils/ToastMsg/toast_message.dart';
+import '../controller/profile_controller.dart';
+import '../model/profile_model.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddVehicleScreen extends StatefulWidget {
   const AddVehicleScreen({super.key});
@@ -14,53 +21,69 @@ class AddVehicleScreen extends StatefulWidget {
 }
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
-  String selectedPropulsion = "COMBUSTION";
-  String selectedDriveType = "RWD";
+  final ProfileScreenController profileController = Get.find<ProfileScreenController>();
+  
+  String selectedPropulsion = "Combustion";
+
+  final vehicleNameCtrl = TextEditingController();
+  final brandCtrl = TextEditingController();
+  final modelCtrl = TextEditingController();
+  final numberPlateCtrl = TextEditingController();
+  final yearCtrl = TextEditingController();
+  final hpCtrl = TextEditingController();
+
+  File? selectedImage;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _saveVehicle() async {
+    if (vehicleNameCtrl.text.isEmpty || brandCtrl.text.isEmpty || modelCtrl.text.isEmpty) {
+      showCustomSnackBar("Please fill in the required fields (Name, Brand, Model)", isError: true);
+      return;
+    }
+
+    final newVehicle = Vehicle(
+      vehicleName: vehicleNameCtrl.text,
+      brand: brandCtrl.text,
+      model: modelCtrl.text,
+      numberPlate: numberPlateCtrl.text,
+      year: yearCtrl.text,
+      hp: hpCtrl.text,
+      engineType: selectedPropulsion,
+      localImageFile: selectedImage,
+    );
+
+    final success = await profileController.addVehicle(newVehicle);
+    if (success) {
+      Get.back();
+    }
+  }
+
+  @override
+  void dispose() {
+    vehicleNameCtrl.dispose();
+    brandCtrl.dispose();
+    modelCtrl.dispose();
+    numberPlateCtrl.dispose();
+    yearCtrl.dispose();
+    hpCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.menu, color: AppColors.yellow),
-            onPressed: () {},
-          ),
-          title: const Text(
-            "ADD VEHICLE",
-            style: TextStyle(
-              color: AppColors.yellow,
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.0,
-            ),
-          ),
-          centerTitle: true,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Center(
-                child: Container(
-                  width: 32.w,
-                  height: 32.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.yellow, width: 1.5),
-                    image: const DecorationImage(
-                      image: NetworkImage(
-                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "addVehicle".tr.toUpperCase()),
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           child: Column(
@@ -68,7 +91,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             children: [
               /// Media Uploader Card
               GestureDetector(
-                onTap: () {},
+                onTap: _pickImage,
                 child: Container(
                   height: 160.h,
                   width: double.infinity,
@@ -76,61 +99,59 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     color: const Color(0xff111111),
                     borderRadius: BorderRadius.circular(16.r),
                     border: Border.all(color: Colors.white10),
+                    image: selectedImage != null
+                        ? DecorationImage(
+                            image: FileImage(selectedImage!),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.add_a_photo_outlined,
-                        color: AppColors.yellow,
-                        size: 28,
-                      ),
-                      SizedBox(height: 8.h),
-                      CustomText(
-                        text: "UPLOAD VEHICLE MEDIA",
-                        color: AppColors.yellow,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.0,
-                      ),
-                    ],
-                  ),
+                  child: selectedImage == null
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.add_a_photo_outlined,
+                              color: AppColors.yellow,
+                              size: 28,
+                            ),
+                            SizedBox(height: 8.h),
+                            CustomText(
+                              text: "uploadPhoto".tr.toUpperCase(),
+                              color: AppColors.yellow,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.0,
+                            ),
+                          ],
+                        )
+                      : null,
                 ),
               ),
               SizedBox(height: 24.h),
 
               /// PHASE 01 // IDENTITY
-              _buildSectionHeader("PHASE 01 // IDENTITY"),
+              _buildSectionHeader("phase01Identity".tr),
               _buildCardContainer([
-                _buildFieldLabel("MODEL NAME"),
-                _buildTextField("E.G.PORSCHE 911 GT3 RS (992)"),
+                _buildFieldLabel("vehicleName".tr.toUpperCase()),
+                _buildTextField(vehicleNameCtrl, "vehicleNameHint".tr),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("MANUFACTURER"),
-                _buildTextField("E.G. PORSCHE"),
+                _buildFieldLabel("brand".tr.toUpperCase()),
+                _buildTextField(brandCtrl, "brandHint".tr),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("MODEL DESIGNATION"),
-                _buildTextField("E.G. 911 GT3 RS"),
+                _buildFieldLabel("model".tr.toUpperCase()),
+                _buildTextField(modelCtrl, "modelHint".tr),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("NUMBER PLATE"),
-                _buildTextField("E.G. 911 GT3 RS"),
+                _buildFieldLabel("plateNumber".tr.toUpperCase()),
+                _buildTextField(numberPlateCtrl, "plateNumberHint".tr),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("PRODUCTION YEAR"),
-                _buildDropdown(["2024", "2023", "2022", "2021", "2020"]),
+                _buildFieldLabel("year".tr.toUpperCase()),
+                _buildTextField(yearCtrl, "yearHint".tr),
               ]),
               SizedBox(height: 20.h),
 
-              /// TRIM / CONFIGURATION (Section divider)
-              const CustomText(
-                text: "TRIM / CONFIGURATION",
-                color: Colors.white38,
-                fontSize: 9,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
-              SizedBox(height: 12.h),
-
               /// PHASE 02 // TELEMETRY DATA
-              _buildSectionHeader("PHASE 02 // TELEMETRY DATA"),
+              _buildSectionHeader("phase02Telemetry".tr),
               _buildCardContainer([
                 GridView.count(
                   shrinkWrap: true,
@@ -140,57 +161,43 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   mainAxisSpacing: 12.h,
                   childAspectRatio: 2.0,
                   children: [
-                    _buildTelemetryField("HORSEPOWER (HP)", "888"),
-                    _buildTelemetryField("WEIGHT (KG)", "8888"),
-                    _buildTelemetryField("DISPLACEMENT (CC)", "8888"),
-                    _buildTelemetryDropdown("DRIVE TYPE", [
-                      "RWD",
-                      "AWD",
-                      "FWD",
-                    ]),
+                    _buildTelemetryField("hp".tr.toUpperCase(), "hpHint".tr, hpCtrl),
                   ],
                 ),
               ]),
               SizedBox(height: 24.h),
 
               /// PROPULSION SYSTEM
-              _buildSectionHeader("PROPULSION SYSTEM"),
+              _buildSectionHeader("engineType".tr.toUpperCase()),
               Row(
                 children: [
-                  Expanded(child: _buildPropulsionButton("COMBUSTION")),
+                  Expanded(child: _buildPropulsionButton("Combustion")),
                   SizedBox(width: 8.w),
-                  Expanded(child: _buildPropulsionButton("ELECTRIC")),
+                  Expanded(child: _buildPropulsionButton("Electric")),
                   SizedBox(width: 8.w),
-                  Expanded(child: _buildPropulsionButton("HYBRID")),
+                  Expanded(child: _buildPropulsionButton("Hybrid")),
                 ],
               ),
               SizedBox(height: 32.h),
 
               /// Save button
-              CustomButton(
-                height: 50.h,
-                title: "SAVE TO GARAGE",
-                fontSize: 13,
-                borderRadius: 8.r,
-                onTap: () {
-                  Get.back();
-                  Get.snackbar(
-                    "Vehicle Saved",
-                    "The vehicle configuration has been uploaded to your stable.",
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: const Color(0xff181818),
-                    colorText: Colors.white,
-                    borderColor: AppColors.yellow,
-                    borderWidth: 1,
-                  );
-                },
-                isImageRight: true,
-                icon: const Icon(
-                  Icons.chevron_right,
-                  color: Colors.black,
-                  size: 18,
-                ),
-              ),
+              Obx(() {
+                return CustomButton(
+                  height: 50.h,
+                  title: profileController.isUpdating.value
+                      ? "..."
+                      : "saveToGarage".tr.toUpperCase(),
+                  fontSize: 13,
+                  borderRadius: 8.r,
+                  onTap: profileController.isUpdating.value ? () {} : _saveVehicle,
+                  isImageRight: true,
+                  icon: const Icon(
+                    Icons.chevron_right,
+                    color: Colors.black,
+                    size: 18,
+                  ),
+                );
+              }),
               SizedBox(height: 20.h),
             ],
           ),
@@ -241,7 +248,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     );
   }
 
-  Widget _buildTextField(String hint) {
+  Widget _buildTextField(TextEditingController controller, String hint) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -249,6 +256,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: TextFormField(
+        controller: controller,
         style: const TextStyle(color: Colors.white, fontSize: 13),
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -260,29 +268,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     );
   }
 
-  Widget _buildDropdown(List<String> items) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w),
-      decoration: BoxDecoration(
-        color: const Color(0xff1d1d1d),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: items.first,
-          dropdownColor: const Color(0xff1d1d1d),
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white60),
-          style: const TextStyle(color: Colors.white, fontSize: 13),
-          items: items.map((val) {
-            return DropdownMenuItem<String>(value: val, child: Text(val));
-          }).toList(),
-          onChanged: (v) {},
-        ),
-      ),
-    );
-  }
 
-  Widget _buildTelemetryField(String label, String hint) {
+
+  Widget _buildTelemetryField(String label, String hint, TextEditingController controller) {
     return Container(
       padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
@@ -302,6 +290,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           SizedBox(height: 4.h),
           Expanded(
             child: TextFormField(
+              controller: controller,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 13,
@@ -320,56 +309,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     );
   }
 
-  Widget _buildTelemetryDropdown(String label, List<String> items) {
-    return Container(
-      padding: EdgeInsets.all(10.w),
-      decoration: BoxDecoration(
-        color: const Color(0xff181818),
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomText(
-            text: label,
-            color: Colors.white38,
-            fontSize: 7.5,
-            fontWeight: FontWeight.bold,
-          ),
-          SizedBox(height: 4.h),
-          Expanded(
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: selectedDriveType,
-                dropdownColor: const Color(0xff181818),
-                icon: const Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Colors.white60,
-                  size: 14,
-                ),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                ),
-                items: items.map((val) {
-                  return DropdownMenuItem<String>(value: val, child: Text(val));
-                }).toList(),
-                onChanged: (v) {
-                  if (v != null) {
-                    setState(() {
-                      selectedDriveType = v;
-                    });
-                  }
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildPropulsionButton(String label) {
     final bool isSelected = selectedPropulsion == label;

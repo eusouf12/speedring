@@ -44,8 +44,6 @@ class ProfileScreenController extends GetxController {
   final RxBool marketplace = false.obs;
   final RxBool proTour = false.obs;
 
-  final RxList<Vehicle> vehicles = <Vehicle>[].obs;
-
   // Selected image files for upload
   final Rx<File?> selectedProfileImage = Rx<File?>(null);
   final Rx<File?> selectedBannerImage = Rx<File?>(null);
@@ -54,6 +52,7 @@ class ProfileScreenController extends GetxController {
   void onInit() {
     super.onInit();
     getMyProfile();
+    getMyVehicles();
   }
 
   void initEditProfile(ProfileData profile) {
@@ -93,8 +92,6 @@ class ProfileScreenController extends GetxController {
     marketplace.value = notification?.marketplace ?? false;
 
     proTour.value = notification?.proTour ?? false;
-
-    vehicles.assignAll(profile.driverInfo?.vehicles ?? []);
 
     // Clear previously selected images when re-initializing
     selectedProfileImage.value = null;
@@ -227,7 +224,6 @@ class ProfileScreenController extends GetxController {
             "marketplace": marketplace.value,
             "proTour": proTour.value,
           },
-          "vehicles": vehicles.map((vehicle) => vehicle.toJson()).toList(),
         },
       };
 
@@ -239,13 +235,6 @@ class ProfileScreenController extends GetxController {
       if (selectedBannerImage.value != null) {
         files.add(MultipartBody('uploadBanner', selectedBannerImage.value!));
       }
-
-      for (int i = 0; i < vehicles.length; i++) {
-        if (vehicles[i].localImageFile != null) {
-          files.add(MultipartBody('vehicleImage$i', vehicles[i].localImageFile!));
-        }
-      }
-
       final response = await ApiClient.patchMultipartData(
         ApiUrl.updateProfile,
         {'data': jsonEncode(data)},
@@ -286,247 +275,6 @@ class ProfileScreenController extends GetxController {
     }
   }
 
-  void showVehicleDialog({Vehicle? vehicle, int? index}) {
-    final vNameCtrl = TextEditingController(text: vehicle?.vehicleName ?? '');
-    final vBrandCtrl = TextEditingController(text: vehicle?.brand ?? '');
-    final vModelCtrl = TextEditingController(text: vehicle?.model ?? '');
-    final vYearCtrl = TextEditingController(text: vehicle?.year ?? '');
-    final vHpCtrl = TextEditingController(text: vehicle?.hp ?? '');
-    final vEngineCtrl = TextEditingController(text: vehicle?.engineType ?? '');
-    final vNumberPlateCtrl = TextEditingController(
-      text: vehicle?.numberPlate ?? '',
-    );
-    final Rx<File?> localVehicleImage = Rx<File?>(vehicle?.localImageFile);
-
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
-          color: Color(0xff1A1A1A),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                vehicle == null ? "ADD VEHICLE" : "EDIT VEHICLE",
-                style: const TextStyle(
-                  color: Color(0xffD4FB54),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              Center(
-                child: GestureDetector(
-                  onTap: () async {
-                    final file = await _pickImageFromGallery();
-                    if (file != null) localVehicleImage.value = file;
-                  },
-                  child: Obx(() {
-                    return Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.white10,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white24),
-                      ),
-                      child: localVehicleImage.value != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.file(
-                                localVehicleImage.value!,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : (vehicle?.vehicleImage != null &&
-                                vehicle!.vehicleImage!.isNotEmpty)
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                vehicle.vehicleImage!,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white54,
-                              size: 40,
-                            ),
-                    );
-                  }),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Center(
-                child: Text(
-                  "Tap to add/change photo",
-                  style: TextStyle(color: Colors.white54, fontSize: 12),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              TextField(
-                controller: vNameCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: "Vehicle Name (e.g. My Beast)",
-                  labelStyle: TextStyle(color: Colors.white54),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white24),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffD4FB54)),
-                  ),
-                ),
-              ),
-
-              TextField(
-                controller: vBrandCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: "Brand",
-                  labelStyle: TextStyle(color: Colors.white54),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white24),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffD4FB54)),
-                  ),
-                ),
-              ),
-
-              TextField(
-                controller: vModelCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: "Model",
-                  labelStyle: TextStyle(color: Colors.white54),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white24),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffD4FB54)),
-                  ),
-                ),
-              ),
-
-              TextField(
-                controller: vYearCtrl,
-                keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: "Year",
-                  labelStyle: TextStyle(color: Colors.white54),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white24),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffD4FB54)),
-                  ),
-                ),
-              ),
-
-              TextField(
-                controller: vHpCtrl,
-                keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: "Horsepower (HP)",
-                  labelStyle: TextStyle(color: Colors.white54),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white24),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffD4FB54)),
-                  ),
-                ),
-              ),
-
-              TextField(
-                controller: vEngineCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: "Engine Type (e.g. V8, Electric)",
-                  labelStyle: TextStyle(color: Colors.white54),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white24),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffD4FB54)),
-                  ),
-                ),
-              ),
-
-              TextField(
-                controller: vNumberPlateCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: "Number Plate",
-                  labelStyle: TextStyle(color: Colors.white54),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white24),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffD4FB54)),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xffD4FB54),
-                  foregroundColor: Colors.black,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: () {
-                  final newVehicle = Vehicle(
-                    id: vehicle?.id,
-                    vehicleName: vNameCtrl.text.trim(),
-                    brand: vBrandCtrl.text.trim(),
-                    model: vModelCtrl.text.trim(),
-                    year: vYearCtrl.text.trim(),
-                    hp: vHpCtrl.text.trim(),
-                    engineType: vEngineCtrl.text.trim(),
-                    vehicleImage: vehicle?.vehicleImage,
-                    numberPlate: vNumberPlateCtrl.text.trim(),
-                    localImageFile: localVehicleImage.value,
-                  );
-
-                  if (index != null) {
-                    vehicles[index] = newVehicle;
-                  } else {
-                    vehicles.add(newVehicle);
-                  }
-
-                  Get.back();
-                },
-                child: const Text(
-                  "SAVE VEHICLE",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
-      ),
-      isScrollControlled: true,
-    );
-  }
-
   void clearEditProfileData() {
     nameController.clear();
     displayNameController.clear();
@@ -550,8 +298,169 @@ class ProfileScreenController extends GetxController {
     locationBased.value = false;
     marketplace.value = false;
     proTour.value = false;
+  }
 
-    vehicles.clear();
+  final RxList<Vehicle> vehicles = <Vehicle>[].obs;
+  int vehiclePage = 1;
+  final RxBool isVehicleLoadingMore = false.obs;
+  final RxBool isVehicleLoading = false.obs;
+  bool hasNextVehiclePage = true;
+  Future<void> getMyVehicles({bool isLoadMore = false}) async {
+    if (isLoadMore) {
+      if (!hasNextVehiclePage || isVehicleLoadingMore.value) return;
+      vehiclePage++;
+      isVehicleLoadingMore.value = true;
+    } else {
+      vehiclePage = 1;
+      hasNextVehiclePage = true;
+      isVehicleLoading.value = true;
+    }
+
+    try {
+      final response = await ApiClient.getData(
+        ApiUrl.myVehicles(page: vehiclePage),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final meta = response.body['meta'];
+        if (meta != null) {
+          final totalPages = meta['totalPages'] ?? 1;
+          hasNextVehiclePage = vehiclePage < totalPages;
+        }
+
+        final data = response.body['data'];
+        if (data != null && data is List) {
+          final fetchedVehicles = data.map((v) => Vehicle.fromJson(v)).toList();
+          if (isLoadMore) {
+            vehicles.addAll(fetchedVehicles);
+          } else {
+            vehicles.assignAll(fetchedVehicles);
+          }
+        }
+      } else {
+        debugPrint('Failed to fetch vehicles: ${response.statusText}');
+      }
+    } catch (e) {
+      debugPrint('Error fetching vehicles: $e');
+    } finally {
+      isVehicleLoading.value = false;
+      isVehicleLoadingMore.value = false;
+    }
+  }
+
+  Future<bool> addVehicle(Vehicle vehicle) async {
+    isUpdating.value = true;
+    try {
+      final Map<String, dynamic> vehicleData = vehicle.toJson();
+
+      final Map<String, String> data = {"data": jsonEncode(vehicleData)};
+
+      final List<MultipartBody> files = [];
+      if (vehicle.localImageFile != null) {
+        files.add(MultipartBody('vehicleImage', vehicle.localImageFile!));
+      }
+
+      final response = await ApiClient.postMultipartData(
+        ApiUrl.addVehicle,
+        data,
+        multipartBody: files,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Vehicle added successfully", isError: false);
+        await getMyVehicles(); // Refresh the list
+        return true;
+      } else {
+        String errMsg = "Failed to add vehicle";
+        if (response.body is Map) {
+          errMsg = response.body['message'] ?? errMsg;
+        }
+        showCustomSnackBar(
+          errMsg,
+          isError: true,
+        );
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Error adding vehicle: $e');
+      showCustomSnackBar("Error adding vehicle", isError: true);
+      return false;
+    } finally {
+      isUpdating.value = false;
+    }
+  }
+
+  Future<bool> updateVehicle(String vehicleId, Vehicle vehicle) async {
+    isUpdating.value = true;
+    try {
+      final Map<String, dynamic> vehicleData = vehicle.toJson();
+      // Remove nulls so we don't overwrite with nulls unnecessarily
+      vehicleData.removeWhere((key, value) => value == null);
+
+      final Map<String, String> data = {"data": jsonEncode(vehicleData)};
+
+      final List<MultipartBody> files = [];
+      if (vehicle.localImageFile != null) {
+        files.add(MultipartBody('vehicleImage', vehicle.localImageFile!));
+      }
+
+      final response = await ApiClient.postMultipartData(
+        ApiUrl.updateVehicle(vehicleId),
+        data,
+        multipartBody: files,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Vehicle updated successfully", isError: false);
+        await getMyVehicles(); // Refresh the list
+        return true;
+      } else {
+        String errMsg = "Failed to update vehicle";
+        if (response.body is Map) {
+          errMsg = response.body['message'] ?? errMsg;
+        }
+        showCustomSnackBar(
+          errMsg,
+          isError: true,
+        );
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Error updating vehicle: $e');
+      showCustomSnackBar("Error updating vehicle", isError: true);
+      return false;
+    } finally {
+      isUpdating.value = false;
+    }
+  }
+
+  Future<bool> deleteVehicle(String vehicleId) async {
+    isUpdating.value = true;
+    try {
+      final response = await ApiClient.deleteData(ApiUrl.deleteVehicle(vehicleId));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Vehicle deleted successfully", isError: false);
+        // Remove from local list to avoid full refresh, or just refresh
+        vehicles.removeWhere((v) => v.id == vehicleId);
+        return true;
+      } else {
+        String errMsg = "Failed to delete vehicle";
+        if (response.body is Map) {
+          errMsg = response.body['message'] ?? errMsg;
+        }
+        showCustomSnackBar(
+          errMsg,
+          isError: true,
+        );
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Error deleting vehicle: $e');
+      showCustomSnackBar("Error deleting vehicle", isError: true);
+      return false;
+    } finally {
+      isUpdating.value = false;
+    }
   }
 
   @override

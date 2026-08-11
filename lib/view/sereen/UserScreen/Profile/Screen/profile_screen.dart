@@ -806,64 +806,14 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  /// ── Tab 03: Garage Tab ─────────────────────────────────────────────────
+  /// ── Tab 02: Garage Tab ─────────────────────────────────────────────────
   Widget _buildGarageTab() {
     return Padding(
       padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Slots usage details
-          Container(
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              color: const Color(0xff111111),
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "slotsFilled".tr.toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white38,
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 6.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
-                      "02 / 12",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.h),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(2.r),
-                  child: LinearProgressIndicator(
-                    value: 2 / 12,
-                    backgroundColor: Colors.white10,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.yellow,
-                    ),
-                    minHeight: 4.h,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 20.h),
-
+          SizedBox(height: 10.h),
           CustomButton(
             height: 44.h,
             title: "addVehicle".tr.toUpperCase(),
@@ -888,34 +838,43 @@ class ProfileScreen extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
 
-          const GarageVehicleCard(
-            imageUrl: "https://picsum.photos/seed/garagerb20/600/400",
-            title: "ORACLE RED BULL RACING RB20",
-            category: "FORMULA 1 2024",
-            version: "V01",
-            power: "1,024 HP",
-            weight: "798 KG",
-            displacement: "1600 CC",
-            driveType: "RWD",
-            propulsion: "HYBRID",
-          ),
-          const GarageVehicleCard(
-            imageUrl: "https://picsum.photos/seed/garagegt3/600/400",
-            title: "PORSCHE 911 GT3 RS (992)",
-            category: "STREET LEGAL / TRACK PREPARED",
-            version: "V02",
-            power: "518 HP",
-            weight: "1,450 KG",
-            displacement: "3996 CC",
-            driveType: "RWD",
-            propulsion: "COMBUSTION",
-          ),
+          Obx(() {
+            final profileController = Get.find<ProfileScreenController>();
+            final vehicles = profileController.vehicles;
+
+            if (profileController.isVehicleLoading.value) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.yellow),
+              );
+            }
+
+            if (vehicles.isEmpty) {
+              return Padding(
+                padding: EdgeInsets.only(top: 20.h),
+                child: Center(
+                  child: Text(
+                    "noVehiclesAdded".tr,
+                    style: const TextStyle(color: Colors.white54, fontSize: 14),
+                  ),
+                ),
+              );
+            }
+
+            return Column(
+              children: vehicles.map((v) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 16.h),
+                  child: GarageVehicleCard(vehicle: v),
+                );
+              }).toList(),
+            );
+          }),
         ],
       ),
     );
   }
 
-  /// ── Tab 04: Support Tab ────────────────────────────────────────────────
+  /// ── Tab 03: Support Tab ────────────────────────────────────────────────
   Widget _buildSupportTab() {
     return Padding(
       padding: EdgeInsets.all(16.w),

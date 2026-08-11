@@ -21,6 +21,11 @@ class ApiUrl {
   // =================== my profile =====================================
   static const String myProfile = "/users/my-profile";
   static const String updateProfile = "/users/update-profile";
+  static const String addVehicle = "/users/add-vehicle";
+  static String updateVehicle(String id) => "/users/update-vehicle/$id";
+  static String deleteVehicle(String id) => "/users/delete-vehicle/$id";
+  static String myVehicles({required int page}) =>
+      "/users/my-vehicles?page=$page&limit=10";
   static const String allPlans = "/plans/all-plans";
   static String buyPlan({required String planId}) =>
       "/payments/create-checkout-session/$planId";

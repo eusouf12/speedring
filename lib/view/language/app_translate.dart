@@ -146,6 +146,7 @@ class AppTranslate extends Translations {
       'vehicleName': 'VEHICLE NAME',
       'vehicleNameHint': 'e.g. Daily Driver',
       'plateNumber': 'PLATE NUMBER',
+      'plateNumberHint': 'e.g. 123-456',
       'brand': 'BRAND',
       'brandHint': 'Porsche',
       'model': 'MODEL',
@@ -160,6 +161,18 @@ class AppTranslate extends Translations {
       'highResInfo': 'High resolution PNG, JPG, or JPEG',
       'addVehicle': 'ADD VEHICLE',
       'skipNow': 'SKIP FOR NOW',
+
+      // Garage & Add Vehicle
+      'noVehiclesAdded': 'No vehicles added yet.',
+      'unknownVehicle': 'UNKNOWN VEHICLE',
+      'unknownBrand': 'UNKNOWN BRAND',
+      'phase01Identity': 'PHASE 01 // IDENTITY',
+      'phase02Telemetry': 'PHASE 02 // TELEMETRY DATA',
+      'saveToGarage': 'SAVE TO GARAGE',
+      'editVehicle': 'EDIT VEHICLE',
+      'deleteVehicle': 'DELETE VEHICLE',
+      'deleteVehicleConfirm': 'Are you sure you want to delete this vehicle?',
+      'edit': 'Edit',
 
       // Setup Profile Screen 4 (Notifications)
       'stayFastLane': 'STAY IN THE ',
@@ -551,7 +564,6 @@ class AppTranslate extends Translations {
       'experience': 'experience',
       'messageSeller': 'messageSeller',
       'listingDetails': 'Listing Details',
-      'edit': "Edit",
       'locationTelemetry': "LOCATION TELEMETRY",
 
       // Marketplace New Listing Strings
@@ -875,6 +887,7 @@ class AppTranslate extends Translations {
       'vehicleName': 'FAHRZEUGNAME',
       'vehicleNameHint': 'z. B. Daily Driver',
       'plateNumber': 'KENNZEICHEN',
+      'plateNumberHint': 'z. B. 123-456',
       'brand': 'MARKE',
       'brandHint': 'Porsche',
       'model': 'MODELL',
@@ -889,6 +902,18 @@ class AppTranslate extends Translations {
       'highResInfo': 'Hochauflösendes PNG, JPG oder JPEG',
       'addVehicle': 'FAHRZEUG HINZUFÜGEN',
       'skipNow': 'VORERST ÜBERSPRINGEN',
+
+      // Garage & Add Vehicle
+      'noVehiclesAdded': 'Noch keine Fahrzeuge hinzugefügt.',
+      'unknownVehicle': 'UNBEKANNTES FAHRZEUG',
+      'unknownBrand': 'UNBEKANNTE MARKE',
+      'phase01Identity': 'PHASE 01 // IDENTITÄT',
+      'phase02Telemetry': 'PHASE 02 // TELEMETRIEDATEN',
+      'saveToGarage': 'IN DER GARAGE SPEICHERN',
+      'editVehicle': 'FAHRZEUG BEARBEITEN',
+      'deleteVehicle': 'FAHRZEUG LÖSCHEN',
+      'deleteVehicleConfirm': 'Möchten Sie dieses Fahrzeug wirklich löschen?',
+      'edit': 'Bearbeiten',
 
       // Setup Profile Screen 4 (Notifications)
       'stayFastLane': 'BLEIB IN DER ',
@@ -1220,7 +1245,6 @@ class AppTranslate extends Translations {
       'publish': 'VERÖFFENTLICHEN',
 
       // Event & Club Deep Translations
-      'edit': "Bearbeiten",
       'mustBeNumber': 'Muss eine Zahl sein',
       'briefingHint': 'HOCHINTENSIVE TECHNISCHE SEQUENZEN AUSFÜHREN...',
       'createYourEvent': 'DEIN EVENT ERSTELLEN',
