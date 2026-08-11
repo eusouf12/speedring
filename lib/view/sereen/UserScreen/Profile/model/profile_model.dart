@@ -52,6 +52,9 @@ class ProfileData {
   final List<String>? following;
   final bool? isProfileSetup;
   final int? followerCount;
+  final int? postCount;
+  final int? joinedSessionCount;
+  final num? coinBalance;
 
   ProfileData({
     this.driverInfo,
@@ -78,6 +81,9 @@ class ProfileData {
     this.following,
     this.isProfileSetup,
     this.followerCount,
+    this.postCount,
+    this.joinedSessionCount,
+    this.coinBalance,
   });
 
   factory ProfileData.fromJson(Map<String, dynamic> json) {
@@ -116,6 +122,9 @@ class ProfileData {
           : null,
       isProfileSetup: json['isProfileSetup'],
       followerCount: json['followerCount'],
+      postCount: json['postCount'],
+      joinedSessionCount: json['joinedSessionCount'],
+      coinBalance: json['coinBalance'],
     );
   }
 
@@ -145,6 +154,9 @@ class ProfileData {
       'following': following,
       'isProfileSetup': isProfileSetup,
       'followerCount': followerCount,
+      'postCount': postCount,
+      'joinedSessionCount': joinedSessionCount,
+      'coinBalance': coinBalance,
     };
   }
 }

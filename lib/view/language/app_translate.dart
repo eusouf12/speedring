@@ -730,6 +730,7 @@ class AppTranslate extends Translations {
       'selectVideoUpload': 'Please select a video file to upload',
       'enterVideoTitle': 'Please enter a video title',
       'optional': 'OPTIONAL',
+      'coins': 'Coins',
     },
     'gr': {
       'title': 'Deutsch',
@@ -1402,7 +1403,6 @@ class AppTranslate extends Translations {
       'expertServicesDesc':
           'Tuning, Coaching, Rennstrecken-Support und Logistik.',
       'locationTelemetry': "Standortvorlage",
-
       'trending': 'Im Trend',
       'nurburgring': 'Nürburgring',
       'spaFrancorchamps': 'Spa-Francorchamps',
@@ -1420,7 +1420,7 @@ class AppTranslate extends Translations {
       'noPostsFound': 'Keine Beiträge gefunden',
       'deleteSpotConfirm': 'Möchten Sie diesen Spot wirklich löschen?',
       'powerUpper': 'LEISTUNG',
-      'zeroToHundredNum': '0-100',
+      'zeroToHundredNum': '0–100',
       'addNewVideo': 'NEUES VIDEO HINZUFÜGEN',
       'latestUploads': 'NEUESTE UPLOADS',
       'noVideosFound': 'Keine Videos gefunden',
@@ -1429,8 +1429,7 @@ class AppTranslate extends Translations {
       'followingUpper': 'FOLGE ICH',
       'follow': 'Folgen',
       'checkOutSpot': 'Sieh dir diesen Auto-Spot auf Speedring an:\n\n',
-
-      'zeroToHundredKmh': '0-100 KM/H (S)',
+      'zeroToHundredKmh': '0–100 KM/H (SEK.)',
       'deleteVideoConfirm':
           'Sind Sie sicher, dass Sie dieses Video löschen möchten?',
       'camera': 'Kamera',
@@ -1447,29 +1446,31 @@ class AppTranslate extends Translations {
       'regionCountryUpper': 'REGION / LAND',
       'tapToReplaceThumbnail': 'TIPPEN, UM MINIATURANSICHT ZU ERSETZEN',
       'tapToReplaceVideo':
-          'TIPPEN, UM VIDEO ZU ERSETZEN (MAX 2GB)\nLeer lassen, um aktuelles Video zu behalten',
-      'tapToSelectFromGallery': 'TIPPEN, UM AUS GALERIE ZU WÄHLEN',
+          'TIPPEN, UM VIDEO ZU ERSETZEN (MAX. 2 GB)\n'
+          'LEER LASSEN, UM DAS AKTUELLE VIDEO ZU BEHALTEN',
+      'tapToSelectFromGallery': 'TIPPEN, UM AUS DER GALERIE ZU WÄHLEN',
       'updateSpot': 'SPOT AKTUALISIEREN',
       'updateVideo': 'VIDEO AKTUALISIEREN',
       'uploadCustomThumbnail': 'BENUTZERDEFINIERTE MINIATURANSICHT HOCHLADEN',
       'uploadPrimaryAsset': 'HAUPTMEDIUM HOCHLADEN',
-      'uploadVideo': 'VIDEO HOCHLADEN (MAX 2GB)',
+      'uploadVideo': 'VIDEO HOCHLADEN (MAX. 2 GB)',
       'videoTitleUpper': 'VIDEOTITEL',
-      'egFlat6': 'Z.B. 4.0L FLAT-6',
-      'eg3_2': 'Z.B. 3.2',
+      'egFlat6': 'Z. B. 4.0L FLAT-6',
+      'eg3_2': 'Z. B. 3.2',
       'mediaCapture': 'MEDIENAUFNAHME',
-      'specificationOverride': 'SPEZIFIKATIONS-ÜBERSCHREIBUNG',
+      'specificationOverride': 'SPEZIFIKATIONEN ÜBERSCHREIBEN',
       'enterRegion': 'REGION EINGEBEN',
-      'makeModelRequired': 'Marke & Modell ist erforderlich',
+      'makeModelRequired': 'Marke & Modell sind erforderlich',
       'errorPickingMedia': 'Fehler bei der Medienauswahl',
       'enterSessionName': 'SITZUNGSNAMEN EINGEBEN...',
-      'videoIdentity': 'VIDEO-IDENTITÄT',
-      'primaryMedia': 'HAUPTMEDIEN',
+      'videoIdentity': 'VIDEOIDENTITÄT',
+      'primaryMedia': 'HAUPTMEDIUM',
       'addSessionNotes':
           'SITZUNGSNOTIZEN, WETTERBEDINGUNGEN ODER RUNDENZEITEN HINZUFÜGEN...',
       'selectVideoUpload': 'Bitte wählen Sie eine Videodatei zum Hochladen aus',
       'enterVideoTitle': 'Bitte geben Sie einen Videotitel ein',
       'optional': 'OPTIONAL',
+      'coins': 'Münzen',
     },
   };
 }

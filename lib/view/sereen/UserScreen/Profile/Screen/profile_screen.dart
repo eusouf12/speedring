@@ -11,8 +11,18 @@ import '../../../../../utils/app_colors/app_colors.dart';
 import '../../../../../core/app_routes/app_routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../controller/profile_controller.dart';
-import '../widgets/profile_post_card.dart';
 import '../widgets/garage_vehicle_card.dart';
+import '../../Home/Screen/HomeScreen/controller/home_controller.dart';
+import '../../Home/widget/story_item.dart';
+import '../../Home/Screen/HomeScreen/view/story/create_story_screen.dart';
+import '../../Home/Screen/HomeScreen/view/story/story_view_screen.dart';
+import '../../Home/widget/post_card.dart';
+import '../../Home/Screen/HomeScreen/view/post/post_detail_screen.dart';
+import '../../Home/Screen/HomeScreen/view/post/comment_screen.dart'
+    show showCommentSheet;
+import '../../Home/Screen/HomeScreen/view/user_home_screen.dart'
+    show buildPostDetails;
+import 'package:share_plus/share_plus.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -173,22 +183,6 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(2),
-                                decoration: const BoxDecoration(
-                                  color: AppColors.yellow,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.check,
-                                  color: Colors.black,
-                                  size: 12,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -224,7 +218,9 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                     SizedBox(width: 4.w),
                                     CustomText(
-                                      text: "12,450 COINS",
+                                      text:
+                                          "${profile?.coinBalance ?? 0} ${'coins'.tr}"
+                                              .toUpperCase(),
                                       color: AppColors.yellow1,
                                       fontSize: 9,
                                       fontWeight: FontWeight.bold,
@@ -352,47 +348,117 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      _buildStatItem("posts".tr.toUpperCase(), "0"),
+                      _buildStatItem(
+                        "posts".tr.toUpperCase(),
+                        "${profile?.postCount ?? 0}",
+                      ),
                       _buildStatDivider(),
                       _buildStatItem(
                         "followers".tr.toUpperCase(),
                         "${profile?.followerCount ?? 0}",
                       ),
                       _buildStatDivider(),
-                      _buildStatItem("sessions".tr.toUpperCase(), "0"),
+                      _buildStatItem(
+                        "sessions".tr.toUpperCase(),
+                        "${profile?.joinedSessionCount ?? 0}",
+                      ),
                     ],
                   ),
                 ),
                 SizedBox(height: 20.h),
 
-                /// Scrollable quick actions / highlights
+                /// Stories / Highlights
                 SizedBox(
-                  height: 70.h,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    children: [
-                      _buildQuickActionCircle(
-                        Icons.add,
-                        "create".tr.toUpperCase(),
-                        isYellowBg: true,
-                      ),
-                      _buildQuickThumb(
-                        "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=100&fit=crop",
-                        "myDrive".tr.toUpperCase(),
-                      ),
-                      _buildQuickThumb(
-                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                        "telemetry".tr.toUpperCase(),
-                      ),
-                      _buildQuickThumb(
-                        "https://picsum.photos/seed/spalaps/100/100",
-                        "spaLaps".tr.toUpperCase(),
-                      ),
-                    ],
+                  height: 110,
+                  child: GetBuilder<HomeController>(
+                    init: Get.isRegistered<HomeController>()
+                        ? null
+                        : HomeController(),
+                    builder: (homeController) {
+                      return Obx(() {
+                        if (homeController.isStoriesLoading.value) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.yellow,
+                            ),
+                          );
+                        }
+
+                        // Filter to show only the profile user's stories
+                        final storiesList = homeController.allStories
+                            .where((s) => s.user?.id == profile?.id)
+                            .toList();
+
+                        // Show create button only if it's my profile
+                        final isMyProfile =
+                            profile?.id == homeController.currentUserId.value;
+                        final itemCount = isMyProfile
+                            ? storiesList.length + 1
+                            : storiesList.length;
+
+                        if (itemCount == 0) return const SizedBox.shrink();
+
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: itemCount,
+                          itemBuilder: (context, index) {
+                            if (isMyProfile && index == 0) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const CreateStoryScreen(),
+                                    ),
+                                  );
+                                },
+                                child: StoryItem(
+                                  isMe: true,
+                                  name: 'create'.tr.toUpperCase(),
+                                  imageSrc: null,
+                                  icon: Icons.add,
+                                ),
+                              );
+                            }
+
+                            final storyIndex = isMyProfile ? index - 1 : index;
+                            final storyGroup = storiesList[storyIndex];
+
+                            String? imageUrl;
+                            if (storyGroup.stories != null &&
+                                storyGroup.stories!.isNotEmpty) {
+                              final mediaList = storyGroup.stories!.last.media;
+                              if (mediaList != null && mediaList.isNotEmpty) {
+                                imageUrl = mediaList.first.url;
+                              }
+                            }
+                            if (imageUrl == null || imageUrl.isEmpty) {
+                              imageUrl = storyGroup.user?.profileImage;
+                            }
+
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        StoryViewScreen(storyGroup: storyGroup),
+                                  ),
+                                );
+                              },
+                              child: StoryItem(
+                                isMe: false,
+                                name: storyGroup.user?.name ?? 'Unknown',
+                                imageSrc: imageUrl,
+                              ),
+                            );
+                          },
+                        );
+                      });
+                    },
                   ),
                 ),
-                SizedBox(height: 24.h),
 
                 /// Nested Tab Navigation
                 _buildTabSelector(),
@@ -464,79 +530,6 @@ class ProfileScreen extends StatelessWidget {
     return Container(width: 1, height: 24.h, color: Colors.white10);
   }
 
-  Widget _buildQuickActionCircle(
-    IconData icon,
-    String label, {
-    bool isYellowBg = false,
-  }) {
-    return Padding(
-      padding: EdgeInsets.only(right: 16.w),
-      child: Column(
-        children: [
-          Container(
-            width: 48.w,
-            height: 48.w,
-            decoration: BoxDecoration(
-              color: isYellowBg ? AppColors.yellow : const Color(0xff1a1a1a),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: isYellowBg ? Colors.black : Colors.white70,
-              size: 20,
-            ),
-          ),
-          SizedBox(height: 6.h),
-          CustomText(
-            text: label,
-            color: Colors.white70,
-            fontSize: 7.5,
-            fontWeight: FontWeight.bold,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickThumb(String imageUrl, String label) {
-    return Padding(
-      padding: EdgeInsets.only(right: 16.w),
-      child: Column(
-        children: [
-          Container(
-            width: 48.w,
-            height: 48.w,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white24),
-            ),
-            child: ClipOval(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: const Color(0xff1C1C1C),
-                  child: const Icon(
-                    Icons.image,
-                    color: Colors.white24,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 6.h),
-          CustomText(
-            text: label,
-            color: Colors.white70,
-            fontSize: 7.5,
-            fontWeight: FontWeight.bold,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildTabSelector() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
@@ -547,9 +540,8 @@ class ProfileScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildTabItem(0, "posts".tr.toUpperCase()),
-          _buildTabItem(1, "overview".tr.toUpperCase()),
-          _buildTabItem(2, "garage".tr.toUpperCase()),
-          _buildTabItem(3, "support".tr.toUpperCase()),
+          _buildTabItem(1, "garage".tr.toUpperCase()),
+          _buildTabItem(2, "support".tr.toUpperCase()),
         ],
       ),
     );
@@ -592,10 +584,8 @@ class ProfileScreen extends StatelessWidget {
         case 0:
           return _buildPostsTab();
         case 1:
-          return _buildOverviewTab();
-        case 2:
           return _buildGarageTab();
-        case 3:
+        case 2:
           return _buildSupportTab();
         default:
           return _buildPostsTab();
@@ -606,168 +596,212 @@ class ProfileScreen extends StatelessWidget {
   /// ── Tab 01: Posts Tab ──────────────────────────────────────────────────
   Widget _buildPostsTab() {
     return Padding(
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        children: [
-          CustomButton(
-            height: 44.h,
-            title: "addPost".tr.toUpperCase(),
-            fontSize: 12,
-            borderRadius: 8.r,
-            icon: const Icon(
-              Icons.add_circle_outline,
-              color: Colors.black,
-              size: 16,
-            ),
-            onTap: () => Get.toNamed(AppRoutes.createPostScreen),
-          ),
-          SizedBox(height: 20.h),
-          const ProfilePostCard(
-            authorName: "MAX VERSTAPPEN",
-            authorAvatar:
-                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-            timeAgo: "3 hours ago",
-            imageUrl: "https://picsum.photos/seed/postgt3/600/400",
-            likes: "1.2M",
-            comments: "45K",
-            username: "max_verstappen_33",
-            caption: "Late night sessions at the limit. The machine is ready.",
-            hashtags: ["#TrackLife", "#Speedring", "#GT3", "#NightRacing"],
-          ),
-          const ProfilePostCard(
-            authorName: "MAX VERSTAPPEN",
-            authorAvatar:
-                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-            timeAgo: "Yesterday",
-            imageUrl: "https://picsum.photos/seed/postredbull/600/400",
-            likes: "2.8M",
-            comments: "82K",
-            username: "max_verstappen_33",
-            caption:
-                "Pure engineering perfection. The RB20 feels incredible this season.",
-            hashtags: ["#F1", "#RedBullRacing", "#PushingLimits"],
-          ),
-        ],
-      ),
-    );
-  }
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      child: GetBuilder<HomeController>(
+        init: Get.isRegistered<HomeController>() ? null : HomeController(),
+        builder: (homeController) {
+          return Obx(() {
+            if (homeController.isPostLoading.value) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.yellow),
+              );
+            }
 
-  /// ── Tab 02: Overview Tab ───────────────────────────────────────────────
-  Widget _buildOverviewTab() {
-    return Padding(
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomText(
-            text: "stableRecentActivity".tr.toUpperCase(),
-            color: AppColors.yellow,
-            fontSize: 9,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.0,
-          ),
-          SizedBox(height: 16.h),
-          _buildActivityCard(
-            "https://picsum.photos/seed/simvalidator/600/400",
-            "SIM VALIDATOR",
-            "LOGGED: 12.4H",
-          ),
-          SizedBox(height: 16.h),
-          _buildActivityCard(
-            "https://picsum.photos/seed/gphighlight/600/400",
-            "GP HIGHLIGHT",
-            "PLAY REPLAY",
-            hasPlayButton: true,
-          ),
-        ],
-      ),
-    );
-  }
+            final profileController = Get.find<ProfileScreenController>();
+            final targetUserId = profileController.profileData.value?.id;
 
-  Widget _buildActivityCard(
-    String imageUrl,
-    String tag,
-    String title, {
-    bool hasPlayButton = false,
-  }) {
-    return Container(
-      height: 240.h,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.r),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: const Color(0xff1A1A1A),
-                  child: const Icon(
-                    Icons.image,
-                    color: Colors.white24,
-                    size: 48,
+            final myPosts = homeController.postsList
+                .where((p) => p.user?.id == targetUserId)
+                .toList();
+
+            return Column(
+              children: [
+                if (targetUserId == homeController.currentUserId.value)
+                  CustomButton(
+                    height: 44.h,
+                    title: "addPost".tr.toUpperCase(),
+                    fontSize: 12,
+                    borderRadius: 8.r,
+                    icon: const Icon(
+                      Icons.add_circle_outline,
+                      color: Colors.black,
+                      size: 16,
+                    ),
+                    onTap: () => Get.toNamed(AppRoutes.createPostScreen),
                   ),
-                ),
-              ),
-            ),
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.8),
-                    ],
+                if (targetUserId == homeController.currentUserId.value)
+                  SizedBox(height: 20.h),
+
+                if (myPosts.isEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.h),
+                    child: const Center(
+                      child: Text(
+                        "No posts found.",
+                        style: TextStyle(color: Colors.white54, fontSize: 14),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-            if (hasPlayButton)
-              Center(
-                child: Container(
-                  width: 48.w,
-                  height: 48.w,
-                  decoration: const BoxDecoration(
-                    color: AppColors.yellow,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.play_arrow, color: Colors.black),
-                ),
-              ),
-            Positioned(
-              bottom: 16.h,
-              left: 16.w,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: tag,
-                    color: AppColors.yellow,
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
-                  ),
-                  SizedBox(height: 4.h),
-                  CustomText(
-                    text: title,
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.5,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+
+                ...myPosts.map((post) {
+                  final categoryLabel = post.category != null
+                      ? post.category!.replaceAll('_', ' ').toUpperCase()
+                      : '';
+                  final userName =
+                      post.user?.name ?? post.user?.userName ?? 'User';
+                  final profileImage = post.user?.profileImage;
+
+                  final loc =
+                      post.spotDetails?.region ??
+                      post.trackUpdateDetails?.circuit ??
+                      post.sessionDetails?.trackName;
+
+                  final location = loc != null && loc.isNotEmpty
+                      ? (categoryLabel.isNotEmpty
+                            ? "$categoryLabel • $loc"
+                            : loc)
+                      : (categoryLabel.isNotEmpty
+                            ? categoryLabel
+                            : 'Unknown Location');
+
+                  final imageUrl = post.media != null && post.media!.isNotEmpty
+                      ? post.media!.first.url ?? ''
+                      : '';
+
+                  final caption =
+                      post.clubPostDetails?.details ??
+                      post.businessPostDetails?.description ??
+                      post.sessionDetails?.summary ??
+                      post.trackUpdateDetails?.notes ??
+                      '';
+
+                  final isMyPost =
+                      post.user?.id != null &&
+                      post.user!.id == homeController.currentUserId.value;
+
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 20.h),
+                    child: PostCard(
+                      userName: userName,
+                      location: location,
+                      imageUrl: imageUrl,
+                      caption: caption,
+                      profileImage: profileImage,
+                      reactCount: post.reactCount,
+                      commentCount: post.commentCount,
+                      isLiked: post.isReacted ?? false,
+                      detailsWidget: buildPostDetails(post),
+                      onTap: () => Navigator.push(
+                        Get.context!,
+                        MaterialPageRoute(
+                          builder: (_) => PostDetailScreen(postId: post.id!),
+                        ),
+                      ),
+                      onLike: () => homeController.reactToPost(post.id!),
+                      onComment: () => showCommentSheet(Get.context!, post),
+                      onShare: () {
+                        final postLink =
+                            "https://speedring.com/post/${post.id}";
+                        SharePlus.instance.share(
+                          ShareParams(
+                            text:
+                                "Check out this post on Speedring:\n\n$postLink",
+                            subject: "Speedring Post",
+                          ),
+                        );
+                      },
+                      onMore: isMyPost
+                          ? () {
+                              showModalBottomSheet(
+                                context: Get.context!,
+                                useRootNavigator: true,
+                                isScrollControlled: true,
+                                useSafeArea: true,
+                                backgroundColor: const Color(0xff1C1C1C),
+                                builder: (context) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(
+                                        context,
+                                      ).viewPadding.bottom,
+                                    ),
+                                    child: Wrap(
+                                      children: [
+                                        ListTile(
+                                          leading: const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ),
+                                          title: Text(
+                                            "deletePost".tr,
+                                            style: const TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                backgroundColor: const Color(
+                                                  0xff1C1C1C,
+                                                ),
+                                                title: Text(
+                                                  "deletePost".tr,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                content: Text(
+                                                  "deletePostConfirm".tr,
+                                                  style: const TextStyle(
+                                                    color: Colors.white70,
+                                                  ),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    child: Text(
+                                                      "cancel".tr,
+                                                      style: const TextStyle(
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      homeController.deletePost(
+                                                        post.id!,
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      "delete".tr,
+                                                      style: const TextStyle(
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          : null,
+                    ),
+                  );
+                }),
+              ],
+            );
+          });
+        },
       ),
     );
   }

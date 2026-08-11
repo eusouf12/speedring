@@ -57,10 +57,10 @@ class DiscoverScreen extends StatelessWidget {
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText: isVideo
-                          ? "Search videos..."
+                          ? 'searchVideosHint'.tr
                           : isNetwork
-                              ? "Search users..."
-                              : "Search spots...",
+                              ? 'searchUsersHint'.tr
+                              : 'searchSpotsHint'.tr,
                       hintStyle: const TextStyle(color: Colors.white30),
                       prefixIcon: const Icon(
                         Icons.search,
