@@ -30,9 +30,9 @@ class EditListingScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
           leading: const SizedBox.shrink(),
-          title: const Text(
-            "EDIT LISTING",
-            style: TextStyle(
+          title: Text(
+            'editListingUpper'.tr,
+            style: const TextStyle(
               color: AppColors.yellow,
               fontSize: 14,
               fontWeight: FontWeight.w900,
@@ -64,7 +64,7 @@ class EditListingScreen extends StatelessWidget {
               SizedBox(height: 24.h),
 
               // 03 / MEDIA ASSETS
-              _buildPhaseHeader("03 / MEDIA ASSETS"),
+              _buildPhaseHeader('phase03MediaAssets'.tr),
               _buildSectionCard([
                 GestureDetector(
                   onTap: controller.pickImages,
@@ -87,7 +87,7 @@ class EditListingScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 6.h),
                           CustomText(
-                            text: "ADD IMAGES",
+                            text: 'addImages'.tr,
                             color: Colors.white60,
                             fontSize: 10.sp,
                             fontWeight: FontWeight.bold,
@@ -106,7 +106,9 @@ class EditListingScreen extends StatelessWidget {
                     children: [
                       // Display existing network images
                       if (controller.itemDetail.value?.visualAssets != null)
-                        ...controller.itemDetail.value!.visualAssets!.map((url) {
+                        ...controller.itemDetail.value!.visualAssets!.map((
+                          url,
+                        ) {
                           return Container(
                             width: 60.w,
                             height: 60.w,
@@ -171,8 +173,8 @@ class EditListingScreen extends StatelessWidget {
                 () => CustomButton(
                   height: 44.h,
                   title: controller.isEditing.value
-                      ? "SAVING..."
-                      : "SAVE CHANGES",
+                      ? 'saving'.tr
+                      : 'saveChanges'.tr,
                   fontSize: 11.sp,
                   fillColor: AppColors.yellow,
                   textColor: Colors.black,
@@ -210,22 +212,22 @@ class EditListingScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildPhaseHeader("01 / BASIC IDENTIFICATION"),
+        _buildPhaseHeader('phase01BasicId'.tr),
         _buildSectionCard([
-          _buildFieldLabel("MANUFACTURER / BRAND"),
+          _buildFieldLabel('manufacturerBrand'.tr),
           _buildOutlineIconField(
             controller.brandController,
             Icons.motorcycle_outlined,
-            "e.g. Ducati",
+            'egDucati'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("MODEL NAME"),
+          _buildFieldLabel('modelName'.tr),
           _buildOutlineField(
             controller.modelDesignationController,
-            "e.g. Panigale V4 S",
+            'egPanigaleV4S'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("PRODUCTION YEAR"),
+          _buildFieldLabel('productionYear'.tr),
           _buildOutlineIconField(
             controller.productionYearController,
             Icons.calendar_today_outlined,
@@ -233,7 +235,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("ASKING PRICE (USD)"),
+          _buildFieldLabel('askingPriceUsd'.tr),
           _buildOutlineIconField(
             controller.askingPriceController,
             Icons.payments_outlined,
@@ -241,24 +243,24 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("VEHICLE LOCATION"),
+          _buildFieldLabel('vehicleLocation'.tr),
           _buildOutlineIconField(
             controller.locationController,
             Icons.location_on_outlined,
-            "City, State, Country",
+            'cityStateCountry'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("DESCRIPTION"),
+          _buildFieldLabel('descriptionUpper'.tr),
           _buildOutlineField(
             controller.descriptionController,
-            "Details about the vehicle/motorcycle",
+            'detailsAboutVehicleMotorcycle'.tr,
             maxLines: 4,
           ),
         ]),
         SizedBox(height: 24.h),
-        _buildPhaseHeader("02 / PERFORMANCE METRICS"),
+        _buildPhaseHeader('phase02PerfMetrics'.tr),
         _buildSectionCard([
-          _buildFieldLabel("MAX OUTPUT (HP)"),
+          _buildFieldLabel('maxOutputHp'.tr),
           _buildOutlineIconField(
             controller.powerHpController,
             Icons.bolt_outlined,
@@ -266,7 +268,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("0-100 KM/H (s)"),
+          _buildFieldLabel('zeroToHundredSec'.tr),
           _buildOutlineIconField(
             controller.zeroToHundredController,
             Icons.timer_outlined,
@@ -274,7 +276,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("TOP SPEED (KM/H)"),
+          _buildFieldLabel('topSpeedKmh'.tr),
           _buildOutlineIconField(
             controller.topSpeedController,
             Icons.speed_outlined,
@@ -282,7 +284,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("WEIGHT (KG)"),
+          _buildFieldLabel('weightKg'.tr),
           _buildOutlineIconField(
             controller.weightKgController,
             Icons.line_weight_outlined,
@@ -290,7 +292,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("MILEAGE (KM)"),
+          _buildFieldLabel('mileageKm'.tr),
           _buildOutlineIconField(
             controller.mileageKmController,
             Icons.add_road_outlined,
@@ -306,22 +308,22 @@ class EditListingScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildPhaseHeader("01 / BASIC IDENTIFICATION"),
+        _buildPhaseHeader('phase01BasicId'.tr),
         _buildSectionCard([
-          _buildFieldLabel("MANUFACTURER / BRAND"),
+          _buildFieldLabel('manufacturerBrand'.tr),
           _buildOutlineIconField(
             controller.brandController,
             Icons.motorcycle_outlined,
-            "e.g. Ducati",
+            'egDucati'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("MODEL NAME"),
+          _buildFieldLabel('modelName'.tr),
           _buildOutlineField(
             controller.modelDesignationController,
-            "e.g. Panigale V4 S",
+            'egPanigaleV4S'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("PRODUCTION YEAR"),
+          _buildFieldLabel('productionYear'.tr),
           _buildOutlineIconField(
             controller.productionYearController,
             Icons.calendar_today_outlined,
@@ -329,7 +331,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("ASKING PRICE (USD)"),
+          _buildFieldLabel('askingPriceUsd'.tr),
           _buildOutlineIconField(
             controller.askingPriceController,
             Icons.payments_outlined,
@@ -337,30 +339,30 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("VEHICLE LOCATION"),
+          _buildFieldLabel('vehicleLocation'.tr),
           _buildOutlineIconField(
             controller.locationController,
             Icons.location_on_outlined,
-            "City, State, Country",
+            'cityStateCountry'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("DESCRIPTION"),
+          _buildFieldLabel('descriptionUpper'.tr),
           _buildOutlineField(
             controller.descriptionController,
-            "Details about the motorcycle",
+            'detailsAboutMotorcycle'.tr,
             maxLines: 4,
           ),
         ]),
         SizedBox(height: 24.h),
-        _buildPhaseHeader("02 / PERFORMANCE METRICS"),
+        _buildPhaseHeader('phase02PerfMetrics'.tr),
         _buildSectionCard([
-          _buildFieldLabel("ENGINE TYPE"),
+          _buildFieldLabel('engineType'.tr),
           _buildOutlineField(
             controller.engineTypeController,
-            "e.g. Desmosedici Stradale 90° V4",
+            'egDesmosedici'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("MAX OUTPUT (HP)"),
+          _buildFieldLabel('maxOutputHp'.tr),
           _buildOutlineIconField(
             controller.powerHpController,
             Icons.bolt_outlined,
@@ -368,7 +370,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("TORQUE (NM)"),
+          _buildFieldLabel('torqueNm'.tr),
           _buildOutlineIconField(
             controller.torqueNmController,
             Icons.speed_outlined,
@@ -376,7 +378,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("WEIGHT (KG)"),
+          _buildFieldLabel('weightKg'.tr),
           _buildOutlineIconField(
             controller.weightKgController,
             Icons.line_weight_outlined,
@@ -384,7 +386,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("0-100 KM/H (s)"),
+          _buildFieldLabel('zeroToHundredSec'.tr),
           _buildOutlineIconField(
             controller.zeroToHundredController,
             Icons.timer_outlined,
@@ -392,7 +394,7 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("DISPLACEMENT (CC)"),
+          _buildFieldLabel('displacementCc'.tr),
           _buildOutlineIconField(
             controller.displacementCcController,
             Icons.speed_outlined,
@@ -401,25 +403,16 @@ class EditListingScreen extends StatelessWidget {
           ),
         ]),
         SizedBox(height: 24.h),
-        _buildPhaseHeader("03 / SPECIFICATIONS"),
+        _buildPhaseHeader('phase03Specifications'.tr),
         _buildSectionCard([
-          _buildFieldLabel("TRANSMISSION"),
-          _buildOutlineField(
-            controller.transmissionController,
-            "e.g. 6-speed with DQS",
-          ),
+          _buildFieldLabel('transmissionUpper'.tr),
+          _buildOutlineField(controller.transmissionController, 'eg6Speed'.tr),
           SizedBox(height: 14.h),
-          _buildFieldLabel("SUSPENSION"),
-          _buildOutlineField(
-            controller.suspensionController,
-            "e.g. Ohlins Smart EC 2.0",
-          ),
+          _buildFieldLabel('suspensionUpper'.tr),
+          _buildOutlineField(controller.suspensionController, 'egOhlins'.tr),
           SizedBox(height: 14.h),
-          _buildFieldLabel("BRAKING SYSTEM"),
-          _buildOutlineField(
-            controller.brakingSystemController,
-            "e.g. Brembo Stylema",
-          ),
+          _buildFieldLabel('brakingSystem'.tr),
+          _buildOutlineField(controller.brakingSystemController, 'egBrembo'.tr),
         ]),
       ],
     );
@@ -429,24 +422,21 @@ class EditListingScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildPhaseHeader("01 / BASIC IDENTIFICATION"),
+        _buildPhaseHeader('phase01BasicId'.tr),
         _buildSectionCard([
-          _buildFieldLabel("PART NAME"),
-          _buildOutlineField(
-            controller.partNameController,
-            "e.g. G30-770 Turbo",
-          ),
+          _buildFieldLabel('partName'.tr),
+          _buildOutlineField(controller.partNameController, 'egG30Turbo'.tr),
           SizedBox(height: 14.h),
-          _buildFieldLabel("CATEGORY"),
+          _buildFieldLabel('categoryUpper'.tr),
           _buildOutlineField(
             controller.categoryController,
-            "e.g. Engine Components",
+            'egEngineComponents'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("BRAND"),
-          _buildOutlineField(controller.brandController, "e.g. Garrett"),
+          _buildFieldLabel('brandUpper'.tr),
+          _buildOutlineField(controller.brandController, 'egGarrett'.tr),
           SizedBox(height: 14.h),
-          _buildFieldLabel("ASKING PRICE (USD)"),
+          _buildFieldLabel('askingPriceUsd'.tr),
           _buildOutlineIconField(
             controller.askingPriceController,
             Icons.payments_outlined,
@@ -454,43 +444,40 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("LOCATION"),
+          _buildFieldLabel('locationUpper'.tr),
           _buildOutlineIconField(
             controller.locationController,
             Icons.location_on_outlined,
-            "City, State, Country",
+            'cityStateCountry'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("DESCRIPTION"),
+          _buildFieldLabel('descriptionUpper'.tr),
           _buildOutlineField(
             controller.descriptionController,
-            "Details about the part",
+            'detailsAboutPart'.tr,
             maxLines: 4,
           ),
         ]),
         SizedBox(height: 24.h),
-        _buildPhaseHeader("02 / PART DETAILS"),
+        _buildPhaseHeader('phase02PartDetails'.tr),
         _buildSectionCard([
-          _buildFieldLabel("COMPATIBILITY"),
+          _buildFieldLabel('compatibilityUpper'.tr),
           _buildOutlineField(
             controller.compatibilityController,
-            "e.g. Universal",
+            'egUniversal'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("CONDITION"),
-          _buildOutlineField(controller.conditionController, "e.g. Brand New"),
+          _buildFieldLabel('conditionUpper'.tr),
+          _buildOutlineField(controller.conditionController, 'egBrandNew'.tr),
           SizedBox(height: 14.h),
-          _buildFieldLabel("MATERIAL"),
+          _buildFieldLabel('materialUpper'.tr),
           _buildOutlineField(
             controller.materialController,
-            "e.g. Forged Aluminum",
+            'egForgedAluminum'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("PART NUMBER"),
-          _buildOutlineField(
-            controller.partNumberController,
-            "e.g. G30-770-552",
-          ),
+          _buildFieldLabel('partNumberUpper'.tr),
+          _buildOutlineField(controller.partNumberController, 'egG30770'.tr),
         ]),
       ],
     );
@@ -500,24 +487,21 @@ class EditListingScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildPhaseHeader("01 / BASIC IDENTIFICATION"),
+        _buildPhaseHeader('phase01BasicId'.tr),
         _buildSectionCard([
-          _buildFieldLabel("LISTING TITLE"),
+          _buildFieldLabel('listingTitleUpper'.tr),
           _buildOutlineField(
             controller.listingTitleController,
-            "e.g. Pro Track Coaching",
+            'egProTrackCoaching'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("CATEGORY"),
-          _buildOutlineField(controller.categoryController, "e.g. Coaching"),
+          _buildFieldLabel('categoryUpper'.tr),
+          _buildOutlineField(controller.categoryController, 'egCoaching'.tr),
           SizedBox(height: 14.h),
-          _buildFieldLabel("PROVIDER NAME"),
-          _buildOutlineField(
-            controller.providerNameController,
-            "e.g. John Doe",
-          ),
+          _buildFieldLabel('providerNameUpper'.tr),
+          _buildOutlineField(controller.providerNameController, 'egJohnDoe'.tr),
           SizedBox(height: 14.h),
-          _buildFieldLabel("BASE PRICE (USD)"),
+          _buildFieldLabel('basePriceUsd'.tr),
           _buildOutlineIconField(
             controller.askingPriceController,
             Icons.payments_outlined,
@@ -525,24 +509,24 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("LOCATION"),
+          _buildFieldLabel('locationUpper'.tr),
           _buildOutlineIconField(
             controller.locationController,
             Icons.location_on_outlined,
-            "City, State, Country",
+            'cityStateCountry'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("DESCRIPTION"),
+          _buildFieldLabel('descriptionUpper'.tr),
           _buildOutlineField(
             controller.descriptionController,
-            "Details about the service",
+            'detailsAboutService'.tr,
             maxLines: 4,
           ),
         ]),
         SizedBox(height: 24.h),
-        _buildPhaseHeader("02 / SERVICE DETAILS"),
+        _buildPhaseHeader('phase02ServiceDetails'.tr),
         _buildSectionCard([
-          _buildFieldLabel("HOURLY RATE (USD)"),
+          _buildFieldLabel('hourlyRateUsd'.tr),
           _buildOutlineIconField(
             controller.hourlyRateUsdController,
             Icons.schedule_outlined,
@@ -550,13 +534,13 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("LOCATION TYPE"),
+          _buildFieldLabel('locationTypeUpper'.tr),
           _buildOutlineField(
             controller.locationTypeController,
-            "e.g. Remote, On-Site, Track",
+            'egRemoteOnSite'.tr,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("EXPERIENCE YEARS"),
+          _buildFieldLabel('experienceYearsUpper'.tr),
           _buildOutlineIconField(
             controller.experienceYearsController,
             Icons.military_tech_outlined,
@@ -564,10 +548,10 @@ class EditListingScreen extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: 14.h),
-          _buildFieldLabel("TRACK SPECIALIZATIONS"),
+          _buildFieldLabel('trackSpecializationsUpper'.tr),
           _buildOutlineField(
             controller.trackSpecializationsController,
-            "e.g. Nurburgring, Spa",
+            'egNurburgringSpa'.tr,
           ),
         ]),
       ],

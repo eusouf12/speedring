@@ -188,7 +188,8 @@ class MarketplaceFeedController extends GetxController {
     providerNameController.text = item.providerName ?? '';
     hourlyRateUsdController.text = item.hourlyRateUSD?.toString() ?? '';
     locationTypeController.text = item.locationType ?? '';
-    trackSpecializationsController.text = item.trackSpecializations?.join(', ') ?? '';
+    trackSpecializationsController.text =
+        item.trackSpecializations?.join(', ') ?? '';
     experienceYearsController.text = item.experienceYears?.toString() ?? '';
 
     selectedImages
@@ -636,8 +637,35 @@ class MarketplaceFeedController extends GetxController {
 
   // ================================Follow user===========================================
 
-  void toggleFollow() {
+  Future<void> toggleFollow() async {
+    final userId = itemDetail.value?.seller?.id;
+    if (userId == null) {
+      showCustomSnackBar("Seller information not found", isError: true);
+      return;
+    }
+
+    // Optimistic update
     isFollowing.value = !isFollowing.value;
+
+    try {
+      final response = await ApiClient.patchData(
+        ApiUrl.toggleFollow(userId: userId),
+        jsonEncode({}),
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        // Revert on failure
+        isFollowing.value = !isFollowing.value;
+        showCustomSnackBar(
+          response.body['error'] ?? "Failed to toggle follow status",
+          isError: true,
+        );
+      }
+    } catch (e) {
+      // Revert on error
+      isFollowing.value = !isFollowing.value;
+      showCustomSnackBar("Error: $e", isError: true);
+    }
   }
 
   Future<void> fetchListingDetails(String id) async {

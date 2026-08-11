@@ -22,31 +22,29 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   final List<Map<String, String>> categories = [
     {
       "code": "CAT-01",
-      "title": "VEHICLES",
-      "description":
-          "High-performance cars, GT3 racers, and luxury collectibles.",
+      "title": 'vehiclesTitle'.tr, // Note: vehicles already exists but might be lowercase in translation
+      "description": 'vehiclesDesc'.tr,
       "image":
           "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&fit=crop",
     },
     {
       "code": "CAT-02",
-      "title": "MOTORCYCLES",
-      "description":
-          "Superbikes, custom builds, and professional racing machinery.",
+      "title": 'motorcyclesTitle'.tr,
+      "description": 'motorcyclesDesc'.tr,
       "image":
           "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500&fit=crop",
     },
     {
       "code": "CAT-03",
-      "title": "PERFORMANCE PARTS",
-      "description": "Engine components, aero kits, and technical hardware.",
+      "title": 'performancePartsTitle'.tr,
+      "description": 'performancePartsDesc'.tr,
       "image":
           "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=500&fit=crop",
     },
     {
       "code": "CAT-04",
-      "title": "EXPERT SERVICES",
-      "description": "Tuning, coaching, track-side support, and logistics.",
+      "title": 'expertServicesTitle'.tr,
+      "description": 'expertServicesDesc'.tr,
       "image":
           "https://images.unsplash.com/photo-1621252179027-94459d278660?w=500&fit=crop",
     },
@@ -64,8 +62,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
             icon: const Icon(Icons.close, color: AppColors.yellow),
             onPressed: () => Get.back(),
           ),
-          title: const Text(
-            "CREATE LISTING",
+          title: Text(
+            'createListing'.tr,
             style: TextStyle(
               color: AppColors.yellow,
               fontSize: 16,
@@ -86,7 +84,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                     children: [
                       SizedBox(height: 16.h),
                       CustomText(
-                        text: "ASSET CONFIGURATION",
+                        text: 'assetConfiguration'.tr,
                         color: AppColors.yellow,
                         fontSize: 10,
                         fontWeight: FontWeight.w900,
@@ -95,7 +93,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                       ),
                       SizedBox(height: 8.h),
                       CustomText(
-                        text: "SELECT CATEGORY",
+                        text: 'selectCategory'.tr,
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
@@ -105,7 +103,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                       SizedBox(height: 12.h),
                       CustomText(
                         text:
-                            "Choose the asset class you wish to list on the global marketplace.",
+                            'chooseAssetClassDesc'.tr,
                         color: Colors.white60,
                         fontSize: 12,
                         textAlign: TextAlign.start,
@@ -198,7 +196,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                 padding: EdgeInsets.all(16.w),
                 child: CustomButton(
                   height: 50.h,
-                  title: "CONTINUE",
+                  title: 'continueBtn'.tr,
                   fontSize: 14,
                   onTap: () {
                     if (selectedIndex == 0) {

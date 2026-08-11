@@ -23,9 +23,9 @@ class CreatePerformancePartsListingScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
           leading: const SizedBox.shrink(),
-          title: const Text(
-            "CREATE LISTING: PARTS",
-            style: TextStyle(
+          title: Text(
+            'createListingParts'.tr,
+            style: const TextStyle(
               color: AppColors.yellow,
               fontSize: 14,
               fontWeight: FontWeight.w900,
@@ -47,24 +47,24 @@ class CreatePerformancePartsListingScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 01 / BASIC IDENTIFICATION
-              _buildPhaseHeader("01 / BASIC IDENTIFICATION"),
+              _buildPhaseHeader('phase01BasicId'.tr),
               _buildSectionCard([
-                _buildFieldLabel("PART NAME"),
+                _buildFieldLabel('partName'.tr),
                 _buildOutlineField(
                   controller.partNameController,
-                  "e.g. Turbocharger Kit",
+                  'egTurbocharger'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("CATEGORY"),
+                _buildFieldLabel('categoryUpper'.tr),
                 _buildOutlineField(
                   controller.categoryController,
-                  "e.g. Engine Components",
+                  'egEngineComponents'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("BRAND"),
-                _buildOutlineField(controller.brandController, "e.g. Garrett"),
+                _buildFieldLabel('brandUpper'.tr),
+                _buildOutlineField(controller.brandController, 'egGarrett'.tr),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("ASKING PRICE (USD)"),
+                _buildFieldLabel('askingPriceUsd'.tr),
                 _buildOutlineIconField(
                   controller.askingPriceController,
                   Icons.payments_outlined,
@@ -72,38 +72,38 @@ class CreatePerformancePartsListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("LOCATION"),
+                _buildFieldLabel('locationUpper'.tr),
                 _buildOutlineIconField(
                   controller.locationController,
                   Icons.location_on_outlined,
-                  "City, State, Country",
+                  'cityStateCountry'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("DESCRIPTION"),
+                _buildFieldLabel('descriptionUpper'.tr),
                 _buildOutlineField(
                   controller.descriptionController,
-                  "Details about the part",
+                  'detailsAboutPart'.tr,
                   maxLines: 4,
                 ),
               ]),
               SizedBox(height: 24.h),
 
               // 02 / PART DETAILS
-              _buildPhaseHeader("02 / PART DETAILS"),
+              _buildPhaseHeader('phase02PartDetails'.tr),
               _buildSectionCard([
-                _buildFieldLabel("COMPATIBILITY"),
+                _buildFieldLabel('compatibilityUpper'.tr),
                 _buildOutlineField(
                   controller.compatibilityController,
-                  "e.g. Universal, Specific Model",
+                  'egUniversal'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("CONDITION"),
+                _buildFieldLabel('conditionUpper'.tr),
                 _buildOutlineField(
                   controller.conditionController,
-                  "e.g. New, Used, Refurbished",
+                  'egNewUsed'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("WEIGHT REDUCTION (KG)"),
+                _buildFieldLabel('weightReductionKg'.tr),
                 _buildOutlineIconField(
                   controller.weightReductionKgController,
                   Icons.fitness_center_outlined,
@@ -111,34 +111,34 @@ class CreatePerformancePartsListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("PERFORMANCE GAIN"),
+                _buildFieldLabel('performanceGainUpper'.tr),
                 _buildOutlineField(
                   controller.performanceGainController,
-                  "e.g. +50 HP",
+                  'eg50Hp'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("MATERIAL"),
+                _buildFieldLabel('materialUpper'.tr),
                 _buildOutlineField(
                   controller.materialController,
-                  "e.g. Carbon Fiber, Aluminum",
+                  'egCarbonFiber'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("PART NUMBER"),
+                _buildFieldLabel('partNumberUpper'.tr),
                 _buildOutlineField(
                   controller.partNumberController,
-                  "e.g. PT12345",
+                  'egPT12345'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("SHIPPING STRATEGY"),
+                _buildFieldLabel('shippingStrategyUpper'.tr),
                 _buildOutlineField(
                   controller.shippingStrategyController,
-                  "e.g. Free Shipping, Local Pickup",
+                  'egFreeShipping'.tr,
                 ),
               ]),
               SizedBox(height: 24.h),
 
               // 03 / MEDIA ASSETS
-              _buildPhaseHeader("03 / MEDIA ASSETS"),
+              _buildPhaseHeader('phase03MediaAssets'.tr),
               _buildSectionCard([
                 GestureDetector(
                   onTap: controller.pickImages,
@@ -161,7 +161,7 @@ class CreatePerformancePartsListingScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 6.h),
                           CustomText(
-                            text: "ADD IMAGES",
+                            text: 'addImages'.tr,
                             color: Colors.white60,
                             fontSize: 10.sp,
                             fontWeight: FontWeight.bold,
@@ -227,8 +227,8 @@ class CreatePerformancePartsListingScreen extends StatelessWidget {
                 () => CustomButton(
                   height: 44.h,
                   title: controller.isCreating.value
-                      ? "PUBLISHING..."
-                      : "PUBLISH LISTING",
+                      ? 'publishing'.tr
+                      : 'publishListing'.tr,
                   fontSize: 11.sp,
                   fillColor: AppColors.yellow,
                   textColor: Colors.black,

@@ -47,7 +47,7 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                       style: const TextStyle(color: Colors.white, fontSize: 13),
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "What do you want to buy?",
+                        hintText: 'whatDoYouWantToBuy'.tr,
                         hintStyle: const TextStyle(
                           color: Colors.white24,
                           fontSize: 13,
@@ -74,7 +74,7 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                 child: CustomButton(
                   height: 40.h,
-                  title: "START LISTING",
+                  title: 'startListing'.tr,
                   fontSize: 12,
                   borderRadius: 8.r,
 
@@ -131,7 +131,7 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
 
                       return MarketplaceItemCard(
                         imageUrl: imageUrl,
-                        title: item.modelDesignation ?? "No Title",
+                        title: item.modelDesignation ?? 'noTitle'.tr,
                         price: "\$${item.askingPrice ?? '0'}",
                         subtitle: item.brand ?? "",
                         tag: item.itemType ?? "",

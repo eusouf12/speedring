@@ -62,7 +62,7 @@ class MyListingsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
-                            text: "ACTIVE LISTINGS",
+                            text: 'activeListings'.tr,
                             color: Colors.white38,
                             fontSize: 8.sp,
                             fontWeight: FontWeight.bold,
@@ -91,7 +91,7 @@ class MyListingsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
-                            text: "TOTAL VALUATION",
+                            text: 'totalValuation'.tr,
                             color: Colors.white38,
                             fontSize: 8.sp,
                             fontWeight: FontWeight.bold,
@@ -114,29 +114,42 @@ class MyListingsScreen extends StatelessWidget {
               /// Categories chips
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Obx(() => Row(
-                  children: [
-                    _buildCategoryChip("ALL", "ALL", controller),
-                    SizedBox(width: 8.w),
-                    _buildCategoryChip("VEHICLES", "VEHICLES", controller),
-                    SizedBox(width: 8.w),
-                    _buildCategoryChip("MOTORCYCLES", "MOTORCYCLES", controller),
-                    SizedBox(width: 8.w),
-                    _buildCategoryChip("PERFORMANCE_PARTS", "PARTS", controller),
-                  ],
-                )),
+                child: Obx(
+                  () => Row(
+                    children: [
+                      _buildCategoryChip("ALL", "ALL", controller),
+                      SizedBox(width: 8.w),
+                      _buildCategoryChip("VEHICLES", "VEHICLES", controller),
+                      SizedBox(width: 8.w),
+                      _buildCategoryChip(
+                        "MOTORCYCLES",
+                        "MOTORCYCLES",
+                        controller,
+                      ),
+                      SizedBox(width: 8.w),
+                      _buildCategoryChip(
+                        "PERFORMANCE_PARTS",
+                        "PARTS",
+                        controller,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(height: 20.h),
 
               /// Listings items list
               Obx(() {
-                if (controller.isLoadingMyListings.value && controller.myListings.isEmpty) {
-                  return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
+                if (controller.isLoadingMyListings.value &&
+                    controller.myListings.isEmpty) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.yellow),
+                  );
                 }
                 if (controller.myListings.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: CustomText(
-                      text: "No listings found.",
+                      text: 'noListingsFound'.tr,
                       color: Colors.white54,
                       fontSize: 14,
                     ),
@@ -150,17 +163,24 @@ class MyListingsScreen extends StatelessWidget {
                   separatorBuilder: (c, i) => SizedBox(height: 16.h),
                   itemBuilder: (context, index) {
                     final item = controller.myListings[index];
-                    final String imageUrl = (item['visualAssets'] != null && (item['visualAssets'] as List).isNotEmpty)
+                    final String imageUrl =
+                        (item['visualAssets'] != null &&
+                            (item['visualAssets'] as List).isNotEmpty)
                         ? item['visualAssets'][0]
                         : "";
-                    final title = item['brand'] != null ? "${item['brand']} ${item['modelDesignation']}" : "Listing";
+                    final title = item['brand'] != null
+                        ? "${item['brand']} ${item['modelDesignation']}"
+                        : "Listing";
                     final type = item['itemType'] ?? "ITEM";
-                    
+
                     Map<String, String> specs = {};
-                    if (item['powerHP'] != null) specs["POWER"] = "${item['powerHP']} HP";
-                    if (item['displacementCC'] != null) specs["DISPLACEMENT"] = "${item['displacementCC']} CC";
-                    if (item['productionYear'] != null) specs["YEAR"] = "${item['productionYear']}";
-                    
+                    if (item['powerHP'] != null)
+                      specs["POWER"] = "${item['powerHP']} HP";
+                    if (item['displacementCC'] != null)
+                      specs["DISPLACEMENT"] = "${item['displacementCC']} CC";
+                    if (item['productionYear'] != null)
+                      specs["YEAR"] = "${item['productionYear']}";
+
                     return _buildListingCard(
                       id: item['id'] ?? "",
                       controller: controller,
@@ -169,7 +189,8 @@ class MyListingsScreen extends StatelessWidget {
                       statusColor: AppColors.yellow,
                       statusTextColor: Colors.black,
                       title: title,
-                      idLabel: "$type ID: #${item['id']?.toString().substring(0, 8).toUpperCase()}",
+                      idLabel:
+                          "$type ID: #${item['id']?.toString().substring(0, 8).toUpperCase()}",
                       price: "\$${item['askingPrice']}",
                       priceColor: AppColors.yellow,
                       specs: specs,
@@ -185,8 +206,13 @@ class MyListingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryChip(String categoryId, String label, MarketplaceFeedController controller) {
-    final bool isSelected = controller.currentCategoryMyListings.value == categoryId;
+  Widget _buildCategoryChip(
+    String categoryId,
+    String label,
+    MarketplaceFeedController controller,
+  ) {
+    final bool isSelected =
+        controller.currentCategoryMyListings.value == categoryId;
     return GestureDetector(
       onTap: () {
         controller.changeCategory(categoryId);
@@ -347,7 +373,7 @@ class MyListingsScreen extends StatelessWidget {
                       child: isEditButton
                           ? CustomButton(
                               height: 38.h,
-                              title: "EDIT LISTING",
+                              title: 'editListing'.tr,
                               fontSize: 11,
                               borderRadius: 6.r,
                               onTap: () {},
@@ -361,12 +387,15 @@ class MyListingsScreen extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () {
-                                  Get.toNamed(AppRoutes.itemDetailScreen, arguments: {'id': id});
+                                  Get.toNamed(
+                                    AppRoutes.itemDetailScreen,
+                                    arguments: {'id': id},
+                                  );
                                 },
                                 borderRadius: BorderRadius.circular(6.r),
-                                child: const Center(
+                                child: Center(
                                   child: CustomText(
-                                    text: "VIEW DETAILS",
+                                    text: 'viewDetails'.tr,
                                     color: Colors.white70,
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
@@ -385,18 +414,29 @@ class MyListingsScreen extends StatelessWidget {
                           color: Colors.red.withValues(alpha: 0.2),
                         ),
                       ),
-                      child: Obx(() => controller.isDeleting.value
-                          ? const Center(child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.red, strokeWidth: 2)))
-                          : IconButton(
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.redAccent,
-                          size: 18,
-                        ),
-                        onPressed: () {
-                          controller.deleteListing(id);
-                        },
-                      )),
+                      child: Obx(
+                        () => controller.isDeleting.value
+                            ? const Center(
+                                child: SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.red,
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                            : IconButton(
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.redAccent,
+                                  size: 18,
+                                ),
+                                onPressed: () {
+                                  controller.deleteListing(id);
+                                },
+                              ),
+                      ),
                     ),
                   ],
                 ),

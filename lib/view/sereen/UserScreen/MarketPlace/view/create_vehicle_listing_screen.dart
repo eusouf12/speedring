@@ -23,9 +23,9 @@ class CreateVehicleListingScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
           leading: const SizedBox.shrink(),
-          title: const Text(
-            "CREATE LISTING: VEHICLES",
-            style: TextStyle(
+          title: Text(
+            'createListingVehicles'.tr,
+            style: const TextStyle(
               color: AppColors.yellow,
               fontSize: 14,
               fontWeight: FontWeight.w900,
@@ -48,47 +48,47 @@ class CreateVehicleListingScreen extends StatelessWidget {
             children: [
               // Basic Specifications Section
               _buildSectionHeader(
-                "BASIC SPECIFICATIONS",
-                "Core identity parameters for the vehicle record.",
+                'basicSpecifications'.tr,
+                'coreIdentityParamsDesc'.tr,
               ),
               SizedBox(height: 12.h),
               _buildFormCard([
-                _buildFieldLabel("BRAND / MANUFACTURER"),
+                _buildFieldLabel('brandManufacturer'.tr),
                 _buildWhiteTextField(
-                  "e.g. Porsche",
+                  'egPorsche'.tr,
                   controller: controller.brandController,
                 ),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("MODEL VARIANT"),
+                _buildFieldLabel('modelVariant'.tr),
                 _buildWhiteTextField(
-                  "e.g. 911 GT3 RS",
+                  'eg911Gt3Rs'.tr,
                   controller: controller.modelDesignationController,
                 ),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("PRODUCTION YEAR"),
+                _buildFieldLabel('productionYear'.tr),
                 _buildWhiteTextField(
                   "2024",
                   keyboardType: TextInputType.number,
                   controller: controller.productionYearController,
                 ),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("LISTING PRICE (USD)"),
+                _buildFieldLabel('listingPriceUsd'.tr),
                 _buildWhitePriceField(
                   "0.00",
                   controller: controller.askingPriceController,
                 ),
                 SizedBox(height: 16.h),
-                _buildFieldLabel("LOCATION / DEPOT"),
+                _buildFieldLabel('locationDepot'.tr),
                 _buildWhiteLocationField(
-                  "City, Country",
+                  'cityCountry'.tr,
                   controller: controller.locationController,
                 ),
               ]),
               SizedBox(height: 28.h),
 
-              _buildFieldLabel("DESCRIPTION"),
+              _buildFieldLabel('descriptionUpper'.tr),
               _buildWhiteTextField(
-                "Details about the vehicle",
+                'detailsAboutVehicle'.tr,
                 controller: controller.descriptionController,
                 maxLines: 4,
               ),
@@ -96,8 +96,8 @@ class CreateVehicleListingScreen extends StatelessWidget {
 
               // Performance Telemetry Section
               _buildSectionHeader(
-                "PERFORMANCE TELEMETRY",
-                "Precision engineering data points for verified enthusiasts.",
+                'performanceTelemetry'.tr,
+                'precisionEngDataDesc'.tr,
               ),
               SizedBox(height: 12.h),
               _buildTelemetryCard(controller),
@@ -105,8 +105,8 @@ class CreateVehicleListingScreen extends StatelessWidget {
 
               // Media Assets Section
               _buildSectionHeader(
-                "MEDIA ASSETS",
-                "High-fidelity imagery and kinematic content.",
+                'mediaAssets'.tr,
+                'highFidelityImageryDesc'.tr,
               ),
               SizedBox(height: 12.h),
               _buildMediaAssetsCard(controller),
@@ -117,8 +117,8 @@ class CreateVehicleListingScreen extends StatelessWidget {
                 () => CustomButton(
                   height: 44.h,
                   title: controller.isCreating.value
-                      ? "PUBLISHING..."
-                      : "PUBLISH LISTING",
+                      ? 'publishing'.tr
+                      : 'publishListing'.tr,
                   fontSize: 11.sp,
                   fillColor: AppColors.yellow,
                   textColor: Colors.black,
@@ -204,7 +204,12 @@ class CreateVehicleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWhiteTextField(String hint, {TextInputType? keyboardType, TextEditingController? controller, int maxLines = 1}) {
+  Widget _buildWhiteTextField(
+    String hint, {
+    TextInputType? keyboardType,
+    TextEditingController? controller,
+    int maxLines = 1,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -340,19 +345,19 @@ class CreateVehicleListingScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildTelemetryRow("POWER OUTPUT (HP)", controller.powerHpController),
+          _buildTelemetryRow('powerOutputHp'.tr, controller.powerHpController),
           SizedBox(height: 12.h),
           _buildTelemetryRow(
-            "0-100 KM/H (SEC)",
+            'zeroToHundredSec'.tr,
             controller.zeroToHundredController,
             hint: "0.0",
           ),
           SizedBox(height: 12.h),
-          _buildTelemetryRow("TOP SPEED (KM/H)", controller.topSpeedController),
+          _buildTelemetryRow('topSpeedKmh'.tr, controller.topSpeedController),
           SizedBox(height: 12.h),
-          _buildTelemetryRow("WEIGHT (KG)", controller.weightKgController),
+          _buildTelemetryRow('weightKg'.tr, controller.weightKgController),
           SizedBox(height: 12.h),
-          _buildTelemetryRow("MILEAGE (KM)", controller.mileageKmController),
+          _buildTelemetryRow('mileageKm'.tr, controller.mileageKmController),
         ],
       ),
     );
@@ -441,7 +446,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 8.h),
                   CustomText(
-                    text: "ADD IMAGES",
+                    text: 'addImages'.tr,
                     color: Colors.white60,
                     fontSize: 10.sp,
                     fontWeight: FontWeight.bold,

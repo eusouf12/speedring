@@ -27,8 +27,8 @@ class ItemDetailScreen extends StatelessWidget {
           elevation: 0,
           centerTitle: true,
           leading: const BackButton(color: AppColors.yellow),
-          title: const Text(
-            "Listing Details",
+          title: Text(
+            "listingDetails".tr,
             style: TextStyle(
               color: AppColors.yellow,
               fontSize: 20,
@@ -62,23 +62,23 @@ class ItemDetailScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        title: const Text(
-                          "Delete Listing",
+                        title: Text(
+                          'deleteListingTitle'.tr,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        content: const Text(
-                          "Are you sure you want to delete this listing?",
+                        content: Text(
+                          'deleteListingConfirm'.tr,
                           style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Get.back(),
-                            child: const Text(
-                              "NO",
+                            child: Text(
+                              'no'.tr,
                               style: TextStyle(
                                 color: Colors.white54,
                                 fontWeight: FontWeight.bold,
@@ -90,8 +90,8 @@ class ItemDetailScreen extends StatelessWidget {
                               Get.back();
                               controller.deleteListing(id);
                             },
-                            child: const Text(
-                              "YES",
+                            child: Text(
+                              'yes'.tr,
                               style: TextStyle(
                                 color: Color(
                                   0xffE53935,
@@ -107,13 +107,13 @@ class ItemDetailScreen extends StatelessWidget {
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'edit',
-                  child: Text('Edit', style: TextStyle(color: Colors.white)),
+                  child: Text('edit'.tr, style: TextStyle(color: Colors.white)),
                 ),
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'delete',
-                  child: Text('Delete', style: TextStyle(color: Colors.red)),
+                  child: Text('delete'.tr, style: TextStyle(color: Colors.red)),
                 ),
               ],
             ),
@@ -128,9 +128,9 @@ class ItemDetailScreen extends StatelessWidget {
 
           final data = controller.itemDetail.value;
           if (data == null) {
-            return const Center(
+            return Center(
               child: Text(
-                "Listing not found",
+                'listingNotFound'.tr,
                 style: TextStyle(color: Colors.white),
               ),
             );
@@ -143,14 +143,14 @@ class ItemDetailScreen extends StatelessWidget {
               : "";
           String title = "";
           if (data.itemType == "PERFORMANCE_PARTS") {
-            title = data.partName?.toUpperCase() ?? "PART";
+            title = data.partName?.toUpperCase() ?? 'part'.tr;
           } else if (data.itemType == "EXPERT_SERVICES") {
-            title = data.listingTitle?.toUpperCase() ?? "SERVICE";
+            title = data.listingTitle?.toUpperCase() ?? 'service'.tr;
           } else {
             final brand = data.brand ?? "";
             final modelDesignation = data.modelDesignation ?? "";
             title = "$brand $modelDesignation".trim().toUpperCase();
-            if (title.isEmpty) title = "VEHICLE";
+            if (title.isEmpty) title = 'vehicle'.tr;
           }
           final price = data.itemType == "EXPERT_SERVICES"
               ? "\$${data.hourlyRateUSD ?? '0'}/HR"
@@ -184,7 +184,7 @@ class ItemDetailScreen extends StatelessWidget {
 
                 /// Title & Price
                 CustomText(
-                  text: title.isEmpty ? "LISTING" : title,
+                  text: title.isEmpty ? 'listingTitle'.tr : title,
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
@@ -205,7 +205,7 @@ class ItemDetailScreen extends StatelessWidget {
                 /// Purchase & Offer Actions
                 CustomButton(
                   height: 48.h,
-                  title: "MESSAGE SELLER",
+                  title: 'messageSeller'.tr,
                   fontSize: 13,
                   borderRadius: 8.r,
                   onTap: () {
@@ -223,7 +223,7 @@ class ItemDetailScreen extends StatelessWidget {
                 SizedBox(height: 12.h),
 
                 /// PHASE 01: TECH SPECS
-                _buildSectionHeader("PHASE 01: TECH SPECS"),
+                _buildSectionHeader('phase01TechSpecs'.tr),
                 GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -236,97 +236,115 @@ class ItemDetailScreen extends StatelessWidget {
                         data.itemType == "MOTORCYCLES") ...[
                       if (data.productionYear != null)
                         SpecTile(
-                          label: "YEAR",
+                          label: 'year'.tr,
                           value: "${data.productionYear}",
                         ),
                       if (data.mileageKM != null)
                         SpecTile(
-                          label: "MILEAGE",
+                          label: 'mileage'.tr,
                           value: "${data.mileageKM} KM",
                         ),
                       if (data.transmission != null)
                         SpecTile(
-                          label: "TRANSMISSION",
+                          label: 'transmission'.tr,
                           value: "${data.transmission}",
                         ),
                       if (data.engineType != null)
-                        SpecTile(label: "ENGINE", value: "${data.engineType}"),
+                        SpecTile(
+                          label: 'engine'.tr,
+                          value: "${data.engineType}",
+                        ),
                       if (data.displacementCC != null)
                         SpecTile(
-                          label: "DISPLACEMENT",
+                          label: 'displacement'.tr,
                           value: "${data.displacementCC} CC",
                         ),
                       if (data.location != null)
-                        SpecTile(label: "LOCATION", value: "${data.location}"),
+                        SpecTile(
+                          label: 'location'.tr,
+                          value: "${data.location}",
+                        ),
                       if (data.itemType != null)
-                        SpecTile(label: "TYPE", value: "${data.itemType}"),
+                        SpecTile(label: 'type'.tr, value: "${data.itemType}"),
                       if (data.status != null)
-                        SpecTile(label: "STATUS", value: "${data.status}"),
+                        SpecTile(label: 'status'.tr, value: "${data.status}"),
                       if (data.drivetrain != null)
                         SpecTile(
-                          label: "DRIVETRAIN",
+                          label: 'drivetrain'.tr,
                           value: "${data.drivetrain}",
                         ),
                       if (data.suspension != null)
                         SpecTile(
-                          label: "SUSPENSION",
+                          label: 'suspension'.tr,
                           value: "${data.suspension}",
                         ),
                       if (data.brakingSystem != null)
                         SpecTile(
-                          label: "BRAKES",
+                          label: 'brakes'.tr,
                           value: "${data.brakingSystem}",
                         ),
                       if (data.engineConfiguration != null)
                         SpecTile(
-                          label: "CONFIGURATION",
+                          label: 'configuration'.tr,
                           value: "${data.engineConfiguration}",
                         ),
                       if (data.aerodynamicsBody != null)
                         SpecTile(
-                          label: "AERODYNAMICS",
+                          label: 'aerodynamics'.tr,
                           value: "${data.aerodynamicsBody}",
                         ),
                     ] else if (data.itemType == "PERFORMANCE_PARTS") ...[
                       if (data.brand != null)
-                        SpecTile(label: "BRAND", value: "${data.brand}"),
+                        SpecTile(label: 'brand'.tr, value: "${data.brand}"),
                       if (data.category != null)
-                        SpecTile(label: "CATEGORY", value: "${data.category}"),
+                        SpecTile(
+                          label: 'category'.tr,
+                          value: "${data.category}",
+                        ),
                       if (data.compatibility != null)
                         SpecTile(
-                          label: "COMPATIBILITY",
+                          label: 'compatibility'.tr,
                           value: "${data.compatibility}",
                         ),
                       if (data.condition != null)
                         SpecTile(
-                          label: "CONDITION",
+                          label: 'condition'.tr,
                           value: "${data.condition}",
                         ),
                       if (data.partNumber != null)
-                        SpecTile(label: "PART NO", value: "${data.partNumber}"),
+                        SpecTile(
+                          label: 'partNo'.tr,
+                          value: "${data.partNumber}",
+                        ),
                       if (data.material != null)
-                        SpecTile(label: "MATERIAL", value: "${data.material}"),
+                        SpecTile(
+                          label: 'material'.tr,
+                          value: "${data.material}",
+                        ),
                       if (data.shippingStrategy != null)
                         SpecTile(
-                          label: "SHIPPING",
+                          label: 'shipping'.tr,
                           value: "${data.shippingStrategy}",
                         ),
                     ] else if (data.itemType == "EXPERT_SERVICES") ...[
                       if (data.providerName != null)
                         SpecTile(
-                          label: "PROVIDER",
+                          label: 'provider'.tr,
                           value: "${data.providerName}",
                         ),
                       if (data.category != null)
-                        SpecTile(label: "CATEGORY", value: "${data.category}"),
+                        SpecTile(
+                          label: 'category'.tr,
+                          value: "${data.category}",
+                        ),
                       if (data.locationType != null)
                         SpecTile(
-                          label: "LOCATION",
+                          label: 'location'.tr,
                           value: "${data.locationType}",
                         ),
                       if (data.experienceYears != null)
                         SpecTile(
-                          label: "EXPERIENCE",
+                          label: 'experience'.tr,
                           value: "${data.experienceYears} YRS",
                         ),
                     ],
@@ -335,7 +353,7 @@ class ItemDetailScreen extends StatelessWidget {
                 SizedBox(height: 24.h),
 
                 /// PHASE 02: NARRATIVE
-                _buildSectionHeader("PHASE 02: NARRATIVE"),
+                _buildSectionHeader('phase02Narrative'.tr),
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(16.w),
@@ -348,7 +366,7 @@ class ItemDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomText(
-                        text: "DESCRIPTION",
+                        text: 'description'.tr,
                         color: AppColors.yellow,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
@@ -374,28 +392,37 @@ class ItemDetailScreen extends StatelessWidget {
                           if (data.itemType == "VEHICLES" ||
                               data.itemType == "MOTORCYCLES") ...[
                             if (data.powerHP != null)
-                              _buildMetricCol("${data.powerHP} HP", "POWER"),
+                              _buildMetricCol("${data.powerHP} HP", 'power'.tr),
                             if (data.zeroToHundred != null)
                               _buildMetricCol(
                                 "${data.zeroToHundred}s",
-                                "0-100 KM/H",
+                                'zeroToHundred'.tr,
                               ),
                             if (data.weightKG != null)
-                              _buildMetricCol("${data.weightKG} KG", "WEIGHT"),
+                              _buildMetricCol(
+                                "${data.weightKG} KG",
+                                'weight'.tr,
+                              ),
                             if (data.torqueNM != null)
-                              _buildMetricCol("${data.torqueNM} NM", "TORQUE"),
+                              _buildMetricCol(
+                                "${data.torqueNM} NM",
+                                'torque'.tr,
+                              ),
                             if (data.topSpeed != null)
-                              _buildMetricCol("${data.topSpeed}", "TOP SPEED"),
+                              _buildMetricCol(
+                                "${data.topSpeed}",
+                                'topSpeed'.tr,
+                              ),
                           ] else if (data.itemType == "PERFORMANCE_PARTS") ...[
                             if (data.weightReductionKG != null)
                               _buildMetricCol(
                                 "${data.weightReductionKG} KG",
-                                "WEIGHT REDUCTION",
+                                'weightReduction'.tr,
                               ),
                             if (data.performanceGain != null)
                               _buildMetricCol(
                                 "${data.performanceGain}",
-                                "PERFORMANCE GAIN",
+                                'performanceGain'.tr,
                               ),
                           ] else if (data.itemType == "EXPERT_SERVICES" &&
                               data.trackSpecializations != null) ...[
@@ -403,7 +430,7 @@ class ItemDetailScreen extends StatelessWidget {
                                 .map(
                                   (spec) => _buildMetricCol(
                                     spec.toUpperCase(),
-                                    "SPECIALIZATION",
+                                    'specialization'.tr,
                                   ),
                                 )
                                 .toList(),
@@ -417,7 +444,7 @@ class ItemDetailScreen extends StatelessWidget {
 
                 /// VERIFIED SELLER
                 CustomText(
-                  text: "VERIFIED SELLER",
+                  text: 'verifiedSeller'.tr,
                   color: Colors.white38,
                   fontSize: 9,
                   fontWeight: FontWeight.bold,
@@ -459,8 +486,8 @@ class ItemDetailScreen extends StatelessWidget {
                                       ? data.seller!.name
                                                 ?.toString()
                                                 .toUpperCase() ??
-                                            "UNKNOWN"
-                                      : "SELLER",
+                                            'unknownSeller'.tr
+                                      : 'sellerFallback'.tr,
                                   color: Colors.white,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w900,
@@ -489,8 +516,8 @@ class ItemDetailScreen extends StatelessWidget {
                               ),
                               child: CustomText(
                                 text: controller.isFollowing.value
-                                    ? "FOLLOWING"
-                                    : "FOLLOW",
+                                    ? 'following'.tr
+                                    : 'follow'.tr,
                                 color: controller.isFollowing.value
                                     ? Colors.white70
                                     : AppColors.yellow,
@@ -510,11 +537,11 @@ class ItemDetailScreen extends StatelessWidget {
                         children: [
                           _buildSellerCount(
                             data.seller?.activeListing?.toString() ?? "0",
-                            "ACTIVE LISTINGS",
+                            'activeListingsSeller'.tr,
                           ),
                           _buildSellerCount(
                             data.seller?.totalSell?.toString() ?? "0",
-                            "SUCCESSFUL SALES",
+                            'successfulSales'.tr,
                           ),
                         ],
                       ),
@@ -538,8 +565,8 @@ class ItemDetailScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const CustomText(
-                            text: "LOCATION TELEMETRY",
+                          CustomText(
+                            text: 'locationTelemetry'.tr,
                             color: Colors.white38,
                             fontSize: 9,
                             fontWeight: FontWeight.bold,
@@ -548,7 +575,7 @@ class ItemDetailScreen extends StatelessWidget {
                           CustomText(
                             text:
                                 data.location?.toUpperCase() ??
-                                "UNKNOWN LOCATION",
+                                'unknownLocation'.tr,
                             color: Colors.white70,
                             fontSize: 9,
                             fontWeight: FontWeight.bold,

@@ -23,9 +23,9 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
           leading: const SizedBox.shrink(),
-          title: const Text(
-            "CREATE LISTING: SERVICES",
-            style: TextStyle(
+          title: Text(
+            'createListingServices'.tr,
+            style: const TextStyle(
               color: AppColors.yellow,
               fontSize: 14,
               fontWeight: FontWeight.w900,
@@ -47,27 +47,27 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 01 / BASIC IDENTIFICATION
-              _buildPhaseHeader("01 / BASIC IDENTIFICATION"),
+              _buildPhaseHeader('phase01BasicId'.tr),
               _buildSectionCard([
-                _buildFieldLabel("LISTING TITLE"),
+                _buildFieldLabel('listingTitleUpper'.tr),
                 _buildOutlineField(
                   controller.listingTitleController,
-                  "e.g. Pro Track Coaching",
+                  'egProTrackCoaching'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("CATEGORY"),
+                _buildFieldLabel('categoryUpper'.tr),
                 _buildOutlineField(
                   controller.categoryController,
-                  "e.g. Coaching",
+                  'egCoaching'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("PROVIDER NAME"),
+                _buildFieldLabel('providerNameUpper'.tr),
                 _buildOutlineField(
                   controller.providerNameController,
-                  "e.g. John Doe",
+                  'egJohnDoe'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("BASE PRICE (USD)"),
+                _buildFieldLabel('basePriceUsd'.tr),
                 _buildOutlineIconField(
                   controller.askingPriceController,
                   Icons.payments_outlined,
@@ -75,26 +75,26 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("LOCATION"),
+                _buildFieldLabel('locationUpper'.tr),
                 _buildOutlineIconField(
                   controller.locationController,
                   Icons.location_on_outlined,
-                  "City, State, Country",
+                  'cityStateCountry'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("DESCRIPTION"),
+                _buildFieldLabel('descriptionUpper'.tr),
                 _buildOutlineField(
                   controller.descriptionController,
-                  "Details about the service",
+                  'detailsAboutService'.tr,
                   maxLines: 4,
                 ),
               ]),
               SizedBox(height: 24.h),
 
               // 02 / SERVICE DETAILS
-              _buildPhaseHeader("02 / SERVICE DETAILS"),
+              _buildPhaseHeader('phase02ServiceDetails'.tr),
               _buildSectionCard([
-                _buildFieldLabel("HOURLY RATE (USD)"),
+                _buildFieldLabel('hourlyRateUsd'.tr),
                 _buildOutlineIconField(
                   controller.hourlyRateUsdController,
                   Icons.schedule_outlined,
@@ -102,13 +102,13 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("LOCATION TYPE"),
+                _buildFieldLabel('locationTypeUpper'.tr),
                 _buildOutlineField(
                   controller.locationTypeController,
-                  "e.g. Remote, On-Site, Track",
+                  'egRemoteOnSite'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("EXPERIENCE YEARS"),
+                _buildFieldLabel('experienceYearsUpper'.tr),
                 _buildOutlineIconField(
                   controller.experienceYearsController,
                   Icons.military_tech_outlined,
@@ -116,16 +116,16 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("TRACK SPECIALIZATIONS"),
+                _buildFieldLabel('trackSpecializationsUpper'.tr),
                 _buildOutlineField(
                   controller.trackSpecializationsController,
-                  "e.g. Nurburgring, Spa (comma separated)",
+                  'egNurburgring'.tr,
                 ),
               ]),
               SizedBox(height: 24.h),
 
               // 03 / MEDIA ASSETS
-              _buildPhaseHeader("03 / MEDIA ASSETS"),
+              _buildPhaseHeader('phase03MediaAssets'.tr),
               _buildSectionCard([
                 GestureDetector(
                   onTap: controller.pickImages,
@@ -148,7 +148,7 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 6.h),
                           CustomText(
-                            text: "ADD IMAGES",
+                            text: 'addImages'.tr,
                             color: Colors.white60,
                             fontSize: 10.sp,
                             fontWeight: FontWeight.bold,
@@ -214,8 +214,8 @@ class CreateExpertServicesListingScreen extends StatelessWidget {
                 () => CustomButton(
                   height: 44.h,
                   title: controller.isCreating.value
-                      ? "PUBLISHING..."
-                      : "PUBLISH LISTING",
+                      ? 'publishing'.tr
+                      : 'publishListing'.tr,
                   fontSize: 11.sp,
                   fillColor: AppColors.yellow,
                   textColor: Colors.black,

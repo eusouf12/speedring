@@ -23,9 +23,9 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           elevation: 0,
           leading: const SizedBox.shrink(),
-          title: const Text(
-            "CREATE LISTING: MOTORCYCLES",
-            style: TextStyle(
+          title: Text(
+            'createListingMotorcycles'.tr,
+            style: const TextStyle(
               color: AppColors.yellow,
               fontSize: 14,
               fontWeight: FontWeight.w900,
@@ -47,22 +47,22 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 01 / BASIC IDENTIFICATION
-              _buildPhaseHeader("01 / BASIC IDENTIFICATION"),
+              _buildPhaseHeader('phase01BasicId'.tr),
               _buildSectionCard([
-                _buildFieldLabel("MANUFACTURER / BRAND"),
+                _buildFieldLabel('manufacturerBrand'.tr),
                 _buildOutlineIconField(
                   controller.brandController,
                   Icons.motorcycle_outlined,
-                  "e.g. Ducati",
+                  'egDucati'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("MODEL NAME"),
+                _buildFieldLabel('modelName'.tr),
                 _buildOutlineField(
                   controller.modelDesignationController,
-                  "e.g. Panigale V4 S",
+                  'egPanigaleV4S'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("PRODUCTION YEAR"),
+                _buildFieldLabel('productionYear'.tr),
                 _buildOutlineIconField(
                   controller.productionYearController,
                   Icons.calendar_today_outlined,
@@ -70,7 +70,7 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("ASKING PRICE (USD)"),
+                _buildFieldLabel('askingPriceUsd'.tr),
                 _buildOutlineIconField(
                   controller.askingPriceController,
                   Icons.payments_outlined,
@@ -78,32 +78,32 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("VEHICLE LOCATION"),
+                _buildFieldLabel('vehicleLocation'.tr),
                 _buildOutlineIconField(
                   controller.locationController,
                   Icons.location_on_outlined,
-                  "City, State, Country",
+                  'cityStateCountry'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("DESCRIPTION"),
+                _buildFieldLabel('descriptionUpper'.tr),
                 _buildOutlineField(
                   controller.descriptionController,
-                  "Details about the motorcycle",
+                  'detailsAboutMotorcycle'.tr,
                   maxLines: 4,
                 ),
               ]),
               SizedBox(height: 24.h),
 
               // 02 / PERFORMANCE METRICS
-              _buildPhaseHeader("02 / PERFORMANCE METRICS"),
+              _buildPhaseHeader('phase02PerfMetrics'.tr),
               _buildSectionCard([
-                _buildFieldLabel("ENGINE TYPE"),
+                _buildFieldLabel('engineType'.tr),
                 _buildOutlineField(
                   controller.engineTypeController,
-                  "e.g. Desmosedici Stradale 90° V4",
+                  'egDesmosedici'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("MAX OUTPUT (HP)"),
+                _buildFieldLabel('maxOutputHp'.tr),
                 _buildOutlineIconField(
                   controller.powerHpController,
                   Icons.bolt_outlined,
@@ -111,7 +111,7 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("DISPLACEMENT (CC)"),
+                _buildFieldLabel('displacementCc'.tr),
                 _buildOutlineIconField(
                   controller.displacementCcController,
                   Icons.speed_outlined,
@@ -119,7 +119,7 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("TORQUE (NM)"),
+                _buildFieldLabel('torqueNm'.tr),
                 _buildOutlineIconField(
                   controller.torqueNmController,
                   Icons.speed_outlined,
@@ -127,7 +127,7 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("WEIGHT (KG)"),
+                _buildFieldLabel('weightKg'.tr),
                 _buildOutlineIconField(
                   controller.weightKgController,
                   Icons.fitness_center_outlined,
@@ -135,7 +135,7 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("0-100 KM/H (SEC)"),
+                _buildFieldLabel('zeroToHundredSec'.tr),
                 _buildOutlineIconField(
                   controller.zeroToHundredController,
                   Icons.timer_outlined,
@@ -143,28 +143,28 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("TRANSMISSION"),
+                _buildFieldLabel('transmissionUpper'.tr),
                 _buildOutlineField(
                   controller.transmissionController,
-                  "e.g. 6-speed with DQS",
+                  'eg6Speed'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("SUSPENSION"),
+                _buildFieldLabel('suspensionUpper'.tr),
                 _buildOutlineField(
                   controller.suspensionController,
-                  "e.g. Öhlins Smart EC 2.0",
+                  'egOhlins'.tr,
                 ),
                 SizedBox(height: 14.h),
-                _buildFieldLabel("BRAKING SYSTEM"),
+                _buildFieldLabel('brakingSystem'.tr),
                 _buildOutlineField(
                   controller.brakingSystemController,
-                  "e.g. Brembo Stylema",
+                  'egBrembo'.tr,
                 ),
               ]),
               SizedBox(height: 24.h),
 
               // 03 / MEDIA ASSETS
-              _buildPhaseHeader("03 / MEDIA ASSETS"),
+              _buildPhaseHeader('phase03MediaAssets'.tr),
               _buildSectionCard([
                 GestureDetector(
                   onTap: controller.pickImages,
@@ -187,7 +187,7 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 6.h),
                           CustomText(
-                            text: "ADD IMAGES",
+                            text: 'addImages'.tr,
                             color: Colors.white60,
                             fontSize: 10.sp,
                             fontWeight: FontWeight.bold,
@@ -253,8 +253,8 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
                 () => CustomButton(
                   height: 44.h,
                   title: controller.isCreating.value
-                      ? "PUBLISHING..."
-                      : "PUBLISH LISTING",
+                      ? 'publishing'.tr
+                      : 'publishListing'.tr,
                   fontSize: 11.sp,
                   fillColor: AppColors.yellow,
                   textColor: Colors.black,
@@ -330,7 +330,11 @@ class CreateMotorcycleListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOutlineField(TextEditingController textController, String hint, {int maxLines = 1}) {
+  Widget _buildOutlineField(
+    TextEditingController textController,
+    String hint, {
+    int maxLines = 1,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(

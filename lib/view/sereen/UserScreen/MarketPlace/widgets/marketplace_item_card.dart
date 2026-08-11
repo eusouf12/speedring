@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
@@ -156,7 +157,7 @@ class MarketplaceItemCard extends StatelessWidget {
                     Expanded(
                       child: CustomButton(
                         height: 40.h,
-                        title: "VIEW DETAILS",
+                        title: 'viewDetails'.tr.toUpperCase(),
                         fontSize: 12,
                         borderRadius: 8.r,
                         onTap: onViewDetails,
