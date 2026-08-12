@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
@@ -172,7 +173,7 @@ class TrackController extends GetxController {
   Future<bool> createSession(Map<String, dynamic> sessionData) async {
     isCreatingSession.value = true;
     try {
-      var response = await ApiClient.postData(ApiUrl.createSession, sessionData);
+      var response = await ApiClient.postData(ApiUrl.createSession, jsonEncode(sessionData));
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(msg: "sessionCreated".tr);
         return true;
