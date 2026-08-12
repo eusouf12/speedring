@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import '../../../../utils/app_images/app_images.dart';
 import '../../../components/custom_gradient/custom_gradient.dart';
 
 class DriveSummaryScreen extends StatelessWidget {
   const DriveSummaryScreen({super.key});
 
+  String _formatTime(int seconds) {
+    int h = seconds ~/ 3600;
+    int m = (seconds % 3600) ~/ 60;
+    int s = seconds % 60;
+    if (h > 0) {
+      return "${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}";
+    } else {
+      return "00:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> args = Get.arguments ?? {};
+    final List<LatLng> routePoints = args['routePoints'] ?? [];
+    final int elapsedSeconds = args['elapsedSeconds'] ?? 0;
+    final double totalDistanceKm = args['totalDistanceKm'] ?? 0.0;
+    final double averageSpeedKmh = args['averageSpeedKmh'] ?? 0.0;
+    final double topSpeedKmh = args['topSpeedKmh'] ?? 0.0;
+    final List<double> speedHistory = args['speedHistory'] ?? [];
+
+    String formattedTime = _formatTime(elapsedSeconds);
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -17,20 +40,11 @@ class DriveSummaryScreen extends StatelessWidget {
           elevation: 0,
           centerTitle: true,
           automaticallyImplyLeading: false,
-          title: Image.network(
-            "https://picsum.photos/seed/speedringlogo/130/40",
-            height: 30,
-            width: 100,
+          title: Image.asset(
+            AppImages.splashLogo,
+            height: 150,
+            width: 350,
             fit: BoxFit.contain,
-            errorBuilder: (context, _, _) => const Text(
-              "SPEEDRING",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.0,
-              ),
-            ),
           ),
           actions: [
             IconButton(
@@ -45,109 +59,22 @@ class DriveSummaryScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 16),
 
-              /// 1. Drive Score Ring (Custom circular layout)
-              Center(
-                child: SizedBox(
-                  width: 180,
-                  height: 180,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: CircularProgressIndicator(
-                          value: 0.94,
-                          strokeWidth: 4,
-                          backgroundColor: Colors.white10,
-                          color: AppColors.yellow,
-                        ),
-                      ),
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "DRIVE SCORE",
-                              style: TextStyle(
-                                color: Colors.white38,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: const [
-                                Text(
-                                  "94",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 48,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                                Text(
-                                  "/100",
-                                  style: TextStyle(
-                                    color: Colors.white38,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.05),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: AppColors.yellow.withValues(
-                                    alpha: 0.4,
-                                  ),
-                                  width: 1,
-                                ),
-                              ),
-                              child: const Text(
-                                "ELITE PERFORMANCE",
-                                style: TextStyle(
-                                  color: AppColors.yellow,
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-
               /// 2. Grid stats
               Row(
                 children: [
                   Expanded(
                     child: _buildStatCard(
                       Icons.access_time_filled,
-                      "TIME",
-                      "00:45:12",
+                      "time".tr,
+                      formattedTime,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: _buildStatCard(
                       Icons.social_distance,
-                      "DISTANCE",
-                      "124.5 KM",
+                      "distance".tr,
+                      "${totalDistanceKm.toStringAsFixed(1)} ${'km'.tr}",
                     ),
                   ),
                 ],
@@ -158,13 +85,17 @@ class DriveSummaryScreen extends StatelessWidget {
                   Expanded(
                     child: _buildStatCard(
                       Icons.flash_on,
-                      "TOP SPEED",
-                      "294 KM/H",
+                      "topSpeed".tr,
+                      "${topSpeedKmh.toStringAsFixed(0)} ${'kmh'.tr}",
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildStatCard(Icons.speed, "AVG SPEED", "186 KM/H"),
+                    child: _buildStatCard(
+                      Icons.speed,
+                      "avgSpeed".tr,
+                      "${averageSpeedKmh.toStringAsFixed(0)} ${'kmh'.tr}",
+                    ),
                   ),
                 ],
               ),
@@ -182,9 +113,9 @@ class DriveSummaryScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "SESSION TRACK",
-                      style: TextStyle(
+                    Text(
+                      "sessionTrack".tr,
+                      style: const TextStyle(
                         color: Colors.white38,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -193,38 +124,74 @@ class DriveSummaryScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      height: 80,
+                      height: 200,
                       width: double.infinity,
-                      child: CustomPaint(painter: TrackPathStaticPainter()),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: routePoints.isNotEmpty
+                                ? routePoints.first
+                                : const LatLng(0, 0),
+                            zoom: 14,
+                          ),
+                          polylines: {
+                            if (routePoints.isNotEmpty)
+                              Polyline(
+                                polylineId: const PolylineId('route'),
+                                points: routePoints,
+                                color: AppColors.yellow,
+                                width: 4,
+                                jointType: JointType.round,
+                                startCap: Cap.roundCap,
+                                endCap: Cap.roundCap,
+                              ),
+                          },
+                          markers: {
+                            if (routePoints.isNotEmpty)
+                              Marker(
+                                markerId: const MarkerId('start'),
+                                position: routePoints.first,
+                                icon: BitmapDescriptor.defaultMarkerWithHue(
+                                  BitmapDescriptor.hueGreen,
+                                ),
+                              ),
+                            if (routePoints.isNotEmpty)
+                              Marker(
+                                markerId: const MarkerId('finish'),
+                                position: routePoints.last,
+                                icon: BitmapDescriptor.defaultMarkerWithHue(
+                                  BitmapDescriptor.hueRed,
+                                ),
+                              ),
+                          },
+                          zoomControlsEnabled: false,
+                          scrollGesturesEnabled: false,
+                          myLocationButtonEnabled: false,
+                          mapType: MapType.normal,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const Icon(
-                          Icons.circle,
-                          color: AppColors.yellow,
-                          size: 6,
-                        ),
+                        const Icon(Icons.circle, color: Colors.green, size: 6),
                         const SizedBox(width: 4),
-                        const Text(
-                          "START",
-                          style: TextStyle(
+                        Text(
+                          "startUpper".tr,
+                          style: const TextStyle(
                             color: Colors.white38,
                             fontSize: 8,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Icon(
-                          Icons.circle,
-                          color: Colors.white70,
-                          size: 6,
-                        ),
+                        const Icon(Icons.circle, color: Colors.red, size: 6),
                         const SizedBox(width: 4),
-                        const Text(
-                          "END",
-                          style: TextStyle(
+                        Text(
+                          "endUpper".tr,
+                          style: const TextStyle(
                             color: Colors.white38,
                             fontSize: 8,
                             fontWeight: FontWeight.bold,
@@ -251,10 +218,10 @@ class DriveSummaryScreen extends StatelessWidget {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: [
                         Text(
-                          "SPEED OVER TIME",
-                          style: TextStyle(
+                          "speedOverTime".tr,
+                          style: const TextStyle(
                             color: Colors.white38,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -262,8 +229,8 @@ class DriveSummaryScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "PEAK 294 KM/H",
-                          style: TextStyle(
+                          "${'peak'.tr} ${topSpeedKmh.toStringAsFixed(0)} ${'kmh'.tr}",
+                          style: const TextStyle(
                             color: AppColors.yellow,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -276,13 +243,16 @@ class DriveSummaryScreen extends StatelessWidget {
                     SizedBox(
                       height: 120,
                       width: double.infinity,
-                      child: CustomPaint(painter: SpeedGraphPainter()),
+                      child: CustomPaint(painter: SpeedGraphPainter(
+                        speedHistory: speedHistory,
+                        topSpeed: topSpeedKmh,
+                      )),
                     ),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
+                      children: [
+                        const Text(
                           "0:00",
                           style: TextStyle(
                             color: Colors.white24,
@@ -291,24 +261,24 @@ class DriveSummaryScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "15:00",
-                          style: TextStyle(
+                          _formatTime(elapsedSeconds ~/ 3),
+                          style: const TextStyle(
                             color: Colors.white24,
                             fontSize: 9,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "30:00",
-                          style: TextStyle(
+                          _formatTime((elapsedSeconds ~/ 3) * 2),
+                          style: const TextStyle(
                             color: Colors.white24,
                             fontSize: 9,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "45:12",
-                          style: TextStyle(
+                          formattedTime,
+                          style: const TextStyle(
                             color: Colors.white24,
                             fontSize: 9,
                             fontWeight: FontWeight.bold,
@@ -337,8 +307,8 @@ class DriveSummaryScreen extends StatelessWidget {
                   onPressed: () {
                     Get.offAllNamed(AppRoutes.userHomeScreen);
                     Get.snackbar(
-                      "Session Saved",
-                      "Your track session was successfully saved in your garage log.",
+                      "sessionSaved".tr,
+                      "sessionSavedDesc".tr,
                       snackPosition: SnackPosition.BOTTOM,
                       backgroundColor: const Color(0xff181818),
                       colorText: Colors.white,
@@ -348,10 +318,10 @@ class DriveSummaryScreen extends StatelessWidget {
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
-                        "SAVE",
-                        style: TextStyle(
+                        "save".tr,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.0,
@@ -374,9 +344,9 @@ class DriveSummaryScreen extends StatelessWidget {
                     color: Colors.white38,
                     size: 14,
                   ),
-                  label: const Text(
-                    "SHARE RESULTS",
-                    style: TextStyle(
+                  label: Text(
+                    "shareResults".tr,
+                    style: const TextStyle(
                       color: Colors.white60,
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
@@ -433,55 +403,13 @@ class DriveSummaryScreen extends StatelessWidget {
   }
 }
 
-/// Static Painter for Wavy Track Map Path
-class TrackPathStaticPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.yellow
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
-
-    final path = Path();
-    path.moveTo(size.width * 0.1, size.height / 2);
-    path.cubicTo(
-      size.width * 0.25,
-      size.height * 0.1,
-      size.width * 0.45,
-      size.height * 0.9,
-      size.width * 0.65,
-      size.height * 0.2,
-    );
-    path.cubicTo(
-      size.width * 0.8,
-      size.height * 0.0,
-      size.width * 0.9,
-      size.height * 0.5,
-      size.width * 0.9,
-      size.height / 2,
-    );
-
-    canvas.drawPath(path, paint);
-
-    // Draw Start (yellow) and End (white) points
-    canvas.drawCircle(
-      Offset(size.width * 0.1, size.height / 2),
-      5,
-      Paint()..color = AppColors.yellow,
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.9, size.height / 2),
-      5,
-      Paint()..color = Colors.white70,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
 /// Painter to render the speed over time graph
 class SpeedGraphPainter extends CustomPainter {
+  final List<double> speedHistory;
+  final double topSpeed;
+
+  SpeedGraphPainter({required this.speedHistory, required this.topSpeed});
+
   @override
   void paint(Canvas canvas, Size size) {
     final bgGridPaint = Paint()
@@ -500,23 +428,27 @@ class SpeedGraphPainter extends CustomPainter {
     }
 
     final path = Path();
-    final points = [
-      Offset(0, size.height * 0.85),
-      Offset(size.width * 0.1, size.height * 0.75),
-      Offset(size.width * 0.2, size.height * 0.8),
-      Offset(size.width * 0.35, size.height * 0.45),
-      Offset(size.width * 0.45, size.height * 0.5),
-      Offset(size.width * 0.55, size.height * 0.38),
-      Offset(size.width * 0.65, size.height * 0.52),
-      Offset(size.width * 0.75, size.height * 0.48),
-      Offset(size.width * 0.85, size.height * 0.62),
-      Offset(size.width * 0.92, size.height * 0.58),
-      Offset(size.width, size.height * 0.3),
-    ];
-
-    path.moveTo(points[0].dx, points[0].dy);
-    for (int i = 1; i < points.length; i++) {
-      path.lineTo(points[i].dx, points[i].dy);
+    
+    if (speedHistory.isEmpty) {
+      path.moveTo(0, size.height);
+      path.lineTo(size.width, size.height);
+    } else {
+      // Create points based on dynamic speed data
+      // y = 0 is top of canvas, y = size.height is bottom.
+      // So y = size.height - (speed / topSpeed) * size.height * 0.9 (keep a 10% margin at top)
+      final double maxSpeed = topSpeed > 0 ? topSpeed : 1.0; // prevent div by zero
+      
+      for (int i = 0; i < speedHistory.length; i++) {
+        final double x = (i / (speedHistory.length - 1)) * size.width;
+        final double normalizedSpeed = (speedHistory[i] / maxSpeed).clamp(0.0, 1.0);
+        final double y = size.height - (normalizedSpeed * size.height * 0.9);
+        
+        if (i == 0) {
+          path.moveTo(x.isNaN ? 0 : x, y);
+        } else {
+          path.lineTo(x.isNaN ? 0 : x, y);
+        }
+      }
     }
 
     // Draw graph gradient fill under path

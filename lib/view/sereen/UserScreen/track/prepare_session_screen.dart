@@ -492,7 +492,7 @@ class PrepareSessionScreen extends StatelessWidget {
                       );
                       return;
                     }
-                    Get.toNamed(AppRoutes.liveSessionScreen);
+                    Get.toNamed(AppRoutes.liveSessionScreen, arguments: trackController.selectedTrack.value);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
