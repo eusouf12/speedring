@@ -95,6 +95,23 @@ class ApiUrl {
     return url;
   }
 
+  static String getAllTracks({
+    int page = 1,
+    int limit = 10,
+    String? searchTerm,
+    double? lat,
+    double? lng,
+  }) {
+    String url = "/tracks/get-all-tracks?page=$page&limit=$limit";
+    if (searchTerm != null && searchTerm.isNotEmpty) {
+      url += "&searchTerm=${Uri.encodeComponent(searchTerm)}";
+    }
+    if (lat != null && lng != null) {
+      url += "&lat=$lat&lng=$lng";
+    }
+    return url;
+  }
+
   // ============ Events =========
   static const String createEvent = "/events/create-event";
   static const String getMyEvent = "/events/get-my-event";

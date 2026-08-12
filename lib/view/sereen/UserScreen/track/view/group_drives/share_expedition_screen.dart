@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
-import '../widgets/track_appbar.dart';
+import '../../../../../../utils/app_const/app_const.dart';
+import '../../widgets/track_appbar.dart';
 
 class ShareExpeditionScreen extends StatefulWidget {
   const ShareExpeditionScreen({super.key});
@@ -26,6 +27,7 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: TrackAppBar(
+        profilePic: AppConstants.profileImage2,
         title: "SHARE EXPEDITION",
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.yellow),

@@ -31,17 +31,17 @@ import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/event/event_det
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/access_granted_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/create_club_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/edit_club_screen.dart';
-import '../../view/sereen/UserScreen/track/track_hub_screen.dart';
+import '../../view/sereen/UserScreen/track/view/track_hub_screen.dart';
 import '../../view/sereen/UserScreen/track/prepare_session_screen.dart';
 import '../../view/sereen/UserScreen/track/live_session_screen.dart';
 import '../../view/sereen/UserScreen/track/drive_summary_screen.dart';
-import '../../view/sereen/UserScreen/track/find_track_screen.dart';
-import '../../view/sereen/UserScreen/track/group_drives/group_drives_screen.dart';
-import '../../view/sereen/UserScreen/track/group_drives/trip_configurator_screen.dart';
-import '../../view/sereen/UserScreen/track/group_drives/trip_lobby_screen.dart';
-import '../../view/sereen/UserScreen/track/group_drives/active_drive_screen.dart';
-import '../../view/sereen/UserScreen/track/group_drives/end_expedition_screen.dart';
-import '../../view/sereen/UserScreen/track/group_drives/share_expedition_screen.dart';
+import '../../view/sereen/UserScreen/track/view/find_track_screen.dart';
+import '../../view/sereen/UserScreen/track/view/group_drives/group_drives_screen.dart';
+import '../../view/sereen/UserScreen/track/view/group_drives/trip_configurator_screen.dart';
+import '../../view/sereen/UserScreen/track/view/group_drives/trip_lobby_screen.dart';
+import '../../view/sereen/UserScreen/track/view/group_drives/active_drive_screen.dart';
+import '../../view/sereen/UserScreen/track/view/group_drives/end_expedition_screen.dart';
+import '../../view/sereen/UserScreen/track/view/group_drives/share_expedition_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/post/create_post_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/post/club_post_screen.dart';
 import '../../view/sereen/UserScreen/discover/view/add_spot_screen.dart';
@@ -111,6 +111,7 @@ import '../../view/sereen/BusinessScreen/Business_Profile/business_account_setti
 import '../../view/sereen/BusinessScreen/Business_Profile/business_select_plan_screen.dart';
 import '../../view/sereen/BusinessScreen/Promotion/business_promotion_hub_screen.dart';
 import '../../view/sereen/BusinessScreen/Promotion/business_create_promotion_screen.dart';
+import '../../view/sereen/UserScreen/track/view/track_details_screen.dart';
 
 class AppRoutes {
   ///===========================Authentication==========================
@@ -147,6 +148,7 @@ class AppRoutes {
   static const String liveSessionScreen = "/LiveSessionScreen";
   static const String driveSummaryScreen = "/DriveSummaryScreen";
   static const String findTrackScreen = "/FindTrackScreen";
+  static const String trackDetailsScreen = "/TrackDetailsScreen";
   static const String groupDrivesScreen = "/GroupDrivesScreen";
   static const String tripConfiguratorScreen = "/TripConfiguratorScreen";
   static const String tripLobbyScreen = "/TripLobbyScreen";
@@ -288,14 +290,12 @@ class AppRoutes {
     GetPage(name: editSpotScreen, page: () => const EditSpotScreen()),
     GetPage(name: addVideoScreen, page: () => const AddVideoScreen()),
     GetPage(name: createEventScreen, page: () => const CreateEventScreen()),
-    GetPage(name: trackHubScreen, page: () => const TrackHubScreen()),
-    GetPage(
-      name: prepareSessionScreen,
-      page: () => const PrepareSessionScreen(),
-    ),
+    GetPage(name: trackHubScreen, page: () => TrackHubScreen()),
+    GetPage(name: prepareSessionScreen, page: () => PrepareSessionScreen()),
     GetPage(name: liveSessionScreen, page: () => const LiveSessionScreen()),
     GetPage(name: driveSummaryScreen, page: () => const DriveSummaryScreen()),
-    GetPage(name: findTrackScreen, page: () => const FindTrackScreen()),
+    GetPage(name: findTrackScreen, page: () => FindTrackScreen()),
+    GetPage(name: trackDetailsScreen, page: () => const TrackDetailsScreen()),
     GetPage(name: groupDrivesScreen, page: () => const GroupDrivesScreen()),
     GetPage(
       name: tripConfiguratorScreen,

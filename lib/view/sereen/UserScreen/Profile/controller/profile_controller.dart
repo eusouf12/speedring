@@ -374,10 +374,7 @@ class ProfileScreenController extends GetxController {
         if (response.body is Map) {
           errMsg = response.body['message'] ?? errMsg;
         }
-        showCustomSnackBar(
-          errMsg,
-          isError: true,
-        );
+        showCustomSnackBar(errMsg, isError: true);
         return false;
       }
     } catch (e) {
@@ -418,10 +415,7 @@ class ProfileScreenController extends GetxController {
         if (response.body is Map) {
           errMsg = response.body['message'] ?? errMsg;
         }
-        showCustomSnackBar(
-          errMsg,
-          isError: true,
-        );
+        showCustomSnackBar(errMsg, isError: true);
         return false;
       }
     } catch (e) {
@@ -436,7 +430,9 @@ class ProfileScreenController extends GetxController {
   Future<bool> deleteVehicle(String vehicleId) async {
     isUpdating.value = true;
     try {
-      final response = await ApiClient.deleteData(ApiUrl.deleteVehicle(vehicleId));
+      final response = await ApiClient.deleteData(
+        ApiUrl.deleteVehicle(vehicleId),
+      );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         showCustomSnackBar("Vehicle deleted successfully", isError: false);
@@ -448,10 +444,7 @@ class ProfileScreenController extends GetxController {
         if (response.body is Map) {
           errMsg = response.body['message'] ?? errMsg;
         }
-        showCustomSnackBar(
-          errMsg,
-          isError: true,
-        );
+        showCustomSnackBar(errMsg, isError: true);
         return false;
       }
     } catch (e) {

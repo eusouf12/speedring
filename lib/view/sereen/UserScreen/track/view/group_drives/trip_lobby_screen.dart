@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
-import '../widgets/track_appbar.dart';
+import 'package:speedring/view/sereen/UserScreen/track/widgets/track_appbar.dart';
+
+import '../../../../../../utils/app_const/app_const.dart';
 
 class TripLobbyScreen extends StatelessWidget {
   const TripLobbyScreen({super.key});
@@ -13,6 +15,7 @@ class TripLobbyScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: TrackAppBar(
+        profilePic: AppConstants.profileImage2,
         title: "TRIP LOBBY",
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.yellow),

@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
-import '../widgets/track_appbar.dart';
+import '../../../../../../utils/app_const/app_const.dart' show AppConstants;
+import '../../widgets/track_appbar.dart';
 
 class GroupDrivesScreen extends StatefulWidget {
   const GroupDrivesScreen({super.key});
@@ -60,6 +61,7 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
       backgroundColor: Colors.black,
       appBar: TrackAppBar(
         title: "GROUP DRIVES",
+        profilePic: AppConstants.profileImage2,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
           onPressed: () => Get.back(),

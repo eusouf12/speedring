@@ -327,7 +327,7 @@ class ProfileScreen extends StatelessWidget {
                               size: 12,
                             ),
                             onTap: () {
-                              controller.activeTab = 3;
+                              controller.activeTab = 2;
                             },
                           ),
                         ],

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/core/app_routes/app_routes.dart';
+
+import '../../../../../utils/app_images/app_images.dart';
 
 class TrackAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Widget? leading;
   final List<Widget>? actions;
   final bool showLogo;
+  final String profilePic;
 
   const TrackAppBar({
     required this.title,
@@ -13,6 +18,7 @@ class TrackAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.showLogo = false,
     super.key,
+    required this.profilePic,
   });
 
   @override
@@ -22,30 +28,16 @@ class TrackAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: true,
-      leading:
-          leading ??
-          IconButton(
-            icon: const Icon(Icons.menu, color: AppColors.yellow),
-            onPressed: () {},
-          ),
+      leading: leading,
       title: showLogo
           ? Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.network(
-                  "https://picsum.photos/seed/speedringlogo/130/40",
-                  height: 30,
-                  width: 100,
+                Image.asset(
+                  AppImages.splashLogo,
+                  height: 150,
+                  width: 350,
                   fit: BoxFit.contain,
-                  errorBuilder: (context, _, _) => const Text(
-                    "SPEEDRING",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
                 ),
                 if (title.isNotEmpty) ...[
                   const SizedBox(height: 4),
@@ -76,17 +68,20 @@ class TrackAppBar extends StatelessWidget implements PreferredSizeWidget {
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: Center(
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.yellow, width: 1.5),
-                    image: const DecorationImage(
-                      image: NetworkImage(
-                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                child: GestureDetector(
+                  onTap: () {
+                    Get.offAllNamed(AppRoutes.profileScreen);
+                  },
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.yellow, width: 1.5),
+                      image: DecorationImage(
+                        image: NetworkImage(profilePic),
+                        fit: BoxFit.cover,
                       ),
-                      fit: BoxFit.cover,
                     ),
                   ),
                 ),

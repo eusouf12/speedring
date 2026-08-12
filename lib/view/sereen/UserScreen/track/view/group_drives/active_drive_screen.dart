@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
-import '../widgets/track_appbar.dart';
+import '../../../../../../utils/app_const/app_const.dart' show AppConstants;
+import '../../widgets/track_appbar.dart';
 
 class ActiveDriveScreen extends StatelessWidget {
   const ActiveDriveScreen({super.key});
@@ -12,6 +13,7 @@ class ActiveDriveScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: TrackAppBar(
+        profilePic: AppConstants.profileImage2,
         title: "MIDNIGHT COAST RUN",
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.yellow),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
-import '../widgets/track_appbar.dart';
+import '../../../../../../utils/app_const/app_const.dart';
+import '../../widgets/track_appbar.dart';
 
 class TripConfiguratorScreen extends StatefulWidget {
   const TripConfiguratorScreen({super.key});
@@ -47,6 +48,7 @@ class _TripConfiguratorScreenState extends State<TripConfiguratorScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: TrackAppBar(
+        profilePic: AppConstants.profileImage2,
         title: "TRIP CONFIGURATOR",
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.yellow),

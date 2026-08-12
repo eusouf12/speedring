@@ -2,94 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
+import 'package:speedring/utils/app_images/app_images.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
-import 'widgets/track_appbar.dart';
+import '../widgets/track_appbar.dart';
+import '../../Profile/controller/profile_controller.dart'
+    show ProfileScreenController;
 
 class TrackHubScreen extends StatelessWidget {
-  const TrackHubScreen({super.key});
-
+  TrackHubScreen({super.key});
+  final ProfileScreenController profileController =
+      Get.find<ProfileScreenController>();
   @override
   Widget build(BuildContext context) {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: const TrackAppBar(title: "TRACK HUB"),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: Obx(
+            () => TrackAppBar(
+              title: "trackHub".tr,
+              profilePic:
+                  profileController.profileData.value?.profileImage ??
+                  AppConstants.profileImage,
+            ),
+          ),
+        ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 16),
-
-              /// 1. Laps & Safety Rank stats card
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 20,
-                  horizontal: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xff111111),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white10),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: const [
-                          Text(
-                            "TOTAL LAPS",
-                            style: TextStyle(
-                              color: Colors.white38,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            "1,248",
-                            style: TextStyle(
-                              color: AppColors.yellow,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(width: 1, height: 40, color: Colors.white10),
-                    Expanded(
-                      child: Column(
-                        children: const [
-                          Text(
-                            "SAFETY RANK",
-                            style: TextStyle(
-                              color: Colors.white38,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            "S-98",
-                            style: TextStyle(
-                              color: AppColors.yellow,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              /// 2. START NEW SESSION button
+              /// 1. START NEW SESSION button
               SizedBox(
                 width: double.infinity,
                 height: 60,
@@ -105,12 +51,12 @@ class TrackHubScreen extends StatelessWidget {
                   onPressed: () => Get.toNamed(AppRoutes.prepareSessionScreen),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.play_arrow, size: 24),
-                      SizedBox(width: 8),
+                    children: [
+                      const Icon(Icons.play_arrow, size: 24),
+                      const SizedBox(width: 8),
                       Text(
-                        "START NEW SESSION",
-                        style: TextStyle(
+                        "startNewSession".tr,
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.5,
@@ -122,7 +68,7 @@ class TrackHubScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              /// 3. FIND A TRACK card
+              /// 2. FIND A TRACK card
               GestureDetector(
                 onTap: () => Get.toNamed(AppRoutes.findTrackScreen),
                 child: Container(
@@ -132,21 +78,26 @@ class TrackHubScreen extends StatelessWidget {
                     color: const Color(0xff111111),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: Colors.white10),
+                    image: const DecorationImage(
+                      image: AssetImage(AppImages.onbodingS),
+                      fit: BoxFit.cover,
+                      opacity: 0.35,
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        children: const [
-                          Icon(
+                        children: [
+                          const Icon(
                             Icons.map_outlined,
                             color: AppColors.yellow,
                             size: 20,
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
-                            "FIND A TRACK",
-                            style: TextStyle(
+                            "findATrack".tr,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
@@ -155,9 +106,9 @@ class TrackHubScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        "Explore racing circuits worldwide and set your destination.",
-                        style: TextStyle(
+                      Text(
+                        "exploreRacingCircuits".tr,
+                        style: const TextStyle(
                           color: Colors.white60,
                           fontSize: 12,
                           height: 1.4,
@@ -165,17 +116,17 @@ class TrackHubScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Row(
-                        children: const [
+                        children: [
                           Text(
-                            "EXPLORE NOW",
-                            style: TextStyle(
+                            "exploreNow".tr,
+                            style: const TextStyle(
                               color: AppColors.yellow,
                               fontSize: 10,
                               fontWeight: FontWeight.w900,
                             ),
                           ),
-                          SizedBox(width: 4),
-                          Icon(
+                          const SizedBox(width: 4),
+                          const Icon(
                             Icons.chevron_right,
                             color: AppColors.yellow,
                             size: 12,
@@ -198,9 +149,7 @@ class TrackHubScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: Colors.white10),
                     image: const DecorationImage(
-                      image: NetworkImage(
-                        "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&auto=format&fit=crop",
-                      ),
+                      image: AssetImage(AppImages.electricBg),
                       fit: BoxFit.cover,
                       opacity: 0.35,
                     ),
@@ -220,16 +169,16 @@ class TrackHubScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Row(
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.people_outline,
                               color: AppColors.yellow,
                               size: 20,
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text(
-                              "GROUP DRIVES",
-                              style: TextStyle(
+                              "groupDrives".tr,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w900,
@@ -238,23 +187,23 @@ class TrackHubScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          "Join or create group road trips with the community.",
-                          style: TextStyle(color: Colors.white70, fontSize: 12),
+                        Text(
+                          "joinGroupRoadTrips".tr,
+                          style: const TextStyle(color: Colors.white70, fontSize: 12),
                         ),
                         const SizedBox(height: 12),
                         Row(
-                          children: const [
+                          children: [
                             Text(
-                              "JOIN EVENT",
-                              style: TextStyle(
+                              "joinEvent".tr,
+                              style: const TextStyle(
                                 color: AppColors.yellow,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w900,
                               ),
                             ),
-                            SizedBox(width: 4),
-                            Icon(
+                            const SizedBox(width: 4),
+                            const Icon(
                               Icons.chevron_right,
                               color: AppColors.yellow,
                               size: 12,
@@ -281,12 +230,12 @@ class TrackHubScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: const [
-                        Icon(Icons.history, color: AppColors.yellow, size: 20),
-                        SizedBox(width: 8),
+                      children: [
+                        const Icon(Icons.history, color: AppColors.yellow, size: 20),
+                        const SizedBox(width: 8),
                         Text(
-                          "MY PAST LAPS",
-                          style: TextStyle(
+                          "myPastLaps".tr,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
@@ -295,9 +244,9 @@ class TrackHubScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      "View your previous track data, times, and sector performance improvements.",
-                      style: TextStyle(
+                    Text(
+                      "viewPreviousTrackData".tr,
+                      style: const TextStyle(
                         color: Colors.white60,
                         fontSize: 12,
                         height: 1.4,
@@ -305,17 +254,17 @@ class TrackHubScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Row(
-                      children: const [
+                      children: [
                         Text(
-                          "VIEW ANALYTICS",
-                          style: TextStyle(
+                          "viewAnalytics".tr,
+                          style: const TextStyle(
                             color: AppColors.yellow,
                             fontSize: 10,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                        SizedBox(width: 4),
-                        Icon(
+                        const SizedBox(width: 4),
+                        const Icon(
                           Icons.chevron_right,
                           color: AppColors.yellow,
                           size: 12,
@@ -336,17 +285,17 @@ class TrackHubScreen extends StatelessWidget {
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
-                                  "BEST LAP",
-                                  style: TextStyle(
+                                  "bestLapUpper".tr,
+                                  style: const TextStyle(
                                     color: Colors.white38,
                                     fontSize: 8,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 6),
-                                Text(
+                                const SizedBox(height: 6),
+                                const Text(
                                   "01:54.22",
                                   style: TextStyle(
                                     color: Colors.white,
@@ -368,17 +317,17 @@ class TrackHubScreen extends StatelessWidget {
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
-                                  "SESSIONS",
-                                  style: TextStyle(
+                                  "sessionsUpper".tr,
+                                  style: const TextStyle(
                                     color: Colors.white38,
                                     fontSize: 8,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 6),
-                                Text(
+                                const SizedBox(height: 6),
+                                const Text(
                                   "42",
                                   style: TextStyle(
                                     color: Colors.white,

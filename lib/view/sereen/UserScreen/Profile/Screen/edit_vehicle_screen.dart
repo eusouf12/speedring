@@ -6,7 +6,6 @@ import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appba
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
-
 import 'dart:io';
 import '../../../../../utils/ToastMsg/toast_message.dart';
 import '../controller/profile_controller.dart';
@@ -21,9 +20,10 @@ class EditVehicleScreen extends StatefulWidget {
 }
 
 class _EditVehicleScreenState extends State<EditVehicleScreen> {
-  final ProfileScreenController profileController = Get.find<ProfileScreenController>();
+  final ProfileScreenController profileController =
+      Get.find<ProfileScreenController>();
   late final Vehicle vehicle;
-  
+
   late String selectedPropulsion;
 
   late final TextEditingController vehicleNameCtrl;
@@ -59,8 +59,13 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
   }
 
   void _updateVehicle() async {
-    if (vehicleNameCtrl.text.isEmpty || brandCtrl.text.isEmpty || modelCtrl.text.isEmpty) {
-      showCustomSnackBar("Please fill in the required fields (Name, Brand, Model)", isError: true);
+    if (vehicleNameCtrl.text.isEmpty ||
+        brandCtrl.text.isEmpty ||
+        modelCtrl.text.isEmpty) {
+      showCustomSnackBar(
+        "Please fill in the required fields (Name, Brand, Model)",
+        isError: true,
+      );
       return;
     }
 
@@ -77,7 +82,10 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
 
     if (vehicle.id == null) return;
 
-    final success = await profileController.updateVehicle(vehicle.id!, updatedVehicle);
+    final success = await profileController.updateVehicle(
+      vehicle.id!,
+      updatedVehicle,
+    );
     if (success) {
       Get.back();
     }
@@ -99,7 +107,10 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "editVehicle".tr.toUpperCase()),
+        appBar: CustomRoyelAppbar(
+          leftIcon: true,
+          titleName: "editVehicle".tr.toUpperCase(),
+        ),
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           child: Column(
@@ -142,16 +153,16 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                           ],
                         )
                       : selectedImage == null && vehicle.vehicleImage != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(16.r),
-                              child: Image.network(
-                                vehicle.vehicleImage!,
-                                width: double.infinity,
-                                height: 160.h,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : null,
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(16.r),
+                          child: Image.network(
+                            vehicle.vehicleImage!,
+                            width: double.infinity,
+                            height: 160.h,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : null,
                 ),
               ),
               SizedBox(height: 24.h),
@@ -187,7 +198,11 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                   mainAxisSpacing: 12.h,
                   childAspectRatio: 2.0,
                   children: [
-                    _buildTelemetryField("hp".tr.toUpperCase(), "hpHint".tr, hpCtrl),
+                    _buildTelemetryField(
+                      "hp".tr.toUpperCase(),
+                      "hpHint".tr,
+                      hpCtrl,
+                    ),
                   ],
                 ),
               ]),
@@ -215,7 +230,9 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                       : "saveToGarage".tr.toUpperCase(),
                   fontSize: 13,
                   borderRadius: 8.r,
-                  onTap: profileController.isUpdating.value ? () {} : _updateVehicle,
+                  onTap: profileController.isUpdating.value
+                      ? () {}
+                      : _updateVehicle,
                   isImageRight: true,
                   icon: const Icon(
                     Icons.chevron_right,
@@ -294,9 +311,11 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
     );
   }
 
-
-
-  Widget _buildTelemetryField(String label, String hint, TextEditingController controller) {
+  Widget _buildTelemetryField(
+    String label,
+    String hint,
+    TextEditingController controller,
+  ) {
     return Container(
       padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
@@ -334,8 +353,6 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
       ),
     );
   }
-
-
 
   Widget _buildPropulsionButton(String label) {
     final bool isSelected = selectedPropulsion == label;

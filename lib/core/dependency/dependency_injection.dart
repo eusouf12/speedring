@@ -6,6 +6,7 @@ import '../../view/sereen/SetupProfile/setup_profile_controller.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/Controller/business_dashboard_controller.dart';
 import '../../view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 import '../../view/sereen/UserScreen/Profile/controller/profile_controller.dart';
+import '../../view/sereen/UserScreen/track/controller/track_controller.dart';
 
 class DependencyInjection extends Bindings {
   @override
@@ -18,5 +19,6 @@ class DependencyInjection extends Bindings {
     Get.lazyPut(() => DiscoverController(), fenix: true);
     Get.lazyPut(() => MarketplaceFeedController(), fenix: true);
     Get.put(BusinessDashboardController(), permanent: true);
+    Get.lazyPut(() => TrackController(), fenix: true);
   }
 }
