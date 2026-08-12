@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
-import '../../../../utils/app_images/app_images.dart';
+import '../../../../../utils/app_images/app_images.dart';
 import '../../../components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 
 class DriveSummaryScreen extends StatelessWidget {
   const DriveSummaryScreen({super.key});
@@ -22,6 +25,9 @@ class DriveSummaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TrackController trackController = Get.find<TrackController>();
+    final HomeController homeController = Get.put(HomeController());
+
     final Map<String, dynamic> args = Get.arguments ?? {};
     final List<LatLng> routePoints = args['routePoints'] ?? [];
     final int elapsedSeconds = args['elapsedSeconds'] ?? 0;
@@ -132,7 +138,26 @@ class DriveSummaryScreen extends StatelessWidget {
                           initialCameraPosition: CameraPosition(
                             target: routePoints.isNotEmpty
                                 ? routePoints.first
-                                : const LatLng(0, 0),
+                                : (trackController
+                                              .selectedTrack
+                                              .value
+                                              ?.startCoordinates !=
+                                          null
+                                      ? LatLng(
+                                          trackController
+                                                  .selectedTrack
+                                                  .value!
+                                                  .startCoordinates!
+                                                  .lat ??
+                                              0.0,
+                                          trackController
+                                                  .selectedTrack
+                                                  .value!
+                                                  .startCoordinates!
+                                                  .lng ??
+                                              0.0,
+                                        )
+                                      : const LatLng(0, 0)),
                             zoom: 14,
                           ),
                           polylines: {
@@ -243,10 +268,12 @@ class DriveSummaryScreen extends StatelessWidget {
                     SizedBox(
                       height: 120,
                       width: double.infinity,
-                      child: CustomPaint(painter: SpeedGraphPainter(
-                        speedHistory: speedHistory,
-                        topSpeed: topSpeedKmh,
-                      )),
+                      child: CustomPaint(
+                        painter: SpeedGraphPainter(
+                          speedHistory: speedHistory,
+                          topSpeed: topSpeedKmh,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Row(
@@ -304,32 +331,60 @@ class DriveSummaryScreen extends StatelessWidget {
                     ),
                     elevation: 0,
                   ),
-                  onPressed: () {
-                    Get.offAllNamed(AppRoutes.userHomeScreen);
-                    Get.snackbar(
-                      "sessionSaved".tr,
-                      "sessionSavedDesc".tr,
-                      snackPosition: SnackPosition.BOTTOM,
-                      backgroundColor: const Color(0xff181818),
-                      colorText: Colors.white,
-                      borderColor: AppColors.yellow,
-                      borderWidth: 1,
+                  onPressed: () async {
+                    Map<String, dynamic> sessionData = {
+                      "driveScore": 94,
+                      "time": formattedTime,
+                      "distance": totalDistanceKm,
+                      "topSpeed": topSpeedKmh.toStringAsFixed(0),
+                      "avgSpeed": averageSpeedKmh.toStringAsFixed(0),
+                      "speedOverTime": speedHistory
+                          .asMap()
+                          .entries
+                          .map(
+                            (e) => {
+                              "time": _formatTime(e.key),
+                              "speed": e.value,
+                            },
+                          )
+                          .toList(),
+                      "sessionTrack": routePoints
+                          .map((e) => {"lat": e.latitude, "lng": e.longitude})
+                          .toList(),
+                    };
+
+                    bool success = await trackController.createSession(
+                      sessionData,
                     );
+                    if (success) {
+                      Get.offAllNamed(AppRoutes.userHomeScreen);
+                    }
                   },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "save".tr,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(Icons.arrow_forward, size: 16),
-                    ],
+                  child: Obx(
+                    () => trackController.isCreatingSession.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "save".tr,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Icon(Icons.arrow_forward, size: 16),
+                            ],
+                          ),
                   ),
                 ),
               ),
@@ -337,22 +392,125 @@ class DriveSummaryScreen extends StatelessWidget {
 
               /// SHARE RESULTS LINK
               Center(
-                child: TextButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.share_outlined,
-                    color: Colors.white38,
-                    size: 14,
-                  ),
-                  label: Text(
-                    "shareResults".tr,
-                    style: const TextStyle(
-                      color: Colors.white60,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
+                child: Obx(
+                  () => homeController.isPostCreating.value
+                      ? const CircularProgressIndicator(color: AppColors.yellow)
+                      : TextButton.icon(
+                          onPressed: () {
+                            Get.bottomSheet(
+                              Material(
+                                color: const Color(0xff181818),
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ListTile(
+                                        leading: const Icon(
+                                          Icons.share,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          "shareToFriends".tr,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Get.back();
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(
+                                          Icons.post_add,
+                                          color: AppColors.yellow,
+                                        ),
+                                        title: Text(
+                                          "postToApp".tr,
+                                          style: const TextStyle(
+                                            color: AppColors.yellow,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          Get.back();
+                                          Map<String, dynamic>
+                                          sessionDetails = {
+                                            "vehicle":
+                                                trackController
+                                                    .selectedVehicle
+                                                    .value
+                                                    ?.vehicleName ??
+                                                "N/A",
+                                            "vehicleImage":
+                                                trackController
+                                                    .selectedVehicle
+                                                    .value
+                                                    ?.vehicleImage ??
+                                                "",
+                                            "circuit":
+                                                trackController
+                                                    .selectedTrack
+                                                    .value
+                                                    ?.city ??
+                                                "N/A",
+                                            "trackName":
+                                                trackController
+                                                    .selectedTrack
+                                                    .value
+                                                    ?.name ??
+                                                "N/A",
+                                            "bestLapTime": formattedTime,
+                                            "topSpeed": topSpeedKmh
+                                                .toStringAsFixed(0),
+                                            "summary":
+                                                "Completed a drive of ${totalDistanceKm.toStringAsFixed(1)} km in $formattedTime.",
+                                          };
+
+                                          bool success = await homeController
+                                              .createPost(
+                                                category: "SESSION_POST",
+                                                visibility: "Public",
+                                                sessionDetails: sessionDetails,
+                                                mediaUrl: trackController
+                                                    .selectedVehicle
+                                                    .value
+                                                    ?.vehicleImage,
+                                              );
+                                          if (success) {
+                                            Get.offAllNamed(
+                                              AppRoutes.userHomeScreen,
+                                            );
+                                            showCustomSnackBar(
+                                              "Success, Post created successfully",
+                                              isError: false,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.share_outlined,
+                            color: Colors.white38,
+                            size: 14,
+                          ),
+                          label: Text(
+                            "shareResults".tr,
+                            style: const TextStyle(
+                              color: Colors.white60,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 30),
@@ -428,7 +586,7 @@ class SpeedGraphPainter extends CustomPainter {
     }
 
     final path = Path();
-    
+
     if (speedHistory.isEmpty) {
       path.moveTo(0, size.height);
       path.lineTo(size.width, size.height);
@@ -436,13 +594,18 @@ class SpeedGraphPainter extends CustomPainter {
       // Create points based on dynamic speed data
       // y = 0 is top of canvas, y = size.height is bottom.
       // So y = size.height - (speed / topSpeed) * size.height * 0.9 (keep a 10% margin at top)
-      final double maxSpeed = topSpeed > 0 ? topSpeed : 1.0; // prevent div by zero
-      
+      final double maxSpeed = topSpeed > 0
+          ? topSpeed
+          : 1.0; // prevent div by zero
+
       for (int i = 0; i < speedHistory.length; i++) {
         final double x = (i / (speedHistory.length - 1)) * size.width;
-        final double normalizedSpeed = (speedHistory[i] / maxSpeed).clamp(0.0, 1.0);
+        final double normalizedSpeed = (speedHistory[i] / maxSpeed).clamp(
+          0.0,
+          1.0,
+        );
         final double y = size.height - (normalizedSpeed * size.height * 0.9);
-        
+
         if (i == 0) {
           path.moveTo(x.isNaN ? 0 : x, y);
         } else {

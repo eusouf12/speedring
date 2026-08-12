@@ -12,7 +12,7 @@ class TrackController extends GetxController {
   RxList<Track> tracks = <Track>[].obs;
   RxBool isLoading = false.obs;
   RxBool isLoadMore = false.obs;
-  
+
   // Prepare Session State
   RxBool recordLaps = false.obs;
   Rxn<Track> selectedTrack = Rxn<Track>();
@@ -53,7 +53,10 @@ class TrackController extends GetxController {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      Fluttertoast.showToast(msg: 'Location services are disabled. Please enable them to find nearby tracks.');
+      Fluttertoast.showToast(
+        msg:
+            'Location services are disabled. Please enable them to find nearby tracks.',
+      );
       return null;
     }
 
@@ -65,11 +68,14 @@ class TrackController extends GetxController {
         return null;
       }
     }
-    
+
     if (permission == LocationPermission.deniedForever) {
-      Fluttertoast.showToast(msg: 'Location permissions are permanently denied, we cannot request permissions.');
+      Fluttertoast.showToast(
+        msg:
+            'Location permissions are permanently denied, we cannot request permissions.',
+      );
       return null;
-    } 
+    }
 
     return await Geolocator.getCurrentPosition();
   }
@@ -120,14 +126,17 @@ class TrackController extends GetxController {
             tracks.addAll(trackResponse.data!);
           }
           if (trackResponse.meta != null) {
-            hasNextPage = trackResponse.meta!.page! < trackResponse.meta!.totalPage!;
+            hasNextPage =
+                trackResponse.meta!.page! < trackResponse.meta!.totalPage!;
             if (hasNextPage) page++;
           } else {
             hasNextPage = false;
           }
         }
       } else {
-        Fluttertoast.showToast(msg: response.statusText ?? "Failed to load tracks");
+        Fluttertoast.showToast(
+          msg: response.statusText ?? "Failed to load tracks",
+        );
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -153,5 +162,57 @@ class TrackController extends GetxController {
     selectedTrack.value = null;
     selectedVehicle.value = null;
     recordLaps.value = false;
+  }
+
+  //======================= My Session======================================
+  RxList<dynamic> mySessionsList = <dynamic>[].obs;
+  RxBool isLoadingSessions = false.obs;
+  RxBool isCreatingSession = false.obs;
+
+  Future<bool> createSession(Map<String, dynamic> sessionData) async {
+    isCreatingSession.value = true;
+    try {
+      var response = await ApiClient.postData(ApiUrl.createSession, sessionData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Fluttertoast.showToast(msg: "sessionCreated".tr);
+        return true;
+      } else {
+        Fluttertoast.showToast(msg: response.statusText ?? "error".tr);
+        return false;
+      }
+    } catch (e) {
+      debugPrint("Error creating session: $e");
+      return false;
+    } finally {
+      isCreatingSession.value = false;
+    }
+  }
+
+  Future<void> getMySessions() async {
+    isLoadingSessions.value = true;
+    try {
+      var response = await ApiClient.getData(ApiUrl.mySessions);
+      if (response.statusCode == 200) {
+        mySessionsList.value = response.body["data"] ?? [];
+      }
+    } catch (e) {
+      debugPrint("Error fetching my sessions: $e");
+    } finally {
+      isLoadingSessions.value = false;
+    }
+  }
+
+  Future<void> deleteSession(String id) async {
+    try {
+      var response = await ApiClient.deleteData(ApiUrl.deleteSession(id));
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: "sessionDeleted".tr);
+        mySessionsList.removeWhere((session) => session["_id"] == id || session["id"] == id);
+      } else {
+        Fluttertoast.showToast(msg: response.statusText ?? "error".tr);
+      }
+    } catch (e) {
+      debugPrint("Error deleting session: $e");
+    }
   }
 }

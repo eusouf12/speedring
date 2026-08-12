@@ -262,4 +262,9 @@ class ApiUrl {
   static String viewListing(String id) => "/marketplaces/view-listing/$id";
   static String editListing(String id) => "/marketplaces/edit-listing/$id";
   static String deleteListing(String id) => "/marketplaces/delete-listing/$id";
+
+  // =================== Drive Sessions =====================================
+  static const String createSession = "/drive-sessions/create-session";
+  static const String mySessions = "/drive-sessions/my-sessions";
+  static String deleteSession(String id) => "/drive-sessions/delete-session/$id";
 }

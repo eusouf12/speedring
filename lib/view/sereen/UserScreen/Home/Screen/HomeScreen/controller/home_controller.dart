@@ -579,6 +579,7 @@ class HomeController extends GetxController {
     Map<String, dynamic>? businessPostDetails,
     String? clubId,
     File? mediaFile,
+    String? mediaUrl,
   }) async {
     isPostCreating.value = true;
     try {
@@ -604,6 +605,14 @@ class HomeController extends GetxController {
       }
       if (clubId != null) {
         dataMap["club"] = clubId;
+      }
+      if (mediaUrl != null && mediaUrl.isNotEmpty) {
+        dataMap["media"] = [
+          {
+            "url": mediaUrl,
+            "type": "image"
+          }
+        ];
       }
 
       dynamic response;

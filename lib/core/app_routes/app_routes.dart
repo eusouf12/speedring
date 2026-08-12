@@ -74,6 +74,7 @@ import '../../view/sereen/UserScreen/Profile/Screen/privacy_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/help_support_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/about_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/personalize_interest_screen.dart';
+import '../../view/sereen/UserScreen/track/my_sessions_screen.dart' as speedring_my_sessions;
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step1.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step2.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step3.dart';
@@ -243,6 +244,7 @@ class AppRoutes {
   static const String clubMembersScreen = "/ClubMembersScreen";
   static const String clubJoinRequestsScreen = "/ClubJoinRequestsScreen";
   static const String clubGroupPostScreen = "/ClubGroupPostScreen";
+  static const String mySessionsScreen = "/MySessionsScreen";
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -520,5 +522,6 @@ class AppRoutes {
       page: () => const ClubJoinRequestsScreen(),
     ),
     GetPage(name: clubGroupPostScreen, page: () => const ClubGroupPostScreen()),
+    GetPage(name: mySessionsScreen, page: () => const speedring_my_sessions.MySessionsScreen()),
   ];
 }

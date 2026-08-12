@@ -97,6 +97,35 @@ class UserParametersScreen extends StatelessWidget {
               ),
               SizedBox(height: 24.h),
 
+              /// My Sessions Option
+              GestureDetector(
+                onTap: () => Get.toNamed(AppRoutes.mySessionsScreen),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16.w),
+                  margin: EdgeInsets.only(bottom: 12.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff111111),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: Colors.white10),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.directions_car, color: AppColors.yellow, size: 24),
+                      SizedBox(width: 16.w),
+                      CustomText(
+                        text: "mySessions".tr,
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const Spacer(),
+                      const Icon(Icons.arrow_forward_ios, color: Colors.white38, size: 16),
+                    ],
+                  ),
+                ),
+              ),
+
               /// Options group container
               Container(
                 decoration: BoxDecoration(
