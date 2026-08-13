@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
-import '../../../../../../utils/app_const/app_const.dart';
-import '../../widgets/track_appbar.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
+import 'package:speedring/service/api_url.dart';
+import 'package:speedring/view/sereen/UserScreen/track/controller/active_drive_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/track/widgets/track_appbar.dart';
 
 class ShareExpeditionScreen extends StatefulWidget {
   const ShareExpeditionScreen({super.key});
@@ -24,10 +26,18 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ActiveDriveController activeController = Get.find<ActiveDriveController>();
+
+    String? hostProfile = activeController.drive?.host?.profileImage;
+    if (hostProfile != null && hostProfile.isNotEmpty && !hostProfile.startsWith("http")) {
+      hostProfile = "${ApiUrl.imageUrl}/$hostProfile";
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: TrackAppBar(
-        profilePic: AppConstants.profileImage2,
+        profilePic: activeController.profileController.profileData.value?.profileImage ??
+            AppConstants.profileImage2,
         title: "SHARE EXPEDITION",
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.yellow),
@@ -71,10 +81,8 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                               color: AppColors.yellow,
                               width: 1.5,
                             ),
-                            image: const DecorationImage(
-                              image: NetworkImage(
-                                "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                              ),
+                            image: DecorationImage(
+                              image: NetworkImage(hostProfile ?? AppConstants.profileImage2),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -83,19 +91,21 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
-                                "@COMMANDER_ALPHA",
-                                style: TextStyle(
+                                activeController.drive?.host?.userName != null
+                                    ? "@${activeController.drive!.host!.userName!.toUpperCase()}"
+                                    : "@HOST",
+                                style: const TextStyle(
                                   color: AppColors.yellow,
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 2),
+                              const SizedBox(height: 2),
                               Text(
-                                "MIDNIGHT COAST RUN",
-                                style: TextStyle(
+                                activeController.drive?.tripName?.toUpperCase() ?? "UNTITLED EXPEDITION",
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w900,
@@ -115,14 +125,20 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                     ),
                   ),
 
-                  /// Map Graphic
+                  /// Map Graphic / Cover Image Fallback
                   Container(
                     height: 160,
                     width: double.infinity,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       image: DecorationImage(
                         image: NetworkImage(
-                          "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&fit=crop",
+                          activeController.drive?.coverImage != null && activeController.drive!.coverImage!.isNotEmpty
+                              ? (activeController.drive!.coverImage!.startsWith("http")
+                                  ? activeController.drive!.coverImage!
+                                  : "${ApiUrl.imageUrl}/${activeController.drive!.coverImage}")
+                              : (activeController.drive?.routeTrack != null && activeController.drive!.routeTrack['coverImage'] != null
+                                  ? activeController.drive!.routeTrack['coverImage']
+                                  : "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&fit=crop"),
                         ),
                         fit: BoxFit.cover,
                       ),
@@ -136,15 +152,26 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: _buildPreviewMetric("DISTANCE", "142.8", "KM"),
+                          child: _buildPreviewMetric(
+                            "DISTANCE",
+                            activeController.totalDistanceKm.value.toStringAsFixed(1),
+                            "KM",
+                          ),
                         ),
                         Expanded(
-                          child: _buildPreviewMetric("TIME", "03:12:45", ""),
+                          child: _buildPreviewMetric(
+                            "TIME",
+                            activeController.getFormattedDuration(),
+                            "",
+                          ),
                         ),
                         Expanded(
                           child: _buildPreviewMetric(
                             "AVG VELOCITY",
-                            "107",
+                            (activeController.elapsedSeconds.value == 0
+                                    ? 0.0
+                                    : activeController.totalDistanceKm.value / (activeController.elapsedSeconds.value / 3600.0))
+                                .toStringAsFixed(0),
                             "KM/H",
                           ),
                         ),
@@ -163,35 +190,35 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                       children: [
                         Row(
                           children: [
-                            _buildMiniAvatar(
-                              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop",
-                            ),
-                            const SizedBox(width: 4),
-                            _buildMiniAvatar(
-                              "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&fit=crop",
-                            ),
-                            const SizedBox(width: 4),
-                            _buildMiniAvatar(
-                              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop",
-                            ),
-                            const SizedBox(width: 4),
-                            Container(
-                              width: 20,
-                              height: 20,
-                              decoration: const BoxDecoration(
-                                color: Color(0xff222222),
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                "+8",
-                                style: TextStyle(
-                                  color: Colors.white60,
-                                  fontSize: 7,
-                                  fontWeight: FontWeight.bold,
+                            if (activeController.drive?.participants != null)
+                              ...activeController.drive!.participants!.take(3).map((p) {
+                                String url = p.profileImage ?? AppConstants.profileImage2;
+                                if (!url.startsWith("http")) {
+                                  url = "${ApiUrl.imageUrl}/$url";
+                                }
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 4.0),
+                                  child: _buildMiniAvatar(url),
+                                );
+                              }),
+                            if ((activeController.drive?.participants?.length ?? 0) > 3)
+                              Container(
+                                width: 20,
+                                height: 20,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xff222222),
+                                  shape: BoxShape.circle,
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "+${activeController.drive!.participants!.length - 3}",
+                                  style: const TextStyle(
+                                    color: Colors.white60,
+                                    fontSize: 7,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
                           ],
                         ),
                         Row(
@@ -200,8 +227,8 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                               visualDensity: VisualDensity.compact,
                               icon: const Icon(
                                 Icons.favorite_border,
-                                color: Colors.white70,
-                                size: 20,
+                                color: Colors.white38,
+                                size: 16,
                               ),
                               onPressed: () {},
                             ),
@@ -209,17 +236,17 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                               visualDensity: VisualDensity.compact,
                               icon: const Icon(
                                 Icons.chat_bubble_outline,
-                                color: Colors.white70,
-                                size: 20,
+                                color: Colors.white38,
+                                size: 15,
                               ),
                               onPressed: () {},
                             ),
                             IconButton(
                               visualDensity: VisualDensity.compact,
                               icon: const Icon(
-                                Icons.share_outlined,
-                                color: Colors.white70,
-                                size: 20,
+                                Icons.send_outlined,
+                                color: Colors.white38,
+                                size: 15,
                               ),
                               onPressed: () {},
                             ),
@@ -233,8 +260,8 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
             ),
             const SizedBox(height: 24),
 
-            /// MISSION NARRATIVE
-            _buildSectionHeader("MISSION NARRATIVE"),
+            /// NARRATIVE FIELD
+            _buildSectionHeader("NARRATIVE"),
             TextField(
               controller: narrativeController,
               maxLines: 4,
@@ -242,56 +269,24 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: const Color(0xff111111),
-                hintText: "Detail your mission objectives...",
-                hintStyle: const TextStyle(color: Colors.white24),
+                hintText: "Write details about this drive...",
+                hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Colors.white10),
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Colors.white10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(
-                    color: AppColors.yellow,
-                    width: 1,
-                  ),
-                ),
+                contentPadding: const EdgeInsets.all(16),
               ),
             ),
             const SizedBox(height: 24),
 
-            /// TACTICAL TAGGING
-            _buildSectionHeader("TACTICAL TAGGING"),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildTaggingButton(
-                    "TAG PILOTS",
-                    Icons.person_add_alt_1_outlined,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildTaggingButton(
-                    "TAG VEHICLES",
-                    Icons.directions_car_outlined,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            /// VISIBILITY PROTOCOL
-            _buildSectionHeader("VISIBILITY PROTOCOL"),
+            /// VISIBILITY SELECTION
+            _buildSectionHeader("VISIBILITY"),
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: const Color(0xff111111),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white10),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
                 children: [
@@ -318,6 +313,8 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                   ),
                 ),
                 onPressed: () {
+                  // After posting, clean up the controller
+                  Get.delete<ActiveDriveController>();
                   Get.offAllNamed(AppRoutes.userHomeScreen);
                 },
                 child: Row(
@@ -409,38 +406,6 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
         shape: BoxShape.circle,
         border: Border.all(color: AppColors.yellow, width: 0.7),
         image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
-      ),
-    );
-  }
-
-  Widget _buildTaggingButton(String label, IconData icon) {
-    return Container(
-      height: 46,
-      decoration: BoxDecoration(
-        color: const Color(0xff111111),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: InkWell(
-        onTap: () {},
-        borderRadius: BorderRadius.circular(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: AppColors.yellow, size: 16),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(width: 4),
-            const Icon(Icons.chevron_right, color: Colors.white38, size: 12),
-          ],
-        ),
       ),
     );
   }

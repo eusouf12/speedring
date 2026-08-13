@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:speedring/service/api_client.dart';
 import 'package:speedring/service/api_url.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../mode/track_model.dart';
 import '../../Profile/model/profile_model.dart';
@@ -284,25 +287,39 @@ class TrackController extends GetxController {
     }
   }
 
-  Future<bool> createExpedition(Map<String, dynamic> data, String? imagePath) async {
+  Future<Expedition?> createExpedition(Map<String, dynamic> data, String? imagePath) async {
     isCreatingExpedition.value = true;
     try {
       var request = await ApiClient.postMultipartData(
         ApiUrl.createExpedition, 
-        data, 
+        {"data": jsonEncode(data)}, 
         multipartBody: imagePath != null ? [MultipartBody("coverImage", File(imagePath))] : []
       );
       if (request.statusCode == 200 || request.statusCode == 201) {
-        Fluttertoast.showToast(msg: "expeditionCreated".tr);
-        getAllExpeditions(refresh: true, type: "my_drives");
-        return true;
+        Expedition? createdExpedition;
+        try {
+          final resData = jsonDecode(request.body!);
+          showCustomSnackBar(resData['message'] ?? "expeditionCreated".tr, isError: false);
+          if (resData['data'] != null) {
+            createdExpedition = Expedition.fromJson(resData['data']);
+          }
+        } catch (_) {
+          showCustomSnackBar("expeditionCreated".tr, isError: false);
+        }
+        getAllExpeditions(refresh: true);
+        return createdExpedition;
       } else {
-        Fluttertoast.showToast(msg: "error".tr);
-        return false;
+        try {
+          final resData = jsonDecode(request.body!);
+          showCustomSnackBar(resData['message'] ?? "error".tr, isError: true);
+        } catch (_) {
+          showCustomSnackBar("error".tr, isError: true);
+        }
+        return null;
       }
     } catch (e) {
       debugPrint("Error creating expedition: $e");
-      return false;
+      return null;
     } finally {
       isCreatingExpedition.value = false;
     }
@@ -328,10 +345,10 @@ class TrackController extends GetxController {
 
   Future<void> startExpedition(String id) async {
     try {
-      var response = await ApiClient.patchData(ApiUrl.startExpedition(id), {});
+      var response = await ApiClient.patchData(ApiUrl.startExpedition(id), "{}");
       if (response.statusCode == 200) {
         Fluttertoast.showToast(msg: "expeditionStarted".tr);
-        getAllExpeditions(refresh: true, type: "my_drives");
+        getAllExpeditions(refresh: true);
       } else {
         Fluttertoast.showToast(msg: response.body["message"] ?? "error".tr);
       }
@@ -345,15 +362,26 @@ class TrackController extends GetxController {
     try {
       var request = await ApiClient.patchMultipartData(
         ApiUrl.updateExpedition(id), 
-        data, 
+        {"data": jsonEncode(data)}, 
         multipartBody: imagePath != null ? [MultipartBody("coverImage", File(imagePath))] : []
       );
       if (request.statusCode == 200) {
-        Fluttertoast.showToast(msg: "expeditionUpdated".tr);
-        getAllExpeditions(refresh: true, type: "my_drives");
+        try {
+          final resData = jsonDecode(request.body!);
+          showCustomSnackBar(resData['message'] ?? "expeditionUpdated".tr, isError: false);
+        } catch (_) {
+          showCustomSnackBar("expeditionUpdated".tr, isError: false);
+        }
+        getAllExpeditions(refresh: true);
+        fetchSingleExpedition(id);
         Get.back();
       } else {
-        Fluttertoast.showToast(msg: "error".tr);
+        try {
+          final resData = jsonDecode(request.body!);
+          showCustomSnackBar(resData['message'] ?? "error".tr, isError: true);
+        } catch (_) {
+          showCustomSnackBar("error".tr, isError: true);
+        }
       }
     } catch (e) {
       debugPrint("Error updating expedition: $e");
@@ -367,13 +395,53 @@ class TrackController extends GetxController {
       var response = await ApiClient.deleteData(ApiUrl.deleteExpedition(id));
       if (response.statusCode == 200) {
         Fluttertoast.showToast(msg: "expeditionDeleted".tr);
-        getAllExpeditions(refresh: true, type: "my_drives");
+        getAllExpeditions(refresh: true);
       } else {
         Fluttertoast.showToast(msg: "error".tr);
       }
     } catch (e) {
       debugPrint("Error deleting expedition: $e");
     }
+  }
+
+  // ─── Google Maps Geocoding ───
+  Future<void> fetchLatLngFromAddress(String address) async {
+    try {
+      final query = Uri.encodeComponent(address);
+      final url =
+          'https://maps.googleapis.com/maps/api/geocode/json?address=$query&key=${ApiUrl.mapKey}';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status'] == 'OK') {
+          final location = data['results'][0]['geometry']['location'];
+          meetingPointLat.value = location['lat']?.toDouble() ?? 0.0;
+          meetingPointLng.value = location['lng']?.toDouble() ?? 0.0;
+        }
+      }
+    } catch (e) {
+      debugPrint("GEOCODING API ERROR: $e");
+    }
+  }
+
+  Future<Iterable<String>> fetchPlaceSuggestions(String query) async {
+    if (query.isEmpty) return const Iterable<String>.empty();
+    try {
+      final q = Uri.encodeComponent(query);
+      final url =
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$q&key=${ApiUrl.mapKey}';
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status'] == 'OK') {
+          final predictions = data['predictions'] as List;
+          return predictions.map((p) => p['description'].toString()).toList();
+        }
+      }
+    } catch (e) {
+      debugPrint("PLACES API ERROR: $e");
+    }
+    return const Iterable<String>.empty();
   }
 
   // --- Lobby State ---
@@ -400,7 +468,7 @@ class TrackController extends GetxController {
 
   Future<void> startExpeditionTrip(String id) async {
     try {
-      var response = await ApiClient.patchData(ApiUrl.startExpedition(id), {});
+      var response = await ApiClient.patchData(ApiUrl.startExpedition(id), "{}");
       if (response.statusCode == 200) {
         Fluttertoast.showToast(msg: "Expedition Started!");
         fetchSingleExpedition(id);
@@ -418,6 +486,8 @@ class TrackController extends GetxController {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController meetingPointController = TextEditingController();
+  RxDouble meetingPointLat = 0.0.obs;
+  RxDouble meetingPointLng = 0.0.obs;
 
   RxDouble maxParticipants = 12.0.obs;
   RxString selectedVehicleClass = "Cars".obs;
@@ -434,10 +504,13 @@ class TrackController extends GetxController {
       dateController.clear();
       timeController.clear();
       meetingPointController.clear();
+      meetingPointLat.value = 0.0;
+      meetingPointLng.value = 0.0;
       maxParticipants.value = 12.0;
       selectedVehicleClass.value = "Cars";
       publicDeployment.value = true;
       coverImagePath.value = "";
+      selectedTrack.value = null;
       return;
     }
     
@@ -445,13 +518,32 @@ class TrackController extends GetxController {
     objectiveController.text = editingDrive!.objective ?? "";
     
     if (editingDrive!.deploymentDate != null) {
-      dateController.text = DateFormat('yyyy-MM-dd').format(editingDrive!.deploymentDate!);
+      dateController.text = DateFormat('yyyy-MM-dd').format(editingDrive!.deploymentDate!.toLocal());
     }
     timeController.text = editingDrive!.startTime ?? "";
     meetingPointController.text = editingDrive!.meetingPoint?.address ?? "";
+    meetingPointLat.value = editingDrive!.meetingPoint?.lat ?? 0.0;
+    meetingPointLng.value = editingDrive!.meetingPoint?.lng ?? 0.0;
     maxParticipants.value = (editingDrive!.maxParticipants ?? 12).toDouble();
     selectedVehicleClass.value = editingDrive!.vehicleClass ?? "Cars";
     publicDeployment.value = editingDrive!.privacy == "Public";
+
+    if (editingDrive!.routeTrack != null) {
+      if (editingDrive!.routeTrack is Map<String, dynamic>) {
+        selectedTrack.value = Track.fromJson(editingDrive!.routeTrack as Map<String, dynamic>);
+      } else if (editingDrive!.routeTrack is String) {
+        Track? found;
+        for (var t in tracks) {
+          if (t.id == editingDrive!.routeTrack) {
+            found = t;
+            break;
+          }
+        }
+        selectedTrack.value = found ?? Track(id: editingDrive!.routeTrack as String);
+      }
+    } else {
+      selectedTrack.value = null;
+    }
   }
 
   Future<void> pickConfiguratorImage() async {
@@ -463,20 +555,36 @@ class TrackController extends GetxController {
   }
 
   Future<void> saveConfiguredTrip() async {
+    String isoDeploymentDate = "";
+    try {
+      if (dateController.text.isNotEmpty && timeController.text.isNotEmpty) {
+        DateTime localDateTime = DateFormat("yyyy-MM-dd hh:mm a")
+            .parse("${dateController.text} ${timeController.text}");
+        isoDeploymentDate = localDateTime.toUtc().toIso8601String();
+      }
+    } catch (e) {
+      debugPrint("Error parsing date/time: $e");
+      isoDeploymentDate = dateController.text;
+    }
+
     Map<String, dynamic> data = {
       "tripName": nameController.text,
       "objective": objectiveController.text,
-      "deploymentDate": dateController.text, // Ensure correct format
+      "deploymentDate": isoDeploymentDate,
       "startTime": timeController.text,
       "meetingPoint": {
         "address": meetingPointController.text,
-        "lat": 0, // Mocked for now, need place picker ideally
-        "lng": 0
+        "lat": meetingPointLat.value,
+        "lng": meetingPointLng.value
       },
       "maxParticipants": maxParticipants.value.toInt(),
       "vehicleClass": selectedVehicleClass.value,
       "privacy": publicDeployment.value ? "Public" : "Private",
     };
+
+    if (selectedTrack.value != null) {
+      data["routeTrack"] = selectedTrack.value!.id;
+    }
 
     if (editingDrive != null) {
       await updateExpedition(
@@ -485,12 +593,13 @@ class TrackController extends GetxController {
         coverImagePath.value.isNotEmpty ? coverImagePath.value : null
       );
     } else {
-      bool success = await createExpedition(
+      Expedition? newExp = await createExpedition(
         data, 
         coverImagePath.value.isNotEmpty ? coverImagePath.value : null
       );
-      if (success) {
+      if (newExp != null) {
         Get.back();
+        Get.toNamed(AppRoutes.tripLobbyScreen, arguments: newExp);
       }
     }
   }

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/service/api_url.dart';
+import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
 import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
-import '../../../../../../utils/app_const/app_const.dart';
-import '../../widgets/track_appbar.dart';
+import 'package:speedring/view/sereen/UserScreen/track/mode/track_model.dart';
+import 'package:intl/intl.dart';
 import 'dart:io';
 
 class TripConfiguratorScreen extends StatelessWidget {
@@ -16,13 +17,9 @@ class TripConfiguratorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: TrackAppBar(
-        profilePic: AppConstants.profileImage2,
-        title: "tripConfigurator".tr.toUpperCase(),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
-          onPressed: () => Get.back(),
-        ),
+      appBar: CustomRoyelAppbar(
+        leftIcon: true,
+        titleName: "tripConfigurator".tr.toUpperCase(),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -42,64 +39,189 @@ class TripConfiguratorScreen extends StatelessWidget {
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: controller.pickConfiguratorImage,
-                child: Container(
-                  height: 160,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white10),
-                    image: controller.coverImagePath.value.isNotEmpty
-                        ? DecorationImage(
-                            image: FileImage(
-                              File(controller.coverImagePath.value),
+                child: Obx(() {
+                  ImageProvider? imageProvider;
+                  if (controller.coverImagePath.value.isNotEmpty) {
+                    imageProvider = FileImage(File(controller.coverImagePath.value));
+                  } else {
+                    String? networkUrl = controller.editingDrive?.coverImage;
+                    if (networkUrl == null || networkUrl.isEmpty) {
+                      networkUrl = controller.selectedTrack.value?.coverImage;
+                    }
+                    if (networkUrl != null && networkUrl.isNotEmpty) {
+                      imageProvider = NetworkImage(
+                        networkUrl.startsWith("http")
+                            ? networkUrl
+                            : "${ApiUrl.imageUrl}/$networkUrl",
+                      );
+                    }
+                  }
+
+                  final bool hasImage = imageProvider != null;
+
+                  return Container(
+                    height: 160,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white10),
+                      image: hasImage
+                          ? DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+                    child: !hasImage
+                        ? const Center(
+                            child: Icon(
+                              Icons.add_a_photo,
+                              color: Colors.white24,
+                              size: 40,
                             ),
-                            fit: BoxFit.cover,
-                          )
-                        : (controller.editingDrive?.coverImage != null)
-                        ? DecorationImage(
-                            image: NetworkImage(
-                              controller.editingDrive!.coverImage!.startsWith(
-                                    "http",
-                                  )
-                                  ? controller.editingDrive!.coverImage!
-                                  : "${ApiUrl.imageUrl}/${controller.editingDrive!.coverImage}",
-                            ),
-                            fit: BoxFit.cover,
                           )
                         : null,
-                  ),
-                  child:
-                      (controller.coverImagePath.value.isEmpty &&
-                          controller.editingDrive?.coverImage == null)
-                      ? const Center(
-                          child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.white24,
-                            size: 40,
-                          ),
-                        )
-                      : null,
-                ),
+                  );
+                }),
               ),
               const SizedBox(height: 32),
 
               /// PHASE 02 // DEPLOYMENT LOGISTICS
               _buildPhaseHeader("phase2Deployment".tr.toUpperCase()),
               _buildFieldLabel("deploymentDate".tr.toUpperCase()),
-              _buildTextField(controller.dateController),
+              _buildTextField(
+                controller.dateController,
+                readOnly: true,
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100),
+                    builder: (context, child) {
+                      return Theme(
+                        data: ThemeData.dark().copyWith(
+                          colorScheme: const ColorScheme.dark(
+                            primary: AppColors.yellow,
+                            onPrimary: Colors.black,
+                            surface: Color(0xff111111),
+                            onSurface: Colors.white,
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
+                  );
+                  if (date != null) {
+                    controller.dateController.text = DateFormat(
+                      'yyyy-MM-dd',
+                    ).format(date);
+                  }
+                },
+              ),
               const SizedBox(height: 16),
-              _buildFieldLabel("startTimeUTC".tr.toUpperCase()),
-              _buildTextField(controller.timeController),
+              _buildFieldLabel("startTime".tr.toUpperCase()),
+              _buildTextField(
+                controller.timeController,
+                readOnly: true,
+                onTap: () async {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                    builder: (context, child) {
+                      return Theme(
+                        data: ThemeData.dark().copyWith(
+                          colorScheme: const ColorScheme.dark(
+                            primary: AppColors.yellow,
+                            onPrimary: Colors.black,
+                            surface: Color(0xff111111),
+                            onSurface: Colors.white,
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
+                  );
+                  if (time != null) {
+                    final dt = DateTime(2020, 1, 1, time.hour, time.minute);
+                    controller.timeController.text = DateFormat(
+                      'hh:mm a',
+                    ).format(dt);
+                  }
+                },
+              ),
               const SizedBox(height: 16),
               _buildFieldLabel("meetingPoint".tr.toUpperCase()),
-              _buildTextField(
-                controller.meetingPointController,
-                prefixIcon: const Icon(
-                  Icons.location_on_outlined,
-                  color: AppColors.yellow,
-                  size: 20,
-                ),
+              Autocomplete<String>(
+                optionsBuilder: (TextEditingValue textEditingValue) async {
+                  return await controller.fetchPlaceSuggestions(
+                    textEditingValue.text,
+                  );
+                },
+                onSelected: (String selection) {
+                  controller.meetingPointController.text = selection;
+                  controller.fetchLatLngFromAddress(selection);
+                },
+                fieldViewBuilder:
+                    (context, textController, focusNode, onEditingComplete) {
+                      if (controller.meetingPointController.text !=
+                              textController.text &&
+                          textController.text.isEmpty &&
+                          controller.meetingPointController.text.isNotEmpty) {
+                        textController.text =
+                            controller.meetingPointController.text;
+                      }
+                      return _buildTextField(
+                        textController,
+                        focusNode: focusNode,
+                        prefixIcon: const Icon(
+                          Icons.location_on_outlined,
+                          color: AppColors.yellow,
+                          size: 20,
+                        ),
+                        onChanged: (val) {
+                          controller.meetingPointController.text = val;
+                        },
+                      );
+                    },
+                optionsViewBuilder: (context, onSelected, options) {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      elevation: 4.0,
+                      color: const Color(0xff111111),
+                      borderRadius: BorderRadius.circular(12),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxHeight: 200,
+                          maxWidth: 350,
+                        ),
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: options.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final option = options.elementAt(index);
+                            return ListTile(
+                              title: Text(
+                                option,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              onTap: () {
+                                onSelected(option);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
+
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,24 +283,27 @@ class TripConfiguratorScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.white10),
                 ),
-                child: SwitchListTile(
-                  value: controller.publicDeployment.value,
-                  onChanged: (val) {
-                    controller.publicDeployment.value = val;
-                  },
-                  title: Text(
-                    "publicDeployment".tr.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
+                child: Material(
+                  color: Colors.transparent,
+                  child: SwitchListTile(
+                    value: controller.publicDeployment.value,
+                    onChanged: (val) {
+                      controller.publicDeployment.value = val;
+                    },
+                    title: Text(
+                      "publicDeployment".tr.toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                    activeThumbColor: Colors.black,
+                    activeTrackColor: AppColors.yellow,
+                    inactiveThumbColor: Colors.white38,
+                    inactiveTrackColor: Colors.white10,
+                    contentPadding: EdgeInsets.zero,
                   ),
-                  activeThumbColor: Colors.black,
-                  activeTrackColor: AppColors.yellow,
-                  inactiveThumbColor: Colors.white38,
-                  inactiveTrackColor: Colors.white10,
-                  contentPadding: EdgeInsets.zero,
                 ),
               ),
               const SizedBox(height: 32),
@@ -193,106 +318,71 @@ class TripConfiguratorScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.white10),
                 ),
-                child: ListTile(
-                  onTap: () {},
-                  leading: const Icon(
-                    Icons.map_outlined,
-                    color: AppColors.yellow,
-                  ),
-                  title: Text(
-                    "selectSavedTelemetry".tr,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
+                child: Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    onTap: () => _showTrackSelectionBottomSheet(context),
+                    leading: const Icon(
+                      Icons.map_outlined,
+                      color: AppColors.yellow,
                     ),
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Colors.white38,
+                    title: Obx(() {
+                      final selectedTrack = controller.selectedTrack.value;
+                      return Text(
+                        selectedTrack?.name?.toUpperCase() ??
+                            "selectTrack".tr.toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    }),
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.white38,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 40),
 
               /// Footer Buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 50,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Color(0xffF0294A)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () => Get.back(),
-                        child: Row(
+              SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.yellow,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: controller.isCreatingExpedition.value
+                      ? null
+                      : () {
+                          controller.saveConfiguredTrip();
+                        },
+                  child: controller.isCreatingExpedition.value
+                      ? const CircularProgressIndicator(color: Colors.yellow)
+                      : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
-                              Icons.close,
-                              color: Color(0xffF0294A),
-                              size: 18,
-                            ),
-                            const SizedBox(width: 8),
                             Text(
-                              "discard".tr.toUpperCase(),
+                              (controller.editingDrive != null
+                                      ? "updateTrip".tr
+                                      : "createTrip".tr)
+                                  .toUpperCase(),
                               style: const TextStyle(
-                                color: Color(0xffF0294A),
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            const SizedBox(width: 6),
+                            const Icon(Icons.chevron_right, size: 18),
                           ],
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: SizedBox(
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.yellow,
-                          foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: controller.isCreatingExpedition.value
-                            ? null
-                            : () {
-                                controller.saveConfiguredTrip();
-                              },
-                        child: controller.isCreatingExpedition.value
-                            ? const CircularProgressIndicator(
-                                color: Colors.black,
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    (controller.editingDrive != null
-                                            ? "updateTrip".tr
-                                            : "createTrip".tr)
-                                        .toUpperCase(),
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  const Icon(Icons.chevron_right, size: 18),
-                                ],
-                              ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               const SizedBox(height: 30),
             ],
@@ -339,10 +429,18 @@ class TripConfiguratorScreen extends StatelessWidget {
     TextEditingController controller, {
     int maxLines = 1,
     Widget? prefixIcon,
+    bool readOnly = false,
+    VoidCallback? onTap,
+    FocusNode? focusNode,
+    ValueChanged<String>? onChanged,
   }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
+      readOnly: readOnly,
+      onTap: onTap,
+      focusNode: focusNode,
+      onChanged: onChanged,
       style: const TextStyle(color: Colors.white, fontSize: 13),
       decoration: InputDecoration(
         filled: true,
@@ -365,6 +463,86 @@ class TripConfiguratorScreen extends StatelessWidget {
           vertical: 16,
         ),
       ),
+    );
+  }
+
+  void _showTrackSelectionBottomSheet(BuildContext context) {
+    if (controller.tracks.isEmpty) {
+      controller.getAllTracks(refresh: true);
+    }
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xff111111),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "selectTrack".tr,
+                style: const TextStyle(
+                  color: AppColors.yellow,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: Obx(() {
+                  if (controller.isLoading.value && controller.tracks.isEmpty) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: AppColors.yellow),
+                    );
+                  }
+                  if (controller.tracks.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "noTracksFound".tr,
+                        style: const TextStyle(color: Colors.white54),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: controller.tracks.length,
+                    itemBuilder: (context, index) {
+                      Track track = controller.tracks[index];
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(track.coverImage ?? ""),
+                          backgroundColor: Colors.grey[900],
+                        ),
+                        title: Text(
+                          track.name ?? "unknownTrack".tr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Text(
+                          track.country ?? "unknown".tr,
+                          style: const TextStyle(
+                            color: Colors.white54,
+                            fontSize: 12,
+                          ),
+                        ),
+                        onTap: () {
+                          controller.setTrack(track);
+                          Get.back();
+                        },
+                      );
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

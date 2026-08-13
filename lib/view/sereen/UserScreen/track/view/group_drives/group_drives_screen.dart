@@ -223,25 +223,46 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(16),
                 ),
-                child: Image.network(
-                  drive.coverImage != null &&
-                          drive.coverImage!.startsWith("http")
-                      ? drive.coverImage!
-                      : "${ApiUrl.imageUrl}/${drive.coverImage ?? ''}",
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, _, _) => Container(
+                child: () {
+                  String? coverUrl = drive.coverImage;
+                  if (coverUrl == null || coverUrl.isEmpty) {
+                    if (drive.routeTrack != null && drive.routeTrack is Map) {
+                      coverUrl = drive.routeTrack['coverImage'];
+                    }
+                  }
+
+                  if (coverUrl == null || coverUrl.isEmpty) {
+                    return Container(
+                      height: 150,
+                      width: double.infinity,
+                      color: Colors.white.withValues(alpha: 0.05),
+                      child: const Icon(
+                        Icons.directions_car,
+                        color: Colors.white24,
+                        size: 40,
+                      ),
+                    );
+                  }
+
+                  return Image.network(
+                    coverUrl.startsWith("http")
+                        ? coverUrl
+                        : "${ApiUrl.imageUrl}/$coverUrl",
                     height: 150,
                     width: double.infinity,
-                    color: Colors.white.withValues(alpha: 0.05),
-                    child: const Icon(
-                      Icons.directions_car,
-                      color: Colors.white24,
-                      size: 40,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, _, _) => Container(
+                      height: 150,
+                      width: double.infinity,
+                      color: Colors.white.withValues(alpha: 0.05),
+                      child: const Icon(
+                        Icons.directions_car,
+                        color: Colors.white24,
+                        size: 40,
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }(),
               ),
               Positioned(
                 bottom: 12,
@@ -419,10 +440,10 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         onPressed: () {
-          trackController.startExpedition(drive.id!);
+          Get.toNamed(AppRoutes.tripLobbyScreen, arguments: drive);
         },
         child: Text(
-          "startTrip".tr.toUpperCase(),
+          "myTrip".tr.toUpperCase(),
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w900,

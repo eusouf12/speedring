@@ -11,6 +11,8 @@ import 'package:speedring/view/sereen/UserScreen/track/controller/track_controll
 import 'package:speedring/view/sereen/UserScreen/track/mode/expedition_model.dart';
 import '../../../../../../utils/app_const/app_const.dart';
 import 'package:speedring/service/api_url.dart';
+import 'package:speedring/service/socket_service.dart';
+import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:intl/intl.dart';
 
 import '../../../Profile/controller/profile_controller.dart';
@@ -35,15 +37,33 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
   void initState() {
     super.initState();
     driveArg = Get.arguments as Expedition?;
+    trackController.currentLobbyExpedition.value = null;
     if (driveArg != null && driveArg!.id != null) {
       trackController.fetchSingleExpedition(driveArg!.id!);
     }
     _startTimer();
+    _initSocketLobby();
+  }
+
+  Future<void> _initSocketLobby() async {
+    if (driveArg != null && driveArg!.id != null) {
+      final token = await SharePrefsHelper.getString(AppConstants.bearerToken);
+      final currentUserId = profileController.profileData.value?.id ?? "unknown";
+      SocketApi.init(ApiUrl.socketUrl, currentUserId, token: token);
+      SocketApi.emit('join_expedition_room', driveArg!.id);
+
+      SocketApi.on('expedition_started', (data) {
+        if (driveArg != null) {
+          Get.offNamed(AppRoutes.activeDriveScreen, arguments: driveArg);
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    SocketApi.off('expedition_started');
     super.dispose();
   }
 
@@ -88,8 +108,7 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
           leading: BackButton(color: AppColors.yellow),
         ),
         body: Obx(() {
-          if (trackController.isLoadingLobby.value &&
-              trackController.currentLobbyExpedition.value == null) {
+          if (trackController.isLoadingLobby.value) {
             return const Center(
               child: CircularProgressIndicator(color: AppColors.yellow),
             );
@@ -102,6 +121,18 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
               child: Text(
                 "errorLoadingLobbyDetails".tr,
                 style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+
+          if (drive.status == "active") {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Get.offNamed(AppRoutes.activeDriveScreen, arguments: drive);
+            });
+            return const Scaffold(
+              backgroundColor: Colors.black,
+              body: Center(
+                child: CircularProgressIndicator(color: AppColors.yellow),
               ),
             );
           }
@@ -123,18 +154,28 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.black,
-                        image:
-                            (drive.coverImage != null &&
-                                drive.coverImage!.isNotEmpty)
-                            ? DecorationImage(
-                                image: NetworkImage(
-                                  drive.coverImage!.startsWith("http")
-                                      ? drive.coverImage!
-                                      : "${ApiUrl.imageUrl}/${drive.coverImage}",
-                                ),
-                                fit: BoxFit.cover,
-                              )
-                            : null,
+                        image: () {
+                          String? coverUrl = drive.coverImage;
+                          if (coverUrl == null || coverUrl.isEmpty) {
+                            if (drive.routeTrack != null &&
+                                drive.routeTrack is Map) {
+                              coverUrl = drive.routeTrack['coverImage'];
+                            }
+                          }
+
+                          if (coverUrl == null || coverUrl.isEmpty) {
+                            return null;
+                          }
+
+                          return DecorationImage(
+                            image: NetworkImage(
+                              coverUrl.startsWith("http")
+                                  ? coverUrl
+                                  : "${ApiUrl.imageUrl}/$coverUrl",
+                            ),
+                            fit: BoxFit.cover,
+                          );
+                        }(),
                       ),
                       child: Container(
                         decoration: const BoxDecoration(
@@ -612,22 +653,50 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                         Center(
                           child: TextButton(
                             onPressed: () {
-                              Get.defaultDialog(
-                                title: "cancelTrip".tr,
-                                middleText: "cancelExpeditionDesc".tr,
-                                textCancel: "no".tr,
-                                textConfirm: "yesCancel".tr,
-                                confirmTextColor: Colors.white,
-                                buttonColor: const Color(0xffF0294A),
-                                onConfirm: () {
-                                  trackController.deleteExpedition(drive.id!);
-                                  Get.back(); // close dialog
-                                  Get.back(); // return to Group Drives Screen
-                                },
+                              Get.dialog(
+                                AlertDialog(
+                                  backgroundColor: const Color(0xff181818),
+                                  title: Text(
+                                    'cancelTrip'.tr,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                  content: Text(
+                                    'cancelExpeditionDesc'.tr,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Get.back(),
+                                      child: Text(
+                                        'no'.tr,
+                                        style: const TextStyle(
+                                          color: Colors.white54,
+                                        ),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.back(); // close dialog
+                                        trackController.deleteExpedition(
+                                          drive.id!,
+                                        );
+                                        Get.back(); // return to Group Drives Screen
+                                      },
+                                      child: Text(
+                                        'yes'.tr,
+                                        style: const TextStyle(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               );
                             },
-                            child: const Text(
-                              "CANCEL TRIP",
+                            child: Text(
+                              "cancelTrip".tr.toUpperCase(),
                               style: TextStyle(
                                 color: Color(0xffF0294A),
                                 fontSize: 10,
@@ -700,6 +769,8 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
           const SizedBox(height: 4),
           Text(
             val,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 11,

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:speedring/view/sereen/UserScreen/track/controller/active_drive_controller.dart';
 
 class EndExpeditionScreen extends StatelessWidget {
   const EndExpeditionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ActiveDriveController controller = Get.find<ActiveDriveController>();
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -22,19 +25,13 @@ class EndExpeditionScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.network(
-                    "https://picsum.photos/seed/speedringlogo/130/40",
-                    height: 24,
-                    width: 90,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, _, _) => const Text(
-                      "SPEEDRING",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.0,
-                      ),
+                  const Text(
+                    "SPEEDRING",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.0,
                     ),
                   ),
                   Row(
@@ -48,9 +45,9 @@ class EndExpeditionScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      const Text(
-                        "SESSION LIVE",
-                        style: TextStyle(
+                      Text(
+                        "liveTelemetry".tr.toUpperCase(),
+                        style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 8,
                           fontWeight: FontWeight.bold,
@@ -63,10 +60,10 @@ class EndExpeditionScreen extends StatelessWidget {
               const Spacer(flex: 2),
 
               /// Large Title
-              const Text(
-                "END\nEXPEDITION?",
+              Text(
+                "${"endTrip".tr.toUpperCase()}?",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.yellow,
                   fontSize: 38,
                   fontWeight: FontWeight.w900,
@@ -75,9 +72,9 @@ class EndExpeditionScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                "MIDNIGHT COAST RUN - SECTOR 04",
-                style: TextStyle(
+              Text(
+                controller.drive?.tripName?.toUpperCase() ?? "UNTITLED EXPEDITION",
+                style: const TextStyle(
                   color: Colors.white38,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -115,22 +112,24 @@ class EndExpeditionScreen extends StatelessWidget {
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
-                                "DISTANCE",
-                                style: TextStyle(
+                                "distance".tr.toUpperCase(),
+                                style: const TextStyle(
                                   color: Colors.white38,
                                   fontSize: 8,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4),
-                              Text(
-                                "42.8 KM",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w900,
+                              const SizedBox(height: 4),
+                              Obx(
+                                () => Text(
+                                  "${controller.totalDistanceKm.value.toStringAsFixed(1)} KM",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900,
+                                  ),
                                 ),
                               ),
                             ],
@@ -139,8 +138,8 @@ class EndExpeditionScreen extends StatelessWidget {
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
+                            children: [
+                              const Text(
                                 "DURATION",
                                 style: TextStyle(
                                   color: Colors.white38,
@@ -148,13 +147,15 @@ class EndExpeditionScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4),
-                              Text(
-                                "00:42:10",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w900,
+                              const SizedBox(height: 4),
+                              Obx(
+                                () => Text(
+                                  controller.getFormattedDuration(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900,
+                                  ),
                                 ),
                               ),
                             ],
@@ -170,19 +171,19 @@ class EndExpeditionScreen extends StatelessWidget {
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
-                                "PARTICIPANTS",
-                                style: TextStyle(
+                                "convoyParticipants".tr.toUpperCase(),
+                                style: const TextStyle(
                                   color: Colors.white38,
                                   fontSize: 8,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               Text(
-                                "12 OPS",
-                                style: TextStyle(
+                                "${(controller.drive?.participants?.length ?? 0) + 1} OPS",
+                                style: const TextStyle(
                                   color: AppColors.yellow,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w900,
@@ -194,8 +195,8 @@ class EndExpeditionScreen extends StatelessWidget {
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
+                            children: [
+                              const Text(
                                 "AVG SPEED",
                                 style: TextStyle(
                                   color: Colors.white38,
@@ -203,14 +204,21 @@ class EndExpeditionScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4),
-                              Text(
-                                "107 KM/H",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w900,
-                                ),
+                              const SizedBox(height: 4),
+                              Obx(
+                                () {
+                                  final double avg = controller.elapsedSeconds.value == 0
+                                      ? 0.0
+                                      : controller.totalDistanceKm.value / (controller.elapsedSeconds.value / 3600.0);
+                                  return Text(
+                                    "${avg.toStringAsFixed(0)} KM/H",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -261,21 +269,24 @@ class EndExpeditionScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Get.toNamed(AppRoutes.shareExpeditionScreen);
+                    Get.toNamed(
+                      AppRoutes.shareExpeditionScreen,
+                      arguments: controller.drive,
+                    );
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
-                        "CONFIRM END TRIP",
-                        style: TextStyle(
+                        "confirmEndTrip".tr.toUpperCase(),
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.5,
                         ),
                       ),
-                      SizedBox(width: 8),
-                      Icon(Icons.arrow_forward, size: 16),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.arrow_forward, size: 16),
                     ],
                   ),
                 ),
@@ -292,9 +303,9 @@ class EndExpeditionScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () => Get.back(),
-                  child: const Text(
-                    "CANCEL",
-                    style: TextStyle(
+                  child: Text(
+                    "no".tr.toUpperCase(),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
