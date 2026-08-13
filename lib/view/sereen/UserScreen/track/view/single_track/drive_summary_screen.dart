@@ -4,8 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
-import '../../../../../utils/app_images/app_images.dart';
-import '../../../components/custom_gradient/custom_gradient.dart';
+import '../../../../../../../utils/app_images/app_images.dart';
+import '../../../../../components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 

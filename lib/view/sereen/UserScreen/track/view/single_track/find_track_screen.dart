@@ -5,10 +5,10 @@ import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
-import '../widgets/track_appbar.dart';
-import '../controller/track_controller.dart';
-import '../../Profile/controller/profile_controller.dart';
-import '../mode/track_model.dart';
+import '../../widgets/track_appbar.dart';
+import '../../controller/track_controller.dart';
+import '../../../Profile/controller/profile_controller.dart';
+import '../../mode/track_model.dart';
 
 class FindTrackScreen extends StatelessWidget {
   FindTrackScreen({super.key});
@@ -210,7 +210,10 @@ class FindTrackScreen extends StatelessWidget {
                       child: Center(
                         child: Text(
                           "noTracksFound".tr,
-                          style: const TextStyle(color: Colors.white54, fontSize: 14),
+                          style: const TextStyle(
+                            color: Colors.white54,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     );
@@ -270,7 +273,10 @@ class FindTrackScreen extends StatelessWidget {
                               child: _buildFooterStat("tracksActive".tr, "142"),
                             ),
                             Expanded(
-                              child: _buildFooterStat("driversOnline".tr, "2.4K"),
+                              child: _buildFooterStat(
+                                "driversOnline".tr,
+                                "2.4K",
+                              ),
                             ),
                           ],
                         ),
@@ -341,7 +347,7 @@ class FindTrackScreen extends StatelessWidget {
 
             /// Card Info
             Padding(
-                  padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

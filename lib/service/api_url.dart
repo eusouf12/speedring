@@ -266,5 +266,26 @@ class ApiUrl {
   // =================== Drive Sessions =====================================
   static const String createSession = "/drive-sessions/create-session";
   static const String mySessions = "/drive-sessions/my-sessions";
-  static String deleteSession(String id) => "/drive-sessions/delete-session/$id";
+  static const String getMySessionStats =
+      "/drive-sessions/get-my-session-stats";
+  static String deleteSession(String id) =>
+      "/drive-sessions/delete-session/$id";
+
+  // =================== Expeditions (Group Drives) =====================================
+  static const String createExpedition = "/expeditions/create-expedition";
+  
+  static String getAllExpeditions({int page = 1, int limit = 10, String? type}) {
+    String url = "/expeditions/get-all-expeditions?page=$page&limit=$limit";
+    if (type != null && type.isNotEmpty) {
+      url += "&type=${Uri.encodeComponent(type)}";
+    }
+    return url;
+  }
+  
+  static String getSingleExpedition(String id) => "/expeditions/single-expedition/$id";
+  static String joinExpedition(String id) => "/expeditions/join-expedition/$id";
+  static String getExpeditionParticipants(String id) => "/expeditions/get-expedition-participants/$id";
+  static String startExpedition(String id) => "/expeditions/start-expedition/$id";
+  static String updateExpedition(String id) => "/expeditions/update-expedition/$id";
+  static String deleteExpedition(String id) => "/expeditions/delete-expedition/$id";
 }

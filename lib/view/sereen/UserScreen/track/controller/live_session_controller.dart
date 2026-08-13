@@ -169,6 +169,60 @@ class LiveSessionController extends GetxController {
     mapController?.animateCamera(
       CameraUpdate.newLatLng(newPoint)
     );
+
+    _checkDestinationReached(position);
+  }
+
+  bool hasReachedDestination = false;
+
+  void _checkDestinationReached(Position position) {
+    if (hasReachedDestination || track?.finishCoordinates == null) return;
+
+    double distanceToFinish = Geolocator.distanceBetween(
+      position.latitude,
+      position.longitude,
+      track!.finishCoordinates!.lat ?? 0,
+      track!.finishCoordinates!.lng ?? 0,
+    );
+
+    // Assuming 50 meters as the threshold for reaching destination
+    if (distanceToFinish < 50) {
+      hasReachedDestination = true;
+      _showDestinationReachedModal();
+    }
+  }
+
+  void _showDestinationReachedModal() {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.black87,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: Colors.white10),
+        ),
+        title: const Text(
+          "Destination Reached",
+          style: TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          "You have arrived at your end location.",
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(); // Close dialog
+              finishSession(); // Proceed to finish
+            },
+            child: Text(
+              "finishSession".tr,
+              style: const TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
   }
 
   void _updatePolyline() {

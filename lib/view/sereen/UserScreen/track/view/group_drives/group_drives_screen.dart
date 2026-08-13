@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
-import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../../../../../service/api_url.dart';
 import '../../../../../../utils/app_const/app_const.dart' show AppConstants;
 import '../../widgets/track_appbar.dart';
+import '../../controller/track_controller.dart';
+import '../../../Profile/controller/profile_controller.dart';
+import '../../mode/expedition_model.dart';
+import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 class GroupDrivesScreen extends StatefulWidget {
   const GroupDrivesScreen({super.key});
@@ -15,140 +21,139 @@ class GroupDrivesScreen extends StatefulWidget {
 
 class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
   String selectedTab = "UPCOMING";
+  final TrackController trackController = Get.find<TrackController>();
+  final ProfileScreenController profileController =
+      Get.find<ProfileScreenController>();
 
-  final List<Map<String, dynamic>> mockDrives = [
-    {
-      "title": "MIDNIGHT COAST RUN",
-      "phase": "PHASE 01 // ACTIVE",
-      "status": "OPEN",
-      "date": "24.OCT // 22:00",
-      "members": "12/20",
-      "startingPoint": "PACIFIC COAST HIGHWAY // GATE 4",
-      "imageUrl":
-          "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&auto=format&fit=crop",
-      "isJoinable": true,
-      "isFull": false,
-    },
-    {
-      "title": "DORTMUND AUTOBAHN TEST",
-      "phase": "PHASE 02 // PENDING",
-      "status": "FULL",
-      "date": "26.OCT // 05:30",
-      "members": "38/38",
-      "startingPoint": "SPEEDRING HUB // MAIN ENTRANCE",
-      "imageUrl":
-          "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&auto=format&fit=crop",
-      "isJoinable": false,
-      "isFull": true,
-    },
-    {
-      "title": "METRO TUNNEL SPRINT",
-      "phase": "PHASE 01 // ACTIVE",
-      "status": "OPEN",
-      "date": "27.OCT // 01:00",
-      "members": "04/15",
-      "startingPoint": "SOUTH TUNNEL // SECTOR B",
-      "imageUrl":
-          "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop",
-      "isJoinable": true,
-      "isFull": false,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchData();
+    });
+  }
+
+  void _fetchData() {
+    String type = "upcoming";
+    if (selectedTab == "MY DRIVES") {
+      type = "my_drives";
+    } else if (selectedTab == "HISTORY") {
+      type = "history";
+    }
+    trackController.getAllExpeditions(refresh: true, type: type);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: TrackAppBar(
-        title: "GROUP DRIVES",
-        profilePic: AppConstants.profileImage2,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
-          onPressed: () => Get.back(),
+    return CustomGradient(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: TrackAppBar(
+          title: "groupDrives".tr,
+          profilePic:
+              profileController.profileData.value?.profileImage ??
+              AppConstants.profileImage2,
+          leading: BackButton(color: AppColors.yellow),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.white70),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          /// 1. START NEW DRIVE button
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              width: double.infinity,
-              height: 54,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.yellow,
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () => Get.toNamed(AppRoutes.tripConfiguratorScreen),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.add_circle_outline, size: 20),
-                    SizedBox(width: 8),
-                    Text(
-                      "START NEW DRIVE",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.5,
-                      ),
+        body: Column(
+          children: [
+            /// 1. START NEW DRIVE button
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.yellow,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ],
+                  ),
+                  onPressed: () =>
+                      Get.toNamed(AppRoutes.tripConfiguratorScreen),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add_circle_outline, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        "startNewDrive".tr.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
 
-          /// 2. Tabs Selector
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                _buildTabButton("UPCOMING"),
-                const SizedBox(width: 8),
-                _buildTabButton("MY DRIVES"),
-                const SizedBox(width: 8),
-                _buildTabButton("HISTORY"),
-              ],
+            /// 2. Tabs Selector
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  _buildTabButton("UPCOMING"),
+                  const SizedBox(width: 8),
+                  _buildTabButton("MY DRIVES"),
+                  const SizedBox(width: 8),
+                  _buildTabButton("HISTORY"),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          /// 3. Scrollable List of Group Drives
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: mockDrives.length,
-              itemBuilder: (context, index) {
-                final drive = mockDrives[index];
-                return _buildDriveCard(drive);
-              },
+            /// 3. Scrollable List of Group Drives
+            Expanded(
+              child: Obx(() {
+                if (trackController.isLoadingExpeditions.value &&
+                    trackController.expeditions.isEmpty) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.yellow),
+                  );
+                }
+                if (trackController.expeditions.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "noDrivesFound".tr,
+                      style: const TextStyle(color: Colors.white54),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: trackController.expeditions.length,
+                  itemBuilder: (context, index) {
+                    final drive = trackController.expeditions[index];
+                    return _buildDriveCard(drive);
+                  },
+                );
+              }),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-      bottomNavigationBar: const CustomNavBar(currentIndex: 2),
     );
   }
 
   Widget _buildTabButton(String label) {
     final bool isSelected = selectedTab == label;
+    String translationKey = label.toLowerCase().replaceAll(" ", "");
+    // Fallback if no translation found
+    String translated = translationKey.tr != translationKey
+        ? translationKey.tr
+        : label;
     return Expanded(
       child: GestureDetector(
         onTap: () {
           setState(() {
             selectedTab = label;
           });
+          _fetchData();
         },
         child: Container(
           height: 38,
@@ -166,7 +171,7 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
           ),
           alignment: Alignment.center,
           child: Text(
-            label,
+            translated.toUpperCase(),
             style: TextStyle(
               color: isSelected ? AppColors.yellow : Colors.white60,
               fontSize: 10,
@@ -179,8 +184,28 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
     );
   }
 
-  Widget _buildDriveCard(Map<String, dynamic> drive) {
-    final bool isOpen = drive["status"] == "OPEN";
+  Widget _buildDriveCard(Expedition drive) {
+    final bool isOpen = drive.status == "upcoming";
+    final String currentUserId = profileController.profileData.value?.id ?? "";
+    final bool isHost = drive.host?.id == currentUserId;
+    final bool isJoined =
+        drive.participants?.any((p) => p.id == currentUserId) ?? false;
+    final bool isFull =
+        (drive.participants?.length ?? 0) >= (drive.maxParticipants ?? 0);
+
+    String formattedDate = "";
+    if (drive.deploymentDate != null) {
+      formattedDate = DateFormat(
+        "dd.MMM // HH:mm",
+      ).format(drive.deploymentDate!);
+    } else {
+      formattedDate = drive.startTime ?? "";
+    }
+
+    String phaseText = "ACTIVE";
+    if (drive.status == "completed") phaseText = "COMPLETED";
+    if (drive.status == "upcoming") phaseText = "UPCOMING";
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -199,39 +224,21 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                   top: Radius.circular(16),
                 ),
                 child: Image.network(
-                  drive["imageUrl"],
+                  drive.coverImage != null &&
+                          drive.coverImage!.startsWith("http")
+                      ? drive.coverImage!
+                      : "${ApiUrl.imageUrl}/${drive.coverImage ?? ''}",
                   height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,
                   errorBuilder: (context, _, _) => Container(
                     height: 150,
+                    width: double.infinity,
                     color: Colors.white.withValues(alpha: 0.05),
                     child: const Icon(
                       Icons.directions_car,
                       color: Colors.white24,
                       size: 40,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isOpen ? AppColors.yellow : const Color(0xff333333),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    drive["status"],
-                    style: TextStyle(
-                      color: isOpen ? Colors.black : Colors.white70,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
                     ),
                   ),
                 ),
@@ -246,7 +253,7 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                   ),
                   color: Colors.black54,
                   child: Text(
-                    drive["phase"],
+                    phaseText,
                     style: const TextStyle(
                       color: AppColors.yellow,
                       fontSize: 9,
@@ -266,7 +273,7 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  drive["title"],
+                  drive.tripName ?? "",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -281,9 +288,9 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "DATE & TIME",
-                            style: TextStyle(
+                          Text(
+                            "dateAndTime".tr.toUpperCase(),
+                            style: const TextStyle(
                               color: Colors.white38,
                               fontSize: 8,
                               fontWeight: FontWeight.bold,
@@ -291,7 +298,7 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            drive["date"],
+                            formattedDate,
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
@@ -305,9 +312,9 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "MEMBERS",
-                            style: TextStyle(
+                          Text(
+                            "members".tr.toUpperCase(),
+                            style: const TextStyle(
                               color: Colors.white38,
                               fontSize: 8,
                               fontWeight: FontWeight.bold,
@@ -315,7 +322,7 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            drive["members"],
+                            "${drive.participants?.length ?? 0}/${drive.maxParticipants ?? 0}",
                             style: const TextStyle(
                               color: AppColors.yellow,
                               fontSize: 12,
@@ -328,24 +335,26 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  "STARTING POINT",
-                  style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
+                if (isJoined || isHost) ...[
+                  Text(
+                    "startingPoint".tr.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white38,
+                      fontSize: 8,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  drive["startingPoint"],
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(height: 4),
+                  Text(
+                    drive.meetingPoint?.address ?? "",
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                ],
 
                 /// Button & Share section
                 Row(
@@ -353,32 +362,12 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                     Expanded(
                       child: SizedBox(
                         height: 44,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isOpen
-                                ? AppColors.yellow
-                                : const Color(0xff2a2a2a),
-                            foregroundColor: isOpen
-                                ? Colors.black
-                                : Colors.white30,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          onPressed: () {
-                            if (isOpen) {
-                              Get.toNamed(AppRoutes.tripLobbyScreen);
-                            }
-                          },
-                          child: Text(
-                            isOpen ? "JOIN DRIVE" : "LOBBY FULL",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
+                        child: _buildActionButton(
+                          drive,
+                          isOpen,
+                          isHost,
+                          isJoined,
+                          isFull,
                         ),
                       ),
                     ),
@@ -396,7 +385,12 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                           color: Colors.white70,
                           size: 18,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Share.share(
+                            "Join my expedition '${drive.tripName}' on Speedring! Date: $formattedDate. Location: ${drive.meetingPoint?.address ?? ''}",
+                            subject: "Join ${drive.tripName}",
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -407,5 +401,103 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildActionButton(
+    Expedition drive,
+    bool isOpen,
+    bool isHost,
+    bool isJoined,
+    bool isFull,
+  ) {
+    if (isHost && isOpen) {
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.yellow,
+          foregroundColor: Colors.black,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        onPressed: () {
+          trackController.startExpedition(drive.id!);
+        },
+        child: Text(
+          "startTrip".tr.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.5,
+          ),
+        ),
+      );
+    }
+
+    if (isJoined) {
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xff2a2a2a),
+          foregroundColor: AppColors.yellow,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        onPressed: () {
+          Get.toNamed(AppRoutes.tripLobbyScreen, arguments: drive);
+        },
+        child: Text(
+          "joined".tr.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.5,
+          ),
+        ),
+      );
+    }
+
+    if (isOpen) {
+      if (isFull) {
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xff2a2a2a),
+            foregroundColor: Colors.white30,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          onPressed: null,
+          child: Text(
+            "lobbyFull".tr.toUpperCase(),
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.5,
+            ),
+          ),
+        );
+      }
+
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.yellow,
+          foregroundColor: Colors.black,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        onPressed: () {
+          trackController.joinExpedition(drive.id!);
+        },
+        child: Text(
+          "joinDrive".tr.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.5,
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }

@@ -9,11 +9,13 @@ import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
 import '../widgets/track_appbar.dart';
 import '../../Profile/controller/profile_controller.dart'
     show ProfileScreenController;
+import '../controller/track_controller.dart';
 
 class TrackHubScreen extends StatelessWidget {
   TrackHubScreen({super.key});
   final ProfileScreenController profileController =
       Get.find<ProfileScreenController>();
+  final TrackController trackController = Get.find<TrackController>();
   @override
   Widget build(BuildContext context) {
     return CustomGradient(
@@ -189,7 +191,10 @@ class TrackHubScreen extends StatelessWidget {
                         const SizedBox(height: 6),
                         Text(
                           "joinGroupRoadTrips".tr,
-                          style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         Row(
@@ -218,130 +223,140 @@ class TrackHubScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               /// 5. MY PAST LAPS card
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: const Color(0xff111111),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.white10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.history, color: AppColors.yellow, size: 20),
-                        const SizedBox(width: 8),
-                        Text(
-                          "myPastLaps".tr,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "viewPreviousTrackData".tr,
-                      style: const TextStyle(
-                        color: Colors.white60,
-                        fontSize: 12,
-                        height: 1.4,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Text(
-                          "viewAnalytics".tr,
-                          style: const TextStyle(
+              GestureDetector(
+                onTap: () => Get.toNamed(AppRoutes.mySessionsScreen),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff111111),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.history,
                             color: AppColors.yellow,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w900,
+                            size: 20,
                           ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "myPastLaps".tr,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "viewPreviousTrackData".tr,
+                        style: const TextStyle(
+                          color: Colors.white60,
+                          fontSize: 12,
+                          height: 1.4,
                         ),
-                        const SizedBox(width: 4),
-                        const Icon(
-                          Icons.chevron_right,
-                          color: AppColors.yellow,
-                          size: 12,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Text(
+                            "viewAnalytics".tr,
+                            style: const TextStyle(
+                              color: AppColors.yellow,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.chevron_right,
+                            color: AppColors.yellow,
+                            size: 12,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
 
-                    /// Stats row grid
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: const Color(0xff1d1d1d),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "bestLapUpper".tr,
-                                  style: const TextStyle(
-                                    color: Colors.white38,
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                      /// Stats row grid
+                      Obx(
+                        () => Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff1d1d1d),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                const SizedBox(height: 6),
-                                const Text(
-                                  "01:54.22",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "totalSessions"
+                                          .tr, // Or fallback to plain text if not translated
+                                      style: const TextStyle(
+                                        color: Colors.white38,
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "${trackController.sessionStats.value?.totalSessions ?? 0}",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff1d1d1d),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "totalDistance".tr,
+                                      style: const TextStyle(
+                                        color: Colors.white38,
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "${trackController.sessionStats.value?.totalDistance ?? 0}",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: const Color(0xff1d1d1d),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "sessionsUpper".tr,
-                                  style: const TextStyle(
-                                    color: Colors.white38,
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                const Text(
-                                  "42",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 30),

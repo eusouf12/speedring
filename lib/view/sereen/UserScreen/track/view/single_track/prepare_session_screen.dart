@@ -5,11 +5,11 @@ import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
 import 'package:speedring/view/sereen/UserScreen/track/mode/track_model.dart';
-import '../../../../utils/app_const/app_const.dart';
-import '../Profile/controller/profile_controller.dart';
-import '../Profile/model/profile_model.dart';
-import 'controller/track_controller.dart' show TrackController;
-import 'widgets/track_appbar.dart';
+import '../../../../../../utils/app_const/app_const.dart';
+import '../../../Profile/controller/profile_controller.dart';
+import '../../../Profile/model/profile_model.dart';
+import '../../controller/track_controller.dart' show TrackController;
+import '../../widgets/track_appbar.dart';
 
 class PrepareSessionScreen extends StatelessWidget {
   PrepareSessionScreen({super.key});
@@ -492,7 +492,10 @@ class PrepareSessionScreen extends StatelessWidget {
                       );
                       return;
                     }
-                    Get.toNamed(AppRoutes.liveSessionScreen, arguments: trackController.selectedTrack.value);
+                    Get.toNamed(
+                      AppRoutes.liveSessionScreen,
+                      arguments: trackController.selectedTrack.value,
+                    );
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

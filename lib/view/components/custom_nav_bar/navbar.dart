@@ -125,7 +125,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
                     Text(
                       "track".tr.toUpperCase(),
                       style: TextStyle(
-                        color: AppColors.yellow,
+                        color: bottomNavIndex == 2 ? AppColors.yellow : const Color(0xffD1C5AB),
                         fontSize: 9.sp,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.5,

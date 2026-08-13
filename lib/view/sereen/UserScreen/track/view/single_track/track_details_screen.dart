@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../core/app_routes/app_routes.dart';
-import '../../../../../utils/app_colors/app_colors.dart';
-import '../mode/track_model.dart';
+import '../../../../../../core/app_routes/app_routes.dart';
+import '../../../../../../utils/app_colors/app_colors.dart';
+import '../../mode/track_model.dart';
 
 class TrackDetailsScreen extends StatelessWidget {
   const TrackDetailsScreen({super.key});

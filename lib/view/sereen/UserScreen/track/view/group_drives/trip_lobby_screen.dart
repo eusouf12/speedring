@@ -1,472 +1,664 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/sereen/UserScreen/track/widgets/track_appbar.dart';
-
+import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/track/mode/expedition_model.dart';
 import '../../../../../../utils/app_const/app_const.dart';
+import 'package:speedring/service/api_url.dart';
+import 'package:intl/intl.dart';
 
-class TripLobbyScreen extends StatelessWidget {
+import '../../../Profile/controller/profile_controller.dart';
+
+class TripLobbyScreen extends StatefulWidget {
   const TripLobbyScreen({super.key});
 
   @override
+  State<TripLobbyScreen> createState() => _TripLobbyScreenState();
+}
+
+class _TripLobbyScreenState extends State<TripLobbyScreen> {
+  final TrackController trackController = Get.find<TrackController>();
+  final ProfileScreenController profileController =
+      Get.find<ProfileScreenController>();
+  Expedition? driveArg;
+
+  Timer? _timer;
+  Duration _timeLeft = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    driveArg = Get.arguments as Expedition?;
+    if (driveArg != null && driveArg!.id != null) {
+      trackController.fetchSingleExpedition(driveArg!.id!);
+    }
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (trackController.currentLobbyExpedition.value?.deploymentDate !=
+          null) {
+        final deployDate = trackController
+            .currentLobbyExpedition
+            .value!
+            .deploymentDate!
+            .toLocal();
+        final diff = deployDate.difference(DateTime.now());
+        setState(() {
+          if (diff.isNegative) {
+            _timeLeft = Duration.zero;
+          } else {
+            _timeLeft = diff;
+          }
+        });
+      }
+    });
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: TrackAppBar(
-        profilePic: AppConstants.profileImage2,
-        title: "TRIP LOBBY",
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
-          onPressed: () => Get.back(),
+    return CustomGradient(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: TrackAppBar(
+          profilePic:
+              profileController.profileData.value?.profileImage ??
+              AppConstants.profileImage2,
+          title: "tripLobby".tr.toUpperCase(),
+          leading: BackButton(color: AppColors.yellow),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white70),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// Parallax Header Image with Countdown Timer
-            Stack(
-              alignment: Alignment.bottomCenter,
+        body: Obx(() {
+          if (trackController.isLoadingLobby.value &&
+              trackController.currentLobbyExpedition.value == null) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.yellow),
+            );
+          }
+
+          final Expedition? drive =
+              trackController.currentLobbyExpedition.value ?? driveArg;
+          if (drive == null) {
+            return Center(
+              child: Text(
+                "errorLoadingLobbyDetails".tr,
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+
+          final bool isHost =
+              drive.host?.id == profileController.profileData.value?.id;
+          final bool canStart = _timeLeft == Duration.zero;
+
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 220,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=800&auto=format&fit=crop",
+                /// Parallax Header Image with Countdown Timer
+                Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Container(
+                      height: 220,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        image:
+                            (drive.coverImage != null &&
+                                drive.coverImage!.isNotEmpty)
+                            ? DecorationImage(
+                                image: NetworkImage(
+                                  drive.coverImage!.startsWith("http")
+                                      ? drive.coverImage!
+                                      : "${ApiUrl.imageUrl}/${drive.coverImage}",
+                                ),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                       ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black,
-                          Colors.transparent,
-                          Colors.black87,
-                        ],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 20,
-                  child: Column(
-                    children: [
-                      const Text(
-                        "COMMENCING IN",
-                        style: TextStyle(
-                          color: AppColors.yellow,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.black,
+                              Colors.transparent,
+                              Colors.black87,
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: const [
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      child: Column(
+                        children: [
                           Text(
-                            "00:42:12",
-                            style: TextStyle(
+                            canStart
+                                ? "expeditionReady".tr.toUpperCase()
+                                : "commencingIn".tr.toUpperCase(),
+                            style: const TextStyle(
                               color: AppColors.yellow,
-                              fontSize: 36,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 2,
-                              shadows: [
-                                Shadow(color: Colors.black, blurRadius: 10),
-                              ],
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.5,
                             ),
                           ),
-                          SizedBox(width: 8),
-                          Text(
-                            "T-MINUS",
-                            style: TextStyle(
-                              color: AppColors.yellow,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          const SizedBox(height: 6),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              Text(
+                                canStart
+                                    ? "00:00:00"
+                                    : _formatDuration(_timeLeft),
+                                style: const TextStyle(
+                                  color: AppColors.yellow,
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 2,
+                                  shadows: [
+                                    Shadow(color: Colors.black, blurRadius: 10),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              if (!canStart)
+                                const Text(
+                                  "T-MINUS", // Will add to translations if needed or use "tMinus".tr
+                                  style: TextStyle(
+                                    color: AppColors.yellow,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                            ],
                           ),
                         ],
                       ),
+                    ),
+                  ],
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 24),
+
+                      /// PHASE 01 // INTEL
+                      _buildSectionHeader("phase01Intel".tr.toUpperCase()),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xff111111),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.white10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              drive.tripName?.toUpperCase() ??
+                                  "untitledExpedition".tr.toUpperCase(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.star,
+                                  color: AppColors.yellow,
+                                  size: 12,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "host".tr.toUpperCase() + ": ",
+                                  style: const TextStyle(
+                                    color: Colors.white38,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  "@${drive.host?.userName?.toUpperCase() ?? "unknown".tr.toUpperCase()}",
+                                  style: const TextStyle(
+                                    color: AppColors.yellow,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+
+                            /// Stats Grid
+                            GridView.count(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              crossAxisCount: 2,
+                              childAspectRatio: 2.2,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              children: [
+                                _buildGridStat(
+                                  "date".tr.toUpperCase(),
+                                  drive.deploymentDate != null
+                                      ? DateFormat("MMM dd")
+                                            .format(drive.deploymentDate!)
+                                            .toUpperCase()
+                                      : "--",
+                                ),
+                                _buildGridStat(
+                                  "startTime".tr.toUpperCase(),
+                                  drive.deploymentDate != null
+                                      ? DateFormat("hh:mm a").format(
+                                          drive.deploymentDate!.toLocal(),
+                                        )
+                                      : "--",
+                                ),
+                                _buildGridStat(
+                                  "vehicles".tr.toUpperCase(),
+                                  drive.vehicleClass?.toUpperCase() ??
+                                      "mixed".tr.toUpperCase(),
+                                ),
+                                _buildGridStat(
+                                  "meetingPt".tr.toUpperCase(),
+                                  drive.meetingPoint?.address?.toUpperCase() ??
+                                      "tbd".tr.toUpperCase(),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      /// PHASE 02 // CONVOY
+                      _buildSectionHeader("phase02Convoy".tr.toUpperCase()),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xff111111),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.white10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "convoyStatus".tr.toUpperCase(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text:
+                                            "${drive.participants?.length ?? 0} / ${drive.maxParticipants ?? 0} ",
+                                        style: const TextStyle(
+                                          color: AppColors.yellow,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            " " +
+                                            "driversJoined".tr.toUpperCase(),
+                                        style: const TextStyle(
+                                          color: Colors.white38,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  style: TextStyle(fontSize: 10.sp),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+
+                            /// Joined Drivers Avatars Stack
+                            GestureDetector(
+                              onTap: () {
+                                if (drive.participants == null ||
+                                    drive.participants!.isEmpty)
+                                  return;
+                                Get.bottomSheet(
+                                  Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xff111111),
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "convoyParticipants".tr.toUpperCase(),
+                                          style: const TextStyle(
+                                            color: AppColors.yellow,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w900,
+                                            letterSpacing: 1.0,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Flexible(
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount:
+                                                drive.participants!.length,
+                                            itemBuilder: (context, index) {
+                                              final participant =
+                                                  drive.participants![index];
+                                              final pImageUrl =
+                                                  (participant.profileImage !=
+                                                          null &&
+                                                      participant
+                                                          .profileImage!
+                                                          .isNotEmpty)
+                                                  ? (participant.profileImage!
+                                                            .startsWith('http')
+                                                        ? participant
+                                                              .profileImage!
+                                                        : "${ApiUrl.imageUrl}/${participant.profileImage}")
+                                                  : "https://ui-avatars.com/api/?name=${participant.name ?? 'U'}&background=random";
+                                              return ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                leading: CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                    pImageUrl,
+                                                  ),
+                                                  backgroundColor:
+                                                      Colors.white24,
+                                                ),
+                                                title: Text(
+                                                  participant.name ??
+                                                      "unknown".tr,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                subtitle: Text(
+                                                  "@${participant.userName ?? 'unknown'.tr}",
+                                                  style: const TextStyle(
+                                                    color: Colors.white54,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  isScrollControlled: true,
+                                );
+                              },
+                              child: SizedBox(
+                                height: 36,
+                                child: Stack(
+                                  children: [
+                                    for (
+                                      int i = 0;
+                                      i < (drive.participants?.length ?? 0) &&
+                                          i < 3;
+                                      i++
+                                    )
+                                      Positioned(
+                                        left: i * 24.0, // overlap offset
+                                        child: Container(
+                                          width: 36,
+                                          height: 36,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: const Color(0xff222222),
+                                            border: Border.all(
+                                              color: AppColors.yellow,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              18,
+                                            ),
+                                            child: Image.network(
+                                              (drive
+                                                              .participants![i]
+                                                              .profileImage !=
+                                                          null &&
+                                                      drive
+                                                          .participants![i]
+                                                          .profileImage!
+                                                          .isNotEmpty)
+                                                  ? (drive
+                                                            .participants![i]
+                                                            .profileImage!
+                                                            .startsWith('http')
+                                                        ? drive
+                                                              .participants![i]
+                                                              .profileImage!
+                                                        : "${ApiUrl.imageUrl}/${drive.participants![i].profileImage}")
+                                                  : "https://ui-avatars.com/api/?name=${drive.participants![i].name ?? 'U'}&background=random",
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => const Icon(
+                                                    Icons.person,
+                                                    color: Colors.white54,
+                                                    size: 20,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    if ((drive.participants?.length ?? 0) > 3)
+                                      Positioned(
+                                        left: 3 * 24.0,
+                                        child: Container(
+                                          width: 36,
+                                          height: 36,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xff222222),
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: AppColors.yellow,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "+${drive.participants!.length - 3}",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      /// COMMAND
+                      if (isHost) ...[
+                        _buildSectionHeader("command".tr.toUpperCase()),
+                        if (drive.status == null ||
+                            drive.status!.toLowerCase() == 'upcoming')
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: canStart
+                                    ? AppColors.yellow
+                                    : Colors.white24,
+                                foregroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onPressed: canStart
+                                  ? () => trackController.startExpeditionTrip(
+                                      drive.id!,
+                                    )
+                                  : null,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.play_arrow,
+                                    size: 20,
+                                    color: canStart
+                                        ? Colors.black
+                                        : Colors.white38,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "startTrip".tr.toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 0.5,
+                                      color: canStart
+                                          ? Colors.black
+                                          : Colors.white38,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        if (drive.status == null ||
+                            drive.status!.toLowerCase() == 'upcoming')
+                          const SizedBox(height: 12),
+                        _buildCommandButton(
+                          "editTripDetails".tr.toUpperCase(),
+                          Icons.edit_outlined,
+                          onTap: () {
+                            trackController.populateConfiguratorData(drive);
+                            Get.toNamed(
+                              AppRoutes.tripConfiguratorScreen,
+                              arguments: drive,
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        _buildCommandButton(
+                          "SHARE INVITE LINK",
+                          Icons.share_outlined,
+                          onTap: () {
+                            String url = "${ApiUrl.baseUrl}/invite/${drive.id}";
+                            Share.share(
+                              "Join my trip '${drive.tripName}' on Speedring! Link: $url",
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        Center(
+                          child: TextButton(
+                            onPressed: () {
+                              Get.defaultDialog(
+                                title: "cancelTrip".tr,
+                                middleText: "cancelExpeditionDesc".tr,
+                                textCancel: "no".tr,
+                                textConfirm: "yesCancel".tr,
+                                confirmTextColor: Colors.white,
+                                buttonColor: const Color(0xffF0294A),
+                                onConfirm: () {
+                                  trackController.deleteExpedition(drive.id!);
+                                  Get.back(); // close dialog
+                                  Get.back(); // return to Group Drives Screen
+                                },
+                              );
+                            },
+                            child: const Text(
+                              "CANCEL TRIP",
+                              style: TextStyle(
+                                color: Color(0xffF0294A),
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ] else ...[
+                        _buildSectionHeader("actions".tr.toUpperCase()),
+                        _buildCommandButton(
+                          "shareInviteLink".tr.toUpperCase(),
+                          Icons.share_outlined,
+                          onTap: () {
+                            String url = "${ApiUrl.baseUrl}/invite/${drive.id}";
+                            Share.share(
+                              "Join the trip '${drive.tripName}' on Speedring! Link: $url",
+                            );
+                          },
+                        ),
+                      ],
+
+                      const SizedBox(height: 40),
                     ],
                   ),
                 ),
               ],
             ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 24),
-
-                  /// PHASE 01 // INTEL
-                  _buildSectionHeader("PHASE 01 // INTEL"),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff111111),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "MIDNIGHT COAST RUN",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: const [
-                            Icon(Icons.star, color: AppColors.yellow, size: 12),
-                            SizedBox(width: 4),
-                            Text(
-                              "HOST: ",
-                              style: TextStyle(
-                                color: Colors.white38,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              "@COMMANDER_ALPHA",
-                              style: TextStyle(
-                                color: AppColors.yellow,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-
-                        /// Stats Grid
-                        GridView.count(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          crossAxisCount: 2,
-                          childAspectRatio: 2.2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          children: [
-                            _buildGridStat("DATE", "OCT 24"),
-                            _buildGridStat("START TIME", "22:00 PST"),
-                            _buildGridStat("DISTANCE", "142 KM"),
-                            _buildGridStat("MEETING PT", "NEPTUNE'S"),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  /// PHASE 02 // CONVOY
-                  _buildSectionHeader("PHASE 02 // CONVOY"),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff111111),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "CONVOY STATUS",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text.rich(
-                              TextSpan(
-                                children: const [
-                                  TextSpan(
-                                    text: "12 / 28 ",
-                                    style: TextStyle(
-                                      color: AppColors.yellow,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "DRIVERS JOINED",
-                                    style: TextStyle(
-                                      color: Colors.white38,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              style: TextStyle(fontSize: 10.sp),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-
-                        /// Joined Drivers Avatars
-                        Row(
-                          children: [
-                            _buildAvatar(
-                              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop",
-                            ),
-                            const SizedBox(width: 6),
-                            _buildAvatar(
-                              "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&fit=crop",
-                            ),
-                            const SizedBox(width: 6),
-                            _buildAvatar(
-                              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop",
-                            ),
-                            const SizedBox(width: 6),
-                            _buildAvatar(
-                              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&fit=crop",
-                            ),
-                            const SizedBox(width: 6),
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: const BoxDecoration(
-                                color: Color(0xff222222),
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                "+8",
-                                style: TextStyle(
-                                  color: Colors.white60,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          "PENDING INVITATIONS (2)",
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        _buildPendingInvite("@GHOST_RIDER_99"),
-                        const SizedBox(height: 8),
-                        _buildPendingInvite("@VALKYRIE_P1"),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  /// TACTICAL ROUTE MAP
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff111111),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              "TACTICAL ROUTE MAP",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Icon(
-                              Icons.fullscreen,
-                              color: Colors.white70,
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          "PACIFIC COAST HIGHWAY | SECTOR 04",
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontSize: 8,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        /// styled wireframe map box
-                        Container(
-                          height: 140,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.black26,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.05),
-                            ),
-                            image: const DecorationImage(
-                              image: NetworkImage(
-                                "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&fit=crop",
-                              ),
-                              fit: BoxFit.cover,
-                              opacity: 0.3,
-                            ),
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                top: 12,
-                                left: 12,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    Text(
-                                      "WAYPOINT 01",
-                                      style: TextStyle(
-                                        color: AppColors.yellow,
-                                        fontSize: 7,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "34.0259° N, 118.7797° W",
-                                      style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 8,
-                                        fontFamily: "monospace",
-                                      ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      "ELEVATION",
-                                      style: TextStyle(
-                                        color: Colors.white38,
-                                        fontSize: 7,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "1520 MSL",
-                                      style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 8,
-                                        fontFamily: "monospace",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              CustomPaint(
-                                painter: _WireframePainter(),
-                                child: Container(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  /// COMMAND
-                  _buildSectionHeader("COMMAND"),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.yellow,
-                        foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () => Get.toNamed(AppRoutes.activeDriveScreen),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.play_arrow, size: 20),
-                          SizedBox(width: 8),
-                          Text(
-                            "START TRIP",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildCommandButton(
-                    "INVITE MEMBERS",
-                    Icons.person_add_alt_1_outlined,
-                  ),
-                  const SizedBox(height: 10),
-                  _buildCommandButton("EDIT TRIP DETAILS", Icons.edit_outlined),
-                  const SizedBox(height: 10),
-                  _buildCommandButton(
-                    "SHARE INVITE LINK",
-                    Icons.share_outlined,
-                  ),
-                  const SizedBox(height: 24),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "CANCEL TRIP ARCHIVE",
-                        style: TextStyle(
-                          color: Color(0xffF0294A),
-                          fontSize: 10,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        }),
       ),
     );
   }
@@ -519,50 +711,11 @@ class TripLobbyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar(String url) {
-    return Container(
-      width: 32,
-      height: 32,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: AppColors.yellow, width: 1),
-        image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
-      ),
-    );
-  }
-
-  Widget _buildPendingInvite(String user) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          user,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: const Color(0xff222222),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: const Text(
-            "AWAITING",
-            style: TextStyle(
-              color: Colors.white30,
-              fontSize: 8,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCommandButton(String label, IconData icon) {
+  Widget _buildCommandButton(
+    String label,
+    IconData icon, {
+    VoidCallback? onTap,
+  }) {
     return SizedBox(
       width: double.infinity,
       height: 48,
@@ -575,7 +728,7 @@ class TripLobbyScreen extends StatelessWidget {
           ),
           elevation: 0,
         ),
-        onPressed: () {},
+        onPressed: onTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -590,25 +743,4 @@ class TripLobbyScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class _WireframePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.05)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-
-    const double gridSpacing = 20.0;
-    for (double i = 0; i < size.width; i += gridSpacing) {
-      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
-    }
-    for (double i = 0; i < size.height; i += gridSpacing) {
-      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

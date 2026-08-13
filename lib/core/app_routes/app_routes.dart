@@ -32,10 +32,10 @@ import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/access_granted_
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/create_club_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/edit_club_screen.dart';
 import '../../view/sereen/UserScreen/track/view/track_hub_screen.dart';
-import '../../view/sereen/UserScreen/track/prepare_session_screen.dart';
-import '../../view/sereen/UserScreen/track/live_session_screen.dart';
-import '../../view/sereen/UserScreen/track/drive_summary_screen.dart';
-import '../../view/sereen/UserScreen/track/view/find_track_screen.dart';
+import '../../view/sereen/UserScreen/track/view/single_track/prepare_session_screen.dart';
+import '../../view/sereen/UserScreen/track/view/single_track/live_session_screen.dart';
+import '../../view/sereen/UserScreen/track/view/single_track/drive_summary_screen.dart';
+import '../../view/sereen/UserScreen/track/view/single_track/find_track_screen.dart';
 import '../../view/sereen/UserScreen/track/view/group_drives/group_drives_screen.dart';
 import '../../view/sereen/UserScreen/track/view/group_drives/trip_configurator_screen.dart';
 import '../../view/sereen/UserScreen/track/view/group_drives/trip_lobby_screen.dart';
@@ -74,7 +74,8 @@ import '../../view/sereen/UserScreen/Profile/Screen/privacy_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/help_support_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/about_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/personalize_interest_screen.dart';
-import '../../view/sereen/UserScreen/track/my_sessions_screen.dart' as speedring_my_sessions;
+import '../../view/sereen/UserScreen/track/view/single_track/my_sessions_screen.dart'
+    as speedring_my_sessions;
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step1.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step2.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step3.dart';
@@ -112,7 +113,7 @@ import '../../view/sereen/BusinessScreen/Business_Profile/business_account_setti
 import '../../view/sereen/BusinessScreen/Business_Profile/business_select_plan_screen.dart';
 import '../../view/sereen/BusinessScreen/Promotion/business_promotion_hub_screen.dart';
 import '../../view/sereen/BusinessScreen/Promotion/business_create_promotion_screen.dart';
-import '../../view/sereen/UserScreen/track/view/track_details_screen.dart';
+import '../../view/sereen/UserScreen/track/view/single_track/track_details_screen.dart';
 
 class AppRoutes {
   ///===========================Authentication==========================
@@ -299,10 +300,7 @@ class AppRoutes {
     GetPage(name: findTrackScreen, page: () => FindTrackScreen()),
     GetPage(name: trackDetailsScreen, page: () => const TrackDetailsScreen()),
     GetPage(name: groupDrivesScreen, page: () => const GroupDrivesScreen()),
-    GetPage(
-      name: tripConfiguratorScreen,
-      page: () => const TripConfiguratorScreen(),
-    ),
+    GetPage(name: tripConfiguratorScreen, page: () => TripConfiguratorScreen()),
     GetPage(name: tripLobbyScreen, page: () => const TripLobbyScreen()),
     GetPage(name: activeDriveScreen, page: () => const ActiveDriveScreen()),
     GetPage(name: endExpeditionScreen, page: () => const EndExpeditionScreen()),
@@ -522,6 +520,9 @@ class AppRoutes {
       page: () => const ClubJoinRequestsScreen(),
     ),
     GetPage(name: clubGroupPostScreen, page: () => const ClubGroupPostScreen()),
-    GetPage(name: mySessionsScreen, page: () => const speedring_my_sessions.MySessionsScreen()),
+    GetPage(
+      name: mySessionsScreen,
+      page: () => const speedring_my_sessions.MySessionsScreen(),
+    ),
   ];
 }

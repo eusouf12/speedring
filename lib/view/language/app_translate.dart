@@ -161,6 +161,7 @@ class AppTranslate extends Translations {
       'highResInfo': 'High resolution PNG, JPG, or JPEG',
       'addVehicle': 'ADD VEHICLE',
       'skipNow': 'SKIP FOR NOW',
+      'joinDrive': 'Join Drive',
 
       // Garage & Add Vehicle
       'noVehiclesAdded': 'No vehicles added yet.',
@@ -1669,6 +1670,7 @@ class AppTranslate extends Translations {
       'viewAnalytics': 'ANALYSE ANZEIGEN',
       'bestLapUpper': 'BESTE RUNDE',
       'sessionsUpper': 'SITZUNGEN',
+      'joinDrive': 'FAHRT BEITRETEN',
     },
   };
 }
