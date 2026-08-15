@@ -1,6 +1,14 @@
 class ApiUrl {
-  static const String baseUrl = "http://10.10.28.90:4050/api/v1";
-  static const String imageUrl = "http://10.10.28.90:4050";
+  static const String baseUrl =
+      "https://comparable-leasing-overcome-prix.trycloudflare.com/api/v1";
+  static const String imageUrl =
+      "https://comparable-leasing-overcome-prix.trycloudflare.com";
+
+  //=============== wINDOWS ======================
+  // static const String baseUrl = "http://10.10.28.90:4050/api/v1";
+  // static const String imageUrl = "http://10.10.28.90:4050";
+
+  //========================= Mac ========================
   // static const String baseUrl = "http://10.0.2.2:4050/api/v1";
   // static const String imageUrl = "http://10.0.2.2:4050";
   static String socketUrl = imageUrl;
@@ -30,7 +38,8 @@ class ApiUrl {
   static String buyPlan({required String planId}) =>
       "/payments/create-checkout-session/$planId";
 
-  static const String getActiveCoinPackages = "/coin-packages/get-active-packages";
+  static const String getActiveCoinPackages =
+      "/coin-packages/get-active-packages";
   static String buyCoinPackage(String packageId) =>
       "/payments/create-coin-checkout-session/$packageId";
   static const String getMyWallet = "/wallets/my-wallet";
@@ -281,20 +290,36 @@ class ApiUrl {
 
   // =================== Expeditions (Group Drives) =====================================
   static const String createExpedition = "/expeditions/create-expedition";
-  
-  static String getAllExpeditions({int page = 1, int limit = 10, String? type}) {
+
+  static String getAllExpeditions({
+    int page = 1,
+    int limit = 10,
+    String? type,
+  }) {
     String url = "/expeditions/get-all-expeditions?page=$page&limit=$limit";
     if (type != null && type.isNotEmpty) {
       url += "&type=${Uri.encodeComponent(type)}";
     }
     return url;
   }
-  
-  static String getSingleExpedition(String id) => "/expeditions/single-expedition/$id";
+
+  static String getSingleExpedition(String id) =>
+      "/expeditions/single-expedition/$id";
   static String joinExpedition(String id) => "/expeditions/join-expedition/$id";
-  static String getExpeditionParticipants(String id) => "/expeditions/get-expedition-participants/$id";
-  static String startExpedition(String id) => "/expeditions/start-expedition/$id";
+  static String getExpeditionParticipants(String id) =>
+      "/expeditions/get-expedition-participants/$id";
+  static String startExpedition(String id) =>
+      "/expeditions/start-expedition/$id";
   static String endExpedition(String id) => "/expeditions/end-expedition/$id";
-  static String updateExpedition(String id) => "/expeditions/update-expedition/$id";
-  static String deleteExpedition(String id) => "/expeditions/delete-expedition/$id";
+  static String updateExpedition(String id) =>
+      "/expeditions/update-expedition/$id";
+  static String deleteExpedition(String id) =>
+      "/expeditions/delete-expedition/$id";
+
+  // =================== Videos / Reels =====================================
+  // static const String createVideoPost = "/videos/create-video-post";
+  // static const String getAllVideos = "/videos/get-all-videos";
+  // static const String getMyVideos = "/videos/get-my-videos";
+  // static String deleteVideo(String id) => "/videos/delete-video/$id";
+  static String getSingleVideo(String id) => "/videos/get-single-video/$id";
 }

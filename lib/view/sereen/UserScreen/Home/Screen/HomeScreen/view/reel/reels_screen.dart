@@ -23,10 +23,10 @@ class _ReelsScreenState extends State<ReelsScreen> {
           // Reels vertical page view
           Obx(() {
             if (controller.reels.isEmpty) {
-              return const Center(
+              return Center(
                 child: Text(
-                  "No reels available yet.",
-                  style: TextStyle(color: Colors.white60, fontSize: 16),
+                  "NO_REELS_AVAILABLE_YET".tr,
+                  style: const TextStyle(color: Colors.white60, fontSize: 16),
                 ),
               );
             }
@@ -68,9 +68,9 @@ class _ReelsScreenState extends State<ReelsScreen> {
                   ),
                 ),
                 // Title
-                const Text(
-                  "REELS",
-                  style: TextStyle(
+                Text(
+                  "REELS".tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
@@ -200,7 +200,9 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
         children: [
           // Reel simulated video background (high resolution motor image)
           Image.network(
-            widget.reelData['imageUrl'] ?? 'https://picsum.photos/400/800',
+            widget.reelData['videoUrl'] ??
+                widget.reelData['imageUrl'] ??
+                'https://picsum.photos/400/800',
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
                 Container(color: Colors.grey[900]),
@@ -286,11 +288,15 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                     CircleAvatar(
                       radius: 18,
                       backgroundColor: Colors.white24,
-                      backgroundImage: NetworkImage(widget.reelData['avatar']),
+                      backgroundImage: NetworkImage(
+                        widget.reelData['user']?['profileImage'] ??
+                            widget.reelData['avatar'] ??
+                            'https://via.placeholder.com/150',
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      "@${widget.reelData['username']}",
+                      "@${widget.reelData['user']?['name'] ?? widget.reelData['username']}",
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -308,9 +314,9 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                         border: Border.all(color: AppColors.yellow, width: 1),
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: const Text(
-                        "FOLLOW",
-                        style: TextStyle(
+                      child: Text(
+                        "FOLLOW".tr,
+                        style: const TextStyle(
                           color: AppColors.yellow,
                           fontSize: 9,
                           fontWeight: FontWeight.bold,
@@ -322,7 +328,9 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                 const SizedBox(height: 12),
                 // Caption
                 Text(
-                  widget.reelData['caption'] ?? '',
+                  widget.reelData['videoDetails']?['title'] ??
+                      widget.reelData['caption'] ??
+                      '',
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -345,7 +353,9 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                       child: SizedBox(
                         height: 20,
                         child: Text(
-                          widget.reelData['musicName'] ?? 'Original Sound',
+                          widget.reelData['videoDetails']?['description'] ??
+                              widget.reelData['musicName'] ??
+                              "ORIGINAL_SOUND".tr,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: Colors.white70,
@@ -391,11 +401,15 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                 _buildActionButton(
                   icon: Icons.send_rounded,
                   color: Colors.white,
-                  label: _formatCount(widget.reelData['shares']),
+                  label: _formatCount(
+                    widget.reelData['shareCount'] ??
+                        widget.reelData['shares'] ??
+                        0,
+                  ),
                   onTap: () {
                     Get.snackbar(
-                      "Shared",
-                      "Reel link copied to clipboard!",
+                      "SHARED".tr,
+                      "REEL_LINK_COPIED".tr,
                       backgroundColor: Colors.black87,
                       colorText: Colors.white,
                       snackPosition: SnackPosition.BOTTOM,
@@ -403,6 +417,18 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                   },
                 ),
                 const SizedBox(height: 18),
+                // // Delete Button
+                // _buildActionButton(
+                //   icon: Icons.delete_outline,
+                //   color: Colors.red,
+                //   label: "DELETE".tr,
+                //   onTap: () {
+                //     if (widget.reelData['_id'] != null) {
+                //       widget.controller.deleteReel(widget.reelData['_id']);
+                //     }
+                //   },
+                // ),
+                // const SizedBox(height: 18),
 
                 // Bookmark Button
                 _buildActionButton(
@@ -410,7 +436,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                       ? Icons.bookmark_rounded
                       : Icons.bookmark_border_rounded,
                   color: isBookmarked ? AppColors.yellow : Colors.white,
-                  label: "",
+                  label: "BOOKMARK".tr,
                   onTap: () => widget.controller.toggleBookmark(widget.index),
                 ),
                 const SizedBox(height: 24),
