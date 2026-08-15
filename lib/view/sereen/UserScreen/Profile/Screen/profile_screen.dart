@@ -327,7 +327,7 @@ class ProfileScreen extends StatelessWidget {
                               size: 12,
                             ),
                             onTap: () {
-                              controller.activeTab = 2;
+                              Get.toNamed(AppRoutes.supportSentScreen);
                             },
                           ),
                         ],
@@ -537,11 +537,10 @@ class ProfileScreen extends StatelessWidget {
         border: Border(bottom: BorderSide(color: Colors.white12, width: 1)),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildTabItem(0, "posts".tr.toUpperCase()),
           _buildTabItem(1, "garage".tr.toUpperCase()),
-          _buildTabItem(2, "support".tr.toUpperCase()),
         ],
       ),
     );
@@ -585,8 +584,6 @@ class ProfileScreen extends StatelessWidget {
           return _buildPostsTab();
         case 1:
           return _buildGarageTab();
-        case 2:
-          return _buildSupportTab();
         default:
           return _buildPostsTab();
       }
@@ -869,104 +866,6 @@ class ProfileScreen extends StatelessWidget {
               }).toList(),
             );
           }),
-        ],
-      ),
-    );
-  }
-
-  /// ── Tab 03: Support Tab ────────────────────────────────────────────────
-  Widget _buildSupportTab() {
-    return Padding(
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              color: const Color(0xff111111),
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "revenueTelemetry".tr.toUpperCase(),
-                      style: const TextStyle(
-                        color: AppColors.yellow,
-                        fontSize: 8,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.query_stats,
-                      color: AppColors.yellow,
-                      size: 16,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 6.h),
-                Text(
-                  "financialPerformance".tr.toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "supportReceived".tr.toUpperCase(),
-                      style: const TextStyle(
-                        color: Colors.white38,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Text(
-                      "€8,250 / €10,000",
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8.h),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(2.r),
-                  child: LinearProgressIndicator(
-                    value: 8250 / 10000,
-                    backgroundColor: Colors.white10,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.yellow,
-                    ),
-                    minHeight: 5.h,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 24.h),
-          CustomButton(
-            height: 48.h,
-            title: "supportThisUser".tr.toUpperCase(),
-            fontSize: 13,
-            borderRadius: 8.r,
-            icon: const Icon(
-              Icons.handshake_outlined,
-              color: Colors.black,
-              size: 18,
-            ),
-            onTap: () => Get.toNamed(AppRoutes.transactionVerificationScreen),
-          ),
         ],
       ),
     );

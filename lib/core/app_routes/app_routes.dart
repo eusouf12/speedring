@@ -57,10 +57,10 @@ import '../../view/sereen/UserScreen/MarketPlace/view/create_motorcycle_listing_
 import '../../view/sereen/UserScreen/Profile/Screen/profile_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/wallet_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/buy_coins_screen.dart';
-import '../../view/sereen/UserScreen/Wallet/Screen/recharge_selection_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/transaction_report_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/support_sent_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/transaction_history_screen.dart';
+import '../../view/sereen/UserScreen/Wallet/Screen/webview_payment_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/transaction_verification_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/support_success_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/add_vehicle_screen.dart';
@@ -170,10 +170,10 @@ class AppRoutes {
   static const String profileScreen = "/ProfileScreen";
   static const String walletScreen = "/WalletScreen";
   static const String buyCoinsScreen = "/BuyCoinsScreen";
-  static const String rechargeSelectionScreen = "/RechargeSelectionScreen";
   static const String transactionReportScreen = "/TransactionReportScreen";
   static const String supportSentScreen = "/SupportSentScreen";
   static const String transactionHistoryScreen = "/TransactionHistoryScreen";
+  static const String paymentWebviewScreen = "/PaymentWebviewScreen";
   static const String transactionVerificationScreen =
       "/TransactionVerificationScreen";
   static const String supportSuccessScreen = "/SupportSuccessScreen";
@@ -332,12 +332,12 @@ class AppRoutes {
     GetPage(name: walletScreen, page: () => const WalletScreen()),
     GetPage(name: buyCoinsScreen, page: () => const BuyCoinsScreen()),
     GetPage(
-      name: rechargeSelectionScreen,
-      page: () => const RechargeSelectionScreen(),
-    ),
-    GetPage(
       name: transactionReportScreen,
       page: () => const TransactionReportScreen(),
+    ),
+    GetPage(
+      name: paymentWebviewScreen,
+      page: () => const WebViewPaymentScreen(),
     ),
     GetPage(name: supportSentScreen, page: () => const SupportSentScreen()),
     GetPage(

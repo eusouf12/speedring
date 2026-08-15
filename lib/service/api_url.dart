@@ -30,6 +30,10 @@ class ApiUrl {
   static String buyPlan({required String planId}) =>
       "/payments/create-checkout-session/$planId";
 
+  static const String getActiveCoinPackages = "/coin-packages/get-active-packages";
+  static String buyCoinPackage(String packageId) =>
+      "/payments/create-coin-checkout-session/$packageId";
+
   static const String privacyPolicy = "/legal-docs/privacy-policy";
   static const String termsCondition = "/legal-docs/terms-conditions";
   static const String aboutUs = "/legal-docs/about-us";

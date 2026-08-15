@@ -58,8 +58,7 @@ class WalletScreen extends StatelessWidget {
                     QuickActionButton(
                       icon: Icons.add_circle_outline,
                       title: "Buy Coins",
-                      onTap: () =>
-                          Get.toNamed(AppRoutes.rechargeSelectionScreen),
+                      onTap: () => Get.toNamed(AppRoutes.buyCoinsScreen),
                     ),
                     SizedBox(width: 12.w),
                     QuickActionButton(

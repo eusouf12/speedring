@@ -879,6 +879,7 @@ class AppTranslate extends Translations {
       'cancelExpeditionDesc':
           'Are you sure you want to cancel this expedition?',
       'actions': 'ACTIONS',
+      'sendSupport': 'SEND SUPPORT',
 
       // Active Drive
       'liveTelemetry': 'LIVE TELEMETRY',
@@ -899,9 +900,21 @@ class AppTranslate extends Translations {
       'user': 'User',
       'close': 'CLOSE',
       'expedition': 'Expedition',
+
+      // Buy Coins / Wallet
+      'technicalEnquiry': 'TECHNICAL ENQUIRY',
+      'selectPackage': 'PHASE 01: SELECT PACKAGE',
+      'selectedItem': 'SELECTED ITEM',
+      'subtotal': 'SUBTOTAL',
+      'processingFee': 'PROCESSING FEE',
+      'totalAmount': 'TOTAL AMOUNT',
+      'selectSecurePaymentMethod': 'SELECT SECURE PAYMENT METHOD',
+      'continueCheckout': 'CONTINUE CHECKOUT ',
+      'loading': 'LOADING...',
     },
     'gr': {
       'title': 'Deutsch',
+      'sendSupport': 'SUPPORT SENDEN',
       'welcome': 'Willkommen',
       'SELECT_LANGUAGE': 'Sprache auswählen',
 
@@ -1806,6 +1819,17 @@ class AppTranslate extends Translations {
       'user': 'Benutzer',
       'close': 'SCHLIESSEN',
       'expedition': 'Expedition',
+
+      // Buy Coins / Wallet
+      'technicalEnquiry': 'TECHNISCHE ANFRAGE',
+      'selectPackage': 'PHASE 01: PAKET AUSWÄHLEN',
+      'selectedItem': 'AUSGEWÄHLTER ARTIKEL',
+      'subtotal': 'ZWISCHENSUMME',
+      'processingFee': 'BEARBEITUNGSGEBÜHR',
+      'totalAmount': 'GESAMTBETRAG',
+      'selectSecurePaymentMethod': 'SICHERE ZAHLUNGSMETHODE AUSWÄHLEN',
+      'continueCheckout': 'WEITER ZUR KASSE ',
+      'loading': 'LÄDT...',
     },
   };
 }
