@@ -7,23 +7,21 @@ import '../../../../components/custom_gradient/custom_gradient.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../widgets/history_item_card.dart';
 
-class TransactionHistoryController extends GetxController {
-  final isAllSelected = true.obs;
-}
+import '../controller/transaction_history_controller.dart';
 
 class TransactionHistoryScreen extends StatelessWidget {
   const TransactionHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(TransactionHistoryController());
+    final controller = Get.find<TransactionHistoryController>();
 
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: CustomRoyelAppbar(
           leftIcon: true,
-          titleName: "TRANSACTION HISTORY",
+          titleName: "TRANSACTION_HISTORY".tr.toUpperCase(),
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -59,7 +57,7 @@ class TransactionHistoryScreen extends StatelessWidget {
                             ),
                             alignment: Alignment.center,
                             child: CustomText(
-                              text: "ALL",
+                              text: "ALL".tr.toUpperCase(),
                               color: controller.isAllSelected.value
                                   ? Colors.black
                                   : Colors.white38,
@@ -81,7 +79,7 @@ class TransactionHistoryScreen extends StatelessWidget {
                             ),
                             alignment: Alignment.center,
                             child: CustomText(
-                              text: "PURCHASES",
+                              text: "PURCHASES".tr.toUpperCase(),
                               color: !controller.isAllSelected.value
                                   ? Colors.black
                                   : Colors.white38,
@@ -114,10 +112,11 @@ class TransactionHistoryScreen extends StatelessWidget {
                     SizedBox(width: 12.w),
                     Expanded(
                       child: TextField(
+                        onChanged: (val) => controller.searchQuery.value = val,
                         style: TextStyle(color: Colors.white, fontSize: 12.sp),
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "SEARCH LEDGER...",
+                          hintText: "SEARCH".tr.toUpperCase() + "...",
                           hintStyle: TextStyle(
                             color: Colors.white24,
                             fontSize: 12.sp,
@@ -127,13 +126,6 @@ class TransactionHistoryScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    CustomText(
-                      text: "FILTER_04",
-                      color: Colors.white38,
-                      fontSize: 8,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ),
                   ],
                 ),
               ),
@@ -142,49 +134,38 @@ class TransactionHistoryScreen extends StatelessWidget {
               // Ledger list
               Expanded(
                 child: Obx(() {
-                  if (controller.isAllSelected.value) {
-                    return ListView(
-                      children: const [
-                        HistoryItemCard(
-                          icon: Icons.add_circle_outline,
-                          title: "Reload: 500 Credits",
-                          subtext: "TS_ID: 994-01-XPR",
-                          amount: "+€50.00",
-                          status: "verified",
-                          isIncoming: true,
-                        ),
-                        HistoryItemCard(
-                          icon: Icons.handshake_outlined,
-                          title: "Support: @MaxVerstappen",
-                          subtext: "23 OCT 2023 • 18:45",
-                          amount: "-€15.00",
-                          status: "verified",
-                          isIncoming: false,
-                        ),
-                        HistoryItemCard(
-                          icon: Icons.stars_outlined,
-                          title: "Telemetry Support Bounty",
-                          subtext: "22 OCT 2023 • 09:12",
-                          amount: "+€120.00",
-                          status: "verified",
-                          isIncoming: true,
-                        ),
-                      ],
-                    );
-                  } else {
-                    return ListView(
-                      children: const [
-                        HistoryItemCard(
-                          icon: Icons.add_circle_outline,
-                          title: "Reload: 500 Credits",
-                          subtext: "TS_ID: 994-01-XPR",
-                          amount: "+€50.00",
-                          status: "verified",
-                          isIncoming: true,
-                        ),
-                      ],
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: AppColors.yellow),
                     );
                   }
+                  final list = controller.filteredTransactions;
+                  if (list.isEmpty) {
+                    return Center(
+                      child: CustomText(
+                        text: "NO_DATA_FOUND".tr,
+                        color: Colors.white38,
+                        fontSize: 12,
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      final item = list[index];
+                      return HistoryItemCard(
+                        icon: item.isCredit
+                            ? Icons.add_circle_outline
+                            : Icons.remove_circle_outline,
+                        title: item.title,
+                        subtext: item.formattedDate,
+                        amount:
+                            "${item.isCredit ? '+' : '-'}${item.amount.toStringAsFixed(2)}",
+                        status: item.status.tr.toUpperCase(),
+                        isIncoming: item.isCredit,
+                      );
+                    },
+                  );
                 }),
               ),
             ],

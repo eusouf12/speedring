@@ -7,6 +7,8 @@ import '../../view/sereen/BusinessScreen/BusinessHome/Controller/business_dashbo
 import '../../view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 import '../../view/sereen/UserScreen/Profile/controller/profile_controller.dart';
 import '../../view/sereen/UserScreen/Wallet/controller/support_controller.dart';
+import '../../view/sereen/UserScreen/Wallet/controller/transaction_history_controller.dart';
+import '../../view/sereen/UserScreen/Wallet/controller/send_support_controller.dart';
 import '../../view/sereen/UserScreen/track/controller/track_controller.dart';
 
 class DependencyInjection extends Bindings {
@@ -22,5 +24,7 @@ class DependencyInjection extends Bindings {
     Get.put(BusinessDashboardController(), permanent: true);
     Get.lazyPut(() => TrackController(), fenix: true);
     Get.lazyPut(() => SupportController(), fenix: true);
+    Get.lazyPut(() => TransactionHistoryController(), fenix: true);
+    Get.lazyPut(() => SendSupportController(), fenix: true);
   }
 }

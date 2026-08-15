@@ -1,132 +1,171 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
 import '../../../../components/custom_gradient/custom_gradient.dart';
 import '../../../../components/custom_text/custom_text.dart';
-import '../widgets/support_stat_card.dart';
-import '../widgets/supported_driver_card.dart';
-import '../widgets/dossier_list_item.dart';
+import '../../../../components/custom_button/custom_button.dart';
+import '../../../../../utils/app_colors/app_colors.dart';
+import '../controller/send_support_controller.dart';
 
 class SupportSentScreen extends StatelessWidget {
   const SupportSentScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<SendSupportController>();
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "SUPPORT SENT"),
-        body: SingleChildScrollView(
-          child: Padding(
+        appBar: CustomRoyelAppbar(
+          leftIcon: true,
+          titleName: "SEND_SUPPORT".tr.toUpperCase(),
+        ),
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.yellow),
+            );
+          }
+
+          if (controller.followingList.isEmpty) {
+            return Center(
+              child: CustomText(
+                text: "NO_FRIENDS_FOUND".tr,
+                color: Colors.white38,
+                fontSize: 14,
+              ),
+            );
+          }
+
+          return SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 16.h),
-                // Stat cards
-                Row(
-                  children: [
-                    const SupportStatCard(
-                      label: "TOTAL CONTRIBUTIONS",
-                      value: "€1,240.50",
-                    ),
-                    SizedBox(width: 12.w),
-                    const SupportStatCard(
-                      label: "MONTHLY VELOCITY",
-                      value: "€185.00",
-                      trend: "+12%",
-                    ),
-                  ],
-                ),
-                SizedBox(height: 28.h),
-
-                // Section 1: Most Supported Drivers
+                SizedBox(height: 32.h),
                 CustomText(
-                  text: "MOST SUPPORTED DRIVERS",
+                  text: "SEND_SUPPORT_TO".tr.toUpperCase(),
                   color: Colors.white38,
-                  fontSize: 9,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
+                  letterSpacing: 1.0,
                 ),
                 SizedBox(height: 12.h),
-                SizedBox(
-                  height: 130.h,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: const [
-                      SupportedDriverCard(
-                        avatarUrl:
-                            "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                        driverName: "MAX VERSTAPPEN",
-                        supportAmount: "€450",
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 4.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff111111),
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.1),
+                    ),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<Map<String, dynamic>>(
+                      value: controller.selectedUser.value,
+                      isExpanded: true,
+                      dropdownColor: const Color(0xff111111),
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: AppColors.yellow,
                       ),
-                      SupportedDriverCard(
-                        avatarUrl:
-                            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop",
-                        driverName: "LEWIS HAMILTON",
-                        supportAmount: "€320",
-                      ),
-                      SupportedDriverCard(
-                        avatarUrl:
-                            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&fit=crop",
-                        driverName: "CHARLES LECLERC",
-                        supportAmount: "€215",
-                      ),
-                      SupportedDriverCard(
-                        avatarUrl:
-                            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop",
-                        driverName: "LANDO NORRIS",
-                        supportAmount: "€180",
-                      ),
-                    ],
+                      items: controller.followingList.map((user) {
+                        return DropdownMenuItem<Map<String, dynamic>>(
+                          value: user,
+                          child: Row(
+                            children: [
+                              user['profileImage'] != null && user['profileImage'].isNotEmpty
+                                  ? CircleAvatar(
+                                      radius: 14.r,
+                                      backgroundImage: NetworkImage(user['profileImage']),
+                                    )
+                                  : CircleAvatar(
+                                      radius: 14.r,
+                                      backgroundColor: AppColors.yellow,
+                                      child: Icon(Icons.person, size: 16.r, color: Colors.black),
+                                    ),
+                              SizedBox(width: 12.w),
+                              CustomText(
+                                text: user['name'] ?? 'User',
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        controller.selectedUser.value = val;
+                      },
+                    ),
                   ),
                 ),
-                SizedBox(height: 28.h),
-
-                // Section 2: Transaction Dossier
-                CustomText(
-                  text: "TRANSACTION DOSSIER",
-                  color: Colors.white38,
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
-                ),
-                SizedBox(height: 14.h),
-                const DossierListItem(
-                  avatarUrl:
-                      "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                  driverName: "MAX VERSTAPPEN",
-                  username: "@verstappen_official",
-                  amount: "-€15.00",
-                  date: "24 OCT 2023",
-                  message:
-                      "Dialing in the aero today for the qualifying run. Thanks for the boost!",
-                ),
-                const DossierListItem(
-                  avatarUrl:
-                      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&fit=crop",
-                  driverName: "LANDO NORRIS",
-                  username: "@lando_n4",
-                  amount: "-€50.00",
-                  date: "22 OCT 2023",
-                  message:
-                      "Tire degradation telemetry looks solid. Full send on the softs tomorrow.",
-                ),
-                const DossierListItem(
-                  avatarUrl:
-                      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&fit=crop",
-                  driverName: "OSCAR PIASTRI",
-                  username: "@oscarp_official",
-                  amount: "-€25.00",
-                  date: "19 OCT 2023",
-                  message:
-                      "Brake balance adjustments complete. The data entry helps refine the curve.",
-                ),
                 SizedBox(height: 32.h),
+                CustomText(
+                  text: "AMOUNT_TO_SEND".tr.toUpperCase(),
+                  color: Colors.white38,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.0,
+                ),
+                SizedBox(height: 12.h),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff111111),
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.1),
+                    ),
+                  ),
+                  child: TextField(
+                    controller: controller.amountController,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+\.?\d{0,2}'),
+                      ),
+                    ],
+                    style: TextStyle(
+                      color: AppColors.yellow,
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      prefixText: "€ ",
+                      prefixStyle: TextStyle(
+                        color: AppColors.yellow,
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      hintText: "0.00",
+                      hintStyle: TextStyle(
+                        color: Colors.white24,
+                        fontSize: 24.sp,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 48.h),
+                CustomButton(
+                  title: "CONTINUE".tr.toUpperCase(),
+                  onTap: () {
+                    controller.proceedToVerification();
+                  },
+                ),
               ],
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

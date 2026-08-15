@@ -60,7 +60,6 @@ import '../../view/sereen/UserScreen/Wallet/Screen/buy_coins_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/transaction_report_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/support_sent_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/transaction_history_screen.dart';
-import '../../view/sereen/UserScreen/Wallet/Screen/webview_payment_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/transaction_verification_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/support_success_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/add_vehicle_screen.dart';
@@ -334,10 +333,6 @@ class AppRoutes {
     GetPage(
       name: transactionReportScreen,
       page: () => const TransactionReportScreen(),
-    ),
-    GetPage(
-      name: paymentWebviewScreen,
-      page: () => const WebViewPaymentScreen(),
     ),
     GetPage(name: supportSentScreen, page: () => const SupportSentScreen()),
     GetPage(

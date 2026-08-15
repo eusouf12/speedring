@@ -33,6 +33,10 @@ class ApiUrl {
   static const String getActiveCoinPackages = "/coin-packages/get-active-packages";
   static String buyCoinPackage(String packageId) =>
       "/payments/create-coin-checkout-session/$packageId";
+  static const String getMyWallet = "/wallets/my-wallet";
+  static const String getMyTransactions = "/payments/my-transactions";
+  static const String supportDriver = "/wallets/support-driver";
+  static const String getMyFollowing = "/users/my-following";
 
   static const String privacyPolicy = "/legal-docs/privacy-policy";
   static const String termsCondition = "/legal-docs/terms-conditions";
