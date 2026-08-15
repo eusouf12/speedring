@@ -8,6 +8,9 @@ class SocketApi {
   static void init(String baseUrl, String userId, {String? token}) {
     if (_isInitialized) {
       debugPrint('⚠️ Socket already initialized');
+      if (socket != null && !socket!.connected) {
+        socket!.connect();
+      }
       return;
     }
 
@@ -62,11 +65,15 @@ class SocketApi {
   }
 
   static void emit(String event, dynamic data) {
-    if (socket == null || !socket!.connected) {
-      debugPrint("❌ Cannot emit - socket not connected");
+    if (socket == null) {
+      debugPrint("❌ Cannot emit - socket not initialized");
       return;
     }
-    debugPrint("📤 Emit [$event]: $data");
+    if (!socket!.connected) {
+      debugPrint("⚠️ Socket not connected yet. Event [$event] will be buffered.");
+    } else {
+      debugPrint("📤 Emit [$event]: $data");
+    }
     socket!.emit(event, data);
   }
 

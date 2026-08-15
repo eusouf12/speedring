@@ -3,7 +3,7 @@ class ApiUrl {
   static const String imageUrl = "http://10.10.28.90:4050";
   // static const String baseUrl = "http://10.0.2.2:4050/api/v1";
   // static const String imageUrl = "http://10.0.2.2:4050";
-  static String socketUrl = baseUrl;
+  static String socketUrl = imageUrl;
   static String mapKey = "AIzaSyCHBKvR2Wgc4eF53nYTlGYxULSQuVpb9t4";
 
   ///========================= Authentication =========================
@@ -286,6 +286,7 @@ class ApiUrl {
   static String joinExpedition(String id) => "/expeditions/join-expedition/$id";
   static String getExpeditionParticipants(String id) => "/expeditions/get-expedition-participants/$id";
   static String startExpedition(String id) => "/expeditions/start-expedition/$id";
+  static String endExpedition(String id) => "/expeditions/end-expedition/$id";
   static String updateExpedition(String id) => "/expeditions/update-expedition/$id";
   static String deleteExpedition(String id) => "/expeditions/delete-expedition/$id";
 }

@@ -5,7 +5,9 @@ import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/view/sereen/UserScreen/track/controller/active_drive_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/track/mode/expedition_model.dart';
 import 'package:speedring/view/sereen/UserScreen/track/widgets/track_appbar.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 
 class ShareExpeditionScreen extends StatefulWidget {
   const ShareExpeditionScreen({super.key});
@@ -26,17 +28,25 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ActiveDriveController activeController = Get.find<ActiveDriveController>();
+    final ActiveDriveController activeController =
+        Get.find<ActiveDriveController>();
 
     String? hostProfile = activeController.drive?.host?.profileImage;
-    if (hostProfile != null && hostProfile.isNotEmpty && !hostProfile.startsWith("http")) {
+    if (hostProfile != null &&
+        hostProfile.isNotEmpty &&
+        !hostProfile.startsWith("http")) {
       hostProfile = "${ApiUrl.imageUrl}/$hostProfile";
     }
 
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: TrackAppBar(
-        profilePic: activeController.profileController.profileData.value?.profileImage ??
+        profilePic:
+            activeController
+                .profileController
+                .profileData
+                .value
+                ?.profileImage ??
             AppConstants.profileImage2,
         title: "SHARE EXPEDITION",
         leading: IconButton(
@@ -82,7 +92,9 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                               width: 1.5,
                             ),
                             image: DecorationImage(
-                              image: NetworkImage(hostProfile ?? AppConstants.profileImage2),
+                              image: NetworkImage(
+                                hostProfile ?? AppConstants.profileImage2,
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -104,7 +116,9 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                activeController.drive?.tripName?.toUpperCase() ?? "UNTITLED EXPEDITION",
+                                activeController.drive?.tripName
+                                        ?.toUpperCase() ??
+                                    "UNTITLED EXPEDITION",
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 13,
@@ -132,13 +146,22 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: NetworkImage(
-                          activeController.drive?.coverImage != null && activeController.drive!.coverImage!.isNotEmpty
-                              ? (activeController.drive!.coverImage!.startsWith("http")
-                                  ? activeController.drive!.coverImage!
-                                  : "${ApiUrl.imageUrl}/${activeController.drive!.coverImage}")
-                              : (activeController.drive?.routeTrack != null && activeController.drive!.routeTrack['coverImage'] != null
-                                  ? activeController.drive!.routeTrack['coverImage']
-                                  : "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&fit=crop"),
+                          activeController.drive?.coverImage != null &&
+                                  activeController.drive!.coverImage!.isNotEmpty
+                              ? (activeController.drive!.coverImage!.startsWith(
+                                      "http",
+                                    )
+                                    ? activeController.drive!.coverImage!
+                                    : "${ApiUrl.imageUrl}/${activeController.drive!.coverImage}")
+                              : (activeController.drive?.routeTrack != null &&
+                                        activeController
+                                                .drive!
+                                                .routeTrack['coverImage'] !=
+                                            null
+                                    ? activeController
+                                          .drive!
+                                          .routeTrack['coverImage']
+                                    : "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&fit=crop"),
                         ),
                         fit: BoxFit.cover,
                       ),
@@ -153,24 +176,29 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                       children: [
                         Expanded(
                           child: _buildPreviewMetric(
-                            "DISTANCE",
-                            activeController.totalDistanceKm.value.toStringAsFixed(1),
+                            "distance".tr.toUpperCase(),
+                            activeController.totalDistanceKm.value
+                                .toStringAsFixed(1),
                             "KM",
                           ),
                         ),
                         Expanded(
                           child: _buildPreviewMetric(
-                            "TIME",
+                            "time".tr.toUpperCase(),
                             activeController.getFormattedDuration(),
                             "",
                           ),
                         ),
                         Expanded(
                           child: _buildPreviewMetric(
-                            "AVG VELOCITY",
+                            "avgVelocity".tr.toUpperCase(),
                             (activeController.elapsedSeconds.value == 0
                                     ? 0.0
-                                    : activeController.totalDistanceKm.value / (activeController.elapsedSeconds.value / 3600.0))
+                                    : activeController.totalDistanceKm.value /
+                                          (activeController
+                                                  .elapsedSeconds
+                                                  .value /
+                                              3600.0))
                                 .toStringAsFixed(0),
                             "KM/H",
                           ),
@@ -191,65 +219,49 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                         Row(
                           children: [
                             if (activeController.drive?.participants != null)
-                              ...activeController.drive!.participants!.take(3).map((p) {
-                                String url = p.profileImage ?? AppConstants.profileImage2;
-                                if (!url.startsWith("http")) {
-                                  url = "${ApiUrl.imageUrl}/$url";
-                                }
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 4.0),
-                                  child: _buildMiniAvatar(url),
-                                );
-                              }),
-                            if ((activeController.drive?.participants?.length ?? 0) > 3)
-                              Container(
-                                width: 20,
-                                height: 20,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xff222222),
-                                  shape: BoxShape.circle,
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "+${activeController.drive!.participants!.length - 3}",
-                                  style: const TextStyle(
-                                    color: Colors.white60,
-                                    fontSize: 7,
-                                    fontWeight: FontWeight.bold,
+                              ...activeController.drive!.participants!
+                                  .take(5)
+                                  .map((p) {
+                                    String url =
+                                        p.profileImage ??
+                                        AppConstants.profileImage2;
+                                    if (!url.startsWith("http")) {
+                                      url = "${ApiUrl.imageUrl}/$url";
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 4.0,
+                                      ),
+                                      child: _buildMiniAvatar(url),
+                                    );
+                                  }),
+                            if ((activeController.drive?.participants?.length ??
+                                    0) >
+                                5)
+                              GestureDetector(
+                                onTap: () {
+                                  _showParticipantsDialog(
+                                    activeController.drive!.participants!,
+                                  );
+                                },
+                                child: Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xff222222),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "+${activeController.drive!.participants!.length - 5}",
+                                    style: const TextStyle(
+                                      color: Colors.white60,
+                                      fontSize: 7,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: const Icon(
-                                Icons.favorite_border,
-                                color: Colors.white38,
-                                size: 16,
-                              ),
-                              onPressed: () {},
-                            ),
-                            IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: const Icon(
-                                Icons.chat_bubble_outline,
-                                color: Colors.white38,
-                                size: 15,
-                              ),
-                              onPressed: () {},
-                            ),
-                            IconButton(
-                              visualDensity: VisualDensity.compact,
-                              icon: const Icon(
-                                Icons.send_outlined,
-                                color: Colors.white38,
-                                size: 15,
-                              ),
-                              onPressed: () {},
-                            ),
                           ],
                         ),
                       ],
@@ -261,7 +273,7 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
             const SizedBox(height: 24),
 
             /// NARRATIVE FIELD
-            _buildSectionHeader("NARRATIVE"),
+            _buildSectionHeader("narrative".tr.toUpperCase()),
             TextField(
               controller: narrativeController,
               maxLines: 4,
@@ -269,7 +281,7 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: const Color(0xff111111),
-                hintText: "Write details about this drive...",
+                hintText: "writeDetailsAboutThisDrive".tr,
                 hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -281,7 +293,7 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
             const SizedBox(height: 24),
 
             /// VISIBILITY SELECTION
-            _buildSectionHeader("VISIBILITY"),
+            _buildSectionHeader("visibility".tr.toUpperCase()),
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
@@ -290,54 +302,180 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
               ),
               child: Row(
                 children: [
-                  _buildVisibilityChip("PUBLIC", Icons.public),
+                  _buildVisibilityChip("public".tr.toUpperCase(), Icons.public),
                   const SizedBox(width: 6),
-                  _buildVisibilityChip("FOLLOWERS", Icons.people_outline),
+                  _buildVisibilityChip(
+                    "followers".tr.toUpperCase(),
+                    Icons.people_outline,
+                  ),
                   const SizedBox(width: 6),
-                  _buildVisibilityChip("PRIVATE", Icons.lock_outline),
+                  _buildVisibilityChip(
+                    "private".tr.toUpperCase(),
+                    Icons.lock_outline,
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 32),
 
             /// POST TO FEED BUTTON
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.yellow,
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  // After posting, clean up the controller
-                  Get.delete<ActiveDriveController>();
-                  Get.offAllNamed(AppRoutes.userHomeScreen);
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.send, size: 18),
-                    SizedBox(width: 8),
-                    Text(
-                      "POST TO FEED",
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.5,
-                      ),
+            Obx(() {
+              final homeCtrl = Get.put(HomeController());
+              return SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: homeCtrl.isPostCreating.value
+                        ? const Color(0xff2A2A2A)
+                        : AppColors.yellow,
+                    foregroundColor: homeCtrl.isPostCreating.value
+                        ? Colors.white24
+                        : Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ],
+                  ),
+                  onPressed: homeCtrl.isPostCreating.value
+                      ? null
+                      : () async {
+                          String backendVis = "Public";
+                          if (selectedVisibility ==
+                              "followers".tr.toUpperCase())
+                            backendVis = "Followers";
+                          if (selectedVisibility == "private".tr.toUpperCase())
+                            backendVis = "Club Only";
+
+                          String? coverUrl = activeController.drive?.coverImage;
+                          if (coverUrl != null &&
+                              coverUrl.isNotEmpty &&
+                              !coverUrl.startsWith("http")) {
+                            coverUrl = "${ApiUrl.imageUrl}/$coverUrl";
+                          } else if (coverUrl == null || coverUrl.isEmpty) {
+                            if (activeController.drive?.routeTrack != null &&
+                                activeController
+                                        .drive!
+                                        .routeTrack['coverImage'] !=
+                                    null) {
+                              coverUrl = activeController
+                                  .drive!
+                                  .routeTrack['coverImage'];
+                            }
+                          }
+
+                          bool success = await homeCtrl.createPost(
+                            category: "TRACK_UPDATE",
+                            visibility: backendVis,
+                            mediaUrl: coverUrl,
+                            trackUpdateDetails: {
+                              "circuit":
+                                  activeController.drive?.tripName
+                                      ?.toUpperCase() ??
+                                  "expedition".tr.toUpperCase(),
+                              "notes": narrativeController.text,
+                            },
+                          );
+
+                          if (success) {
+                            Get.delete<ActiveDriveController>();
+                            Get.offAllNamed(AppRoutes.userHomeScreen);
+                          }
+                        },
+                  child: homeCtrl.isPostCreating.value
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.yellow,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.send, size: 18),
+                            SizedBox(width: 8),
+                            Text(
+                              "postToFeed".tr.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
                 ),
-              ),
-            ),
+              );
+            }),
             const SizedBox(height: 30),
           ],
         ),
       ),
+    );
+  }
+
+  void _showParticipantsDialog(List<Host> participants) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xff111111),
+          title: Text(
+            "participants".tr,
+            style: TextStyle(
+              color: AppColors.yellow,
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 300,
+            child: ListView.builder(
+              itemCount: participants.length,
+              itemBuilder: (context, index) {
+                final p = participants[index];
+                String url = p.profileImage ?? AppConstants.profileImage2;
+                if (!url.startsWith("http")) url = "${ApiUrl.imageUrl}/$url";
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(url),
+                    backgroundColor: Colors.transparent,
+                    radius: 20,
+                  ),
+                  title: Text(
+                    p.userName != null ? "@${p.userName}" : "user".tr,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    p.name ?? "",
+                    style: const TextStyle(color: Colors.white54, fontSize: 10),
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                "close".tr.toUpperCase(),
+                style: TextStyle(
+                  color: AppColors.yellow,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

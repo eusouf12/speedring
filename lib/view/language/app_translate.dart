@@ -205,6 +205,7 @@ class AppTranslate extends Translations {
       'continueApple': 'CONTINUE WITH APPLE',
       'dontHaveAccount': "Don't have an account? ",
       'signUp': 'Sign Up',
+      'noDrivesFound': 'No Drives Found',
 
       // Signup Screen
       'createAccount': 'Create Your Account',
@@ -874,7 +875,7 @@ class AppTranslate extends Translations {
       'startTrip': 'START TRIP',
       'editTripDetails': 'EDIT TRIP DETAILS',
       'shareInviteLink': 'SHARE INVITE LINK',
-       'cancelTrip': 'Cancel Trip',
+      'cancelTrip': 'Cancel Trip',
       'cancelExpeditionDesc':
           'Are you sure you want to cancel this expedition?',
       'actions': 'ACTIONS',
@@ -887,6 +888,17 @@ class AppTranslate extends Translations {
       'endTrip': 'END TRIP',
       'leaveTrip': 'LEAVE TRIP',
       'confirmEndTrip': 'CONFIRM END TRIP',
+      'telemetrySummary': 'TELEMETRY SUMMARY',
+      'duration': 'DURATION',
+      'avgVelocity': 'AVG VELOCITY',
+      'narrative': 'NARRATIVE',
+      'writeDetailsAboutThisDrive': 'Write details about this drive...',
+      'visibility': 'VISIBILITY',
+      'postToFeed': 'POST TO FEED',
+      'participants': 'Participants',
+      'user': 'User',
+      'close': 'CLOSE',
+      'expedition': 'Expedition',
     },
     'gr': {
       'title': 'Deutsch',
@@ -1074,7 +1086,7 @@ class AppTranslate extends Translations {
       'eventUpdates': 'Event-Updates',
 
       // Login Screen
-      'welcomeBack': 'Willkommen zurück',
+      'welcomeBack': 'Willkommen Zurück',
       'loginSubtitle': 'Melde dich an, um deine Motorsport-Reise fortzusetzen.',
       'emailOrUsername': 'E-MAIL ODER BENUTZERNAME',
       'emailRequired': 'E-Mail eingeben',
@@ -1389,6 +1401,7 @@ class AppTranslate extends Translations {
       'publish': 'VERÖFFENTLICHEN',
 
       // Event & Club Deep Translations
+      'noDrivesFound': 'KEINE FAHRTEN GEFUNDEN',
       'mustBeNumber': 'Muss eine Zahl sein',
       'briefingHint': 'HOCHINTENSIVE TECHNISCHE SEQUENZEN AUSFÜHREN...',
       'createYourEvent': 'DEIN EVENT ERSTELLEN',
@@ -1770,7 +1783,7 @@ class AppTranslate extends Translations {
       'startTrip': 'FAHRT STARTEN',
       'editTripDetails': 'FAHRTDETAILS BEARBEITEN',
       'shareInviteLink': 'EINLADUNGSLINK TEILEN',
-       'cancelTrip': 'Fahrt abbrechen',
+      'cancelTrip': 'Fahrt abbrechen',
       'cancelExpeditionDesc': 'Möchten Sie diese Fahrt wirklich abbrechen?',
       'actions': 'AKTIONEN',
 
@@ -1782,6 +1795,17 @@ class AppTranslate extends Translations {
       'endTrip': 'FAHRT BEENDEN',
       'leaveTrip': 'FAHRT VERLASSEN',
       'confirmEndTrip': 'ENDE BESTÄTIGEN',
+      'telemetrySummary': 'TELEMETRIE ZUSAMMENFASSUNG',
+      'duration': 'DAUER',
+      'avgVelocity': 'DURCHSCHNITTSGESCHWINDIGKEIT',
+      'narrative': 'ERZÄHLUNG',
+      'writeDetailsAboutThisDrive': 'Schreiben Sie Details zu dieser Fahrt...',
+      'visibility': 'SICHTBARKEIT',
+      'postToFeed': 'IM FEED POSTEN',
+      'participants': 'Teilnehmer',
+      'user': 'Benutzer',
+      'close': 'SCHLIESSEN',
+      'expedition': 'Expedition',
     },
   };
 }

@@ -17,49 +17,13 @@ class ActiveDriveScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: TrackAppBar(
-        profilePic: controller.profileController.profileData.value?.profileImage ??
+        profilePic:
+            controller.profileController.profileData.value?.profileImage ??
             AppConstants.profileImage2,
-        title: controller.drive?.tripName?.toUpperCase() ?? "UNTITLED EXPEDITION",
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
-          onPressed: () => Get.back(),
-        ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 14),
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.yellow, width: 1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: const BoxDecoration(
-                    color: AppColors.yellow,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  "liveTelemetry".tr.toUpperCase(),
-                  style: const TextStyle(
-                    color: AppColors.yellow,
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white70),
-            onPressed: () {},
-          ),
-        ],
+        title:
+            controller.drive?.tripName?.toUpperCase() ?? "UNTITLED EXPEDITION",
+
+        leading: BackButton(color: AppColors.yellow),
       ),
       body: Stack(
         children: [
@@ -125,7 +89,8 @@ class ActiveDriveScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 GestureDetector(
                   onTap: () {
-                    if (controller.currentLocation.value != null && controller.mapController != null) {
+                    if (controller.currentLocation.value != null &&
+                        controller.mapController != null) {
                       controller.mapController!.animateCamera(
                         CameraUpdate.newLatLng(
                           LatLng(
@@ -134,7 +99,8 @@ class ActiveDriveScreen extends StatelessWidget {
                           ),
                         ),
                       );
-                    } else if (controller.drive?.meetingPoint != null && controller.mapController != null) {
+                    } else if (controller.drive?.meetingPoint != null &&
+                        controller.mapController != null) {
                       controller.mapController!.animateCamera(
                         CameraUpdate.newLatLng(
                           LatLng(

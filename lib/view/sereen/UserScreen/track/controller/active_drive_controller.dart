@@ -14,6 +14,8 @@ import 'package:speedring/view/sereen/UserScreen/Profile/controller/profile_cont
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 
+import '../../../../../core/app_routes/app_routes.dart';
+
 class ActiveDriveController extends GetxController {
   Expedition? drive;
   bool isHost = false;
@@ -35,7 +37,8 @@ class ActiveDriveController extends GetxController {
   Timer? statsTimer;
   RxBool isTrackingPaused = false.obs;
 
-  final ProfileScreenController profileController = Get.find<ProfileScreenController>();
+  final ProfileScreenController profileController =
+      Get.find<ProfileScreenController>();
 
   @override
   void onInit() {
@@ -69,6 +72,7 @@ class ActiveDriveController extends GetxController {
     statsTimer?.cancel();
     mapController?.dispose();
     SocketApi.off('live_telemetry_feed');
+    SocketApi.off('expedition_ended');
     super.onClose();
   }
 
@@ -79,7 +83,10 @@ class ActiveDriveController extends GetxController {
       mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
-            target: LatLng(drive!.meetingPoint!.lat ?? 0.0, drive!.meetingPoint!.lng ?? 0.0),
+            target: LatLng(
+              drive!.meetingPoint!.lat ?? 0.0,
+              drive!.meetingPoint!.lng ?? 0.0,
+            ),
             zoom: 15,
           ),
         ),
@@ -167,16 +174,34 @@ class ActiveDriveController extends GetxController {
     final currentUserId = profileController.profileData.value?.id ?? "unknown";
     SocketApi.init(ApiUrl.socketUrl, currentUserId, token: token);
     SocketApi.emit('join_expedition_room', drive!.id);
+
+    SocketApi.on('expedition_ended', (data) {
+      Get.snackbar(
+        "tripEnded".tr.tr == "tripEnded" ? "Trip Ended" : "tripEnded".tr,
+        "hostEndedTrip".tr.tr == "hostEndedTrip"
+            ? "The host has ended this trip."
+            : "hostEndedTrip".tr,
+      );
+      Get.delete<ActiveDriveController>();
+      Get.offAllNamed(AppRoutes.userHomeScreen);
+    });
   }
 
   void _setupInitialMarkers() {
     if (drive?.meetingPoint != null) {
-      markers.add(Marker(
-        markerId: const MarkerId('meeting_point'),
-        position: LatLng(drive!.meetingPoint!.lat ?? 0.0, drive!.meetingPoint!.lng ?? 0.0),
-        infoWindow: InfoWindow(title: 'meetingPoint'.tr),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      ));
+      markers.add(
+        Marker(
+          markerId: const MarkerId('meeting_point'),
+          position: LatLng(
+            drive!.meetingPoint!.lat ?? 0.0,
+            drive!.meetingPoint!.lng ?? 0.0,
+          ),
+          infoWindow: InfoWindow(title: 'meetingPoint'.tr),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
+        ),
+      );
     }
   }
 
@@ -207,13 +232,12 @@ class ActiveDriveController extends GetxController {
       distanceFilter: 2,
     );
 
-    positionStream = Geolocator.getPositionStream(locationSettings: settings).listen(
-      (Position position) {
-        if (!isTrackingPaused.value) {
-          _updateHostTelemetry(position);
-        }
-      }
-    );
+    positionStream = Geolocator.getPositionStream(locationSettings: settings)
+        .listen((Position position) {
+          if (!isTrackingPaused.value) {
+            _updateHostTelemetry(position);
+          }
+        });
   }
 
   void _updateHostTelemetry(Position position) {
@@ -246,7 +270,7 @@ class ActiveDriveController extends GetxController {
       'lat': position.latitude,
       'lng': position.longitude,
       'speed': (position.speed * 3.6).toInt(),
-      'timestamp': DateTime.now().toIso8601String()
+      'timestamp': DateTime.now().toIso8601String(),
     });
   }
 
@@ -282,17 +306,24 @@ class ActiveDriveController extends GetxController {
   }
 
   void _updatePolyline() {
-    polylines.add(Polyline(
-      polylineId: const PolylineId('route'),
-      points: routePoints,
-      color: AppColors.yellow,
-      width: 4,
-    ));
+    polylines.add(
+      Polyline(
+        polylineId: const PolylineId('route'),
+        points: routePoints,
+        color: AppColors.yellow,
+        width: 4,
+      ),
+    );
   }
 
-  Future<void> _updateDriverMarker(LatLng position, String? profilePicUrl) async {
-    BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
-    
+  Future<void> _updateDriverMarker(
+    LatLng position,
+    String? profilePicUrl,
+  ) async {
+    BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarkerWithHue(
+      BitmapDescriptor.hueYellow,
+    );
+
     if (profilePicUrl != null && profilePicUrl.isNotEmpty) {
       String fullUrl = profilePicUrl;
       if (!fullUrl.startsWith("http")) {
@@ -302,12 +333,14 @@ class ActiveDriveController extends GetxController {
     }
 
     markers.removeWhere((m) => m.markerId.value == 'driver_node');
-    markers.add(Marker(
-      markerId: const MarkerId('driver_node'),
-      position: position,
-      icon: markerIcon,
-      infoWindow: InfoWindow(title: drive!.host?.name ?? 'driver'.tr),
-    ));
+    markers.add(
+      Marker(
+        markerId: const MarkerId('driver_node'),
+        position: position,
+        icon: markerIcon,
+        infoWindow: InfoWindow(title: drive!.host?.name ?? 'driver'.tr),
+      ),
+    );
   }
 
   Future<BitmapDescriptor> _getCircularMarkerIcon(String url, Size size) async {
@@ -334,7 +367,9 @@ class ActiveDriveController extends GetxController {
 
       // Clip path for circular avatar
       final Path clipPath = Path()
-        ..addOval(Rect.fromCircle(center: Offset(radius, radius), radius: radius - 4.0));
+        ..addOval(
+          Rect.fromCircle(center: Offset(radius, radius), radius: radius - 4.0),
+        );
       canvas.clipPath(clipPath);
 
       // Draw the profile image
@@ -344,7 +379,9 @@ class ActiveDriveController extends GetxController {
         size.width.toInt(),
         size.height.toInt(),
       );
-      final ByteData? byteData = await markerImage.toByteData(format: ui.ImageByteFormat.png);
+      final ByteData? byteData = await markerImage.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
       if (byteData != null) {
         return BitmapDescriptor.bytes(byteData.buffer.asUint8List());
       }
@@ -371,7 +408,7 @@ class ActiveDriveController extends GetxController {
     final int hours = sec ~/ 3600;
     final int minutes = (sec % 3600) ~/ 60;
     final int seconds = sec % 60;
-    
+
     return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
   }
 }

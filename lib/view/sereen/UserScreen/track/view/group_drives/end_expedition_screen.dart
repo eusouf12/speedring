@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/sereen/UserScreen/track/controller/active_drive_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
 
 class EndExpeditionScreen extends StatelessWidget {
   const EndExpeditionScreen({super.key});
@@ -73,7 +74,7 @@ class EndExpeditionScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                controller.drive?.tripName?.toUpperCase() ?? "UNTITLED EXPEDITION",
+                controller.drive?.tripName?.toUpperCase() ?? "untitledExpedition".tr.toUpperCase(),
                 style: const TextStyle(
                   color: Colors.white38,
                   fontSize: 10,
@@ -95,8 +96,8 @@ class EndExpeditionScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "TELEMETRY_SUMMARY",
+                    Text(
+                      "telemetrySummary".tr.toUpperCase(),
                       style: TextStyle(
                         color: AppColors.yellow,
                         fontSize: 9,
@@ -139,8 +140,8 @@ class EndExpeditionScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                "DURATION",
+                              Text(
+                                "duration".tr.toUpperCase(),
                                 style: TextStyle(
                                   color: Colors.white38,
                                   fontSize: 8,
@@ -196,8 +197,8 @@ class EndExpeditionScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                "AVG SPEED",
+                              Text(
+                                "avgSpeed".tr.toUpperCase(),
                                 style: TextStyle(
                                   color: Colors.white38,
                                   fontSize: 8,
@@ -268,11 +269,22 @@ class EndExpeditionScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
-                    Get.toNamed(
-                      AppRoutes.shareExpeditionScreen,
-                      arguments: controller.drive,
-                    );
+                  onPressed: () async {
+                    if (controller.drive?.id != null) {
+                      final TrackController trackController = Get.find<TrackController>();
+                      bool success = await trackController.endExpedition(controller.drive!.id!);
+                      if (success) {
+                        Get.toNamed(
+                          AppRoutes.shareExpeditionScreen,
+                          arguments: controller.drive,
+                        );
+                      }
+                    } else {
+                      Get.toNamed(
+                        AppRoutes.shareExpeditionScreen,
+                        arguments: controller.drive,
+                      );
+                    }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

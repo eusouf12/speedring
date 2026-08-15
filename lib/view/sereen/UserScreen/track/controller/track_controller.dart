@@ -182,7 +182,10 @@ class TrackController extends GetxController {
   Future<bool> createSession(Map<String, dynamic> sessionData) async {
     isCreatingSession.value = true;
     try {
-      var response = await ApiClient.postData(ApiUrl.createSession, jsonEncode(sessionData));
+      var response = await ApiClient.postData(
+        ApiUrl.createSession,
+        jsonEncode(sessionData),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(msg: "sessionCreated".tr);
         return true;
@@ -206,7 +209,8 @@ class TrackController extends GetxController {
     try {
       var response = await ApiClient.getData(ApiUrl.getMySessionStats);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        DriveSessionStatsResponse statsResponse = DriveSessionStatsResponse.fromJson(response.body);
+        DriveSessionStatsResponse statsResponse =
+            DriveSessionStatsResponse.fromJson(response.body);
         sessionStats.value = statsResponse.data;
       }
     } catch (e) {
@@ -235,7 +239,9 @@ class TrackController extends GetxController {
       var response = await ApiClient.deleteData(ApiUrl.deleteSession(id));
       if (response.statusCode == 200) {
         Fluttertoast.showToast(msg: "sessionDeleted".tr);
-        mySessionsList.removeWhere((session) => session["_id"] == id || session["id"] == id);
+        mySessionsList.removeWhere(
+          (session) => session["_id"] == id || session["id"] == id,
+        );
       } else {
         Fluttertoast.showToast(msg: response.statusText ?? "error".tr);
       }
@@ -248,11 +254,14 @@ class TrackController extends GetxController {
   RxList<Expedition> expeditions = <Expedition>[].obs;
   RxBool isLoadingExpeditions = false.obs;
   RxBool isCreatingExpedition = false.obs;
-  
+
   int expeditionPage = 1;
   bool hasNextExpeditionPage = true;
 
-  Future<void> getAllExpeditions({bool refresh = false, String type = "upcoming"}) async {
+  Future<void> getAllExpeditions({
+    bool refresh = false,
+    String type = "upcoming",
+  }) async {
     if (refresh) {
       expeditionPage = 1;
       hasNextExpeditionPage = true;
@@ -263,11 +272,17 @@ class TrackController extends GetxController {
     }
 
     try {
-      String url = ApiUrl.getAllExpeditions(page: expeditionPage, limit: 10, type: type);
+      String url = ApiUrl.getAllExpeditions(
+        page: expeditionPage,
+        limit: 10,
+        type: type,
+      );
       var response = await ApiClient.getData(url);
-      
+
       if (response.statusCode == 200) {
-        ExpeditionResponse expResponse = ExpeditionResponse.fromJson(response.body);
+        ExpeditionResponse expResponse = ExpeditionResponse.fromJson(
+          response.body,
+        );
         if (expResponse.data != null) {
           if (refresh) {
             expeditions.assignAll(expResponse.data!);
@@ -275,7 +290,8 @@ class TrackController extends GetxController {
             expeditions.addAll(expResponse.data!);
           }
           if (expResponse.meta != null) {
-            hasNextExpeditionPage = expResponse.meta!.page! < expResponse.meta!.totalPage!;
+            hasNextExpeditionPage =
+                expResponse.meta!.page! < expResponse.meta!.totalPage!;
             if (hasNextExpeditionPage) expeditionPage++;
           }
         }
@@ -287,19 +303,27 @@ class TrackController extends GetxController {
     }
   }
 
-  Future<Expedition?> createExpedition(Map<String, dynamic> data, String? imagePath) async {
+  Future<Expedition?> createExpedition(
+    Map<String, dynamic> data,
+    String? imagePath,
+  ) async {
     isCreatingExpedition.value = true;
     try {
       var request = await ApiClient.postMultipartData(
-        ApiUrl.createExpedition, 
-        {"data": jsonEncode(data)}, 
-        multipartBody: imagePath != null ? [MultipartBody("coverImage", File(imagePath))] : []
+        ApiUrl.createExpedition,
+        {"data": jsonEncode(data)},
+        multipartBody: imagePath != null
+            ? [MultipartBody("coverImage", File(imagePath))]
+            : [],
       );
       if (request.statusCode == 200 || request.statusCode == 201) {
         Expedition? createdExpedition;
         try {
           final resData = jsonDecode(request.body!);
-          showCustomSnackBar(resData['message'] ?? "expeditionCreated".tr, isError: false);
+          showCustomSnackBar(
+            resData['message'] ?? "expeditionCreated".tr,
+            isError: false,
+          );
           if (resData['data'] != null) {
             createdExpedition = Expedition.fromJson(resData['data']);
           }
@@ -345,7 +369,10 @@ class TrackController extends GetxController {
 
   Future<void> startExpedition(String id) async {
     try {
-      var response = await ApiClient.patchData(ApiUrl.startExpedition(id), "{}");
+      var response = await ApiClient.patchData(
+        ApiUrl.startExpedition(id),
+        "{}",
+      );
       if (response.statusCode == 200) {
         Fluttertoast.showToast(msg: "expeditionStarted".tr);
         getAllExpeditions(refresh: true);
@@ -357,18 +384,47 @@ class TrackController extends GetxController {
     }
   }
 
-  Future<void> updateExpedition(String id, Map<String, dynamic> data, String? imagePath) async {
+  Future<bool> endExpedition(String id) async {
+    try {
+      var response = await ApiClient.patchData(ApiUrl.endExpedition(id), "{}");
+      if (response.statusCode == 200) {
+        showCustomSnackBar("Expedition ended successfully".tr, isError: false);
+        getAllExpeditions(refresh: true);
+        return true;
+      } else {
+        showCustomSnackBar(
+          response.body["message"] ?? "error".tr,
+          isError: true,
+        );
+        return false;
+      }
+    } catch (e) {
+      debugPrint("Error ending expedition: $e");
+      return false;
+    }
+  }
+
+  Future<void> updateExpedition(
+    String id,
+    Map<String, dynamic> data,
+    String? imagePath,
+  ) async {
     isCreatingExpedition.value = true;
     try {
       var request = await ApiClient.patchMultipartData(
-        ApiUrl.updateExpedition(id), 
-        {"data": jsonEncode(data)}, 
-        multipartBody: imagePath != null ? [MultipartBody("coverImage", File(imagePath))] : []
+        ApiUrl.updateExpedition(id),
+        {"data": jsonEncode(data)},
+        multipartBody: imagePath != null
+            ? [MultipartBody("coverImage", File(imagePath))]
+            : [],
       );
       if (request.statusCode == 200) {
         try {
           final resData = jsonDecode(request.body!);
-          showCustomSnackBar(resData['message'] ?? "expeditionUpdated".tr, isError: false);
+          showCustomSnackBar(
+            resData['message'] ?? "expeditionUpdated".tr,
+            isError: false,
+          );
         } catch (_) {
           showCustomSnackBar("expeditionUpdated".tr, isError: false);
         }
@@ -454,9 +510,13 @@ class TrackController extends GetxController {
     try {
       var response = await ApiClient.getData(ApiUrl.getSingleExpedition(id));
       if (response.statusCode == 200) {
-        currentLobbyExpedition.value = Expedition.fromJson(response.body['data']);
+        currentLobbyExpedition.value = Expedition.fromJson(
+          response.body['data'],
+        );
         if (currentLobbyExpedition.value?.participants != null) {
-          lobbyParticipants.assignAll(currentLobbyExpedition.value!.participants!);
+          lobbyParticipants.assignAll(
+            currentLobbyExpedition.value!.participants!,
+          );
         }
       }
     } catch (e) {
@@ -468,7 +528,10 @@ class TrackController extends GetxController {
 
   Future<void> startExpeditionTrip(String id) async {
     try {
-      var response = await ApiClient.patchData(ApiUrl.startExpedition(id), "{}");
+      var response = await ApiClient.patchData(
+        ApiUrl.startExpedition(id),
+        "{}",
+      );
       if (response.statusCode == 200) {
         Fluttertoast.showToast(msg: "Expedition Started!");
         fetchSingleExpedition(id);
@@ -479,7 +542,7 @@ class TrackController extends GetxController {
       debugPrint("Error starting expedition: $e");
     }
   }
-  
+
   // Trip Configurator State
   final TextEditingController nameController = TextEditingController();
   final TextEditingController objectiveController = TextEditingController();
@@ -513,12 +576,14 @@ class TrackController extends GetxController {
       selectedTrack.value = null;
       return;
     }
-    
+
     nameController.text = editingDrive!.tripName ?? "";
     objectiveController.text = editingDrive!.objective ?? "";
-    
+
     if (editingDrive!.deploymentDate != null) {
-      dateController.text = DateFormat('yyyy-MM-dd').format(editingDrive!.deploymentDate!.toLocal());
+      dateController.text = DateFormat(
+        'yyyy-MM-dd',
+      ).format(editingDrive!.deploymentDate!.toLocal());
     }
     timeController.text = editingDrive!.startTime ?? "";
     meetingPointController.text = editingDrive!.meetingPoint?.address ?? "";
@@ -530,7 +595,9 @@ class TrackController extends GetxController {
 
     if (editingDrive!.routeTrack != null) {
       if (editingDrive!.routeTrack is Map<String, dynamic>) {
-        selectedTrack.value = Track.fromJson(editingDrive!.routeTrack as Map<String, dynamic>);
+        selectedTrack.value = Track.fromJson(
+          editingDrive!.routeTrack as Map<String, dynamic>,
+        );
       } else if (editingDrive!.routeTrack is String) {
         Track? found;
         for (var t in tracks) {
@@ -539,7 +606,8 @@ class TrackController extends GetxController {
             break;
           }
         }
-        selectedTrack.value = found ?? Track(id: editingDrive!.routeTrack as String);
+        selectedTrack.value =
+            found ?? Track(id: editingDrive!.routeTrack as String);
       }
     } else {
       selectedTrack.value = null;
@@ -558,8 +626,9 @@ class TrackController extends GetxController {
     String isoDeploymentDate = "";
     try {
       if (dateController.text.isNotEmpty && timeController.text.isNotEmpty) {
-        DateTime localDateTime = DateFormat("yyyy-MM-dd hh:mm a")
-            .parse("${dateController.text} ${timeController.text}");
+        DateTime localDateTime = DateFormat(
+          "yyyy-MM-dd hh:mm a",
+        ).parse("${dateController.text} ${timeController.text}");
         isoDeploymentDate = localDateTime.toUtc().toIso8601String();
       }
     } catch (e) {
@@ -575,7 +644,7 @@ class TrackController extends GetxController {
       "meetingPoint": {
         "address": meetingPointController.text,
         "lat": meetingPointLat.value,
-        "lng": meetingPointLng.value
+        "lng": meetingPointLng.value,
       },
       "maxParticipants": maxParticipants.value.toInt(),
       "vehicleClass": selectedVehicleClass.value,
@@ -588,14 +657,14 @@ class TrackController extends GetxController {
 
     if (editingDrive != null) {
       await updateExpedition(
-        editingDrive!.id!, 
-        data, 
-        coverImagePath.value.isNotEmpty ? coverImagePath.value : null
+        editingDrive!.id!,
+        data,
+        coverImagePath.value.isNotEmpty ? coverImagePath.value : null,
       );
     } else {
       Expedition? newExp = await createExpedition(
-        data, 
-        coverImagePath.value.isNotEmpty ? coverImagePath.value : null
+        data,
+        coverImagePath.value.isNotEmpty ? coverImagePath.value : null,
       );
       if (newExp != null) {
         Get.back();
