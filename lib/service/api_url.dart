@@ -1,12 +1,12 @@
 class ApiUrl {
-  static const String baseUrl =
-      "https://comparable-leasing-overcome-prix.trycloudflare.com/api/v1";
-  static const String imageUrl =
-      "https://comparable-leasing-overcome-prix.trycloudflare.com";
+  // static const String baseUrl =
+  //     "https://comparable-leasing-overcome-prix.trycloudflare.com/api/v1";
+  // static const String imageUrl =
+  //     "https://comparable-leasing-overcome-prix.trycloudflare.com";
 
   //=============== wINDOWS ======================
-  // static const String baseUrl = "http://10.10.28.90:4050/api/v1";
-  // static const String imageUrl = "http://10.10.28.90:4050";
+  static const String baseUrl = "http://10.10.28.90:4050/api/v1";
+  static const String imageUrl = "http://10.10.28.90:4050";
 
   //========================= Mac ========================
   // static const String baseUrl = "http://10.0.2.2:4050/api/v1";
@@ -102,6 +102,8 @@ class ApiUrl {
     required String postId,
     required String commentId,
   }) => "/posts/$postId/comment/$commentId";
+  static String getPostInteractions({required String postId}) =>
+      "/posts/get-post-interactions/$postId";
   static const String createPost = "/posts/create-post";
   static const String getMyClubs = "/clubs/get-my-clubs";
   static String getEvents({int page = 1, int limit = 10, String? searchTerm}) {

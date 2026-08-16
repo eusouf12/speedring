@@ -116,7 +116,7 @@ class TransactionHistoryScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.white, fontSize: 12.sp),
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "SEARCH".tr.toUpperCase() + "...",
+                          hintText: "${"SEARCH".tr.toUpperCase()}...",
                           hintStyle: TextStyle(
                             color: Colors.white24,
                             fontSize: 12.sp,

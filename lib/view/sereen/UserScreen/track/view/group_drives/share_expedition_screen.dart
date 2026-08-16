@@ -341,10 +341,12 @@ class _ShareExpeditionScreenState extends State<ShareExpeditionScreen> {
                       : () async {
                           String backendVis = "Public";
                           if (selectedVisibility ==
-                              "followers".tr.toUpperCase())
+                              "followers".tr.toUpperCase()) {
                             backendVis = "Followers";
-                          if (selectedVisibility == "private".tr.toUpperCase())
+                          }
+                          if (selectedVisibility == "private".tr.toUpperCase()) {
                             backendVis = "Club Only";
+                          }
 
                           String? coverUrl = activeController.drive?.coverImage;
                           if (coverUrl != null &&

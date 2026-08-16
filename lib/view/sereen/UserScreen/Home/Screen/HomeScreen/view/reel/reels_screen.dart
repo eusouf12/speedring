@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
-import 'reels_controller.dart';
+import '../../controller/reels_controller.dart';
 
 class ReelsScreen extends StatefulWidget {
   const ReelsScreen({super.key});

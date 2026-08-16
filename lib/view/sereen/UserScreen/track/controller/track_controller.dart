@@ -11,7 +11,7 @@ import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../mode/track_model.dart';
 import '../../Profile/model/profile_model.dart';
-import '../mode/session-stats_model.dart';
+import '../mode/session_stats_model.dart';
 import 'package:speedring/view/sereen/UserScreen/track/mode/expedition_model.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';

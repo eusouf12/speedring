@@ -284,7 +284,7 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  "host".tr.toUpperCase() + ": ",
+                                  "${"host".tr.toUpperCase()}: ",
                                   style: const TextStyle(
                                     color: Colors.white38,
                                     fontSize: 9,
@@ -381,9 +381,7 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                                         ),
                                       ),
                                       TextSpan(
-                                        text:
-                                            " " +
-                                            "driversJoined".tr.toUpperCase(),
+                                        text: " ${"driversJoined".tr.toUpperCase()}",
                                         style: const TextStyle(
                                           color: Colors.white38,
                                           fontWeight: FontWeight.bold,
@@ -401,8 +399,9 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                             GestureDetector(
                               onTap: () {
                                 if (drive.participants == null ||
-                                    drive.participants!.isEmpty)
+                                    drive.participants!.isEmpty) {
                                   return;
+                                }
                                 Get.bottomSheet(
                                   Container(
                                     padding: const EdgeInsets.all(16),
@@ -644,6 +643,7 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                           Icons.share_outlined,
                           onTap: () {
                             String url = "${ApiUrl.baseUrl}/invite/${drive.id}";
+                            // ignore: deprecated_member_use
                             Share.share(
                               "Join my trip '${drive.tripName}' on Speedring! Link: $url",
                             );
@@ -713,6 +713,7 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                           Icons.share_outlined,
                           onTap: () {
                             String url = "${ApiUrl.baseUrl}/invite/${drive.id}";
+                            // ignore: deprecated_member_use
                             Share.share(
                               "Join the trip '${drive.tripName}' on Speedring! Link: $url",
                             );

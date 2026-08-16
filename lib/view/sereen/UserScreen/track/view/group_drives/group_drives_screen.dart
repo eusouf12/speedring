@@ -407,6 +407,7 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                           size: 18,
                         ),
                         onPressed: () {
+                          // ignore: deprecated_member_use
                           Share.share(
                             "Join my expedition '${drive.tripName}' on Speedring! Date: $formattedDate. Location: ${drive.meetingPoint?.address ?? ''}",
                             subject: "Join ${drive.tripName}",

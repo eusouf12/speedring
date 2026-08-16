@@ -166,6 +166,7 @@ class ActiveDriveController extends GetxController {
       }
     ]
     ''';
+    // ignore: deprecated_member_use
     mapController!.setMapStyle(darkStyle);
   }
 
