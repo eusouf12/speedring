@@ -313,7 +313,7 @@ class UserHomeScreen extends StatelessWidget {
                                   onLike: () =>
                                       controller.reactToPost(post.id!),
                                   onComment: () =>
-                                      showCommentSheet(context, post),
+                                      showCommentSheet(context, post: post),
                                   onShare: () {
                                     final postLink =
                                         "https://speedring.com/post/${post.id}";

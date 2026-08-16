@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
+import '../../../../components/custom_appbar_user/custom_appbar_user.dart';
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_nav_bar/navbar.dart';
 import '../../../../../../core/app_routes/app_routes.dart';
@@ -19,51 +20,63 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          elevation: 0,
-          titleSpacing: 0,
-
-          title: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: const Color(0xff111111),
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: Colors.white10),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.search, color: Colors.white38, size: 18),
-
-                  SizedBox(width: 10.w),
-
-                  Expanded(
-                    child: TextField(
-                      controller: controller.searchController,
-                      onChanged: (val) => controller.searchQuery.value = val,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'whatDoYouWantToBuy'.tr,
-                        hintStyle: const TextStyle(
-                          color: Colors.white24,
-                          fontSize: 13,
-                        ),
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8.h),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        appBar: CustomAppBarUser(
+          showSearchIcon: true,
+          onSearchTap: () => controller.showSearchBar.toggle(),
+          onNotificationTap: () {
+            Get.toNamed(AppRoutes.notificationScreen);
+          },
+          onMailTap: () {
+            Get.toNamed(AppRoutes.messageScreen);
+          },
         ),
         body: Column(
           children: [
+            Obx(() {
+              if (controller.showSearchBar.value) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xff1C1C1C),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TextField(
+                      controller: controller.searchController,
+                      style: const TextStyle(color: Colors.white),
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: 'whatDoYouWantToBuy'.tr,
+                        hintStyle: const TextStyle(color: Colors.white30),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.white70,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear, color: Colors.white54),
+                          onPressed: () {
+                            controller.searchController.clear();
+                            controller.searchQuery.value = "";
+                            controller.showSearchBar.value = false;
+                          },
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                        ),
+                      ),
+                      onChanged: (val) {
+                        controller.searchQuery.value = val;
+                      },
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            }),
             Obx(() {
               /// Hide completely when scrolling
               if (controller.isHeaderButtonHidden.value) {
@@ -95,7 +108,9 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
               child: Obx(() {
                 if (controller.isLoadingFeed.value &&
                     controller.listings.isEmpty) {
-                  return const Center(child: CircularProgressIndicator(color: AppColors.yellow));
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.yellow),
+                  );
                 }
 
                 return RefreshIndicator(

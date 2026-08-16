@@ -75,6 +75,7 @@ import '../../view/sereen/UserScreen/Profile/Screen/about_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/personalize_interest_screen.dart';
 import '../../view/sereen/UserScreen/track/view/single_track/my_sessions_screen.dart'
     as speedring_my_sessions;
+import '../../view/sereen/UserScreen/Profile/Screen/saved_reels_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step1.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step2.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step3.dart';
@@ -245,6 +246,7 @@ class AppRoutes {
   static const String clubJoinRequestsScreen = "/ClubJoinRequestsScreen";
   static const String clubGroupPostScreen = "/ClubGroupPostScreen";
   static const String mySessionsScreen = "/MySessionsScreen";
+  static const String savedReelsScreen = "/SavedReelsScreen";
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -518,6 +520,10 @@ class AppRoutes {
     GetPage(
       name: mySessionsScreen,
       page: () => const speedring_my_sessions.MySessionsScreen(),
+    ),
+    GetPage(
+      name: savedReelsScreen,
+      page: () => const SavedReelsScreen(),
     ),
   ];
 }

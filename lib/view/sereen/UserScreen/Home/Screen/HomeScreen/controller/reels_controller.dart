@@ -1,19 +1,48 @@
+import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:speedring/core/app_routes/app_routes.dart';
 import '../../../../../../../../service/api_client.dart';
 import '../../../../../../../../service/api_url.dart';
 import '../../../../../../../../utils/ToastMsg/toast_message.dart';
+import '../../../../../../../../helper/shared_prefe/shared_prefe.dart';
+import '../../../../../../../../utils/app_const/app_const.dart';
 
 class ReelsController extends GetxController {
   RxList<Map<String, dynamic>> reels = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> savedReels = <Map<String, dynamic>>[].obs;
   RxBool isLoading = false.obs;
+  RxBool isSavedReelsLoading = false.obs;
   RxBool isUploading = false.obs;
+  String? myUserId;
 
   @override
   void onInit() {
     super.onInit();
+    _fetchUserId();
     fetchAllReels();
+    fetchSavedReels();
+  }
+
+  Future<void> _fetchUserId() async {
+    try {
+      String? token = await SharePrefsHelper.getString(
+        AppConstants.bearerToken,
+      );
+      if (token.isNotEmpty) {
+        final parts = token.split('.');
+        if (parts.length == 3) {
+          final payload = parts[1];
+          var normalized = base64Url.normalize(payload);
+          var resp = utf8.decode(base64Url.decode(normalized));
+          final decoded = json.decode(resp);
+          myUserId = decoded['userId'];
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching user id: $e");
+    }
   }
 
   Future<void> fetchAllReels() async {
@@ -39,10 +68,65 @@ class ReelsController extends GetxController {
     }
   }
 
+  Future<void> fetchSavedReels() async {
+    isSavedReelsLoading.value = true;
+    try {
+      var response = await ApiClient.getData(
+        ApiUrl.getSavedPosts(page: 1, limit: 20),
+      );
+      if (response.statusCode == 200) {
+        final body = response.body is String
+            ? jsonDecode(response.body)
+            : response.body;
+        if (body['data'] != null) {
+          final List list = body['data'];
+          // Filter to only show REELs if needed, or just show all saved posts
+          savedReels.assignAll(
+            list.map((e) => e as Map<String, dynamic>).toList(),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching saved reels: $e");
+    } finally {
+      isSavedReelsLoading.value = false;
+    }
+  }
+
+  Future<void> removeSavedReel(String postId) async {
+    try {
+      var response = await ApiClient.postData(
+        ApiUrl.toggleSavePost(postId: postId),
+        "",
+      );
+      if (response.statusCode == 200) {
+        savedReels.removeWhere(
+          (element) => (element['_id'] == postId) || (element['id'] == postId),
+        );
+        // Also update the main reels list if it's there
+        final index = reels.indexWhere(
+          (element) => (element['_id'] == postId) || (element['id'] == postId),
+        );
+        if (index != -1) {
+          reels[index]['isBookmarked'] = false;
+          reels[index] = reels[index];
+        }
+        showCustomSnackBar("Removed from saved", isError: false);
+      } else {
+        showCustomSnackBar("Failed to remove", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error removing saved reel: $e");
+    }
+  }
+
   Future<void> createReel({
     required String title,
     required String description,
     required dynamic videoFile,
+    File? audioFile,
+    String? musicName,
+    String? musicUrl,
   }) async {
     isUploading.value = true;
     try {
@@ -52,9 +136,16 @@ class ReelsController extends GetxController {
         "clubPostDetails": {"title": title, "details": description},
       };
 
+      if (musicName != null && musicName.isNotEmpty) {
+        bodyData["music"] = {"name": musicName, "url": musicUrl};
+      }
+
       Map<String, String> fields = {'data': jsonEncode(bodyData)};
 
       List<MultipartBody> multipartBody = [MultipartBody('media', videoFile)];
+      if (audioFile != null) {
+        multipartBody.add(MultipartBody('audio', audioFile));
+      }
 
       var response = await ApiClient.postMultipartData(
         ApiUrl.createPost,
@@ -63,9 +154,10 @@ class ReelsController extends GetxController {
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
+        fetchAllReels();
         showCustomSnackBar("Reel created successfully", isError: false);
-        Get.back(); // Go back to Reels screen
-        fetchAllReels(); // Refresh the list
+        Get.offNamed(AppRoutes.reelsScreen); // Go back to Reels screen
+        // Refresh the list
       } else {
         final body = response.body is String
             ? jsonDecode(response.body)
@@ -85,12 +177,14 @@ class ReelsController extends GetxController {
     if (index < 0 || index >= reels.length) return;
 
     final reel = reels[index];
-    final bool isCurrentlyLiked = reel['isLiked'] ?? false;
-    final int currentLikes = reel['likes'] ?? 0;
+    final bool isCurrentlyReacted = reel['isReacted'] ?? false;
+    final int currentReactCount = reel['reactCount'] ?? 0;
 
     // Optimistic update
-    reel['isLiked'] = !isCurrentlyLiked;
-    reel['likes'] = isCurrentlyLiked ? (currentLikes - 1) : (currentLikes + 1);
+    reel['isReacted'] = !isCurrentlyReacted;
+    reel['reactCount'] = isCurrentlyReacted
+        ? (currentReactCount - 1)
+        : (currentReactCount + 1);
     reels[index] = reel; // trigger Rx update
 
     // Call API
@@ -98,8 +192,8 @@ class ReelsController extends GetxController {
       reel['_id'] ?? reel['id'] ?? '',
       "LIKE",
       index,
-      isCurrentlyLiked,
-      currentLikes,
+      isCurrentlyReacted,
+      currentReactCount,
     );
   }
 
@@ -107,8 +201,8 @@ class ReelsController extends GetxController {
     String reelId,
     String reactType,
     int index,
-    bool previousLikedState,
-    int previousLikes,
+    bool previousReactedState,
+    int previousReactCount,
   ) async {
     if (reelId.isEmpty) return;
     try {
@@ -119,8 +213,8 @@ class ReelsController extends GetxController {
       if (response.statusCode != 200) {
         // Revert on failure
         if (index >= 0 && index < reels.length) {
-          reels[index]['isLiked'] = previousLikedState;
-          reels[index]['likes'] = previousLikes;
+          reels[index]['isReacted'] = previousReactedState;
+          reels[index]['reactCount'] = previousReactCount;
           reels[index] = reels[index];
         }
         showCustomSnackBar("Failed to react to reel", isError: true);
@@ -130,13 +224,58 @@ class ReelsController extends GetxController {
     }
   }
 
-  void toggleBookmark(int index) {
-    if (index < 0 || index >= reels.length) return;
+  Future<void> toggleBookmark(int index, String postId) async {
+    if (index < 0 || index >= reels.length || postId.isEmpty) return;
+
     final reel = reels[index];
     final bool isBookmarked = reel['isBookmarked'] ?? false;
+
+    // Optimistic UI update
     reel['isBookmarked'] = !isBookmarked;
     reels[index] = reel;
-    // Add API call for bookmark if available in the backend later
+
+    try {
+      var response = await ApiClient.postData(
+        ApiUrl.toggleSavePost(postId: postId),
+        "",
+      );
+      if (response.statusCode != 200) {
+        // Revert on failure
+        reels[index]['isBookmarked'] = isBookmarked;
+        reels[index] = reels[index];
+        showCustomSnackBar("Failed to save post", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error toggling bookmark: $e");
+    }
+  }
+
+  Future<void> toggleFollow(int index, String targetUserId) async {
+    if (index < 0 || index >= reels.length || targetUserId.isEmpty) return;
+
+    final reel = reels[index];
+    final bool isFollowing = reel['isFollowing'] ?? false;
+
+    // Optimistic update
+    reel['isFollowing'] = !isFollowing;
+    reels[index] = reel;
+
+    try {
+      var response = await ApiClient.postData(
+        ApiUrl.toggleFollow(userId: targetUserId),
+        "",
+      );
+      if (response.statusCode == 200) {
+        // Success
+      } else {
+        // Revert on failure
+        reels[index]['isFollowing'] = isFollowing;
+        reels[index] = reels[index];
+        showCustomSnackBar("Failed to follow user", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error following user: $e");
+    }
   }
 
   // --- Comments ---
@@ -181,14 +320,36 @@ class ReelsController extends GetxController {
         jsonEncode({"comment": comment}),
       );
       if (response.statusCode == 201 || response.statusCode == 200) {
+        final body = response.body is String
+            ? jsonDecode(response.body)
+            : response.body;
+
+        fetchAllReels();
+        // Immediately update comments list from response data
+        if (body['data'] != null && body['data']['comments'] != null) {
+          final List list = body['data']['comments'];
+          currentComments.assignAll(
+            list.map((e) => e as Map<String, dynamic>).toList(),
+          );
+        } else {
+          getReelInteractions(reelId);
+        }
+
         // Increment comment count locally
         if (reelIndex >= 0 && reelIndex < reels.length) {
-          int count = reels[reelIndex]['comments'] ?? 0;
-          reels[reelIndex]['comments'] = count + 1;
+          var val =
+              reels[reelIndex]['commentCount'] ?? reels[reelIndex]['comments'];
+          int count = 0;
+          if (val is int) {
+            count = val;
+          } else if (val is List) {
+            count = val.length;
+          } else if (val is String) {
+            count = int.tryParse(val) ?? 0;
+          }
+          reels[reelIndex]['commentCount'] = count + 1;
           reels[reelIndex] = reels[reelIndex];
         }
-        // Refresh comments
-        getReelInteractions(reelId);
       } else {
         showCustomSnackBar("Failed to add comment", isError: true);
       }
@@ -209,13 +370,44 @@ class ReelsController extends GetxController {
         jsonEncode({"comment": reply}),
       );
       if (response.statusCode == 201 || response.statusCode == 200) {
-        // Refresh comments
-        getReelInteractions(reelId);
+        final body = response.body is String
+            ? jsonDecode(response.body)
+            : response.body;
+
+        fetchAllReels();
+        // Immediately update comments list from response data to show the reply instantly
+        if (body['data'] != null && body['data']['comments'] != null) {
+          final List list = body['data']['comments'];
+          currentComments.assignAll(
+            list.map((e) => e as Map<String, dynamic>).toList(),
+          );
+        } else {
+          // Fallback
+          getReelInteractions(reelId);
+        }
       } else {
         showCustomSnackBar("Failed to add reply", isError: true);
       }
     } catch (e) {
       debugPrint("Error replying to comment: $e");
+    }
+  }
+
+  Future<void> deleteComment(String reelId, String commentId) async {
+    if (reelId.isEmpty || commentId.isEmpty) return;
+    try {
+      var response = await ApiClient.deleteData(
+        ApiUrl.deleteComment(postId: reelId, commentId: commentId),
+      );
+      if (response.statusCode == 200) {
+        // Refresh comments
+        fetchAllReels();
+        getReelInteractions(reelId);
+      } else {
+        showCustomSnackBar("Failed to delete comment", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error deleting comment: $e");
     }
   }
 
@@ -227,6 +419,7 @@ class ReelsController extends GetxController {
       );
       if (response.statusCode == 200) {
         showCustomSnackBar("Reel deleted successfully", isError: false);
+        fetchAllReels();
         reels.removeWhere(
           (element) => element['_id'] == reelId || element['id'] == reelId,
         );

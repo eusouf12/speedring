@@ -1,25 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/home_controller.dart';
+import '../../controller/reels_controller.dart';
 import '../../model/post_model.dart';
 
-void showCommentSheet(BuildContext context, [PostModel? post]) {
+void showCommentSheet(
+  BuildContext context, {
+  PostModel? post,
+  bool isReel = false,
+  int reelIndex = -1,
+}) {
   if (post == null) return;
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _CommentSheet(post: post),
+    builder: (_) =>
+        _CommentSheet(post: post, isReel: isReel, reelIndex: reelIndex),
   );
 }
 
 class _CommentSheet extends StatelessWidget {
   final PostModel post;
-  const _CommentSheet({required this.post});
+  final bool isReel;
+  final int reelIndex;
+  const _CommentSheet({
+    required this.post,
+    this.isReel = false,
+    this.reelIndex = -1,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final HomeController controller = Get.find<HomeController>();
+    final HomeController? homeController = isReel
+        ? null
+        : Get.find<HomeController>();
+    final ReelsController? reelsController = isReel
+        ? Get.find<ReelsController>()
+        : null;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.88,
@@ -39,11 +57,16 @@ class _CommentSheet extends StatelessWidget {
                 child: Row(
                   children: [
                     Obx(() {
-                      final updatedPost = controller.postsList.firstWhere(
-                        (element) => element.id == post.id,
-                        orElse: () => post,
-                      );
-                      final count = updatedPost.comments?.length ?? 0;
+                      int count = 0;
+                      if (isReel && reelsController != null) {
+                        count = reelsController.currentComments.length;
+                      } else if (homeController != null) {
+                        final updatedPost = homeController.postsList.firstWhere(
+                          (element) => element.id == post.id,
+                          orElse: () => post,
+                        );
+                        count = updatedPost.comments?.length ?? 0;
+                      }
                       return Text(
                         "COMMENTS ($count)",
                         style: const TextStyle(
@@ -70,11 +93,18 @@ class _CommentSheet extends StatelessWidget {
               const Divider(color: Colors.white12, height: 1),
               Expanded(
                 child: Obx(() {
-                  final updatedPost = controller.postsList.firstWhere(
-                    (element) => element.id == post.id,
-                    orElse: () => post,
-                  );
-                  final commentsList = updatedPost.comments ?? [];
+                  List<PostComment> commentsList = [];
+                  if (isReel && reelsController != null) {
+                    commentsList = reelsController.currentComments
+                        .map((e) => PostComment.fromJson(e))
+                        .toList();
+                  } else if (homeController != null) {
+                    final updatedPost = homeController.postsList.firstWhere(
+                      (element) => element.id == post.id,
+                      orElse: () => post,
+                    );
+                    commentsList = updatedPost.comments ?? [];
+                  }
 
                   if (commentsList.isEmpty) {
                     return const Center(
@@ -96,12 +126,20 @@ class _CommentSheet extends StatelessWidget {
                         const Divider(color: Colors.white12, height: 24),
                     itemBuilder: (_, i) {
                       final comment = commentsList[i];
-                      return _CommentTile(postId: post.id!, comment: comment);
+                      return _CommentTile(
+                        postId: post.id!,
+                        comment: comment,
+                        isReel: isReel,
+                      );
                     },
                   );
                 }),
               ),
-              _CommentInputBar(postId: post.id!),
+              _CommentInputBar(
+                postId: post.id!,
+                isReel: isReel,
+                reelIndex: reelIndex,
+              ),
             ],
           ),
         );
@@ -139,16 +177,29 @@ class CommentInputBarController extends GetxController {
 class _CommentTile extends StatelessWidget {
   final String postId;
   final PostComment comment;
+  final bool isReel;
 
-  const _CommentTile({required this.postId, required this.comment});
+  const _CommentTile({
+    required this.postId,
+    required this.comment,
+    this.isReel = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
+    final homeController = Get.isRegistered<HomeController>()
+        ? Get.find<HomeController>()
+        : null;
+    final reelsController = isReel && Get.isRegistered<ReelsController>()
+        ? Get.find<ReelsController>()
+        : null;
+
     final inputBarController = Get.find<CommentInputBarController>(tag: postId);
     final tileController = Get.put(CommentTileController(), tag: comment.id);
 
-    final isMyComment = comment.user?.id == homeController.currentUserId.value;
+    final currentUserId = homeController?.currentUserId.value ?? '';
+    final isMyComment =
+        currentUserId.isNotEmpty && comment.user?.id == currentUserId;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,10 +264,17 @@ class _CommentTile extends StatelessWidget {
                                   TextButton(
                                     onPressed: () {
                                       Navigator.pop(context);
-                                      homeController.deleteComment(
-                                        postId,
-                                        comment.id!,
-                                      );
+                                      if (isReel && reelsController != null) {
+                                        reelsController.deleteComment(
+                                          postId,
+                                          comment.id!,
+                                        );
+                                      } else if (homeController != null) {
+                                        homeController.deleteComment(
+                                          postId,
+                                          comment.id!,
+                                        );
+                                      }
                                     },
                                     child: const Text(
                                       "Delete",
@@ -362,12 +420,23 @@ class _CommentTile extends StatelessWidget {
 
 class _CommentInputBar extends StatelessWidget {
   final String postId;
-  const _CommentInputBar({required this.postId});
+  final bool isReel;
+  final int reelIndex;
+  const _CommentInputBar({
+    required this.postId,
+    this.isReel = false,
+    this.reelIndex = -1,
+  });
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CommentInputBarController(), tag: postId);
-    final homeController = Get.find<HomeController>();
+    final homeController = Get.isRegistered<HomeController>()
+        ? Get.find<HomeController>()
+        : null;
+    final reelsController = isReel && Get.isRegistered<ReelsController>()
+        ? Get.find<ReelsController>()
+        : null;
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     final safeBottom = MediaQuery.of(context).padding.bottom;
 
@@ -452,14 +521,30 @@ class _CommentInputBar extends StatelessWidget {
                           onPressed: () {
                             final text = controller.ctrl.text.trim();
                             if (controller.replyingToComment.value != null) {
-                              homeController.replyToComment(
-                                postId,
-                                controller.replyingToComment.value!.id!,
-                                text,
-                              );
+                              if (isReel && reelsController != null) {
+                                reelsController.replyToComment(
+                                  postId,
+                                  controller.replyingToComment.value!.id!,
+                                  text,
+                                );
+                              } else if (homeController != null) {
+                                homeController.replyToComment(
+                                  postId,
+                                  controller.replyingToComment.value!.id!,
+                                  text,
+                                );
+                              }
                               controller.replyingToComment.value = null;
                             } else {
-                              homeController.commentOnPost(postId, text);
+                              if (isReel && reelsController != null) {
+                                reelsController.commentOnReel(
+                                  postId,
+                                  reelIndex,
+                                  text,
+                                );
+                              } else if (homeController != null) {
+                                homeController.commentOnPost(postId, text);
+                              }
                             }
                             controller.ctrl.clear();
                           },

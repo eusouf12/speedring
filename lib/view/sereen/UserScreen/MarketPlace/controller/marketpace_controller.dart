@@ -41,6 +41,7 @@ class MarketplaceFeedController extends GetxController {
 
   final ScrollController scrollController = ScrollController();
   final RxBool isHeaderButtonHidden = false.obs;
+  final RxBool showSearchBar = false.obs;
   var isLoadingFeed = false.obs;
   var isMoreLoadingFeed = false.obs;
   int _page = 1;

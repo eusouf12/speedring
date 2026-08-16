@@ -98,6 +98,11 @@ class ApiUrl {
     required String postId,
     required String commentId,
   }) => "/posts/$postId/comment/$commentId/reply";
+
+  static String toggleSavePost({required String postId}) =>
+      "/posts/toggle-save/$postId";
+  static String getSavedPosts({required int page, required int limit}) =>
+      "/posts/saved-posts?page=$page&limit=$limit";
   static String deleteComment({
     required String postId,
     required String commentId,

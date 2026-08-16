@@ -305,7 +305,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               const SizedBox(width: 20),
 
                               GestureDetector(
-                                onTap: () => showCommentSheet(context, post),
+                                onTap: () => showCommentSheet(context, post: post),
                                 child: Row(
                                   children: [
                                     const Icon(

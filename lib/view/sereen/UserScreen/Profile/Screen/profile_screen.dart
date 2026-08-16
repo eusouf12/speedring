@@ -54,6 +54,13 @@ class ProfileScreen extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(
+                Icons.bookmark_border,
+                color: AppColors.yellow,
+              ),
+              onPressed: () => Get.toNamed(AppRoutes.savedReelsScreen),
+            ),
+            IconButton(
+              icon: const Icon(
                 Icons.settings_outlined,
                 color: AppColors.yellow,
               ),
@@ -695,7 +702,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       onLike: () => homeController.reactToPost(post.id!),
-                      onComment: () => showCommentSheet(Get.context!, post),
+                      onComment: () => showCommentSheet(Get.context!, post: post),
                       onShare: () {
                         final postLink =
                             "https://speedring.com/post/${post.id}";
