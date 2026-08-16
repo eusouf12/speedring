@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
@@ -131,11 +132,10 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
   VideoPlayerController? _videoController;
   AudioPlayer? _audioPlayer;
   bool _isPlaying = false;
+  bool _audioReady = false;
+  bool _videoReady = false;
   bool _showPlayPauseIndicator = false;
   bool _showDoubleTapLikeAnimation = false;
-  bool _isAudioInitialized = false;
-  bool _isSeekingAudio = false;
-  Duration _lastVideoPosition = Duration.zero;
 
   @override
   void initState() {
@@ -145,119 +145,131 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
       vsync: this,
       duration: const Duration(seconds: 5),
     )..repeat();
-    _initializeVideoPlayer();
-    _initializeAudioPlayer();
+    _initializePlayers();
   }
 
-  void _initializeAudioPlayer() {
-    final audioUrl = _getAudioUrl();
-    if (audioUrl != null && audioUrl.isNotEmpty) {
-      _audioPlayer = AudioPlayer();
-      _audioPlayer!
-          .setUrl(audioUrl)
+  void _initializePlayers() {
+    final combinedUrl = _getCombinedVideoUrl();
+    final videoUrl = combinedUrl ?? _getRawVideoUrl();
+    if (videoUrl == null || videoUrl.isEmpty) return;
+
+    _videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
+      ..initialize()
           .then((_) {
-            _audioPlayer!.setLoopMode(LoopMode.one);
-            if (mounted) {
-              setState(() {
-                _isAudioInitialized = true;
-              });
-              if (_isPlaying) {
-                _audioPlayer!.play();
+            if (!mounted) return;
+            setState(() {});
+
+            if (combinedUrl != null) {
+              // Cloudinary merged the audio and video! No need for AudioPlayer.
+              _videoController!.setVolume(1.0);
+              _audioReady = true; // Pretend audio is ready
+            } else {
+              // Fallback to dual-player mode
+              final hasAudio = _getAudioUrl() != null;
+              _videoController!.setVolume(hasAudio ? 0.0 : 1.0);
+              if (hasAudio) {
+                _initializeAudioPlayer();
+              } else {
+                _audioReady = true;
               }
+            }
+
+            _videoController!.setLooping(true);
+            _videoReady = true;
+            if (_isPlaying) {
+              _videoController!.play();
+              if (_audioPlayer != null && _audioReady) _audioPlayer!.play();
             }
           })
           .catchError((e) {
-            debugPrint("Error loading audio URL ($audioUrl): $e");
+            debugPrint("Video load error ($videoUrl): $e");
           });
+  }
+
+  // ── Central play/pause control ──────────────────────────────────────────
+  void _setPlayState(bool shouldPlay) {
+    _isPlaying = shouldPlay;
+    if (shouldPlay) {
+      if (_videoReady) _videoController!.play();
+      if (_audioReady) _audioPlayer!.play();
+    } else {
+      _videoController?.pause();
+      _audioPlayer?.pause();
     }
   }
 
-  void _syncAudioWithVideo() async {
-    if (!mounted || _videoController == null || _audioPlayer == null || !_isAudioInitialized || _isSeekingAudio) return;
+  // ── Initializers ─────────────────────────────────────────────────────────
+  void _initializeAudioPlayer() {
+    final audioUrl = _getAudioUrl();
+    if (audioUrl == null || audioUrl.isEmpty) return;
 
-    final videoValue = _videoController!.value;
-    if (!videoValue.isInitialized) return;
-
-    final isVideoPlaying = videoValue.isPlaying;
-    final isAudioPlaying = _audioPlayer!.playing;
-
-    // 1. Sync play/pause state
-    if (isVideoPlaying && !isAudioPlaying) {
-      _audioPlayer!.play();
-    } else if (!isVideoPlaying && isAudioPlaying) {
-      _audioPlayer!.pause();
-    }
-
-    // 2. Sync seeking only when a major jump is detected (scrubbing or looping)
-    final videoPosition = videoValue.position;
-    final diffFromLastVideoPos = (videoPosition - _lastVideoPosition).inMilliseconds.abs();
-    _lastVideoPosition = videoPosition;
-
-    if (diffFromLastVideoPos > 1200) {
-      _isSeekingAudio = true;
-      try {
-        await _audioPlayer!.seek(videoPosition);
-      } catch (e) {
-        debugPrint("Error seeking audio: $e");
-      } finally {
-        _isSeekingAudio = false;
-      }
-    }
+    _audioPlayer = AudioPlayer();
+    _audioPlayer!
+        .setUrl(audioUrl)
+        .then((_) async {
+          if (!mounted) return;
+          await _audioPlayer!.setLoopMode(LoopMode.one);
+          _audioReady = true;
+          // If video is already playing, start audio immediately
+          if (_isPlaying) {
+            _audioPlayer!.play();
+          }
+        })
+        .catchError((e) {
+          debugPrint("Audio load error ($audioUrl): $e");
+        });
   }
 
+
+
+  // ── URL helpers ──────────────────────────────────────────────────────────
   String? _getAudioUrl() {
-    // Check for iTunes music url
     final music = widget.reelData['music'];
     if (music != null &&
         music['url'] != null &&
         music['url'].toString().isNotEmpty) {
       return music['url'];
     }
-    // Check for uploaded audio file
     final media = widget.reelData['media'];
     if (media != null && media is List) {
       for (var item in media) {
-        if (item['type'] == 'audio') {
-          return item['url'];
-        }
+        if (item['type'] == 'audio') return item['url'];
       }
     }
     return null;
   }
 
-  void _initializeVideoPlayer() {
-    final videoUrl = _getVideoUrl();
-    if (videoUrl != null && videoUrl.isNotEmpty) {
-      _videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
-        ..initialize()
-            .then((_) {
-              if (mounted) {
-                setState(() {});
+  String? _getCombinedVideoUrl() {
+    final videoUrl = _getRawVideoUrl();
+    final audioUrl = _getAudioUrl();
 
-                // Mute video if we have custom audio
-                final audioUrl = _getAudioUrl();
-                if (audioUrl != null && audioUrl.isNotEmpty) {
-                  _videoController!.setVolume(0.0);
-                } else {
-                  _videoController!.setVolume(1.0);
-                }
-
-                _videoController!.setLooping(true);
-                if (_isPlaying) {
-                  _videoController!.play();
-                }
-                
-                // Listen to video events to sync audio
-                _videoController!.addListener(_syncAudioWithVideo);
-              }
-            })
-            .catchError((e) {
-              debugPrint("Error loading video URL ($videoUrl): $e");
-            });
+    if (videoUrl == null || audioUrl == null) return null;
+    
+    // Only attempt to combine if both are Cloudinary URLs
+    if (!videoUrl.contains('cloudinary.com') || !audioUrl.contains('cloudinary.com')) {
+      return null; 
     }
+
+    try {
+      final vMatch = RegExp(r'/upload/(?:v\d+/)?(.+?)\.[a-zA-Z0-9]+$').firstMatch(videoUrl);
+      final aMatch = RegExp(r'/upload/(?:v\d+/)?(.+?)\.[a-zA-Z0-9]+$').firstMatch(audioUrl);
+      
+      if (vMatch != null && aMatch != null) {
+        final videoPublicId = vMatch.group(1)!;
+        final audioPublicId = aMatch.group(1)!;
+        
+        final formattedAudioId = audioPublicId.replaceAll('/', ':');
+        final baseUrl = videoUrl.substring(0, videoUrl.indexOf('/upload/') + 8);
+        return '${baseUrl}ac_none/l_video:$formattedAudioId,fl_layer_apply/$videoPublicId.mp4';
+      }
+    } catch (e) {
+      debugPrint("Error constructing combined URL: $e");
+    }
+    
+    return null; 
   }
 
-  String? _getVideoUrl() {
+  String? _getRawVideoUrl() {
     final media = widget.reelData['media'];
     if (media != null && media is List && media.isNotEmpty) {
       return media[0]['url'];
@@ -267,7 +279,6 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
 
   @override
   void dispose() {
-    _videoController?.removeListener(_syncAudioWithVideo);
     _progressController.dispose();
     _videoController?.dispose();
     _audioPlayer?.dispose();
@@ -276,35 +287,11 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
 
   void _togglePlayPause() {
     setState(() {
-      if (_videoController != null) {
-        if (_videoController!.value.isPlaying) {
-          _videoController!.pause();
-          _audioPlayer?.pause();
-          _isPlaying = false;
-        } else {
-          _videoController!.play();
-          _audioPlayer?.play();
-          _isPlaying = true;
-        }
-      } else if (_audioPlayer != null) {
-        // Fallback if there is audio but no video
-        if (_audioPlayer!.playing) {
-          _audioPlayer!.pause();
-          _isPlaying = false;
-        } else {
-          _audioPlayer!.play();
-          _isPlaying = true;
-        }
-      }
+      _setPlayState(!_isPlaying);
       _showPlayPauseIndicator = true;
     });
-
     Future.delayed(const Duration(seconds: 1), () {
-      if (mounted) {
-        setState(() {
-          _showPlayPauseIndicator = false;
-        });
-      }
+      if (mounted) setState(() => _showPlayPauseIndicator = false);
     });
   }
 
@@ -341,22 +328,11 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
       return VisibilityDetector(
         key: Key('reel_${widget.index}'),
         onVisibilityChanged: (info) {
+          if (!mounted) return;
           if (info.visibleFraction > 0.8) {
-            if (!_isPlaying && mounted) {
-              setState(() {
-                _isPlaying = true;
-                _videoController?.play();
-                _audioPlayer?.play();
-              });
-            }
+            if (!_isPlaying) setState(() => _setPlayState(true));
           } else {
-            if (_isPlaying && mounted) {
-              setState(() {
-                _isPlaying = false;
-                _videoController?.pause();
-                _audioPlayer?.pause();
-              });
-            }
+            if (_isPlaying) setState(() => _setPlayState(false));
           }
         },
         child: GestureDetector(
@@ -723,12 +699,26 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                 child:
                     _videoController != null &&
                         _videoController!.value.isInitialized
-                    ? VideoProgressIndicator(
-                        _videoController!,
-                        allowScrubbing: true,
-                        colors: const VideoProgressColors(
-                          playedColor: AppColors.yellow,
-                          backgroundColor: Colors.white12,
+                    ? Listener(
+                        onPointerUp: (_) async {
+                          if (_audioPlayer != null && _videoController != null) {
+                            final pos = _videoController!.value.position;
+                            final audioDuration = _audioPlayer!.duration;
+                            if (audioDuration != null && audioDuration.inMilliseconds > 0) {
+                              final target = pos.inMilliseconds % audioDuration.inMilliseconds;
+                              await _audioPlayer!.seek(Duration(milliseconds: target));
+                            } else {
+                              await _audioPlayer!.seek(pos);
+                            }
+                          }
+                        },
+                        child: VideoProgressIndicator(
+                          _videoController!,
+                          allowScrubbing: true,
+                          colors: const VideoProgressColors(
+                            playedColor: AppColors.yellow,
+                            backgroundColor: Colors.white12,
+                          ),
                         ),
                       )
                     : const LinearProgressIndicator(
