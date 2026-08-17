@@ -111,8 +111,11 @@ class ApiUrl {
   static String getPostInteractions({required String postId}) =>
       "/posts/get-post-interactions/$postId";
   static const String createPost = "/posts/create-post";
-  static String getUserPosts({required String userId, int page = 1, int limit = 10}) =>
-      "/posts/user-posts/$userId?page=$page&limit=$limit";
+  static String getUserPosts({
+    required String userId,
+    int page = 1,
+    int limit = 10,
+  }) => "/posts/user-posts/$userId?page=$page&limit=$limit";
   static String getUserVehicles({required String userId, int page = 1}) =>
       "/users/user-vehicles/$userId?page=$page";
   static const String getMyClubs = "/clubs/get-my-clubs";
@@ -327,11 +330,5 @@ class ApiUrl {
       "/expeditions/update-expedition/$id";
   static String deleteExpedition(String id) =>
       "/expeditions/delete-expedition/$id";
-
-  // =================== Videos / Reels =====================================
-  // static const String createVideoPost = "/videos/create-video-post";
-  // static const String getAllVideos = "/videos/get-all-videos";
-  // static const String getMyVideos = "/videos/get-my-videos";
-  // static String deleteVideo(String id) => "/videos/delete-video/$id";
   static String getSingleVideo(String id) => "/videos/get-single-video/$id";
 }

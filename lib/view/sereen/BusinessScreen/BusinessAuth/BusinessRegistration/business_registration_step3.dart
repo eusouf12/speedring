@@ -29,7 +29,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
               onPressed: () => Get.back(),
             ),
             title: CustomText(
-              text: "BUSINESS VERIFICATION",
+              text: 'businessVerification'.tr,
               color: Colors.white,
               fontSize: 16.sp,
               fontWeight: FontWeight.w900,
@@ -53,7 +53,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     CustomText(
-                      text: "Step 3 of 4",
+                      text: 'step3Of4'.tr,
                       color: Colors.white,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.bold,
@@ -82,15 +82,14 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 SizedBox(height: 24.h),
 
                 CustomText(
-                  text: "SETUP PUBLIC IDENTITY",
+                  text: 'setupPublicIdentity'.tr,
                   color: Colors.white,
                   fontSize: 22.sp,
                   fontWeight: FontWeight.w900,
                 ),
                 SizedBox(height: 6.h),
                 CustomText(
-                  text:
-                      "Configure how your engineering prowess and inventory appear to the global Speedring network.",
+                  text: 'configureHowYourEngineering'.tr,
                   color: Colors.white60,
                   fontSize: 12.sp,
                   textAlign: TextAlign.start,
@@ -98,11 +97,11 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
 
-                _buildModuleHeader("PHASE 01", "BRAND ASSETS"),
+                _buildModuleHeader('phase01'.tr, 'brandAssets'.tr),
                 SizedBox(height: 12.h),
 
                 CustomText(
-                  text: "BUSINESS BANNER (16:9)",
+                  text: 'businessBanner169'.tr,
                   color: Colors.white60,
                   fontSize: 10.sp,
                   fontWeight: FontWeight.bold,
@@ -114,9 +113,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
                     child: CustomPaint(
-                      painter: DashedBorderPainter(
-                        color: Colors.white12,
-                      ),
+                      painter: DashedBorderPainter(color: Colors.white12),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.r),
                         child: controller.bannerFileName.value.isNotEmpty
@@ -157,7 +154,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                                       ),
                                       SizedBox(height: 8.h),
                                       CustomText(
-                                        text: "UPLOAD HIGH-RES BANNER",
+                                        text: 'uploadHighresBanner'.tr,
                                         color: Colors.white,
                                         fontSize: 10.sp,
                                         fontWeight: FontWeight.bold,
@@ -173,7 +170,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 SizedBox(height: 16.h),
 
                 CustomText(
-                  text: "OFFICIAL LOGO (1:1)",
+                  text: 'officialLogo11'.tr,
                   color: Colors.white60,
                   fontSize: 10.sp,
                   fontWeight: FontWeight.bold,
@@ -213,7 +210,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                                     ),
                                     SizedBox(height: 6.h),
                                     CustomText(
-                                      text: "ADD LOGO",
+                                      text: 'addLogo'.tr,
                                       color: Colors.white,
                                       fontSize: 9.sp,
                                       fontWeight: FontWeight.bold,
@@ -227,22 +224,21 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
 
-                _buildModuleHeader("PHASE 02", "CORE ATTRIBUTES"),
+                _buildModuleHeader('phase02'.tr, 'coreAttributes'.tr),
                 SizedBox(height: 12.h),
 
-                _buildFieldLabel("ENGINEERING PHILOSOPHY & HERITAGE"),
+                _buildFieldLabel('engineeringPhilosophyHeritage'.tr),
                 CustomTextField(
                   textEditingController: controller.philosophyCtrl,
-                  hintText:
-                      "Detail your firm's technical specialties, racing history, and performance standards...",
+                  hintText: 'detailYourFirmsTechnical'.tr,
                   maxLines: 4,
                 ),
                 SizedBox(height: 16.h),
 
-                _buildFieldLabel("PHYSICAL HQ"),
+                _buildFieldLabel('physicalHq'.tr),
                 CustomTextField(
                   textEditingController: controller.hqCtrl,
-                  hintText: "Street Address, City, Country",
+                  hintText: 'streetAddressCityCountry'.tr,
                   prefixIcon: const Icon(
                     Icons.location_on_outlined,
                     color: Colors.white38,
@@ -250,10 +246,10 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
 
-                _buildFieldLabel("COMMUNICATION LINE"),
+                _buildFieldLabel('communicationLine'.tr),
                 CustomTextField(
                   textEditingController: controller.commCtrl,
-                  hintText: "+1(555) 000-0000",
+                  hintText: '15550000000'.tr,
                   prefixIcon: const Icon(
                     Icons.phone_outlined,
                     color: Colors.white38,
@@ -261,10 +257,10 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
 
-                _buildFieldLabel("DIGITAL HQ"),
+                _buildFieldLabel('digitalHq'.tr),
                 CustomTextField(
                   textEditingController: controller.digitalHqCtrl,
-                  hintText: "https://yourbusiness.com",
+                  hintText: 'httpsyourbusinesscom'.tr,
                   prefixIcon: const Icon(
                     Icons.language_outlined,
                     color: Colors.white38,
@@ -272,7 +268,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
 
-                _buildFieldLabel("OPERATIONAL HOURS"),
+                _buildFieldLabel('operationalHours'.tr),
                 GestureDetector(
                   onTap: () => controller.configureSchedule(),
                   child: Container(
@@ -311,7 +307,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
 
-                _buildModuleHeader("PHASE 03", "NETWORK SYNC"),
+                _buildModuleHeader('phase03'.tr, 'networkSync'.tr),
                 SizedBox(height: 16.h),
 
                 _buildSocialSyncField(
@@ -348,7 +344,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
               width: 140.w,
               height: 46.h,
               onTap: () => Get.toNamed(AppRoutes.businessRegistrationStep4),
-              title: "CONTINUE ",
+              title: 'continue'.tr,
               fontSize: 13.sp,
               fillColor: AppColors.yellow,
               textColor: Colors.black,
@@ -362,18 +358,17 @@ class BusinessRegistrationStep3 extends StatelessWidget {
 
   void _showHelpDialog() {
     Get.defaultDialog(
-      title: "Business Verification",
+      title: 'businessVerification'.tr,
       titleStyle: TextStyle(
         color: AppColors.yellow,
         fontSize: 16.sp,
         fontWeight: FontWeight.bold,
       ),
       backgroundColor: const Color(0xff111111),
-      content: const Padding(
+      content: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12),
         child: CustomText(
-          text:
-              "Verification ensures Speedring is a secure automotive network. Please upload valid operating licenses or documentation to unlock premium selling capabilities.",
+          text: 'verificationEnsuresSpeedringIs'.tr,
           color: Colors.white70,
           fontSize: 13,
           textAlign: TextAlign.center,

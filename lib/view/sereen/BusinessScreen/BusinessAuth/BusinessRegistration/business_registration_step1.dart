@@ -39,7 +39,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               CustomText(
-                text: "REGISTRATION",
+                text: 'registration'.tr,
                 color: Colors.white,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w900,
@@ -61,14 +61,14 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomText(
-                        text: "DEPLOYMENT PROGRESS",
+                        text: 'deploymentProgress'.tr,
                         color: AppColors.yellow,
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.0,
                       ),
                       CustomText(
-                        text: "Step 1 of 4",
+                        text: 'step1Of4'.tr,
                         color: Colors.white,
                         fontSize: 11.sp,
                         fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                       child: CustomText(
-                        text: "IDENTITY CONFIGURATION",
+                        text: 'identityConfiguration'.tr,
                         color: AppColors.yellow,
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w900,
@@ -126,28 +126,28 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     ),
                     SizedBox(height: 16.h),
                     CustomText(
-                      text: "CREATE YOUR\nBUSINESS ACCOUNT",
+                      text: 'createYournbusinessAccount'.tr,
                       color: Colors.white,
-                      fontSize: 28.sp,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w900,
                       textAlign: TextAlign.start,
                       height: 1.1,
                     ),
                     SizedBox(height: 8.h),
                     CustomText(
-                      text:
-                          "Enter your professional telemetry data to initiate the onboarding sequence.",
+                      text: 'enterYourProfessionalTelemetry'.tr,
                       color: Colors.white60,
                       fontSize: 12.sp,
                       textAlign: TextAlign.start,
                       height: 1.4,
+                      maxLines: 2,
                     ),
                     SizedBox(height: 24.h),
 
                     _buildFieldLabel('businessNameLabel'.tr),
                     CustomTextField(
                       textEditingController: controller.businessNameCtrl,
-                      hintText: "e.g. Apex Performance Gmbh",
+                      hintText: 'egApexPerformanceGmbh'.tr,
                       prefixIcon: const Icon(
                         Icons.business_outlined,
                         color: Colors.white38,
@@ -164,7 +164,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     _buildFieldLabel('ownerRepLabel'.tr),
                     CustomTextField(
                       textEditingController: controller.ownerRepCtrl,
-                      hintText: "Full legal name",
+                      hintText: 'fullLegalName'.tr,
                       prefixIcon: const Icon(
                         Icons.person_outline,
                         color: Colors.white38,
@@ -179,7 +179,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     _buildFieldLabel('professionalEmailLabel'.tr),
                     CustomTextField(
                       textEditingController: controller.emailCtrl,
-                      hintText: "name@company.com",
+                      hintText: 'namecompanycom'.tr,
                       keyboardType: TextInputType.emailAddress,
                       prefixIcon: const Icon(
                         Icons.alternate_email_outlined,
@@ -200,7 +200,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     _buildFieldLabel('contactNumberLabel'.tr),
                     CustomTextField(
                       textEditingController: controller.contactCtrl,
-                      hintText: "+49 -- -----",
+                      hintText: '49'.tr,
                       keyboardType: TextInputType.phone,
                       prefixIcon: const Icon(
                         Icons.phone_outlined,
@@ -260,10 +260,10 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     ),
                     SizedBox(height: 16.h),
 
-                    _buildFieldLabel("DIGITAL PRESENCE (URL)"),
+                    _buildFieldLabel('digitalPresenceUrl'.tr),
                     CustomTextField(
                       textEditingController: controller.websiteCtrl,
-                      hintText: "https://www.company.com",
+                      hintText: 'httpswwwcompanycom'.tr,
                       keyboardType: TextInputType.url,
                       prefixIcon: const Icon(
                         Icons.language_outlined,
@@ -276,10 +276,10 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     ),
                     SizedBox(height: 16.h),
 
-                    _buildFieldLabel("ACCESS PASSWORD"),
+                    _buildFieldLabel('accessPassword'.tr),
                     CustomTextField(
                       textEditingController: controller.passwordCtrl,
-                      hintText: "••••••••",
+                      hintText: 'empty'.tr,
                       isPassword: true,
                       prefixIcon: const Icon(
                         Icons.lock_outline_rounded,
@@ -304,12 +304,10 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                             height: 1.4,
                           ),
                           children: [
-                            const TextSpan(
-                              text: "BY CONTINUING YOU AGREE TO OUR\n",
-                            ),
+                            TextSpan(text: 'byContinuingYouAgree'.tr),
                             TextSpan(
-                              text: "COMMERCIAL TERMS OF SERVICE",
-                              style: const TextStyle(
+                              text: 'commercialTermsOfService'.tr,
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
@@ -342,7 +340,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                           Get.toNamed(AppRoutes.businessRegistrationStep2);
                         }
                       },
-                      title: "CONTINUE",
+                      title: 'continue'.tr,
                       fillColor: AppColors.yellow,
                       textColor: Colors.black,
                       borderRadius: 16.r,
@@ -357,9 +355,9 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                             color: Colors.white60,
                           ),
                           children: [
-                            const TextSpan(text: "Already have an account? "),
+                            TextSpan(text: 'alreadyHaveAnAccount'.tr),
                             TextSpan(
-                              text: "Log In",
+                              text: 'logIn'.tr,
                               style: const TextStyle(
                                 color: AppColors.yellow,
                                 fontWeight: FontWeight.bold,
@@ -417,7 +415,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomText(
-              text: "SELECT BUSINESS CATEGORY",
+              text: 'selectBusinessCategory'.tr,
               color: AppColors.yellow,
               fontSize: 13.sp,
               fontWeight: FontWeight.bold,

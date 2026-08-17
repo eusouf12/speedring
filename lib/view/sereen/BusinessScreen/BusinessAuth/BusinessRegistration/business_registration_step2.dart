@@ -29,7 +29,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
               onPressed: () => Get.back(),
             ),
             title: CustomText(
-              text: "BUSINESS VERIFICATION",
+              text: 'businessVerification'.tr,
               color: Colors.white,
               fontSize: 16.sp,
               fontWeight: FontWeight.w900,
@@ -53,7 +53,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     CustomText(
-                      text: "STEP 2 OF 4",
+                      text: 'step2Of4'.tr,
                       color: Colors.white,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w900,
@@ -83,7 +83,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                 SizedBox(height: 24.h),
 
                 CustomText(
-                  text: "VERIFY YOUR BUSINESS",
+                  text: 'verifyYourBusiness'.tr,
                   color: Colors.white,
                   fontSize: 22.sp,
                   fontWeight: FontWeight.w900,
@@ -91,8 +91,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                 ),
                 SizedBox(height: 6.h),
                 CustomText(
-                  text:
-                      "Verification increases trust and marketplace visibility. Complete the modules below to unlock premium selling features.",
+                  text: 'verificationIncreasesTrustAnd'.tr,
                   color: Colors.white60,
                   fontSize: 12.sp,
                   textAlign: TextAlign.start,
@@ -100,10 +99,9 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
 
-                _buildModuleHeader("MODULE 01", "BUSINESS LICENSE"),
+                _buildModuleHeader('module01'.tr, 'businessLicense'.tr),
                 CustomText(
-                  text:
-                      "Upload a valid copy of your official operating license.",
+                  text: 'uploadAValidCopy'.tr,
                   color: Colors.white38,
                   fontSize: 11.sp,
                   textAlign: TextAlign.start,
@@ -118,10 +116,9 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
 
-                _buildModuleHeader("MODULE 02", "TRADE REGISTRATION"),
+                _buildModuleHeader('module02'.tr, 'tradeRegistration'.tr),
                 CustomText(
-                  text:
-                      "Certificate of incorporation or local trade register entry.",
+                  text: 'certificateOfIncorporationOr'.tr,
                   color: Colors.white38,
                   fontSize: 11.sp,
                   textAlign: TextAlign.start,
@@ -136,9 +133,9 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
 
-                _buildModuleHeader("OPTIONAL", "VAT NUMBER"),
+                _buildModuleHeader('optional'.tr, 'vatNumber'.tr),
                 CustomText(
-                  text: "Tax identification for international transactions.",
+                  text: 'taxIdentificationForInternational'.tr,
                   color: Colors.white38,
                   fontSize: 11.sp,
                   textAlign: TextAlign.start,
@@ -146,14 +143,14 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                 SizedBox(height: 10.h),
                 CustomTextField(
                   textEditingController: controller.vatNumberCtrl,
-                  hintText: "EU 123 456 789",
+                  hintText: 'eu123456789'.tr,
                   prefixIcon: const Icon(Icons.tag, color: Colors.white38),
                 ),
                 SizedBox(height: 24.h),
 
-                _buildModuleHeader("IDENTITY", "BUSINESS LOGO"),
+                _buildModuleHeader('identity'.tr, 'businessLogo'.tr),
                 CustomText(
-                  text: "Visible on your seller profile.",
+                  text: 'visibleOnYourSeller'.tr,
                   color: Colors.white38,
                   fontSize: 11.sp,
                   textAlign: TextAlign.start,
@@ -223,7 +220,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                         width: 130.w,
                         height: 38.h,
                         onTap: () => controller.uploadLogo(),
-                        title: "UPLOAD SVG/PNG",
+                        title: 'uploadSvgpng'.tr,
                         fontSize: 11.sp,
                         fillColor: const Color(0xff1a1a1a),
                         textColor: AppColors.yellow,
@@ -245,7 +242,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
               width: 140.w,
               height: 46.h,
               onTap: () => Get.toNamed(AppRoutes.businessRegistrationStep3),
-              title: "CONTINUE ",
+              title: 'continue'.tr,
               fontSize: 13.sp,
               fillColor: AppColors.yellow,
               textColor: Colors.black,
@@ -259,18 +256,17 @@ class BusinessRegistrationStep2 extends StatelessWidget {
 
   void _showHelpDialog() {
     Get.defaultDialog(
-      title: "Business Verification",
+      title: 'businessVerification'.tr,
       titleStyle: TextStyle(
         color: AppColors.yellow,
         fontSize: 16.sp,
         fontWeight: FontWeight.bold,
       ),
       backgroundColor: const Color(0xff111111),
-      content: const Padding(
+      content: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12),
         child: CustomText(
-          text:
-              "Verification ensures Speedring is a secure automotive network. Please upload valid operating licenses or documentation to unlock premium selling capabilities.",
+          text: 'verificationEnsuresSpeedringIs'.tr,
           color: Colors.white70,
           fontSize: 13,
           textAlign: TextAlign.center,
@@ -363,7 +359,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 CustomText(
-                  text: "Tap to change file",
+                  text: 'tapToChangeFile'.tr,
                   color: Colors.white38,
                   fontSize: 10.sp,
                 ),

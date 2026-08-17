@@ -45,7 +45,7 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 Row(
                   children: [
                     CustomText(
-                      text: "PHASE 04 // ASSET CLASS",
+                      text: 'phase04AssetClass'.tr,
                       color: AppColors.yellow,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w900,
@@ -75,21 +75,20 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 SizedBox(height: 24.h),
 
                 CustomText(
-                  text: "CREATE YOUR FIRST",
+                  text: 'createYourFirst'.tr,
                   color: Colors.white,
                   fontSize: 32.sp,
                   fontWeight: FontWeight.w900,
                 ),
                 CustomText(
-                  text: "LISTING",
+                  text: 'listing'.tr,
                   color: AppColors.yellow,
                   fontSize: 32.sp,
                   fontWeight: FontWeight.w900,
                 ),
                 SizedBox(height: 12.h),
                 CustomText(
-                  text:
-                      "Select your core asset category to initialize your verified marketplace inventory. This selection calibrates your specialized telemetry and transaction dashboard.",
+                  text: 'selectYourCoreAsset'.tr,
                   color: Colors.white60,
                   fontSize: 12.sp,
                   textAlign: TextAlign.start,
@@ -98,7 +97,7 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 SizedBox(height: 24.h),
 
                 CustomText(
-                  text: "PHASE_04: ASSET_INITIALIZATION",
+                  text: 'phase04Assetinitialization'.tr,
                   color: AppColors.yellow,
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w900,
@@ -108,7 +107,7 @@ class BusinessRegistrationStep4 extends StatelessWidget {
 
                 _buildListingAssetCard(
                   index: 0,
-                  title: "VEHICLE",
+                  title: 'vehicle'.tr,
                   classTag: "HIGH_PERFORMANCE",
                   classNum: "#VH-01",
                   desc:
@@ -119,7 +118,7 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 SizedBox(height: 12.h),
                 _buildListingAssetCard(
                   index: 1,
-                  title: "MOTORCYCLE",
+                  title: 'motorcycle'.tr,
                   classTag: "SUPERBIKE",
                   classNum: "#MC-02",
                   desc:
@@ -130,7 +129,7 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 SizedBox(height: 12.h),
                 _buildListingAssetCard(
                   index: 2,
-                  title: "TECHNICAL PART",
+                  title: 'technicalPart'.tr,
                   classTag: "COMPONENT",
                   classNum: "#TP-03",
                   desc: "Suspension, braking systems, and aerodynamics.",
@@ -140,7 +139,7 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 SizedBox(height: 12.h),
                 _buildListingAssetCard(
                   index: 3,
-                  title: "EXPERT SERVICE",
+                  title: 'expertService'.tr,
                   classTag: "TECHNICAL",
                   classNum: "#SR-04",
                   desc:
