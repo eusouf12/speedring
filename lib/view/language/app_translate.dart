@@ -1056,7 +1056,6 @@ class AppTranslate extends Translations {
       'selectYourCoreAsset':
           'Select your core asset category to initialize your verified marketplace inventory. This selection calibrates your specialized telemetry and transaction dashboard.',
       'phase04Assetinitialization': 'PHASE_04: ASSET_INITIALIZATION',
-      'classClasstag': 'CLASS: $classTag',
       'technicalPart': 'TECHNICAL PART',
       'expertService': 'EXPERT SERVICE',
 
@@ -2135,7 +2134,6 @@ class AppTranslate extends Translations {
       'selectYourCoreAsset':
           'Select your core asset category to initialize your verified marketplace inventory. This selection calibrates your specialized telemetry and transaction dashboard.',
       'phase04Assetinitialization': 'PHASE_04: ASSET_INITIALIZATION',
-      'classClasstag': 'CLASS: $classTag',
       'technicalPart': 'TECHNICAL PART',
       'expertService': 'EXPERT SERVICE',
     },
