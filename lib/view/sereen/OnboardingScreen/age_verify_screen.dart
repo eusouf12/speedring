@@ -165,7 +165,10 @@ class AgeVerifyScreen extends StatelessWidget {
                         fontWeight: FontWeight.w900,
                         fontSize: 15,
                         onTap: controller.confirmed.value
-                            ? () => Get.toNamed(AppRoutes.signupScreen)
+                            ? () => Get.toNamed(AppRoutes.signupScreen, arguments: {
+                                  'ageVerified': true,
+                                  'ageIndex': controller.selectedAge.value,
+                                })
                             : null,
                       ),
                     ),

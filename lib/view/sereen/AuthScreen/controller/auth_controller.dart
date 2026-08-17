@@ -103,7 +103,10 @@ class AuthController extends GetxController {
   final RxBool isConfirmPasswordVisible = false.obs;
   final RxBool isSignupLoading = false.obs;
   final RxBool isTermsAgreed = false.obs;
-  final RxBool isAgeConfirmed = false.obs; // Will map to ageGroup
+  final RxBool isAgeConfirmed = false.obs; // Used as a fallback
+  
+  final RxBool isAgeVerifiedFromPreviousScreen = false.obs;
+  final RxString selectedAgeGroup = '18+'.obs; // Dropdown value
 
   void toggleSignupPasswordVisibility() {
     isSignupPasswordVisible.value = !isSignupPasswordVisible.value;
@@ -131,7 +134,7 @@ class AuthController extends GetxController {
       'email': signupEmailController.text.trim(),
       'password': signupPasswordController.text,
       'confirmPassword': confirmPasswordController.text,
-      'ageGroup': isAgeConfirmed.value ? '18+' : '16+',
+      'ageGroup': isAgeVerifiedFromPreviousScreen.value ? (isAgeConfirmed.value ? '18+' : '16+') : selectedAgeGroup.value,
       'agreedToTerms': isTermsAgreed.value,
       'role': signupRole.value,
     };

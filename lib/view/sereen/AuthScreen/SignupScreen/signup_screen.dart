@@ -19,6 +19,12 @@ class SignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Get.arguments != null && Get.arguments['ageVerified'] == true) {
+      controller.isAgeVerifiedFromPreviousScreen.value = true;
+      int ageIndex = Get.arguments['ageIndex'] ?? 1;
+      controller.isAgeConfirmed.value = ageIndex == 1; // 1 means 18+ in AgeVerifyScreen
+    }
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -254,6 +260,55 @@ class SignupScreen extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 20),
+
+                      // ── Age Dropdown (if not verified from previous screen) ──
+                      Obx(() {
+                        if (controller.isAgeVerifiedFromPreviousScreen.value) {
+                          return const SizedBox.shrink();
+                        }
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              text: 'ageVerification'.tr,
+                              color: Colors.white60,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1.0,
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.white12,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: controller.selectedAgeGroup.value,
+                                  isExpanded: true,
+                                  dropdownColor: const Color(0xff1A1A1A),
+                                  icon: const Icon(Icons.arrow_drop_down, color: Colors.white54),
+                                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                                  onChanged: (String? newValue) {
+                                    if (newValue != null) {
+                                      controller.selectedAgeGroup.value = newValue;
+                                    }
+                                  },
+                                  items: <String>['16+', '18+', 'Under 16']
+                                      .map<DropdownMenuItem<String>>((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        );
+                      }),
 
                       // ── Checkboxes ────────────────────────────────────────────
                       Obx(
