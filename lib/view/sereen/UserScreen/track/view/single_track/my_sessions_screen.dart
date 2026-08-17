@@ -20,7 +20,7 @@ class MySessionsScreen extends StatefulWidget {
 
 class _MySessionsScreenState extends State<MySessionsScreen> {
   final TrackController trackController = Get.find<TrackController>();
-  final HomeController homeController = Get.put(HomeController());
+  final HomeController homeController = Get.find<HomeController>();
 
   @override
   void initState() {
@@ -35,7 +35,9 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
     List<String> parts = timeStr.split(':');
     try {
       if (parts.length == 3) {
-        return int.parse(parts[0]) * 3600 + int.parse(parts[1]) * 60 + int.parse(parts[2]);
+        return int.parse(parts[0]) * 3600 +
+            int.parse(parts[1]) * 60 +
+            int.parse(parts[2]);
       } else if (parts.length == 2) {
         return int.parse(parts[0]) * 60 + int.parse(parts[1]);
       }
@@ -121,43 +123,66 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
               return GestureDetector(
                 onTap: () {
                   int elapsedSeconds = _parseTimeStringToSeconds(time);
-                  double totalDistanceKm = (session["distance"] as num?)?.toDouble() ?? 0.0;
-                  double topSpeedKmh = double.tryParse(session["topSpeed"]?.toString() ?? "0") ?? 0.0;
-                  double averageSpeedKmh = double.tryParse(session["avgSpeed"]?.toString() ?? "0") ?? 0.0;
-                  
+                  double totalDistanceKm =
+                      (session["distance"] as num?)?.toDouble() ?? 0.0;
+                  double topSpeedKmh =
+                      double.tryParse(session["topSpeed"]?.toString() ?? "0") ??
+                      0.0;
+                  double averageSpeedKmh =
+                      double.tryParse(session["avgSpeed"]?.toString() ?? "0") ??
+                      0.0;
+
                   List<double> speedHistory = [];
                   if (session["speedOverTime"] != null) {
                     for (var s in session["speedOverTime"]) {
-                      speedHistory.add(double.tryParse(s["speed"]?.toString() ?? "0") ?? 0.0);
+                      speedHistory.add(
+                        double.tryParse(s["speed"]?.toString() ?? "0") ?? 0.0,
+                      );
                     }
                   }
-                  
+
                   List<LatLng> routePoints = [];
                   if (session["sessionTrack"] != null) {
                     for (var t in session["sessionTrack"]) {
-                      routePoints.add(LatLng(
-                        double.tryParse(t["lat"]?.toString() ?? "0") ?? 0.0,
-                        double.tryParse(t["lng"]?.toString() ?? "0") ?? 0.0,
-                      ));
+                      routePoints.add(
+                        LatLng(
+                          double.tryParse(t["lat"]?.toString() ?? "0") ?? 0.0,
+                          double.tryParse(t["lng"]?.toString() ?? "0") ?? 0.0,
+                        ),
+                      );
                     }
                   }
-                  
-                  Get.toNamed(AppRoutes.driveSummaryScreen, arguments: {
-                    'routePoints': routePoints,
-                    'elapsedSeconds': elapsedSeconds,
-                    'totalDistanceKm': totalDistanceKm,
-                    'averageSpeedKmh': averageSpeedKmh,
-                    'topSpeedKmh': topSpeedKmh,
-                    'speedHistory': speedHistory,
-                    'best0to100Time': (session["best0to100Time"] as num?)?.toDouble() ?? 0.0,
-                    'best0to200Time': (session["best0to200Time"] as num?)?.toDouble() ?? 0.0,
-                    'best100to200Time': (session["best100to200Time"] as num?)?.toDouble() ?? 0.0,
-                    'best0to300Time': (session["best0to300Time"] as num?)?.toDouble() ?? 0.0,
-                    'best200to300Time': (session["best200to300Time"] as num?)?.toDouble() ?? 0.0,
-                    'peakGForce': (session["peakGForce"] as num?)?.toDouble() ?? 0.0,
-                    'temperature': session["temperature"] ?? "--",
-                    'isReadOnly': true,
-                  });
+
+                  Get.toNamed(
+                    AppRoutes.driveSummaryScreen,
+                    arguments: {
+                      'routePoints': routePoints,
+                      'elapsedSeconds': elapsedSeconds,
+                      'totalDistanceKm': totalDistanceKm,
+                      'averageSpeedKmh': averageSpeedKmh,
+                      'topSpeedKmh': topSpeedKmh,
+                      'speedHistory': speedHistory,
+                      'best0to100Time':
+                          (session["best0to100Time"] as num?)?.toDouble() ??
+                          0.0,
+                      'best0to200Time':
+                          (session["best0to200Time"] as num?)?.toDouble() ??
+                          0.0,
+                      'best100to200Time':
+                          (session["best100to200Time"] as num?)?.toDouble() ??
+                          0.0,
+                      'best0to300Time':
+                          (session["best0to300Time"] as num?)?.toDouble() ??
+                          0.0,
+                      'best200to300Time':
+                          (session["best200to300Time"] as num?)?.toDouble() ??
+                          0.0,
+                      'peakGForce':
+                          (session["peakGForce"] as num?)?.toDouble() ?? 0.0,
+                      'temperature': session["temperature"] ?? "--",
+                      'isReadOnly': true,
+                    },
+                  );
                 },
                 child: Container(
                   margin: EdgeInsets.only(bottom: 12.h),
@@ -183,153 +208,145 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                       ),
                       SizedBox(width: 16.w),
                       Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text:
-                                "${"distance".tr}: ${distance.toStringAsFixed(1)} ${"km".tr}",
-                            color: Colors.white,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              text:
+                                  "${"distance".tr}: ${distance.toStringAsFixed(1)} ${"km".tr}",
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            SizedBox(height: 4.h),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  color: Colors.white38,
+                                  size: 12.sp,
+                                ),
+                                SizedBox(width: 4.w),
+                                CustomText(
+                                  text: time,
+                                  color: Colors.white38,
+                                  fontSize: 10.sp,
+                                ),
+                                SizedBox(width: 12.w),
+                                Icon(
+                                  Icons.flash_on,
+                                  color: AppColors.yellow,
+                                  size: 12.sp,
+                                ),
+                                SizedBox(width: 4.w),
+                                CustomText(
+                                  text: "$topSpeed ${"kmh".tr}",
+                                  color: AppColors.yellow,
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuButton<String>(
+                        icon: const Icon(
+                          Icons.more_vert,
+                          color: Colors.white70,
+                        ),
+                        color: const Color(0xff181818),
+                        onSelected: (value) {
+                          if (value == 'delete') {
+                            _showDeleteModal(sessionId);
+                          } else if (value == 'share') {
+                            _showShareBottomSheet(session);
+                          }
+                        },
+                        itemBuilder: (BuildContext context) => [
+                          PopupMenuItem<String>(
+                            value: 'share',
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.share_outlined,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  "shareResults".tr,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 4.h),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.access_time,
-                                color: Colors.white38,
-                                size: 12.sp,
-                              ),
-                              SizedBox(width: 4.w),
-                              CustomText(
-                                text: time,
-                                color: Colors.white38,
-                                fontSize: 10.sp,
-                              ),
-                              SizedBox(width: 12.w),
-                              Icon(
-                                Icons.flash_on,
-                                color: AppColors.yellow,
-                                size: 12.sp,
-                              ),
-                              SizedBox(width: 4.w),
-                              CustomText(
-                                text: "$topSpeed ${"kmh".tr}",
-                                color: AppColors.yellow,
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ],
+                          PopupMenuItem<String>(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  "deleteSession".tr,
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    PopupMenuButton<String>(
-                      icon: const Icon(Icons.more_vert, color: Colors.white70),
-                      color: const Color(0xff181818),
-                      onSelected: (value) {
-                        if (value == 'delete') {
-                          _showDeleteModal(sessionId);
-                        } else if (value == 'share') {
-                          _showShareBottomSheet(session);
-                        }
-                      },
-                      itemBuilder: (BuildContext context) => [
-                        PopupMenuItem<String>(
-                          value: 'share',
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.share_outlined,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                "shareResults".tr,
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem<String>(
-                          value: 'delete',
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                                size: 20,
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                "deleteSession".tr,
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
           );
         }),
       ),
     );
   }
+
   void _showShareBottomSheet(dynamic session) {
     Get.bottomSheet(
       Material(
         color: const Color(0xff181818),
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(
-                  Icons.share,
-                  color: Colors.white,
-                ),
+                leading: const Icon(Icons.share, color: Colors.white),
                 title: Text(
                   "shareToFriends".tr,
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 onTap: () {
                   Get.back();
                 },
               ),
               ListTile(
-                leading: const Icon(
-                  Icons.post_add,
-                  color: AppColors.yellow,
-                ),
+                leading: const Icon(Icons.post_add, color: AppColors.yellow),
                 title: Text(
                   "postToApp".tr,
-                  style: const TextStyle(
-                    color: AppColors.yellow,
-                  ),
+                  style: const TextStyle(color: AppColors.yellow),
                 ),
                 onTap: () async {
                   Get.back();
-                  
+
                   // Construct session details from the fetched session data
                   // Default to N/A if not available since old sessions might not have them
                   Map<String, dynamic> sessionDetails = {
                     "vehicle": "N/A", // Not stored in session model yet
-                    "vehicleImage": "", 
-                    "circuit": "N/A", 
-                    "trackName": "N/A", 
+                    "vehicleImage": "",
+                    "circuit": "N/A",
+                    "trackName": "N/A",
                     "bestLapTime": session['time'] ?? "N/A",
                     "topSpeed": session['topSpeed'] ?? "0",
                     "summary":

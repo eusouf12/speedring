@@ -514,7 +514,7 @@ class ActiveDriveController extends GetxController {
       if (!fullUrl.startsWith("http")) {
         fullUrl = "${ApiUrl.imageUrl}/$fullUrl";
       }
-      markerIcon = await _getCircularMarkerIcon(fullUrl, const Size(80, 80));
+      markerIcon = await _getCircularMarkerIcon(fullUrl, const Size(50, 50));
     }
 
     markers.removeWhere((m) => m.markerId.value == markerId);
@@ -603,8 +603,11 @@ class ActiveDriveController extends GetxController {
   }
 
   void _startGForceTracking() {
-    accelerometerStream = userAccelerometerEventStream().listen((UserAccelerometerEvent event) {
-      double gForce = sqrt(event.x * event.x + event.y * event.y + event.z * event.z) / 9.8;
+    accelerometerStream = userAccelerometerEventStream().listen((
+      UserAccelerometerEvent event,
+    ) {
+      double gForce =
+          sqrt(event.x * event.x + event.y * event.y + event.z * event.z) / 9.8;
       if (gForce > peakGForce.value) {
         peakGForce.value = gForce;
       }
@@ -613,14 +616,18 @@ class ActiveDriveController extends GetxController {
 
   Future<void> _fetchTemperature(double lat, double lng) async {
     try {
-      final response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lng&current_weather=true'));
+      final response = await http.get(
+        Uri.parse(
+          'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lng&current_weather=true',
+        ),
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         double tempC = data['current_weather']['temperature'];
         if (settings.isMetric.value) {
           currentTemperature.value = "${tempC.toStringAsFixed(1)} °C";
         } else {
-          double tempF = (tempC * 9/5) + 32;
+          double tempF = (tempC * 9 / 5) + 32;
           currentTemperature.value = "${tempF.toStringAsFixed(1)} °F";
         }
       }

@@ -21,8 +21,7 @@ class ActiveDriveScreen extends StatelessWidget {
         profilePic:
             controller.profileController.profileData.value?.profileImage ??
             AppConstants.profileImage2,
-        title:
-            controller.drive?.tripName?.toUpperCase() ?? "UNTITLED EXPEDITION",
+        title: controller.drive?.tripName?.toUpperCase() ?? "unknown".tr,
         leading: BackButton(color: AppColors.yellow),
         actions: [
           IconButton(
@@ -46,8 +45,12 @@ class ActiveDriveScreen extends StatelessWidget {
                     border: Border.all(color: AppColors.yellow, width: 1.5),
                     image: DecorationImage(
                       image: NetworkImage(
-                        controller.profileController.profileData.value?.profileImage ??
-                        AppConstants.profileImage2,
+                        controller
+                                .profileController
+                                .profileData
+                                .value
+                                ?.profileImage ??
+                            AppConstants.profileImage2,
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -116,7 +119,8 @@ class ActiveDriveScreen extends StatelessWidget {
                       ],
                     ],
                   ),
-                  if (controller.settings.showGForce.value || controller.currentTemperature.value != "--") ...[
+                  if (controller.settings.showGForce.value ||
+                      controller.currentTemperature.value != "--") ...[
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -129,14 +133,20 @@ class ActiveDriveScreen extends StatelessWidget {
                               isHighlighted: false,
                             ),
                           ),
-                        if (controller.settings.showGForce.value && controller.currentTemperature.value != "--")
+                        if (controller.settings.showGForce.value &&
+                            controller.currentTemperature.value != "--")
                           const SizedBox(width: 16),
                         if (controller.currentTemperature.value != "--")
                           Expanded(
                             child: _buildMetricCard(
                               "TEMP",
-                              controller.currentTemperature.value.replaceAll(RegExp(r' °[CF]'), ''),
-                              controller.currentTemperature.value.contains('C') ? '°C' : '°F',
+                              controller.currentTemperature.value.replaceAll(
+                                RegExp(r' °[CF]'),
+                                '',
+                              ),
+                              controller.currentTemperature.value.contains('C')
+                                  ? '°C'
+                                  : '°F',
                               isHighlighted: false,
                             ),
                           ),
@@ -321,7 +331,7 @@ class ActiveDriveScreen extends StatelessWidget {
     required bool isHighlighted,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       decoration: BoxDecoration(
         color: const Color(0xff111111).withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(12),
@@ -381,7 +391,10 @@ class ActiveDriveScreen extends StatelessWidget {
     );
   }
 
-  void _showSettingsBottomSheet(BuildContext context, SettingsController settings) {
+  void _showSettingsBottomSheet(
+    BuildContext context,
+    SettingsController settings,
+  ) {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xff111111),
@@ -403,36 +416,61 @@ class ActiveDriveScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Obx(() => SwitchListTile(
-                    title: const Text("Use Metric (KM/H)", style: TextStyle(color: Colors.white)),
-                    value: settings.isMetric.value,
-                    activeTrackColor: AppColors.yellow,
-                    onChanged: (val) => settings.toggleUnitSystem(),
-                  )),
-              Obx(() => SwitchListTile(
-                    title: const Text("Show Top Speed", style: TextStyle(color: Colors.white)),
-                    value: settings.showTopSpeed.value,
-                    activeTrackColor: AppColors.yellow,
-                    onChanged: (val) => settings.toggleTopSpeed(),
-                  )),
-              Obx(() => SwitchListTile(
-                    title: const Text("Show Average Speed", style: TextStyle(color: Colors.white)),
-                    value: settings.showAvgSpeed.value,
-                    activeTrackColor: AppColors.yellow,
-                    onChanged: (val) => settings.toggleAvgSpeed(),
-                  )),
-              Obx(() => SwitchListTile(
-                    title: const Text("Show Distance", style: TextStyle(color: Colors.white)),
-                    value: settings.showDistance.value,
-                    activeTrackColor: AppColors.yellow,
-                    onChanged: (val) => settings.toggleDistance(),
-                  )),
-              Obx(() => SwitchListTile(
-                    title: const Text("Show Peak G-Force", style: TextStyle(color: Colors.white)),
-                    value: settings.showGForce.value,
-                    activeTrackColor: AppColors.yellow,
-                    onChanged: (val) => settings.toggleGForce(),
-                  )),
+              Obx(
+                () => SwitchListTile(
+                  title: const Text(
+                    "Use Metric (KM/H)",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  value: settings.isMetric.value,
+                  activeTrackColor: AppColors.yellow,
+                  onChanged: (val) => settings.toggleUnitSystem(),
+                ),
+              ),
+              Obx(
+                () => SwitchListTile(
+                  title: const Text(
+                    "Show Top Speed",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  value: settings.showTopSpeed.value,
+                  activeTrackColor: AppColors.yellow,
+                  onChanged: (val) => settings.toggleTopSpeed(),
+                ),
+              ),
+              Obx(
+                () => SwitchListTile(
+                  title: const Text(
+                    "Show Average Speed",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  value: settings.showAvgSpeed.value,
+                  activeTrackColor: AppColors.yellow,
+                  onChanged: (val) => settings.toggleAvgSpeed(),
+                ),
+              ),
+              Obx(
+                () => SwitchListTile(
+                  title: const Text(
+                    "Show Distance",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  value: settings.showDistance.value,
+                  activeTrackColor: AppColors.yellow,
+                  onChanged: (val) => settings.toggleDistance(),
+                ),
+              ),
+              Obx(
+                () => SwitchListTile(
+                  title: const Text(
+                    "Show Peak G-Force",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  value: settings.showGForce.value,
+                  activeTrackColor: AppColors.yellow,
+                  onChanged: (val) => settings.toggleGForce(),
+                ),
+              ),
             ],
           ),
         );
