@@ -22,7 +22,8 @@ class SignupScreen extends StatelessWidget {
     if (Get.arguments != null && Get.arguments['ageVerified'] == true) {
       controller.isAgeVerifiedFromPreviousScreen.value = true;
       int ageIndex = Get.arguments['ageIndex'] ?? 1;
-      controller.isAgeConfirmed.value = ageIndex == 1; // 1 means 18+ in AgeVerifyScreen
+      controller.isAgeConfirmed.value =
+          ageIndex == 1; // 1 means 18+ in AgeVerifyScreen
     }
 
     return CustomGradient(
@@ -89,10 +90,14 @@ class SignupScreen extends StatelessWidget {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xffF5C400).withValues(alpha: 0.12),
+                              color: const Color(
+                                0xffF5C400,
+                              ).withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(
-                                color: const Color(0xffF5C400).withValues(alpha: 0.3),
+                                color: const Color(
+                                  0xffF5C400,
+                                ).withValues(alpha: 0.3),
                               ),
                             ),
                             child: const CustomText(
@@ -120,7 +125,8 @@ class SignupScreen extends StatelessWidget {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty) return 'nameRequired'.tr;
+                          if (v == null || v.trim().isEmpty)
+                            return 'nameRequired'.tr;
                           if (v.trim().length < 2) return 'nameTooShort'.tr;
                           return null;
                         },
@@ -206,7 +212,8 @@ class SignupScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       CustomTextField(
-                        textEditingController: controller.signupPasswordController,
+                        textEditingController:
+                            controller.signupPasswordController,
                         hintText: '•••••••',
                         isPassword: true,
                         textInputAction: TextInputAction.next,
@@ -219,7 +226,8 @@ class SignupScreen extends StatelessWidget {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'passwordRequired'.tr;
+                          if (v == null || v.isEmpty)
+                            return 'passwordRequired'.tr;
                           if (v.length < 6) return 'minChar'.tr;
                           return null;
                         },
@@ -238,7 +246,8 @@ class SignupScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       CustomTextField(
-                        textEditingController: controller.confirmPasswordController,
+                        textEditingController:
+                            controller.confirmPasswordController,
                         hintText: '•••••••',
                         isPassword: true,
                         textInputAction: TextInputAction.done,
@@ -251,7 +260,8 @@ class SignupScreen extends StatelessWidget {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'confirmPasswordRequired'.tr;
+                          if (v == null || v.isEmpty)
+                            return 'confirmPasswordRequired'.tr;
                           if (v != controller.signupPasswordController.text) {
                             return 'passwordsDoNotMatch'.tr;
                           }
@@ -278,7 +288,9 @@ class SignupScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white12,
                                 borderRadius: BorderRadius.circular(16),
@@ -288,20 +300,30 @@ class SignupScreen extends StatelessWidget {
                                   value: controller.selectedAgeGroup.value,
                                   isExpanded: true,
                                   dropdownColor: const Color(0xff1A1A1A),
-                                  icon: const Icon(Icons.arrow_drop_down, color: Colors.white54),
-                                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                                  icon: const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.white54,
+                                  ),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
                                   onChanged: (String? newValue) {
                                     if (newValue != null) {
-                                      controller.selectedAgeGroup.value = newValue;
+                                      controller.selectedAgeGroup.value =
+                                          newValue;
                                     }
                                   },
                                   items: <String>['16+', '18+', 'Under 16']
-                                      .map<DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
+                                      .map<DropdownMenuItem<String>>((
+                                        String value,
+                                      ) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      })
+                                      .toList(),
                                 ),
                               ),
                             ),
@@ -346,7 +368,8 @@ class SignupScreen extends StatelessWidget {
                                       controller.signupRole.value = 'business';
                                       controller.signupValidator();
                                     },
-                                    title: 'createBusinessAccount'.tr.toUpperCase(),
+                                    title: 'createBusinessAccount'.tr
+                                        .toUpperCase(),
                                     fillColor: Colors.black,
                                     textColor: Colors.white,
                                     fontSize: 15,
@@ -396,7 +419,10 @@ class SignupScreen extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => LanguageHelper.showLanguageDialog(context),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(20),
@@ -405,10 +431,16 @@ class SignupScreen extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.language, color: AppColors.yellow, size: 14),
+                        const Icon(
+                          Icons.language,
+                          color: AppColors.yellow,
+                          size: 14,
+                        ),
                         const SizedBox(width: 4),
                         CustomText(
-                          text: (Get.locale?.languageCode ?? 'en') == 'gr' ? 'DE' : 'EN',
+                          text: (Get.locale?.languageCode ?? 'en') == 'gr'
+                              ? 'DE'
+                              : 'EN',
                           color: Colors.white,
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
@@ -493,4 +525,3 @@ class SignupScreen extends StatelessWidget {
     );
   }
 }
-
