@@ -5,6 +5,7 @@ import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appba
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_netwrok_image/custom_network_image.dart';
+import 'package:speedring/utils/navigation_utils.dart';
 import '../../controller/home_controller.dart';
 import '../user_home_screen.dart';
 import 'package:share_plus/share_plus.dart';
@@ -112,28 +113,37 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           Row(
                             children: [
                               /// Avatar
-                              Container(
-                                width: 46,
-                                height: 46,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: AppColors.yellow,
-                                    width: 1.5,
+                              GestureDetector(
+                                onTap: () {
+                                  if (post.user?.id != null) {
+                                    NavigationUtils.navigateToUserProfile(
+                                      post.user!.id,
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  width: 46,
+                                  height: 46,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: AppColors.yellow,
+                                      width: 1.5,
+                                    ),
                                   ),
-                                ),
-                                child: ClipOval(
-                                  child:
-                                      profileImage != null &&
-                                          profileImage.isNotEmpty
-                                      ? Image.network(
-                                          profileImage,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : const Icon(
-                                          Icons.person,
-                                          color: Colors.white,
-                                        ),
+                                  child: ClipOval(
+                                    child:
+                                        profileImage != null &&
+                                            profileImage.isNotEmpty
+                                        ? Image.network(
+                                            profileImage,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const Icon(
+                                            Icons.person,
+                                            color: Colors.white,
+                                          ),
+                                  ),
                                 ),
                               ),
 
@@ -146,12 +156,21 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                   children: [
                                     Row(
                                       children: [
-                                        CustomText(
-                                          text: userName,
-                                          color: Colors.white,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w800,
-                                          letterSpacing: 0.5,
+                                        GestureDetector(
+                                          onTap: () {
+                                            if (post.user?.id != null) {
+                                              NavigationUtils.navigateToUserProfile(
+                                                post.user!.id,
+                                              );
+                                            }
+                                          },
+                                          child: CustomText(
+                                            text: userName,
+                                            color: Colors.white,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -305,7 +324,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               const SizedBox(width: 20),
 
                               GestureDetector(
-                                onTap: () => showCommentSheet(context, post: post),
+                                onTap: () =>
+                                    showCommentSheet(context, post: post),
                                 child: Row(
                                   children: [
                                     const Icon(

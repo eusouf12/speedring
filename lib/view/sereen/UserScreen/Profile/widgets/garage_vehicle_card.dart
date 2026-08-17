@@ -10,8 +10,13 @@ import '../../../../components/custom_button/custom_button.dart';
 
 class GarageVehicleCard extends StatelessWidget {
   final Vehicle vehicle;
+  final bool isMyProfile;
 
-  const GarageVehicleCard({required this.vehicle, super.key});
+  const GarageVehicleCard({
+    required this.vehicle,
+    this.isMyProfile = true,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +51,8 @@ class GarageVehicleCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
+              if (isMyProfile)
+                Positioned(
                 top: 8.h,
                 right: 8.w,
                 child: Container(

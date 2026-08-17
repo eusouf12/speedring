@@ -4,18 +4,12 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../utils/app_images/app_images.dart';
-import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_text/custom_text.dart';
-import '../../../../components/custom_nav_bar/navbar.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
-import '../../../../../core/app_routes/app_routes.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../controller/profile_controller.dart';
+import '../controller/single_profile_controller.dart';
 import '../widgets/garage_vehicle_card.dart';
 import '../../Home/Screen/HomeScreen/controller/home_controller.dart';
-import '../../Home/widget/story_item.dart';
-import '../../Home/Screen/HomeScreen/view/story/create_story_screen.dart';
-import '../../Home/Screen/HomeScreen/view/story/story_view_screen.dart';
 import '../../Home/widget/post_card.dart';
 import '../../Home/Screen/HomeScreen/view/post/post_detail_screen.dart';
 import '../../Home/Screen/HomeScreen/view/post/comment_screen.dart'
@@ -24,19 +18,22 @@ import '../../Home/Screen/HomeScreen/view/user_home_screen.dart'
     show buildPostDetails;
 import 'package:share_plus/share_plus.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class SingleProfileScreen extends StatelessWidget {
+  const SingleProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ProfileScreenController>();
+    final controller = Get.find<SingleProfileController>();
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Get.back(),
+          ),
           title: Image.asset(
             AppImages.splashLogo,
             height: 150,
@@ -44,22 +41,6 @@ class ProfileScreen extends StatelessWidget {
             fit: BoxFit.contain,
           ),
           centerTitle: true,
-          actions: [
-            IconButton(
-              icon: const Icon(
-                Icons.notifications_none,
-                color: AppColors.yellow,
-              ),
-              onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.settings_outlined,
-                color: AppColors.yellow,
-              ),
-              onPressed: () => Get.toNamed(AppRoutes.userParametersScreen),
-            ),
-          ],
         ),
         body: Obx(() {
           if (controller.isLoading.value) {
@@ -101,51 +82,6 @@ class ProfileScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 12.h,
-                        right: 12.w,
-                        child: GestureDetector(
-                          onTap: () {
-                            if (profile != null) {
-                              controller.initEditProfile(profile);
-                            }
-                            Get.toNamed(
-                              AppRoutes.editProfileScreen,
-                              arguments: profile,
-                            );
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black54,
-                              borderRadius: BorderRadius.circular(6.r),
-                              border: Border.all(color: Colors.white24),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.edit,
-                                  color: Colors.white70,
-                                  size: 12,
-                                ),
-                                SizedBox(width: 4.w),
-                                Text(
-                                  "edit".tr.toUpperCase(),
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         ),
                       ),
 
@@ -194,39 +130,36 @@ class ProfileScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            GestureDetector(
-                              onTap: () => Get.toNamed(AppRoutes.walletScreen),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8.w,
-                                  vertical: 4.h,
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 4.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xff161616),
+                                borderRadius: BorderRadius.circular(8.r),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.05),
                                 ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff161616),
-                                  borderRadius: BorderRadius.circular(8.r),
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.05),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.wallet,
+                                    color: AppColors.yellow,
+                                    size: 14,
                                   ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.wallet,
-                                      color: AppColors.yellow,
-                                      size: 14,
-                                    ),
-                                    SizedBox(width: 4.w),
-                                    CustomText(
-                                      text:
-                                          "${profile?.coinBalance ?? 0} ${'coins'.tr}"
-                                              .toUpperCase(),
-                                      color: AppColors.yellow1,
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ],
-                                ),
+                                  SizedBox(width: 4.w),
+                                  CustomText(
+                                    text:
+                                        "${profile?.coinBalance ?? 0} ${'coins'.tr}"
+                                            .toUpperCase(),
+                                    color: AppColors.yellow1,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -270,9 +203,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 10.h),
                       CustomText(
-                        text:
-                            driverInfo?.bio ??
-                            "No biography provided. Pushing the limits of engineering and performance.",
+                        text: driverInfo?.bio ?? "noBiography".tr,
                         color: Colors.white70,
                         fontSize: 11,
                         textAlign: TextAlign.start,
@@ -315,21 +246,6 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           ],
                           const Spacer(),
-                          CustomButton(
-                            height: 34.h,
-                            width: 110.w,
-                            title: "support".tr.toUpperCase(),
-                            fontSize: 10,
-                            borderRadius: 18.r,
-                            icon: const Icon(
-                              Icons.sell_outlined,
-                              color: Colors.black,
-                              size: 12,
-                            ),
-                            onTap: () {
-                              Get.toNamed(AppRoutes.supportSentScreen);
-                            },
-                          ),
                         ],
                       ),
                     ],
@@ -367,99 +283,6 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20.h),
 
-                /// Stories / Highlights
-                SizedBox(
-                  height: 110,
-                  child: GetBuilder<HomeController>(
-                    init: Get.isRegistered<HomeController>()
-                        ? null
-                        : HomeController(),
-                    builder: (homeController) {
-                      return Obx(() {
-                        if (homeController.isStoriesLoading.value) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.yellow,
-                            ),
-                          );
-                        }
-
-                        // Filter to show only the profile user's stories
-                        final storiesList = homeController.allStories
-                            .where((s) => s.user?.id == profile?.id)
-                            .toList();
-
-                        // Show create button only if it's my profile
-                        final isMyProfile =
-                            profile?.id == homeController.currentUserId.value;
-                        final itemCount = isMyProfile
-                            ? storiesList.length + 1
-                            : storiesList.length;
-
-                        if (itemCount == 0) return const SizedBox.shrink();
-
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: itemCount,
-                          itemBuilder: (context, index) {
-                            if (isMyProfile && index == 0) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const CreateStoryScreen(),
-                                    ),
-                                  );
-                                },
-                                child: StoryItem(
-                                  isMe: true,
-                                  name: 'create'.tr.toUpperCase(),
-                                  imageSrc: null,
-                                  icon: Icons.add,
-                                ),
-                              );
-                            }
-
-                            final storyIndex = isMyProfile ? index - 1 : index;
-                            final storyGroup = storiesList[storyIndex];
-
-                            String? imageUrl;
-                            if (storyGroup.stories != null &&
-                                storyGroup.stories!.isNotEmpty) {
-                              final mediaList = storyGroup.stories!.last.media;
-                              if (mediaList != null && mediaList.isNotEmpty) {
-                                imageUrl = mediaList.first.url;
-                              }
-                            }
-                            if (imageUrl == null || imageUrl.isEmpty) {
-                              imageUrl = storyGroup.user?.profileImage;
-                            }
-
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        StoryViewScreen(storyGroup: storyGroup),
-                                  ),
-                                );
-                              },
-                              child: StoryItem(
-                                isMe: false,
-                                name: storyGroup.user?.name ?? 'Unknown',
-                                imageSrc: imageUrl,
-                              ),
-                            );
-                          },
-                        );
-                      });
-                    },
-                  ),
-                ),
-
                 /// Nested Tab Navigation
                 _buildTabSelector(),
 
@@ -468,7 +291,6 @@ class ProfileScreen extends StatelessWidget {
             ),
           );
         }),
-        bottomNavigationBar: const CustomNavBar(currentIndex: 4),
       ),
     );
   }
@@ -547,7 +369,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildTabItem(int index, String label) {
-    final controller = Get.find<ProfileScreenController>();
+    final controller = Get.find<SingleProfileController>();
     return Obx(() {
       final bool isSelected = controller.activeTab == index;
       return GestureDetector(
@@ -577,7 +399,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildActiveTabBody() {
-    final controller = Get.find<ProfileScreenController>();
+    final controller = Get.find<SingleProfileController>();
     return Obx(() {
       switch (controller.activeTab) {
         case 0:
@@ -597,35 +419,17 @@ class ProfileScreen extends StatelessWidget {
       child: GetBuilder<HomeController>(
         init: Get.isRegistered<HomeController>() ? null : HomeController(),
         builder: (homeController) {
-          final profileController = Get.find<ProfileScreenController>();
+          final profileController = Get.find<SingleProfileController>();
           return Obx(() {
             if (profileController.isPostLoading.value) {
               return const Center(
                 child: CircularProgressIndicator(color: AppColors.yellow),
               );
             }
-
-            final targetUserId = profileController.profileData.value?.id;
-            final myPosts = profileController.myPosts;
+            final myPosts = profileController.posts;
 
             return Column(
               children: [
-                if (targetUserId == homeController.currentUserId.value)
-                  CustomButton(
-                    height: 44.h,
-                    title: "addPost".tr.toUpperCase(),
-                    fontSize: 12,
-                    borderRadius: 8.r,
-                    icon: const Icon(
-                      Icons.add_circle_outline,
-                      color: Colors.black,
-                      size: 16,
-                    ),
-                    onTap: () => Get.toNamed(AppRoutes.createPostScreen),
-                  ),
-                if (targetUserId == homeController.currentUserId.value)
-                  SizedBox(height: 20.h),
-
                 if (myPosts.isEmpty)
                   Padding(
                     padding: EdgeInsets.only(top: 20.h),
@@ -693,7 +497,8 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       onLike: () => homeController.reactToPost(post.id!),
-                      onComment: () => showCommentSheet(Get.context!, post: post),
+                      onComment: () =>
+                          showCommentSheet(Get.context!, post: post),
                       onShare: () {
                         final postLink =
                             "https://speedring.com/post/${post.id}";
@@ -809,20 +614,6 @@ class ProfileScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10.h),
-          CustomButton(
-            height: 44.h,
-            title: "addVehicle".tr.toUpperCase(),
-            fontSize: 12,
-            borderRadius: 8.r,
-            icon: const Icon(
-              Icons.add_circle_outline,
-              color: Colors.black,
-              size: 16,
-            ),
-            onTap: () => Get.toNamed(AppRoutes.addVehicleScreen),
-          ),
-
-          SizedBox(height: 24.h),
 
           CustomText(
             text: "vehicleStable".tr.toUpperCase(),
@@ -834,7 +625,7 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(height: 16.h),
 
           Obx(() {
-            final profileController = Get.find<ProfileScreenController>();
+            final profileController = Get.find<SingleProfileController>();
             final vehicles = profileController.vehicles;
 
             if (profileController.isVehicleLoading.value) {
@@ -859,7 +650,7 @@ class ProfileScreen extends StatelessWidget {
               children: vehicles.map((v) {
                 return Padding(
                   padding: EdgeInsets.only(bottom: 16.h),
-                  child: GarageVehicleCard(vehicle: v),
+                  child: GarageVehicleCard(vehicle: v, isMyProfile: false),
                 );
               }).toList(),
             );

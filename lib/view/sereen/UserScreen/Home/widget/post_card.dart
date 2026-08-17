@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../utils/navigation_utils.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({
@@ -7,6 +8,7 @@ class PostCard extends StatelessWidget {
     required this.location,
     required this.imageUrl,
     required this.caption,
+    this.userId,
     this.profileImage,
     this.onTap,
     this.onLike,
@@ -23,6 +25,7 @@ class PostCard extends StatelessWidget {
   final String location;
   final String imageUrl;
   final String caption;
+  final String? userId;
   final String? profileImage;
   final int? reactCount;
   final int? commentCount;
@@ -50,17 +53,23 @@ class PostCard extends StatelessWidget {
           children: [
             /// Header
             ListTile(
-              leading: CircleAvatar(
-                backgroundImage: profileImage != null
-                    ? NetworkImage(profileImage!)
-                    : null,
-                child: profileImage == null ? const Icon(Icons.person) : null,
+              leading: GestureDetector(
+                onTap: () => NavigationUtils.navigateToUserProfile(userId),
+                child: CircleAvatar(
+                  backgroundImage: profileImage != null
+                      ? NetworkImage(profileImage!)
+                      : null,
+                  child: profileImage == null ? const Icon(Icons.person) : null,
+                ),
               ),
-              title: Text(
-                userName,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+              title: GestureDetector(
+                onTap: () => NavigationUtils.navigateToUserProfile(userId),
+                child: Text(
+                  userName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               subtitle: Text(

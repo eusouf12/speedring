@@ -4,6 +4,7 @@ import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/service/api_url.dart';
+import 'package:speedring/utils/navigation_utils.dart';
 
 import '../../controller/home_controller.dart';
 
@@ -66,7 +67,8 @@ class ClubJoinRequestsScreen extends StatelessWidget {
               final requestData = controller.clubJoinRequestsList[index];
               final memberId = requestData['_id'] ?? requestData['id'] ?? "";
 
-              final name = requestData['name'] ?? requestData['userName'] ?? "Unknown";
+              final name =
+                  requestData['name'] ?? requestData['userName'] ?? "Unknown";
               final profileImage = requestData['profileImage'] ?? "";
 
               String imageUrl = "";
@@ -86,23 +88,37 @@ class ClubJoinRequestsScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.white10,
-                      backgroundImage: imageUrl.isNotEmpty
-                          ? NetworkImage(imageUrl)
-                          : null,
-                      child: imageUrl.isEmpty
-                          ? const Icon(Icons.person, color: Colors.white54)
-                          : null,
+                    GestureDetector(
+                      onTap: () {
+                        if (memberId.isNotEmpty) {
+                          NavigationUtils.navigateToUserProfile(memberId);
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.white10,
+                        backgroundImage: imageUrl.isNotEmpty
+                            ? NetworkImage(imageUrl)
+                            : null,
+                        child: imageUrl.isEmpty
+                            ? const Icon(Icons.person, color: Colors.white54)
+                            : null,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: CustomText(
-                        text: name,
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (memberId.isNotEmpty) {
+                            NavigationUtils.navigateToUserProfile(memberId);
+                          }
+                        },
+                        child: CustomText(
+                          text: name,
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     Row(

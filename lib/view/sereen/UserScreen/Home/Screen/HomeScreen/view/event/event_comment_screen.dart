@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../../../../../utils/navigation_utils.dart';
 import '../../controller/home_controller.dart';
 import '../../model/event_model.dart';
 
@@ -164,15 +165,22 @@ class _EventCommentTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Avatar
-            CircleAvatar(
-              radius: 18,
-              backgroundColor: const Color(0xff2A2A2A),
-              backgroundImage: comment.user?.profileImage != null
-                  ? NetworkImage(comment.user!.profileImage!)
-                  : null,
-              child: comment.user?.profileImage == null
-                  ? const Icon(Icons.person, size: 18, color: Colors.white54)
-                  : null,
+            GestureDetector(
+              onTap: () {
+                if (comment.user?.id != null) {
+                  NavigationUtils.navigateToUserProfile(comment.user!.id);
+                }
+              },
+              child: CircleAvatar(
+                radius: 18,
+                backgroundColor: const Color(0xff2A2A2A),
+                backgroundImage: comment.user?.profileImage != null
+                    ? NetworkImage(comment.user!.profileImage!)
+                    : null,
+                child: comment.user?.profileImage == null
+                    ? const Icon(Icons.person, size: 18, color: Colors.white54)
+                    : null,
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -182,12 +190,23 @@ class _EventCommentTile extends StatelessWidget {
                   // Name row + delete
                   Row(
                     children: [
-                      Text(
-                        comment.user?.name ?? comment.user?.userName ?? "User",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
+                      GestureDetector(
+                        onTap: () {
+                          if (comment.user?.id != null) {
+                            NavigationUtils.navigateToUserProfile(
+                              comment.user!.id,
+                            );
+                          }
+                        },
+                        child: Text(
+                          comment.user?.name ??
+                              comment.user?.userName ??
+                              "User",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
                       const Spacer(),
@@ -284,33 +303,51 @@ class _EventCommentTile extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius: 12,
-                          backgroundColor: const Color(0xff2A2A2A),
-                          backgroundImage: reply.user?.profileImage != null
-                              ? NetworkImage(reply.user!.profileImage!)
-                              : null,
-                          child: reply.user?.profileImage == null
-                              ? const Icon(
-                                  Icons.person,
-                                  size: 12,
-                                  color: Colors.white54,
-                                )
-                              : null,
+                        GestureDetector(
+                          onTap: () {
+                            if (reply.user?.id != null) {
+                              NavigationUtils.navigateToUserProfile(
+                                reply.user!.id,
+                              );
+                            }
+                          },
+                          child: CircleAvatar(
+                            radius: 12,
+                            backgroundColor: const Color(0xff2A2A2A),
+                            backgroundImage: reply.user?.profileImage != null
+                                ? NetworkImage(reply.user!.profileImage!)
+                                : null,
+                            child: reply.user?.profileImage == null
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 12,
+                                    color: Colors.white54,
+                                  )
+                                : null,
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                reply.user?.name ??
-                                    reply.user?.userName ??
-                                    "User",
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
+                              GestureDetector(
+                                onTap: () {
+                                  if (reply.user?.id != null) {
+                                    NavigationUtils.navigateToUserProfile(
+                                      reply.user!.id,
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  reply.user?.name ??
+                                      reply.user?.userName ??
+                                      "User",
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 2),

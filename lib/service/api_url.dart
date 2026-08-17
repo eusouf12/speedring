@@ -110,6 +110,10 @@ class ApiUrl {
   static String getPostInteractions({required String postId}) =>
       "/posts/get-post-interactions/$postId";
   static const String createPost = "/posts/create-post";
+  static String getUserPosts({required String userId, int page = 1, int limit = 10}) =>
+      "/posts/user-posts/$userId?page=$page&limit=$limit";
+  static String getUserVehicles({required String userId, int page = 1}) =>
+      "/users/user-vehicles/$userId?page=$page";
   static const String getMyClubs = "/clubs/get-my-clubs";
   static String getEvents({int page = 1, int limit = 10, String? searchTerm}) {
     String url = "/events/get-all-events?page=$page&limit=$limit";

@@ -138,7 +138,7 @@ class ActiveDriveScreen extends StatelessWidget {
 
           /// 4. Bottom Actions Row
           Positioned(
-            bottom: 24,
+            bottom: MediaQuery.of(context).viewPadding.bottom + 16,
             left: 16,
             right: 16,
             child: controller.isHost

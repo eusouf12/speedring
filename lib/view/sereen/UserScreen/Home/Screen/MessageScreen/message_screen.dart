@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-
 import '../../../../../../core/app_routes/app_routes.dart';
+import '../../../../../../utils/navigation_utils.dart';
 
 class MessageScreen extends StatelessWidget {
   const MessageScreen({super.key});
@@ -12,6 +12,7 @@ class MessageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> chats = [
       {
+        "id": "dummy_id",
         "name": "Alex Racer",
         "username": "@alex_racer",
         "lastMsg": "Are you down for the Silverstone track day next weekend?",
@@ -21,6 +22,7 @@ class MessageScreen extends StatelessWidget {
         "avatarUrl": "https://picsum.photos/seed/alex/100/100",
       },
       {
+        "id": "dummy_id",
         "name": "Speed Master",
         "username": "@speedmaster",
         "lastMsg":
@@ -31,6 +33,7 @@ class MessageScreen extends StatelessWidget {
         "avatarUrl": "https://picsum.photos/seed/speedmaster/100/100",
       },
       {
+        "id": "dummy_id",
         "name": "Clara Ferrari",
         "username": "@clara_f",
         "lastMsg":
@@ -41,6 +44,7 @@ class MessageScreen extends StatelessWidget {
         "avatarUrl": "https://picsum.photos/seed/clara/100/100",
       },
       {
+        "id": "dummy_id",
         "name": "Track King",
         "username": "@track_king",
         "lastMsg":
@@ -146,34 +150,42 @@ class MessageScreen extends StatelessWidget {
                           "userName": chat["name"],
                           "avatarUrl": chat["avatarUrl"],
                           "isOnline": chat["isOnline"],
+                          "userId": chat["id"],
                         },
                       );
                     },
-                    leading: Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 24,
-                          backgroundImage: NetworkImage(chat["avatarUrl"]),
-                          backgroundColor: const Color(0xff1A1A1A),
-                        ),
-                        if (chat["isOnline"])
-                          Positioned(
-                            right: 0,
-                            bottom: 0,
-                            child: Container(
-                              width: 12,
-                              height: 12,
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
+                    leading: GestureDetector(
+                      onTap: () {
+                        if (chat["id"] != null) {
+                          NavigationUtils.navigateToUserProfile(chat["id"]);
+                        }
+                      },
+                      child: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 24,
+                            backgroundImage: NetworkImage(chat["avatarUrl"]),
+                            backgroundColor: const Color(0xff1A1A1A),
+                          ),
+                          if (chat["isOnline"])
+                            Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

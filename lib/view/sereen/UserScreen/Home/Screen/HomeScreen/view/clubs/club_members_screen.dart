@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/utils/navigation_utils.dart';
 import '../../controller/home_controller.dart';
 import 'package:speedring/service/api_url.dart';
 
@@ -98,26 +99,44 @@ class ClubMembersScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.white10,
-                      backgroundImage: imageUrl.isNotEmpty
-                          ? NetworkImage(imageUrl)
-                          : null,
-                      child: imageUrl.isEmpty
-                          ? const Icon(Icons.person, color: Colors.white54)
-                          : null,
+                    GestureDetector(
+                      onTap: () {
+                        if (user['_id'] != null) {
+                          NavigationUtils.navigateToUserProfile(user['_id']);
+                        } else if (user['id'] != null) {
+                          NavigationUtils.navigateToUserProfile(user['id']);
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.white10,
+                        backgroundImage: imageUrl.isNotEmpty
+                            ? NetworkImage(imageUrl)
+                            : null,
+                        child: imageUrl.isEmpty
+                            ? const Icon(Icons.person, color: Colors.white54)
+                            : null,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomText(
-                            text: name,
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                          GestureDetector(
+                            onTap: () {
+                              if (user['_id'] != null) {
+                                NavigationUtils.navigateToUserProfile(user['_id']);
+                              } else if (user['id'] != null) {
+                                NavigationUtils.navigateToUserProfile(user['id']);
+                              }
+                            },
+                            child: CustomText(
+                              text: name,
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           CustomText(

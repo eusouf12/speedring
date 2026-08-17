@@ -117,7 +117,7 @@ class PrepareSessionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "selectYourCar".tr,
+                "selectYourCar".tr.toUpperCase(),
                 style: const TextStyle(
                   color: AppColors.yellow,
                   fontSize: 16,

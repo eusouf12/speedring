@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../../../core/app_routes/app_routes.dart';
+import '../../../../../../../utils/navigation_utils.dart';
 import '../../../../../../components/custom_appbar_user/custom_appbar_user.dart';
 import '../controller/home_controller.dart';
 import '../model/post_model.dart';
@@ -294,6 +295,7 @@ class UserHomeScreen extends StatelessWidget {
                             return Column(
                               children: [
                                 PostCard(
+                                  userId: post.user?.id,
                                   userName: userName,
                                   location: location,
                                   imageUrl: imageUrl,
@@ -541,6 +543,7 @@ class UserHomeScreen extends StatelessWidget {
                                       eventId: event.id!,
                                     )
                                   : null,
+                              userId: event.user?.id,
                             );
                           },
                         ),
@@ -946,7 +949,10 @@ class _EventCard extends StatelessWidget {
     required this.onShare,
     this.onDelete,
     this.organizerImage,
+    this.userId,
   });
+
+  final String? userId;
 
   @override
   Widget build(BuildContext context) {
@@ -990,32 +996,48 @@ class _EventCard extends StatelessWidget {
                   /// Organizer
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 14,
-                        backgroundColor: Colors.white24,
-                        backgroundImage:
-                            organizerImage != null && organizerImage!.isNotEmpty
-                            ? NetworkImage(
-                                organizerImage!.startsWith('http')
-                                    ? organizerImage!
-                                    : ApiUrl.baseUrl + organizerImage!,
-                              )
-                            : null,
-                        child: organizerImage == null || organizerImage!.isEmpty
-                            ? const Icon(
-                                Icons.person,
-                                size: 10,
-                                color: Colors.white,
-                              )
-                            : null,
+                      GestureDetector(
+                        onTap: () {
+                          if (userId != null) {
+                            NavigationUtils.navigateToUserProfile(userId!);
+                          }
+                        },
+                        child: CircleAvatar(
+                          radius: 14,
+                          backgroundColor: Colors.white24,
+                          backgroundImage:
+                              organizerImage != null &&
+                                  organizerImage!.isNotEmpty
+                              ? NetworkImage(
+                                  organizerImage!.startsWith('http')
+                                      ? organizerImage!
+                                      : ApiUrl.baseUrl + organizerImage!,
+                                )
+                              : null,
+                          child:
+                              organizerImage == null || organizerImage!.isEmpty
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 10,
+                                  color: Colors.white,
+                                )
+                              : null,
+                        ),
                       ),
                       const SizedBox(width: 6),
-                      Text(
-                        organizer,
-                        style: const TextStyle(
-                          color: AppColors.yellow,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w900,
+                      GestureDetector(
+                        onTap: () {
+                          if (userId != null) {
+                            NavigationUtils.navigateToUserProfile(userId!);
+                          }
+                        },
+                        child: Text(
+                          organizer,
+                          style: const TextStyle(
+                            color: AppColors.yellow,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 4),

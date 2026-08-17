@@ -3,17 +3,20 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../../core/app_routes/app_routes.dart';
+import '../../../../../../utils/navigation_utils.dart';
 
 class InboxScreen extends StatefulWidget {
   final String userName;
   final String avatarUrl;
   final bool isOnline;
+  final String? userId;
 
   const InboxScreen({
     super.key,
     required this.userName,
     required this.avatarUrl,
     required this.isOnline,
+    this.userId,
   });
 
   @override
@@ -96,40 +99,54 @@ class _InboxScreenState extends State<InboxScreen> {
           titleSpacing: 0,
           title: Row(
             children: [
-              Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundImage: NetworkImage(widget.avatarUrl),
-                    backgroundColor: const Color(0xff1A1A1A),
-                  ),
-                  if (widget.isOnline)
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        width: 9,
-                        height: 9,
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black, width: 1.5),
+              GestureDetector(
+                onTap: () {
+                  if (widget.userId != null) {
+                    NavigationUtils.navigateToUserProfile(widget.userId!);
+                  }
+                },
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundImage: NetworkImage(widget.avatarUrl),
+                      backgroundColor: const Color(0xff1A1A1A),
+                    ),
+                    if (widget.isOnline)
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 9,
+                          height: 9,
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black, width: 1.5),
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    widget.userName,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
+                  GestureDetector(
+                    onTap: () {
+                      if (widget.userId != null) {
+                        NavigationUtils.navigateToUserProfile(widget.userId!);
+                      }
+                    },
+                    child: Text(
+                      widget.userName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 2),

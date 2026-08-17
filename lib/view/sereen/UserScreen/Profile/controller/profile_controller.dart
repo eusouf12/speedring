@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../../../service/api_client.dart';
 import '../../../../../service/api_url.dart';
 import '../model/profile_model.dart';
+import '../../Home/Screen/HomeScreen/model/post_model.dart';
 import '../../../../../utils/ToastMsg/toast_message.dart';
 
 class ProfileScreenController extends GetxController {
@@ -53,6 +54,7 @@ class ProfileScreenController extends GetxController {
     super.onInit();
     getMyProfile();
     getMyVehicles();
+    getMyPosts();
   }
 
   void initEditProfile(ProfileData profile) {
@@ -453,6 +455,55 @@ class ProfileScreenController extends GetxController {
       return false;
     } finally {
       isUpdating.value = false;
+    }
+  }
+
+  // ================= POSTS =================
+  final RxList<PostModel> myPosts = <PostModel>[].obs;
+  int postPage = 1;
+  final RxBool isPostLoadingMore = false.obs;
+  final RxBool isPostLoading = false.obs;
+  bool hasNextPostPage = true;
+
+  Future<void> getMyPosts({bool isLoadMore = false}) async {
+    if (isLoadMore) {
+      if (!hasNextPostPage || isPostLoadingMore.value) return;
+      postPage++;
+      isPostLoadingMore.value = true;
+    } else {
+      postPage = 1;
+      hasNextPostPage = true;
+      isPostLoading.value = true;
+    }
+
+    try {
+      final response = await ApiClient.getData(
+        "/posts/my-posts?page=$postPage&limit=10",
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final meta = response.body['meta'];
+        if (meta != null) {
+          final totalPages = meta['totalPage'] ?? 1;
+          hasNextPostPage = postPage < totalPages;
+        }
+
+        final data = response.body['data'];
+        if (data != null && data is List) {
+          final fetchedPosts = data.map((e) => PostModel.fromJson(e)).toList();
+          if (isLoadMore) {
+            myPosts.addAll(fetchedPosts);
+          } else {
+            myPosts.assignAll(fetchedPosts);
+          }
+        }
+      } else {
+        debugPrint('Failed to fetch my posts: ${response.statusText}');
+      }
+    } catch (e) {
+      debugPrint('Error fetching my posts: $e');
+    } finally {
+      isPostLoading.value = false;
+      isPostLoadingMore.value = false;
     }
   }
 

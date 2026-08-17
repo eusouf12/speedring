@@ -70,6 +70,8 @@ class AppTranslate extends Translations {
       'publicOpenToAll': 'PUBLIC (OPEN TO ALL)',
       'private': 'PRIVATE',
       'onboardingSubtitle': 'The social network for motorsport\nenthusiasts.',
+      'noBiography':
+          'No biography provided. Pushing the limits of engineering and performance.',
       'onboardingDesc':
           'Track sessions. Share experiences. Discover cars, riders, clubs and motorsport events.',
       'trackMode': 'Track Mode',
@@ -768,7 +770,7 @@ class AppTranslate extends Translations {
       'trackLayout': 'TRACK LAYOUT',
       'prepareSession': 'PREPARE SESSION',
       'prepare': 'PREPARE',
-      'selectYourCar': 'SELECT YOUR CAR',
+      'selectYourCar': 'SELECT YOUR Vehicle',
       'yourCar': 'YOUR CAR',
       'unknownCar': 'Unknown Car',
       'theTrack': 'THE TRACK',
@@ -976,6 +978,8 @@ class AppTranslate extends Translations {
       'startNewDrive': 'Start New Drive',
       'whatDoYouWantToBuy': 'What do you want to buy?',
       'startListing': 'Start Listing',
+      'SAVED_REELS': 'Saved Reels',
+      'NO_SAVED_REELS_FOUND': 'No saved reels found.',
     },
     'de_DE': {
       'title': 'Deutsch',
@@ -985,6 +989,8 @@ class AppTranslate extends Translations {
 
       // Reels
       'NO_REELS_AVAILABLE_YET': 'Noch keine Reels verfügbar.',
+      'SAVED_REELS': 'Gespeicherte Reels',
+      'NO_SAVED_REELS_FOUND': 'Keine gespeicherten Reels gefunden.',
       'REELS': 'REELS',
       'FOLLOW': 'FOLGEN',
       'ORIGINAL_SOUND': 'Originalton',
@@ -1781,7 +1787,7 @@ class AppTranslate extends Translations {
       'trackLayout': 'STRECKENLAYOUT',
       'prepareSession': 'SITZUNG VORBEREITEN',
       'prepare': 'VORBEREITEN',
-      'selectYourCar': 'WÄHLE DEIN AUTO',
+      'selectYourCar': 'Fahrzeug auswählen',
       'yourCar': 'DEIN AUTO',
       'unknownCar': 'Unbekanntes Auto',
       'theTrack': 'DIE STRECKE',

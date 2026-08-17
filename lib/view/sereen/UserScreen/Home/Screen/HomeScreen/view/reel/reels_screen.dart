@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import '../../../../../../../../utils/navigation_utils.dart';
 import '../../controller/reels_controller.dart';
 import 'package:video_player/video_player.dart';
 import 'package:just_audio/just_audio.dart';
@@ -46,6 +47,11 @@ class _ReelsScreenState extends State<ReelsScreen> {
               return PageView.builder(
                 controller: PageController(initialPage: 0),
                 scrollDirection: Axis.vertical,
+                onPageChanged: (index) {
+                  if (index == controller.reels.length - 1) {
+                    controller.fetchAllReels(isLoadMore: true);
+                  }
+                },
                 itemCount: controller.reels.length,
                 itemBuilder: (context, index) {
                   return ReelItemWidget(
@@ -77,28 +83,55 @@ class _ReelsScreenState extends State<ReelsScreen> {
                       letterSpacing: 1.5,
                     ),
                   ),
-                  // Create Reel button
-                  GestureDetector(
-                    onTap: () => Get.toNamed(AppRoutes.createReelScreen),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.yellow,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.yellow.withValues(alpha: 0.4),
-                            blurRadius: 10,
-                            spreadRadius: 1,
+                  // Right side actions
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Create Reel button
+                      GestureDetector(
+                        onTap: () => Get.toNamed(AppRoutes.createReelScreen),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.yellow,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.yellow.withValues(alpha: 0.4),
+                                blurRadius: 10,
+                                spreadRadius: 1,
+                              ),
+                            ],
                           ),
-                        ],
+                          child: const Icon(
+                            Icons.camera_alt_outlined,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.camera_alt_outlined,
-                        color: Colors.black,
-                        size: 20,
+                      const SizedBox(width: 12),
+                      // Saved Reels button
+                      GestureDetector(
+                        onTap: () => Get.toNamed(AppRoutes.savedReelsScreen),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.yellow,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.bookmark_border_rounded,
+                            color: AppColors.yellow,
+                            size: 18,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
@@ -114,12 +147,14 @@ class ReelItemWidget extends StatefulWidget {
   final int index;
   final Map<String, dynamic> reelData;
   final ReelsController controller;
+  final bool isSavedMode;
 
   const ReelItemWidget({
     super.key,
     required this.index,
     required this.reelData,
     required this.controller,
+    this.isSavedMode = false,
   });
 
   @override
@@ -220,8 +255,6 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
         });
   }
 
-
-
   // ── URL helpers ──────────────────────────────────────────────────────────
   String? _getAudioUrl() {
     final music = widget.reelData['music'];
@@ -244,20 +277,25 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
     final audioUrl = _getAudioUrl();
 
     if (videoUrl == null || audioUrl == null) return null;
-    
+
     // Only attempt to combine if both are Cloudinary URLs
-    if (!videoUrl.contains('cloudinary.com') || !audioUrl.contains('cloudinary.com')) {
-      return null; 
+    if (!videoUrl.contains('cloudinary.com') ||
+        !audioUrl.contains('cloudinary.com')) {
+      return null;
     }
 
     try {
-      final vMatch = RegExp(r'/upload/(?:v\d+/)?(.+?)\.[a-zA-Z0-9]+$').firstMatch(videoUrl);
-      final aMatch = RegExp(r'/upload/(?:v\d+/)?(.+?)\.[a-zA-Z0-9]+$').firstMatch(audioUrl);
-      
+      final vMatch = RegExp(
+        r'/upload/(?:v\d+/)?(.+?)\.[a-zA-Z0-9]+$',
+      ).firstMatch(videoUrl);
+      final aMatch = RegExp(
+        r'/upload/(?:v\d+/)?(.+?)\.[a-zA-Z0-9]+$',
+      ).firstMatch(audioUrl);
+
       if (vMatch != null && aMatch != null) {
         final videoPublicId = vMatch.group(1)!;
         final audioPublicId = aMatch.group(1)!;
-        
+
         final formattedAudioId = audioPublicId.replaceAll('/', ':');
         final baseUrl = videoUrl.substring(0, videoUrl.indexOf('/upload/') + 8);
         return '${baseUrl}ac_none/l_video:$formattedAudioId,fl_layer_apply/$videoPublicId.mp4';
@@ -265,8 +303,8 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
     } catch (e) {
       debugPrint("Error constructing combined URL: $e");
     }
-    
-    return null; 
+
+    return null;
   }
 
   String? _getRawVideoUrl() {
@@ -316,9 +354,12 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (widget.index >= widget.controller.reels.length)
-        return const SizedBox.shrink();
-      final reelData = widget.controller.reels[widget.index];
+      final list = widget.isSavedMode
+          ? widget.controller.savedReels
+          : widget.controller.reels;
+
+      if (widget.index >= list.length) return const SizedBox.shrink();
+      final reelData = list[widget.index];
       final bool isReacted = reelData['isReacted'] ?? false;
       final bool isBookmarked = reelData['isBookmarked'] ?? false;
       final String reelUserId =
@@ -441,23 +482,31 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                     // User info row
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundColor: Colors.white24,
-                          backgroundImage: NetworkImage(
-                            widget.reelData['user']?['profileImage'] ??
-                                widget.reelData['avatar'] ??
-                                'https://via.placeholder.com/150',
+                        GestureDetector(
+                          onTap: () =>
+                              NavigationUtils.navigateToUserProfile(reelUserId),
+                          child: CircleAvatar(
+                            radius: 18,
+                            backgroundColor: Colors.white24,
+                            backgroundImage: NetworkImage(
+                              widget.reelData['user']?['profileImage'] ??
+                                  widget.reelData['avatar'] ??
+                                  'https://via.placeholder.com/150',
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text(
-                          "@${widget.reelData['user']?['name'] ?? widget.reelData['username']}",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            letterSpacing: 0.5,
+                        GestureDetector(
+                          onTap: () =>
+                              NavigationUtils.navigateToUserProfile(reelUserId),
+                          child: Text(
+                            "@${widget.reelData['user']?['name'] ?? widget.reelData['username']}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -530,7 +579,9 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                           child: SizedBox(
                             height: 20,
                             child: Text(
-                              widget.reelData['videoDetails']?['description'] ??
+                              widget.reelData['music']?['name'] ??
+                                  widget
+                                      .reelData['videoDetails']?['description'] ??
                                   widget.reelData['musicName'] ??
                                   "ORIGINAL_SOUND".tr,
                               overflow: TextOverflow.ellipsis,
@@ -701,12 +752,18 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                         _videoController!.value.isInitialized
                     ? Listener(
                         onPointerUp: (_) async {
-                          if (_audioPlayer != null && _videoController != null) {
+                          if (_audioPlayer != null &&
+                              _videoController != null) {
                             final pos = _videoController!.value.position;
                             final audioDuration = _audioPlayer!.duration;
-                            if (audioDuration != null && audioDuration.inMilliseconds > 0) {
-                              final target = pos.inMilliseconds % audioDuration.inMilliseconds;
-                              await _audioPlayer!.seek(Duration(milliseconds: target));
+                            if (audioDuration != null &&
+                                audioDuration.inMilliseconds > 0) {
+                              final target =
+                                  pos.inMilliseconds %
+                                  audioDuration.inMilliseconds;
+                              await _audioPlayer!.seek(
+                                Duration(milliseconds: target),
+                              );
                             } else {
                               await _audioPlayer!.seek(pos);
                             }

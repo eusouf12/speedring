@@ -570,6 +570,7 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                 reactCount: post.reactCount,
                                 commentCount: post.commentCount,
                                 isLiked: post.isReacted ?? false,
+                                userId: post.user?.id,
                                 detailsWidget: buildPostDetails(post),
                                 onTap: () => Navigator.push(
                                   context,

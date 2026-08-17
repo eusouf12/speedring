@@ -55,6 +55,7 @@ import '../../view/sereen/UserScreen/MarketPlace/view/select_category_screen.dar
 import '../../view/sereen/UserScreen/MarketPlace/view/create_vehicle_listing_screen.dart';
 import '../../view/sereen/UserScreen/MarketPlace/view/create_motorcycle_listing_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/profile_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/single_profile_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/wallet_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/buy_coins_screen.dart';
 import '../../view/sereen/UserScreen/Wallet/Screen/transaction_report_screen.dart';
@@ -75,7 +76,7 @@ import '../../view/sereen/UserScreen/Profile/Screen/about_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/personalize_interest_screen.dart';
 import '../../view/sereen/UserScreen/track/view/single_track/my_sessions_screen.dart'
     as speedring_my_sessions;
-import '../../view/sereen/UserScreen/Profile/Screen/saved_reels_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/reel/saved_reels_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step1.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step2.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step3.dart';
@@ -168,6 +169,7 @@ class AppRoutes {
   static const String createMotorcycleListingScreen =
       "/CreateMotorcycleListingScreen";
   static const String profileScreen = "/ProfileScreen";
+  static const String singleProfileScreen = "/SingleProfileScreen";
   static const String walletScreen = "/WalletScreen";
   static const String buyCoinsScreen = "/BuyCoinsScreen";
   static const String transactionReportScreen = "/TransactionReportScreen";
@@ -282,6 +284,7 @@ class AppRoutes {
         avatarUrl:
             Get.arguments?["avatarUrl"] ?? "https://picsum.photos/100/100",
         isOnline: Get.arguments?["isOnline"] ?? false,
+        userId: Get.arguments?["userId"],
       ),
     ),
     GetPage(name: supportMemberScreen, page: () => const SupportMemberScreen()),
@@ -330,6 +333,7 @@ class AppRoutes {
       page: () => const CreateMotorcycleListingScreen(),
     ),
     GetPage(name: profileScreen, page: () => const ProfileScreen()),
+    GetPage(name: singleProfileScreen, page: () => const SingleProfileScreen()),
     GetPage(name: walletScreen, page: () => const WalletScreen()),
     GetPage(name: buyCoinsScreen, page: () => const BuyCoinsScreen()),
     GetPage(
@@ -521,9 +525,6 @@ class AppRoutes {
       name: mySessionsScreen,
       page: () => const speedring_my_sessions.MySessionsScreen(),
     ),
-    GetPage(
-      name: savedReelsScreen,
-      page: () => const SavedReelsScreen(),
-    ),
+    GetPage(name: savedReelsScreen, page: () => const SavedReelsScreen()),
   ];
 }

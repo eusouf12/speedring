@@ -6,6 +6,7 @@ import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/components/custom_appbar_user/custom_appbar_user.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
+import 'package:speedring/utils/navigation_utils.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/model/discover_model.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/model/network_user_model.dart';
@@ -872,30 +873,44 @@ class DiscoverScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundImage: avatarUrl.isNotEmpty
-                ? NetworkImage(avatarUrl)
-                : null,
-            backgroundColor: Colors.white12,
-            child: avatarUrl.isEmpty
-                ? const Icon(Icons.person, color: Colors.white54)
-                : null,
+          GestureDetector(
+            onTap: () {
+              if (user.id != null) {
+                NavigationUtils.navigateToUserProfile(user.id!);
+              }
+            },
+            child: CircleAvatar(
+              radius: 24,
+              backgroundImage: avatarUrl.isNotEmpty
+                  ? NetworkImage(avatarUrl)
+                  : null,
+              backgroundColor: Colors.white12,
+              child: avatarUrl.isEmpty
+                  ? const Icon(Icons.person, color: Colors.white54)
+                  : null,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                GestureDetector(
+                  onTap: () {
+                    if (user.id != null) {
+                      NavigationUtils.navigateToUserProfile(user.id!);
+                    }
+                  },
+                  child: Text(
+                    name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   username,

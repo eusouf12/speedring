@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/utils/navigation_utils.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/view/event/event_comment_screen.dart';
 import '../../../../../../../components/custom_netwrok_image/custom_network_image.dart';
@@ -127,31 +128,49 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       /// Organizer details row
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 18,
-                            backgroundColor: Colors.white12,
-                            backgroundImage: organizerImage.isNotEmpty
-                                ? NetworkImage(
-                                    organizerImage.startsWith('http')
-                                        ? organizerImage
-                                        : ApiUrl.baseUrl + organizerImage,
-                                  )
-                                : null,
-                            child: organizerImage.isEmpty
-                                ? const Icon(
-                                    Icons.person,
-                                    size: 20,
-                                    color: Colors.white,
-                                  )
-                                : null,
+                          GestureDetector(
+                            onTap: () {
+                              if (event.user?.id != null) {
+                                NavigationUtils.navigateToUserProfile(
+                                  event.user!.id,
+                                );
+                              }
+                            },
+                            child: CircleAvatar(
+                              radius: 18,
+                              backgroundColor: Colors.white12,
+                              backgroundImage: organizerImage.isNotEmpty
+                                  ? NetworkImage(
+                                      organizerImage.startsWith('http')
+                                          ? organizerImage
+                                          : ApiUrl.baseUrl + organizerImage,
+                                    )
+                                  : null,
+                              child: organizerImage.isEmpty
+                                  ? const Icon(
+                                      Icons.person,
+                                      size: 20,
+                                      color: Colors.white,
+                                    )
+                                  : null,
+                            ),
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            organizer,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                          GestureDetector(
+                            onTap: () {
+                              if (event.user?.id != null) {
+                                NavigationUtils.navigateToUserProfile(
+                                  event.user!.id,
+                                );
+                              }
+                            },
+                            child: Text(
+                              organizer,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],

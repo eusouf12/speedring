@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/utils/navigation_utils.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/model/video_model.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/view/full_screen_video.dart';
@@ -142,7 +143,9 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                   decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(12),
-                    image: (!_isInitialized || _controller == null) && thumbnailUrl.isNotEmpty
+                    image:
+                        (!_isInitialized || _controller == null) &&
+                            thumbnailUrl.isNotEmpty
                         ? DecorationImage(
                             image: NetworkImage(thumbnailUrl),
                             fit: BoxFit.cover,
@@ -481,30 +484,52 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 18,
-                backgroundColor: Colors.white12,
-                backgroundImage: widget.video.user?.profileImage != null && widget.video.user!.profileImage!.isNotEmpty
-                    ? NetworkImage(widget.video.user!.profileImage!)
-                    : null,
-                child: (widget.video.user?.profileImage == null || widget.video.user!.profileImage!.isEmpty)
-                    ? const Icon(Icons.person, color: Colors.white54)
-                    : null,
+              GestureDetector(
+                onTap: () {
+                  if (widget.video.user?.id != null) {
+                    NavigationUtils.navigateToUserProfile(
+                      widget.video.user!.id,
+                    );
+                  }
+                },
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Colors.white12,
+                  backgroundImage:
+                      widget.video.user?.profileImage != null &&
+                          widget.video.user!.profileImage!.isNotEmpty
+                      ? NetworkImage(widget.video.user!.profileImage!)
+                      : null,
+                  child:
+                      (widget.video.user?.profileImage == null ||
+                          widget.video.user!.profileImage!.isEmpty)
+                      ? const Icon(Icons.person, color: Colors.white54)
+                      : null,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.video.user?.name ?? "Unknown",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
+                    GestureDetector(
+                      onTap: () {
+                        if (widget.video.user?.id != null) {
+                          NavigationUtils.navigateToUserProfile(
+                            widget.video.user!.id,
+                          );
+                        }
+                      },
+                      child: Text(
+                        widget.video.user?.name ?? "Unknown",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Row(
@@ -583,10 +608,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
     Get.dialog(
       AlertDialog(
         backgroundColor: const Color(0xff181818),
-        title: Text(
-          'deleteVideo'.tr,
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text('deleteVideo'.tr, style: TextStyle(color: Colors.white)),
         content: Text(
           'deleteVideoConfirm'.tr,
           style: TextStyle(color: Colors.white70),
@@ -594,10 +616,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text(
-              'cancel'.tr,
-              style: TextStyle(color: Colors.white54),
-            ),
+            child: Text('cancel'.tr, style: TextStyle(color: Colors.white54)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(

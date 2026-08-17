@@ -54,12 +54,9 @@ class ActiveDriveController extends GetxController {
       // Setup initial map markers
       _setupInitialMarkers();
 
-      // Start tracking or listening
-      if (isHost) {
-        _requestPermissionAndStartTracking();
-      } else {
-        _listenToLiveTelemetry();
-      }
+      // Start tracking OR listening is no longer conditional - EVERYONE tracks and listens
+      _requestPermissionAndStartTracking();
+      _listenToLiveTelemetry();
 
       // Start elapsed timer
       _startElapsedTimer();
@@ -236,12 +233,12 @@ class ActiveDriveController extends GetxController {
     positionStream = Geolocator.getPositionStream(locationSettings: settings)
         .listen((Position position) {
           if (!isTrackingPaused.value) {
-            _updateHostTelemetry(position);
+            _updateMyTelemetry(position);
           }
         });
   }
 
-  void _updateHostTelemetry(Position position) {
+  void _updateMyTelemetry(Position position) {
     currentLocation.value = position;
     currentSpeedKmh.value = position.speed * 3.6;
 
@@ -259,11 +256,17 @@ class ActiveDriveController extends GetxController {
     routePoints.add(newPoint);
     _updatePolyline();
 
-    // Update driver/host marker position with custom profile pic icon
-    _updateDriverMarker(newPoint, drive!.host?.profileImage);
+    // Update my driver marker position with my profile pic icon
+    final currentUserId = profileController.profileData.value?.id ?? 'my_id';
+    final currentUserName = profileController.profileData.value?.name ?? 'Me';
+    final currentUserPic = profileController.profileData.value?.profileImage;
+    _updateDriverMarker(newPoint, currentUserPic, currentUserId, currentUserName);
 
     // Auto pan map
     mapController?.animateCamera(CameraUpdate.newLatLng(newPoint));
+
+    // Check if reached destination
+    _checkDestinationReached(position);
 
     // Send telemetry to viewers via socket
     SocketApi.emit('telemetry_update', {
@@ -278,31 +281,35 @@ class ActiveDriveController extends GetxController {
   void _listenToLiveTelemetry() {
     SocketApi.on('live_telemetry_feed', (data) {
       if (data == null) return;
+      final String senderId = data['senderId']?.toString() ?? '';
+      
+      // Ignore if it's my own echo
+      final myId = profileController.profileData.value?.id;
+      if (senderId == myId) return;
+
       final double lat = (data['lat'] as num).toDouble();
       final double lng = (data['lng'] as num).toDouble();
-      final double speed = (data['speed'] as num).toDouble();
-
-      currentSpeedKmh.value = speed;
       final LatLng newPoint = LatLng(lat, lng);
 
-      if (routePoints.isNotEmpty) {
-        final double distance = Geolocator.distanceBetween(
-          routePoints.last.latitude,
-          routePoints.last.longitude,
-          lat,
-          lng,
-        );
-        totalDistanceKm.value += (distance / 1000);
+      // Find the participant's profile info
+      String? profilePicUrl;
+      String title = 'Member';
+      
+      if (drive?.host?.id == senderId) {
+        profilePicUrl = drive!.host!.profileImage;
+        title = drive!.host!.name ?? 'Host';
+      } else if (drive?.participants != null) {
+        try {
+          final participant = drive!.participants!.firstWhere((p) => p.id == senderId);
+          profilePicUrl = participant.profileImage;
+          title = participant.name ?? 'Member';
+        } catch (e) {
+          // not found
+        }
       }
 
-      routePoints.add(newPoint);
-      _updatePolyline();
-
-      // Update marker
-      _updateDriverMarker(newPoint, drive!.host?.profileImage);
-
-      // Auto pan map
-      mapController?.animateCamera(CameraUpdate.newLatLng(newPoint));
+      // Update THEIR marker on the map
+      _updateDriverMarker(newPoint, profilePicUrl, senderId, title);
     });
   }
 
@@ -317,9 +324,65 @@ class ActiveDriveController extends GetxController {
     );
   }
 
+  bool hasReachedDestination = false;
+
+  void _checkDestinationReached(Position position) {
+    if (hasReachedDestination || drive?.meetingPoint == null) return;
+
+    double distanceToFinish = Geolocator.distanceBetween(
+      position.latitude,
+      position.longitude,
+      drive!.meetingPoint!.lat ?? 0,
+      drive!.meetingPoint!.lng ?? 0,
+    );
+
+    // Assuming 50 meters as the threshold for reaching destination
+    if (distanceToFinish < 50) {
+      hasReachedDestination = true;
+      _showDestinationReachedModal();
+    }
+  }
+
+  void _showDestinationReachedModal() {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.black87,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: Colors.white10),
+        ),
+        title: const Text(
+          "Destination Reached",
+          style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          "You have arrived at the meeting point.",
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(); // Close dialog
+              if (isHost) {
+                Get.toNamed(AppRoutes.endExpeditionScreen, arguments: drive);
+              }
+            },
+            child: Text(
+              isHost ? "endTrip".tr : "okay".tr,
+              style: const TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
+  }
+
   Future<void> _updateDriverMarker(
     LatLng position,
     String? profilePicUrl,
+    String markerId,
+    String title,
   ) async {
     BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarkerWithHue(
       BitmapDescriptor.hueYellow,
@@ -330,16 +393,21 @@ class ActiveDriveController extends GetxController {
       if (!fullUrl.startsWith("http")) {
         fullUrl = "${ApiUrl.imageUrl}/$fullUrl";
       }
-      markerIcon = await _getCircularMarkerIcon(fullUrl, const Size(120, 120));
+      markerIcon = await _getCircularMarkerIcon(fullUrl, const Size(80, 80));
     }
 
-    markers.removeWhere((m) => m.markerId.value == 'driver_node');
+    markers.removeWhere((m) => m.markerId.value == markerId);
+    
+    // Make my own marker appear on top of others
+    final bool isMe = markerId == profileController.profileData.value?.id;
+    
     markers.add(
       Marker(
-        markerId: const MarkerId('driver_node'),
+        markerId: MarkerId(markerId),
         position: position,
         icon: markerIcon,
-        infoWindow: InfoWindow(title: drive!.host?.name ?? 'driver'.tr),
+        infoWindow: InfoWindow(title: title),
+        zIndex: isMe ? 10.0 : 1.0,
       ),
     );
   }

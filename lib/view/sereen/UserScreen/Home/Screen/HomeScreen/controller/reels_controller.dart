@@ -13,9 +13,12 @@ class ReelsController extends GetxController {
   RxList<Map<String, dynamic>> reels = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> savedReels = <Map<String, dynamic>>[].obs;
   RxBool isLoading = false.obs;
+  RxBool isLoadMoreReels = false.obs;
   RxBool isSavedReelsLoading = false.obs;
   RxBool isUploading = false.obs;
   String? myUserId;
+  int _reelPage = 1;
+  bool _hasMoreReels = true;
 
   @override
   void onInit() {
@@ -45,12 +48,19 @@ class ReelsController extends GetxController {
     }
   }
 
-  Future<void> fetchAllReels() async {
-    isLoading.value = true;
+  Future<void> fetchAllReels({bool isLoadMore = false}) async {
+    if (isLoadMore) {
+      if (!_hasMoreReels || isLoadMoreReels.value) return;
+      isLoadMoreReels.value = true;
+    } else {
+      isLoading.value = true;
+      _reelPage = 1;
+      _hasMoreReels = true;
+    }
+
     try {
-      // Use the new Posts API with category=REEL
       var response = await ApiClient.getData(
-        ApiUrl.getAllPosts(page: 1, limit: 10, category: "REEL"),
+        ApiUrl.getAllPosts(page: _reelPage, limit: 10, category: "REEL"),
       );
       if (response.statusCode == 200) {
         final body = response.body is String
@@ -58,13 +68,26 @@ class ReelsController extends GetxController {
             : response.body;
         if (body['data'] != null) {
           final List list = body['data'];
-          reels.assignAll(list.map((e) => e as Map<String, dynamic>).toList());
+          if (list.length < 10) {
+            _hasMoreReels = false;
+          }
+          final newReels = list.map((e) => e as Map<String, dynamic>).toList();
+          
+          if (isLoadMore) {
+            reels.addAll(newReels);
+          } else {
+            reels.assignAll(newReels);
+          }
+          _reelPage++;
+        } else {
+           _hasMoreReels = false;
         }
       }
     } catch (e) {
       debugPrint("Error fetching reels: $e");
     } finally {
       isLoading.value = false;
+      isLoadMoreReels.value = false;
     }
   }
 
