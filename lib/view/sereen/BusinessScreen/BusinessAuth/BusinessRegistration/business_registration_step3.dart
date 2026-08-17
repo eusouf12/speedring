@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,16 +8,14 @@ import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_text_field/custom_text_field.dart';
-import 'business_registration_controller.dart';
+import '../controller/business_registration_controller.dart';
 
 class BusinessRegistrationStep3 extends StatelessWidget {
   const BusinessRegistrationStep3({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.isRegistered<BusinessRegistrationController>()
-        ? Get.find<BusinessRegistrationController>()
-        : Get.put(BusinessRegistrationController());
+    final controller = Get.find<BusinessRegistrationController>();
 
     return CustomGradient(
       child: Obx(() {
@@ -115,15 +114,17 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
                     child: CustomPaint(
-                      painter: DashedBorderPainter(color: Colors.white12),
+                      painter: DashedBorderPainter(
+                        color: Colors.white12,
+                      ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.r),
                         child: controller.bannerFileName.value.isNotEmpty
                             ? Stack(
                                 fit: StackFit.expand,
                                 children: [
-                                  Image.network(
-                                    "https://picsum.photos/seed/apex_banner/600/337",
+                                  Image.file(
+                                    File(controller.bannerFileName.value),
                                     fit: BoxFit.cover,
                                     errorBuilder: (c, o, s) => Container(
                                       color: const Color(0xff111111),
@@ -193,8 +194,8 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.r),
                         child: controller.brandLogoName.value.isNotEmpty
-                            ? Image.network(
-                                "https://picsum.photos/seed/brandlogo/200/200",
+                            ? Image.file(
+                                File(controller.brandLogoName.value),
                                 fit: BoxFit.cover,
                               )
                             : Column(

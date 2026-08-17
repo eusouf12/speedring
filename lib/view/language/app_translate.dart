@@ -529,6 +529,12 @@ class AppTranslate extends Translations {
 
       'vehicleIdentification': 'VEHICLE IDENTIFICATION',
       'enterPlateId': 'ENTER PLATE ID',
+      'createAccountTitle': 'CREATE ACCOUNT',
+      'businessNameLabel': 'BUSINESS NAME',
+      'ownerRepLabel': 'OWNER / REPRESENTATIVE',
+      'professionalEmailLabel': 'PROFESSIONAL EMAIL',
+      'contactNumberLabel': 'CONTACT NUMBER',
+      'businessCategoryLabel': 'BUSINESS CATEGORY',
       'selectRegion': 'SELECT REGION',
       'publishSpot': 'PUBLISH SPOT',
       'circuitOrTrackName': 'CIRCUIT OR TRACK NAME',

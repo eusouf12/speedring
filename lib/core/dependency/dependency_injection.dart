@@ -5,6 +5,7 @@ import 'package:speedring/view/sereen/UserScreen/Profile/controller/settings_con
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/single_profile_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/reels_controller.dart';
+import '../../view/sereen/BusinessScreen/BusinessAuth/controller/business_registration_controller.dart';
 import '../../view/sereen/SetupProfile/setup_profile_controller.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/Controller/business_dashboard_controller.dart';
 import '../../view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
@@ -32,5 +33,6 @@ class DependencyInjection extends Bindings {
     Get.lazyPut(() => SendSupportController(), fenix: true);
     Get.lazyPut(() => SingleProfileController(), fenix: true);
     Get.lazyPut(() => SettingsController(), fenix: true);
+    Get.lazyPut(() => BusinessRegistrationController(), fenix: true);
   }
 }

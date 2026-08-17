@@ -1,6 +1,13 @@
 import 'dart:ui';
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:speedring/service/api_client.dart';
+import 'package:speedring/service/api_url.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
+import 'package:speedring/core/app_routes/app_routes.dart';
 
 // ── Dashed Border Painter for Document Uploads ──────────────────────────────
 class DashedBorderPainter extends CustomPainter {
@@ -105,49 +112,160 @@ class BusinessRegistrationController extends GetxController {
   final RxInt selectedAssetClass =
       0.obs; // 0: Vehicle, 1: Motorcycle, 2: Technical Part, 3: Expert Service
 
-  // Simulating document uploads with artificial delay
-  void uploadLicense() {
+  // File Upload Handlers
+  Future<void> uploadLicense() async {
     isLicenseUploading.value = true;
-    Future.delayed(const Duration(milliseconds: 800), () {
-      businessLicenseName.value = "business_license_v2.pdf";
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles();
+      if (result != null) {
+        businessLicenseName.value = result.files.single.path ?? "";
+      }
+    } finally {
       isLicenseUploading.value = false;
-    });
+    }
   }
 
-  void uploadTradeReg() {
+  Future<void> uploadTradeReg() async {
     isTradeRegUploading.value = true;
-    Future.delayed(const Duration(milliseconds: 800), () {
-      tradeRegName.value = "incorporation_cert.pdf";
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles();
+      if (result != null) {
+        tradeRegName.value = result.files.single.path ?? "";
+      }
+    } finally {
       isTradeRegUploading.value = false;
-    });
+    }
   }
 
-  void uploadLogo() {
+  Future<void> uploadLogo() async {
     isLogoUploading.value = true;
-    Future.delayed(const Duration(milliseconds: 800), () {
-      logoFileName.value = "apex_brand_logo.png";
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles(
+        type: FileType.image,
+      );
+      if (result != null) {
+        logoFileName.value = result.files.single.path ?? "";
+      }
+    } finally {
       isLogoUploading.value = false;
-    });
+    }
   }
 
-  void uploadBanner() {
+  Future<void> uploadBanner() async {
     isBannerUploading.value = true;
-    Future.delayed(const Duration(milliseconds: 800), () {
-      bannerFileName.value = "garage_header_banner.jpg";
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles(
+        type: FileType.image,
+      );
+      if (result != null) {
+        bannerFileName.value = result.files.single.path ?? "";
+      }
+    } finally {
       isBannerUploading.value = false;
-    });
+    }
   }
 
-  void uploadBrandLogo() {
+  Future<void> uploadBrandLogo() async {
     isBrandLogoUploading.value = true;
-    Future.delayed(const Duration(milliseconds: 800), () {
-      brandLogoName.value = "official_brand_logo.png";
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles(
+        type: FileType.image,
+      );
+      if (result != null) {
+        brandLogoName.value = result.files.single.path ?? "";
+      }
+    } finally {
       isBrandLogoUploading.value = false;
-    });
+    }
   }
 
   void configureSchedule() {
     scheduleText.value = "Mon-Fri, 08:00 - 18:00 (Configured)";
+  }
+
+  final RxBool isLoading = false.obs;
+
+  Future<void> registerBusiness() async {
+    if (businessNameCtrl.text.isEmpty ||
+        emailCtrl.text.isEmpty ||
+        passwordCtrl.text.isEmpty) {
+      showCustomSnackBar("Please fill required fields", isError: true);
+      return;
+    }
+
+    isLoading.value = true;
+
+    Map<String, String> body = {
+      'businessName': businessNameCtrl.text.trim(),
+      'name': ownerRepCtrl.text.trim(),
+      'email': emailCtrl.text.trim(),
+      'phone': contactCtrl.text.trim(),
+      'businessCategory': category.value,
+      'digitalPresence': websiteCtrl.text.trim(),
+      'password': passwordCtrl.text,
+      'vatNumber': vatNumberCtrl.text.trim(),
+      'engineeringPhilosophy': philosophyCtrl.text.trim(),
+      'physicalHQ': hqCtrl.text.trim(),
+      'communicationLine': commCtrl.text.trim(),
+      'digitalHQ': digitalHqCtrl.text.trim(),
+      'operationalHours': scheduleText.value,
+      'assetInitialization': selectedAssetClass.value.toString(),
+      'instagram': instagramCtrl.text.trim(),
+      'youtube': youtubeCtrl.text.trim(),
+      'tiktok': tiktokCtrl.text.trim(),
+      'facebook': facebookCtrl.text.trim(),
+    };
+
+    List<MultipartBody> files = [];
+    if (businessLicenseName.value.isNotEmpty) {
+      files.add(
+        MultipartBody('businessLicense', File(businessLicenseName.value)),
+      );
+    }
+    if (tradeRegName.value.isNotEmpty) {
+      files.add(MultipartBody('tradeRegistration', File(tradeRegName.value)));
+    }
+    if (logoFileName.value.isNotEmpty) {
+      files.add(MultipartBody('businessLogo', File(logoFileName.value)));
+    }
+    if (bannerFileName.value.isNotEmpty) {
+      files.add(MultipartBody('businessBanner', File(bannerFileName.value)));
+    }
+    if (brandLogoName.value.isNotEmpty) {
+      files.add(MultipartBody('officialLogo', File(brandLogoName.value)));
+    }
+
+    try {
+      var response = await ApiClient.postMultipartData(
+        ApiUrl.registerBusiness,
+        body,
+        multipartBody: files,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var jsonResponse = jsonDecode(response.body);
+        showCustomSnackBar(
+          jsonResponse['message'] ?? "Business account created",
+          isError: false,
+        );
+
+        // Auto login or proceed to verification
+        Get.toNamed(
+          AppRoutes.loginScreen,
+        ); // User can login with the credentials
+      } else {
+        var errorResponse = jsonDecode(response.body);
+        showCustomSnackBar(
+          errorResponse['message'] ?? "Registration failed",
+          isError: true,
+        );
+      }
+    } catch (e) {
+      showCustomSnackBar("Something went wrong", isError: true);
+      debugPrint(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   @override

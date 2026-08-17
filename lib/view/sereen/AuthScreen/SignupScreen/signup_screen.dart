@@ -365,8 +365,7 @@ class SignupScreen extends StatelessWidget {
                                   const SizedBox(height: 12),
                                   CustomButton(
                                     onTap: () {
-                                      controller.signupRole.value = 'business';
-                                      controller.signupValidator();
+                                      Get.toNamed(AppRoutes.businessRegistrationStep1);
                                     },
                                     title: 'createBusinessAccount'.tr
                                         .toUpperCase(),

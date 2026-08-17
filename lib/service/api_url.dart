@@ -22,6 +22,7 @@ class ApiUrl {
   static const String verificationOtpForgetPass =
       "/auth/verify-forgot-password-otp";
   static const String resendOtp = "/auth/resend-otp";
+  static const String registerBusiness = "/auth/register-business";
   static const String setupUserProfile = "/users/driver/setup-profile";
 
   static const String newPassword = "/auth/reset-password";

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,16 +8,14 @@ import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_text_field/custom_text_field.dart';
-import 'business_registration_controller.dart';
+import '../controller/business_registration_controller.dart';
 
 class BusinessRegistrationStep2 extends StatelessWidget {
   const BusinessRegistrationStep2({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.isRegistered<BusinessRegistrationController>()
-        ? Get.find<BusinessRegistrationController>()
-        : Get.put(BusinessRegistrationController());
+    final controller = Get.find<BusinessRegistrationController>();
 
     return CustomGradient(
       child: Obx(() {
@@ -182,8 +181,8 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                         child: controller.logoFileName.value.isNotEmpty
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(8.r),
-                                child: Image.network(
-                                  "https://picsum.photos/seed/apexlogo/100/100",
+                                child: Image.file(
+                                  File(controller.logoFileName.value),
                                   fit: BoxFit.cover,
                                 ),
                               )

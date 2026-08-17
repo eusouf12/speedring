@@ -9,14 +9,15 @@ import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_text_field/custom_text_field.dart';
-import 'business_registration_controller.dart';
+import '../controller/business_registration_controller.dart'
+    show BusinessRegistrationController;
 
 class BusinessRegistrationStep1 extends StatelessWidget {
   const BusinessRegistrationStep1({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(BusinessRegistrationController());
+    final controller = Get.find<BusinessRegistrationController>();
 
     return CustomGradient(
       child: Scaffold(
@@ -143,7 +144,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     ),
                     SizedBox(height: 24.h),
 
-                    _buildFieldLabel("BUSINESS NAME"),
+                    _buildFieldLabel('businessNameLabel'.tr),
                     CustomTextField(
                       textEditingController: controller.businessNameCtrl,
                       hintText: "e.g. Apex Performance Gmbh",
@@ -160,7 +161,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     ),
                     SizedBox(height: 16.h),
 
-                    _buildFieldLabel("OWNER / REPRESENTATIVE"),
+                    _buildFieldLabel('ownerRepLabel'.tr),
                     CustomTextField(
                       textEditingController: controller.ownerRepCtrl,
                       hintText: "Full legal name",
@@ -175,7 +176,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     ),
                     SizedBox(height: 16.h),
 
-                    _buildFieldLabel("PROFESSIONAL EMAIL"),
+                    _buildFieldLabel('professionalEmailLabel'.tr),
                     CustomTextField(
                       textEditingController: controller.emailCtrl,
                       hintText: "name@company.com",
@@ -196,7 +197,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     ),
                     SizedBox(height: 16.h),
 
-                    _buildFieldLabel("CONTACT NUMBER"),
+                    _buildFieldLabel('contactNumberLabel'.tr),
                     CustomTextField(
                       textEditingController: controller.contactCtrl,
                       hintText: "+49 -- -----",
@@ -214,7 +215,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                     ),
                     SizedBox(height: 16.h),
 
-                    _buildFieldLabel("BUSINESS CATEGORY"),
+                    _buildFieldLabel('businessCategoryLabel'.tr),
                     Obx(
                       () => GestureDetector(
                         onTap: () => _showCategoryDropdown(context, controller),
