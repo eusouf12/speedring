@@ -9,12 +9,16 @@ import 'package:speedring/service/socket_service.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
-import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/profile_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/Profile/controller/settings_controller.dart';
+import 'package:sensors_plus/sensors_plus.dart';
+import 'dart:math';
+import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 
 import '../../../../../core/app_routes/app_routes.dart';
+import '../../../../../helper/shared_prefe/shared_prefe.dart';
 
 class ActiveDriveController extends GetxController {
   Expedition? drive;
@@ -37,8 +41,30 @@ class ActiveDriveController extends GetxController {
   Timer? statsTimer;
   RxBool isTrackingPaused = false.obs;
 
+  // Acceleration 0-100
+  bool isAccelerating0to100 = false;
+  DateTime? accelerationStartTime;
+  RxDouble best0to100Time = 0.0.obs;
+
+  // Advanced Acceleration
+  bool isAccelerating0to200 = false;
+  DateTime? acceleration0to200StartTime;
+  RxDouble best0to200Time = 0.0.obs;
+
+  bool isAccelerating100to200 = false;
+  DateTime? acceleration100to200StartTime;
+  RxDouble best100to200Time = 0.0.obs;
+
+  // Sensors & API
+  StreamSubscription<UserAccelerometerEvent>? accelerometerStream;
+  RxDouble peakGForce = 0.0.obs;
+  RxString currentTemperature = "--".obs;
+
+  RxDouble topSpeedKmh = 0.0.obs;
+
   final ProfileScreenController profileController =
       Get.find<ProfileScreenController>();
+  final SettingsController settings = Get.find<SettingsController>();
 
   @override
   void onInit() {
@@ -57,6 +83,7 @@ class ActiveDriveController extends GetxController {
       // Start tracking OR listening is no longer conditional - EVERYONE tracks and listens
       _requestPermissionAndStartTracking();
       _listenToLiveTelemetry();
+      _startGForceTracking();
 
       // Start elapsed timer
       _startElapsedTimer();
@@ -67,6 +94,7 @@ class ActiveDriveController extends GetxController {
   void onClose() {
     positionStream?.cancel();
     statsTimer?.cancel();
+    accelerometerStream?.cancel();
     mapController?.dispose();
     SocketApi.off('live_telemetry_feed');
     SocketApi.off('expedition_ended');
@@ -240,9 +268,69 @@ class ActiveDriveController extends GetxController {
 
   void _updateMyTelemetry(Position position) {
     currentLocation.value = position;
-    currentSpeedKmh.value = position.speed * 3.6;
+
+    final speed = position.speed * 3.6;
+    currentSpeedKmh.value = speed;
+
+    if (speed > topSpeedKmh.value) {
+      topSpeedKmh.value = speed;
+    }
+
+    // 0-100 Acceleration Logic
+    if (speed < 5.0) {
+      isAccelerating0to100 = true;
+      accelerationStartTime = null;
+      isAccelerating0to200 = true;
+      acceleration0to200StartTime = null;
+    } else if (speed >= 5.0 && isAccelerating0to100) {
+      if (accelerationStartTime == null) {
+        accelerationStartTime = DateTime.now();
+        acceleration0to200StartTime = DateTime.now();
+      } else if (speed >= 100.0) {
+        final duration = DateTime.now().difference(accelerationStartTime!);
+        final seconds = duration.inMilliseconds / 1000.0;
+        if (best0to100Time.value == 0.0 || seconds < best0to100Time.value) {
+          best0to100Time.value = seconds;
+        }
+        isAccelerating0to100 = false;
+
+        // Start 100-200 tracker
+        isAccelerating100to200 = true;
+        acceleration100to200StartTime = DateTime.now();
+      }
+    }
+
+    // 0-200 Tracker
+    if (speed >= 200.0 &&
+        isAccelerating0to200 &&
+        acceleration0to200StartTime != null) {
+      final duration = DateTime.now().difference(acceleration0to200StartTime!);
+      final seconds = duration.inMilliseconds / 1000.0;
+      if (best0to200Time.value == 0.0 || seconds < best0to200Time.value) {
+        best0to200Time.value = seconds;
+      }
+      isAccelerating0to200 = false;
+    }
+
+    // 100-200 Tracker
+    if (speed >= 200.0 &&
+        isAccelerating100to200 &&
+        acceleration100to200StartTime != null) {
+      final duration = DateTime.now().difference(
+        acceleration100to200StartTime!,
+      );
+      final seconds = duration.inMilliseconds / 1000.0;
+      if (best100to200Time.value == 0.0 || seconds < best100to200Time.value) {
+        best100to200Time.value = seconds;
+      }
+      isAccelerating100to200 = false;
+    }
 
     final LatLng newPoint = LatLng(position.latitude, position.longitude);
+
+    if (routePoints.isEmpty) {
+      _fetchTemperature(position.latitude, position.longitude);
+    }
     if (routePoints.isNotEmpty) {
       final double distance = Geolocator.distanceBetween(
         routePoints.last.latitude,
@@ -260,10 +348,35 @@ class ActiveDriveController extends GetxController {
     final currentUserId = profileController.profileData.value?.id ?? 'my_id';
     final currentUserName = profileController.profileData.value?.name ?? 'Me';
     final currentUserPic = profileController.profileData.value?.profileImage;
-    _updateDriverMarker(newPoint, currentUserPic, currentUserId, currentUserName);
+    _updateDriverMarker(
+      newPoint,
+      currentUserPic,
+      currentUserId,
+      currentUserName,
+    );
 
-    // Auto pan map
-    mapController?.animateCamera(CameraUpdate.newLatLng(newPoint));
+    // Auto pan map and fit polyline bounds
+    if (routePoints.length > 1) {
+      double minLat = routePoints.first.latitude;
+      double maxLat = routePoints.first.latitude;
+      double minLng = routePoints.first.longitude;
+      double maxLng = routePoints.first.longitude;
+
+      for (var point in routePoints) {
+        if (point.latitude < minLat) minLat = point.latitude;
+        if (point.latitude > maxLat) maxLat = point.latitude;
+        if (point.longitude < minLng) minLng = point.longitude;
+        if (point.longitude > maxLng) maxLng = point.longitude;
+      }
+
+      LatLngBounds bounds = LatLngBounds(
+        southwest: LatLng(minLat, minLng),
+        northeast: LatLng(maxLat, maxLng),
+      );
+      mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 60.0));
+    } else {
+      mapController?.animateCamera(CameraUpdate.newLatLngZoom(newPoint, 16.0));
+    }
 
     // Check if reached destination
     _checkDestinationReached(position);
@@ -282,7 +395,7 @@ class ActiveDriveController extends GetxController {
     SocketApi.on('live_telemetry_feed', (data) {
       if (data == null) return;
       final String senderId = data['senderId']?.toString() ?? '';
-      
+
       // Ignore if it's my own echo
       final myId = profileController.profileData.value?.id;
       if (senderId == myId) return;
@@ -294,13 +407,15 @@ class ActiveDriveController extends GetxController {
       // Find the participant's profile info
       String? profilePicUrl;
       String title = 'Member';
-      
+
       if (drive?.host?.id == senderId) {
         profilePicUrl = drive!.host!.profileImage;
         title = drive!.host!.name ?? 'Host';
       } else if (drive?.participants != null) {
         try {
-          final participant = drive!.participants!.firstWhere((p) => p.id == senderId);
+          final participant = drive!.participants!.firstWhere(
+            (p) => p.id == senderId,
+          );
           profilePicUrl = participant.profileImage;
           title = participant.name ?? 'Member';
         } catch (e) {
@@ -353,7 +468,10 @@ class ActiveDriveController extends GetxController {
         ),
         title: const Text(
           "Destination Reached",
-          style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: AppColors.yellow,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         content: const Text(
           "You have arrived at the meeting point.",
@@ -369,7 +487,10 @@ class ActiveDriveController extends GetxController {
             },
             child: Text(
               isHost ? "endTrip".tr : "okay".tr,
-              style: const TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: AppColors.yellow,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -397,17 +518,17 @@ class ActiveDriveController extends GetxController {
     }
 
     markers.removeWhere((m) => m.markerId.value == markerId);
-    
+
     // Make my own marker appear on top of others
     final bool isMe = markerId == profileController.profileData.value?.id;
-    
+
     markers.add(
       Marker(
         markerId: MarkerId(markerId),
         position: position,
         icon: markerIcon,
         infoWindow: InfoWindow(title: title),
-        zIndex: isMe ? 10.0 : 1.0,
+        zIndexInt: isMe ? 10 : 1,
       ),
     );
   }
@@ -479,5 +600,32 @@ class ActiveDriveController extends GetxController {
     final int seconds = sec % 60;
 
     return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+  }
+
+  void _startGForceTracking() {
+    accelerometerStream = userAccelerometerEventStream().listen((UserAccelerometerEvent event) {
+      double gForce = sqrt(event.x * event.x + event.y * event.y + event.z * event.z) / 9.8;
+      if (gForce > peakGForce.value) {
+        peakGForce.value = gForce;
+      }
+    });
+  }
+
+  Future<void> _fetchTemperature(double lat, double lng) async {
+    try {
+      final response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lng&current_weather=true'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        double tempC = data['current_weather']['temperature'];
+        if (settings.isMetric.value) {
+          currentTemperature.value = "${tempC.toStringAsFixed(1)} °C";
+        } else {
+          double tempF = (tempC * 9/5) + 32;
+          currentTemperature.value = "${tempF.toStringAsFixed(1)} °F";
+        }
+      }
+    } catch (e) {
+      debugPrint("Temp error: $e");
+    }
   }
 }

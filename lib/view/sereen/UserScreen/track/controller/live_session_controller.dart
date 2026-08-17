@@ -5,10 +5,16 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:speedring/view/sereen/UserScreen/track/mode/track_model.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:speedring/view/sereen/UserScreen/Profile/controller/settings_controller.dart';
+import 'package:sensors_plus/sensors_plus.dart';
+import 'dart:math';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class LiveSessionController extends GetxController {
   final Track? track;
-  
+  final SettingsController settings = Get.find<SettingsController>();
+
   LiveSessionController({this.track});
 
   // Map state
@@ -20,7 +26,7 @@ class LiveSessionController extends GetxController {
   // Tracking state
   StreamSubscription<Position>? positionStream;
   Rx<Position?> currentLocation = Rx<Position?>(null);
-  
+
   // Stats
   RxInt elapsedSeconds = 0.obs;
   RxDouble currentSpeedKmh = 0.0.obs;
@@ -28,7 +34,26 @@ class LiveSessionController extends GetxController {
   RxDouble totalDistanceKm = 0.0.obs;
   RxDouble averageSpeedKmh = 0.0.obs;
   List<double> speedHistory = [];
-  
+
+  // Acceleration 0-100
+  bool isAccelerating0to100 = false;
+  DateTime? accelerationStartTime;
+  RxDouble best0to100Time = 0.0.obs;
+
+  // Advanced Acceleration
+  bool isAccelerating0to200 = false;
+  DateTime? acceleration0to200StartTime;
+  RxDouble best0to200Time = 0.0.obs;
+
+  bool isAccelerating100to200 = false;
+  DateTime? acceleration100to200StartTime;
+  RxDouble best100to200Time = 0.0.obs;
+
+  // Sensors & API
+  StreamSubscription<UserAccelerometerEvent>? accelerometerStream;
+  RxDouble peakGForce = 0.0.obs;
+  RxString currentTemperature = "--".obs;
+
   Timer? timer;
   bool isSessionActive = false;
 
@@ -43,6 +68,7 @@ class LiveSessionController extends GetxController {
   void onClose() {
     timer?.cancel();
     positionStream?.cancel();
+    accelerometerStream?.cancel();
     mapController?.dispose();
     super.onClose();
   }
@@ -131,20 +157,32 @@ class LiveSessionController extends GetxController {
 
   void _setupMarkers() {
     if (track?.startCoordinates != null) {
-      markers.add(Marker(
-        markerId: const MarkerId('start'),
-        position: LatLng(track!.startCoordinates!.lat ?? 0, track!.startCoordinates!.lng ?? 0),
-        infoWindow: InfoWindow(title: 'startLocation'.tr),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      ));
+      markers.add(
+        Marker(
+          markerId: const MarkerId('start'),
+          position: LatLng(
+            track!.startCoordinates!.lat ?? 0,
+            track!.startCoordinates!.lng ?? 0,
+          ),
+          infoWindow: InfoWindow(title: 'startLocation'.tr),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
+        ),
+      );
     }
     if (track?.finishCoordinates != null) {
-      markers.add(Marker(
-        markerId: const MarkerId('finish'),
-        position: LatLng(track!.finishCoordinates!.lat ?? 0, track!.finishCoordinates!.lng ?? 0),
-        infoWindow: InfoWindow(title: 'finishLocation'.tr),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      ));
+      markers.add(
+        Marker(
+          markerId: const MarkerId('finish'),
+          position: LatLng(
+            track!.finishCoordinates!.lat ?? 0,
+            track!.finishCoordinates!.lng ?? 0,
+          ),
+          infoWindow: InfoWindow(title: 'finishLocation'.tr),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        ),
+      );
     }
   }
 
@@ -153,7 +191,10 @@ class LiveSessionController extends GetxController {
       mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
-            target: LatLng(track!.startCoordinates!.lat ?? 0, track!.startCoordinates!.lng ?? 0),
+            target: LatLng(
+              track!.startCoordinates!.lat ?? 0,
+              track!.startCoordinates!.lng ?? 0,
+            ),
             zoom: 15,
           ),
         ),
@@ -179,7 +220,7 @@ class LiveSessionController extends GetxController {
         return;
       }
     }
-    
+
     if (permission == LocationPermission.deniedForever) {
       Get.snackbar('error'.tr, 'locationPermissionsDeniedForever'.tr);
       return;
@@ -191,15 +232,18 @@ class LiveSessionController extends GetxController {
 
   void _startSession() {
     isSessionActive = true;
-    
+
     // Start timer
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       elapsedSeconds.value++;
       if (elapsedSeconds.value > 0) {
-        averageSpeedKmh.value = totalDistanceKm.value / (elapsedSeconds.value / 3600.0);
+        averageSpeedKmh.value =
+            totalDistanceKm.value / (elapsedSeconds.value / 3600.0);
       }
       speedHistory.add(currentSpeedKmh.value);
     });
+
+    _startGForceTracking();
 
     // Start location tracking
     LocationSettings locationSettings = const LocationSettings(
@@ -207,25 +251,75 @@ class LiveSessionController extends GetxController {
       distanceFilter: 2, // meters
     );
 
-    positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-      (Position? position) {
-        if (position != null && isSessionActive) {
-          _updateTracking(position);
-        }
-      }
-    );
+    positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+          (Position? position) {
+            if (position != null && isSessionActive) {
+              _updateTracking(position);
+            }
+          },
+        );
   }
 
   void _updateTracking(Position position) {
     // Speed is in m/s -> multiply by 3.6 to get km/h
-    currentSpeedKmh.value = position.speed * 3.6;
+    final speed = position.speed * 3.6;
+    currentSpeedKmh.value = speed;
+
+    if (speed > topSpeedKmh.value) {
+      topSpeedKmh.value = speed;
+    }
+
+    // 0-100 Acceleration Logic
+    if (speed < 5.0) {
+      isAccelerating0to100 = true;
+      accelerationStartTime = null;
+      isAccelerating0to200 = true;
+      acceleration0to200StartTime = null;
+    } else if (speed >= 5.0 && isAccelerating0to100) {
+      if (accelerationStartTime == null) {
+        accelerationStartTime = DateTime.now();
+        acceleration0to200StartTime = DateTime.now();
+      } else if (speed >= 100.0) {
+        final duration = DateTime.now().difference(accelerationStartTime!);
+        final seconds = duration.inMilliseconds / 1000.0;
+        if (best0to100Time.value == 0.0 || seconds < best0to100Time.value) {
+          best0to100Time.value = seconds;
+        }
+        isAccelerating0to100 = false;
+        
+        // Start 100-200 tracker
+        isAccelerating100to200 = true;
+        acceleration100to200StartTime = DateTime.now();
+      }
+    }
     
-    if (currentSpeedKmh.value > topSpeedKmh.value) {
-      topSpeedKmh.value = currentSpeedKmh.value;
+    // 0-200 Tracker
+    if (speed >= 200.0 && isAccelerating0to200 && acceleration0to200StartTime != null) {
+      final duration = DateTime.now().difference(acceleration0to200StartTime!);
+      final seconds = duration.inMilliseconds / 1000.0;
+      if (best0to200Time.value == 0.0 || seconds < best0to200Time.value) {
+        best0to200Time.value = seconds;
+      }
+      isAccelerating0to200 = false;
+    }
+
+    // 100-200 Tracker
+    if (speed >= 200.0 && isAccelerating100to200 && acceleration100to200StartTime != null) {
+      final duration = DateTime.now().difference(acceleration100to200StartTime!);
+      final seconds = duration.inMilliseconds / 1000.0;
+      if (best100to200Time.value == 0.0 || seconds < best100to200Time.value) {
+        best100to200Time.value = seconds;
+      }
+      isAccelerating100to200 = false;
     }
 
     LatLng newPoint = LatLng(position.latitude, position.longitude);
-    
+
+    if (routePoints.isEmpty) {
+      _fetchTemperature(position.latitude, position.longitude);
+    }
+
     if (currentLocation.value != null) {
       // Calculate distance between last point and current point
       double distanceInMeters = Geolocator.distanceBetween(
@@ -239,13 +333,31 @@ class LiveSessionController extends GetxController {
 
     currentLocation.value = position;
     routePoints.add(newPoint);
-    
+
     _updatePolyline();
-    
-    // Auto follow camera
-    mapController?.animateCamera(
-      CameraUpdate.newLatLng(newPoint)
-    );
+
+    // Auto follow camera and fit polyline bounds
+    if (routePoints.length > 1) {
+      double minLat = routePoints.first.latitude;
+      double maxLat = routePoints.first.latitude;
+      double minLng = routePoints.first.longitude;
+      double maxLng = routePoints.first.longitude;
+
+      for (var point in routePoints) {
+        if (point.latitude < minLat) minLat = point.latitude;
+        if (point.latitude > maxLat) maxLat = point.latitude;
+        if (point.longitude < minLng) minLng = point.longitude;
+        if (point.longitude > maxLng) maxLng = point.longitude;
+      }
+
+      LatLngBounds bounds = LatLngBounds(
+        southwest: LatLng(minLat, minLng),
+        northeast: LatLng(maxLat, maxLng),
+      );
+      mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 60.0));
+    } else {
+      mapController?.animateCamera(CameraUpdate.newLatLngZoom(newPoint, 16.0));
+    }
 
     _checkDestinationReached(position);
   }
@@ -293,7 +405,10 @@ class LiveSessionController extends GetxController {
             },
             child: Text(
               "finishSession".tr,
-              style: const TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.yellow,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -313,7 +428,7 @@ class LiveSessionController extends GetxController {
         jointType: JointType.round,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
-      )
+      ),
     );
   }
 
@@ -321,7 +436,7 @@ class LiveSessionController extends GetxController {
     int h = elapsedSeconds.value ~/ 3600;
     int m = (elapsedSeconds.value % 3600) ~/ 60;
     int s = elapsedSeconds.value % 60;
-    
+
     if (h > 0) {
       return "${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}";
     } else {
@@ -333,15 +448,51 @@ class LiveSessionController extends GetxController {
     isSessionActive = false;
     timer?.cancel();
     positionStream?.cancel();
-    
-    Get.offNamed(AppRoutes.driveSummaryScreen, arguments: {
-      'track': track,
-      'routePoints': routePoints,
-      'elapsedSeconds': elapsedSeconds.value,
-      'totalDistanceKm': totalDistanceKm.value,
-      'averageSpeedKmh': averageSpeedKmh.value,
-      'topSpeedKmh': topSpeedKmh.value,
-      'speedHistory': speedHistory,
+
+    Get.offNamed(
+      AppRoutes.driveSummaryScreen,
+      arguments: {
+        'track': track,
+        'routePoints': routePoints,
+        'elapsedSeconds': elapsedSeconds.value,
+        'totalDistanceKm': totalDistanceKm.value,
+        'averageSpeedKmh': averageSpeedKmh.value,
+        'topSpeedKmh': topSpeedKmh.value,
+        'speedHistory': speedHistory,
+        'best0to100Time': best0to100Time.value,
+        'best0to200Time': best0to200Time.value,
+        'best100to200Time': best100to200Time.value,
+        'peakGForce': peakGForce.value,
+        'temperature': currentTemperature.value,
+      },
+    );
+  }
+
+  void _startGForceTracking() {
+    accelerometerStream = userAccelerometerEventStream().listen((UserAccelerometerEvent event) {
+      double gForce = sqrt(event.x * event.x + event.y * event.y + event.z * event.z) / 9.8;
+      if (gForce > peakGForce.value) {
+        peakGForce.value = gForce;
+      }
     });
+  }
+
+  Future<void> _fetchTemperature(double lat, double lng) async {
+    try {
+      final response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=\$lat&longitude=\$lng&current_weather=true'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        double tempC = data['current_weather']['temperature'];
+        if (settings.isMetric.value) {
+          currentTemperature.value = "${tempC.toStringAsFixed(1)} °C";
+        } else {
+          // Use tempF
+          double tempF = (tempC * 9 / 5) + 32;
+          currentTemperature.value = "${tempF.toStringAsFixed(1)} °F";
+        }
+      }
+    } catch (e) {
+      debugPrint("Temp error: \$e");
+    }
   }
 }

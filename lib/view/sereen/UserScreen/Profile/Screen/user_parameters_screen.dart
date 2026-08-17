@@ -97,8 +97,6 @@ class UserParametersScreen extends StatelessWidget {
               ),
               SizedBox(height: 24.h),
 
-
-
               /// Options group container
               Container(
                 decoration: BoxDecoration(

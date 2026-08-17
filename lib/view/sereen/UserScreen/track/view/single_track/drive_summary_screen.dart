@@ -8,6 +8,7 @@ import '../../../../../../../utils/app_images/app_images.dart';
 import '../../../../../components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/Profile/controller/settings_controller.dart';
 
 class DriveSummaryScreen extends StatelessWidget {
   const DriveSummaryScreen({super.key});
@@ -35,8 +36,15 @@ class DriveSummaryScreen extends StatelessWidget {
     final double averageSpeedKmh = args['averageSpeedKmh'] ?? 0.0;
     final double topSpeedKmh = args['topSpeedKmh'] ?? 0.0;
     final List<double> speedHistory = args['speedHistory'] ?? [];
+    final double best0to100Time = args['best0to100Time'] ?? 0.0;
+    final double best0to200Time = args['best0to200Time'] ?? 0.0;
+    final double best100to200Time = args['best100to200Time'] ?? 0.0;
+    final double peakGForce = args['peakGForce'] ?? 0.0;
+    final String temperature = args['temperature'] ?? "--";
 
     String formattedTime = _formatTime(elapsedSeconds);
+
+    final SettingsController settings = Get.find<SettingsController>();
 
     return CustomGradient(
       child: Scaffold(
@@ -80,7 +88,7 @@ class DriveSummaryScreen extends StatelessWidget {
                     child: _buildStatCard(
                       Icons.social_distance,
                       "distance".tr,
-                      "${totalDistanceKm.toStringAsFixed(1)} ${'km'.tr}",
+                      "${settings.getDistance(totalDistanceKm).toStringAsFixed(1)} ${settings.distanceUnit.toLowerCase()}",
                     ),
                   ),
                 ],
@@ -92,7 +100,7 @@ class DriveSummaryScreen extends StatelessWidget {
                     child: _buildStatCard(
                       Icons.flash_on,
                       "topSpeed".tr,
-                      "${topSpeedKmh.toStringAsFixed(0)} ${'kmh'.tr}",
+                      "${settings.getSpeed(topSpeedKmh).toStringAsFixed(0)} ${settings.speedUnit.toLowerCase()}",
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -100,7 +108,59 @@ class DriveSummaryScreen extends StatelessWidget {
                     child: _buildStatCard(
                       Icons.speed,
                       "avgSpeed".tr,
-                      "${averageSpeedKmh.toStringAsFixed(0)} ${'kmh'.tr}",
+                      "${settings.getSpeed(averageSpeedKmh).toStringAsFixed(0)} ${settings.speedUnit.toLowerCase()}",
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.timer,
+                      "0-100 ${settings.speedUnit}",
+                      best0to100Time > 0 ? "${best0to100Time.toStringAsFixed(2)} s" : "--",
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.timer,
+                      "100-200 ${settings.speedUnit}",
+                      best100to200Time > 0 ? "${best100to200Time.toStringAsFixed(2)} s" : "--",
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.timer,
+                      "0-200 ${settings.speedUnit}",
+                      best0to200Time > 0 ? "${best0to200Time.toStringAsFixed(2)} s" : "--",
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.moving,
+                      "peakGForce".tr,
+                      peakGForce > 0 ? "${peakGForce.toStringAsFixed(2)} g" : "--",
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.thermostat,
+                      "temperature".tr,
+                      temperature,
                     ),
                   ),
                 ],
