@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import '../../../../../../../utils/app_images/app_images.dart';
 import '../../../../../components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
-import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/settings_controller.dart';
 
 class DriveSummaryScreen extends StatelessWidget {
@@ -27,7 +25,6 @@ class DriveSummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TrackController trackController = Get.find<TrackController>();
-    final HomeController homeController = Get.put(HomeController());
 
     final Map<String, dynamic> args = Get.arguments ?? {};
     final List<LatLng> routePoints = args['routePoints'] ?? [];
@@ -39,8 +36,11 @@ class DriveSummaryScreen extends StatelessWidget {
     final double best0to100Time = args['best0to100Time'] ?? 0.0;
     final double best0to200Time = args['best0to200Time'] ?? 0.0;
     final double best100to200Time = args['best100to200Time'] ?? 0.0;
+    final double best0to300Time = args['best0to300Time'] ?? 0.0;
+    final double best200to300Time = args['best200to300Time'] ?? 0.0;
     final double peakGForce = args['peakGForce'] ?? 0.0;
     final String temperature = args['temperature'] ?? "--";
+    final bool isReadOnly = args['isReadOnly'] ?? false;
 
     String formattedTime = _formatTime(elapsedSeconds);
 
@@ -63,7 +63,13 @@ class DriveSummaryScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: const Icon(Icons.close, color: Colors.white, size: 24),
-              onPressed: () => Get.offAllNamed(AppRoutes.userHomeScreen),
+              onPressed: () {
+                if (isReadOnly) {
+                  Get.back();
+                } else {
+                  Get.offAllNamed(AppRoutes.userHomeScreen);
+                }
+              },
             ),
           ],
         ),
@@ -120,7 +126,9 @@ class DriveSummaryScreen extends StatelessWidget {
                     child: _buildStatCard(
                       Icons.timer,
                       "0-100 ${settings.speedUnit}",
-                      best0to100Time > 0 ? "${best0to100Time.toStringAsFixed(2)} s" : "--",
+                      best0to100Time > 0
+                          ? "${best0to100Time.toStringAsFixed(2)} s"
+                          : "--",
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -128,7 +136,9 @@ class DriveSummaryScreen extends StatelessWidget {
                     child: _buildStatCard(
                       Icons.timer,
                       "100-200 ${settings.speedUnit}",
-                      best100to200Time > 0 ? "${best100to200Time.toStringAsFixed(2)} s" : "--",
+                      best100to200Time > 0
+                          ? "${best100to200Time.toStringAsFixed(2)} s"
+                          : "--",
                     ),
                   ),
                 ],
@@ -140,7 +150,33 @@ class DriveSummaryScreen extends StatelessWidget {
                     child: _buildStatCard(
                       Icons.timer,
                       "0-200 ${settings.speedUnit}",
-                      best0to200Time > 0 ? "${best0to200Time.toStringAsFixed(2)} s" : "--",
+                      best0to200Time > 0
+                          ? "${best0to200Time.toStringAsFixed(2)} s"
+                          : "--",
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.timer,
+                      "0-300 ${settings.speedUnit}",
+                      best0to300Time > 0
+                          ? "${best0to300Time.toStringAsFixed(2)} s"
+                          : "--",
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      Icons.timer,
+                      "200-300 ${settings.speedUnit}",
+                      best200to300Time > 0
+                          ? "${best200to300Time.toStringAsFixed(2)} s"
+                          : "--",
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -148,7 +184,9 @@ class DriveSummaryScreen extends StatelessWidget {
                     child: _buildStatCard(
                       Icons.moving,
                       "peakGForce".tr,
-                      peakGForce > 0 ? "${peakGForce.toStringAsFixed(2)} g" : "--",
+                      peakGForce > 0
+                          ? "${peakGForce.toStringAsFixed(2)} g"
+                          : "--",
                     ),
                   ),
                 ],
@@ -162,6 +200,11 @@ class DriveSummaryScreen extends StatelessWidget {
                       "temperature".tr,
                       temperature,
                     ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child:
+                        Container(), // Empty placeholder to keep the grid balanced
                   ),
                 ],
               ),
@@ -452,201 +495,87 @@ class DriveSummaryScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
 
-              /// 5. SAVE BUTTON
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.yellow,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+              if (!isReadOnly) ...[
+                /// 5. SAVE BUTTON
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.yellow,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
                     ),
-                    elevation: 0,
-                  ),
-                  onPressed: () async {
-                    Map<String, dynamic> sessionData = {
-                      "driveScore": 94,
-                      "time": formattedTime,
-                      "distance": totalDistanceKm,
-                      "topSpeed": topSpeedKmh.toStringAsFixed(0),
-                      "avgSpeed": averageSpeedKmh.toStringAsFixed(0),
-                      "speedOverTime": speedHistory
-                          .asMap()
-                          .entries
-                          .map(
-                            (e) => {
-                              "time": _formatTime(e.key),
-                              "speed": e.value,
-                            },
-                          )
-                          .toList(),
-                      "sessionTrack": routePoints
-                          .map((e) => {"lat": e.latitude, "lng": e.longitude})
-                          .toList(),
-                    };
+                    onPressed: () async {
+                      Map<String, dynamic> sessionData = {
+                        "driveScore": 94,
+                        "time": formattedTime,
+                        "distance": totalDistanceKm,
+                        "topSpeed": topSpeedKmh.toStringAsFixed(0),
+                        "avgSpeed": averageSpeedKmh.toStringAsFixed(0),
+                        "speedOverTime": speedHistory
+                            .asMap()
+                            .entries
+                            .map(
+                              (e) => {
+                                "time": _formatTime(e.key),
+                                "speed": e.value,
+                              },
+                            )
+                            .toList(),
+                        "sessionTrack": routePoints
+                            .map((e) => {"lat": e.latitude, "lng": e.longitude})
+                            .toList(),
+                        "best0to100Time": best0to100Time,
+                        "best100to200Time": best100to200Time,
+                        "best0to200Time": best0to200Time,
+                        "best0to300Time": best0to300Time,
+                        "best200to300Time": best200to300Time,
+                        "peakGForce": peakGForce,
+                        "temperature": temperature,
+                      };
 
-                    bool success = await trackController.createSession(
-                      sessionData,
-                    );
-                    if (success) {
-                      Get.offAllNamed(AppRoutes.userHomeScreen);
-                    }
-                  },
-                  child: Obx(
-                    () => trackController.isCreatingSession.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.black,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "save".tr,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 1.0,
-                                ),
+                      bool success = await trackController.createSession(
+                        sessionData,
+                      );
+                      if (success) {
+                        Get.offAllNamed(AppRoutes.userHomeScreen);
+                      }
+                    },
+                    child: Obx(
+                      () => trackController.isCreatingSession.value
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.black,
+                                strokeWidth: 2,
                               ),
-                              const SizedBox(width: 8),
-                              const Icon(Icons.arrow_forward, size: 16),
-                            ],
-                          ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              /// SHARE RESULTS LINK
-              Center(
-                child: Obx(
-                  () => homeController.isPostCreating.value
-                      ? const CircularProgressIndicator(color: AppColors.yellow)
-                      : TextButton.icon(
-                          onPressed: () {
-                            Get.bottomSheet(
-                              Material(
-                                color: const Color(0xff181818),
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(20),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ListTile(
-                                        leading: const Icon(
-                                          Icons.share,
-                                          color: Colors.white,
-                                        ),
-                                        title: Text(
-                                          "shareToFriends".tr,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          Get.back();
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(
-                                          Icons.post_add,
-                                          color: AppColors.yellow,
-                                        ),
-                                        title: Text(
-                                          "postToApp".tr,
-                                          style: const TextStyle(
-                                            color: AppColors.yellow,
-                                          ),
-                                        ),
-                                        onTap: () async {
-                                          Get.back();
-                                          Map<String, dynamic>
-                                          sessionDetails = {
-                                            "vehicle":
-                                                trackController
-                                                    .selectedVehicle
-                                                    .value
-                                                    ?.vehicleName ??
-                                                "N/A",
-                                            "vehicleImage":
-                                                trackController
-                                                    .selectedVehicle
-                                                    .value
-                                                    ?.vehicleImage ??
-                                                "",
-                                            "circuit":
-                                                trackController
-                                                    .selectedTrack
-                                                    .value
-                                                    ?.city ??
-                                                "N/A",
-                                            "trackName":
-                                                trackController
-                                                    .selectedTrack
-                                                    .value
-                                                    ?.name ??
-                                                "N/A",
-                                            "bestLapTime": formattedTime,
-                                            "topSpeed": topSpeedKmh
-                                                .toStringAsFixed(0),
-                                            "summary":
-                                                "Completed a drive of ${totalDistanceKm.toStringAsFixed(1)} km in $formattedTime.",
-                                          };
-
-                                          bool success = await homeController
-                                              .createPost(
-                                                category: "SESSION_POST",
-                                                visibility: "Public",
-                                                sessionDetails: sessionDetails,
-                                                mediaUrl: trackController
-                                                    .selectedVehicle
-                                                    .value
-                                                    ?.vehicleImage,
-                                              );
-                                          if (success) {
-                                            Get.offAllNamed(
-                                              AppRoutes.userHomeScreen,
-                                            );
-                                            showCustomSnackBar(
-                                              "Success, Post created successfully",
-                                              isError: false,
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "save".tr,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1.0,
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                          icon: const Icon(
-                            Icons.share_outlined,
-                            color: Colors.white38,
-                            size: 14,
-                          ),
-                          label: Text(
-                            "shareResults".tr,
-                            style: const TextStyle(
-                              color: Colors.white60,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
+                                const SizedBox(width: 8),
+                                const Icon(Icons.arrow_forward, size: 16),
+                              ],
                             ),
-                          ),
-                        ),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 16),
+              ],
+
               const SizedBox(height: 30),
             ],
           ),

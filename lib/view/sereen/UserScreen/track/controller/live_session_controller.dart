@@ -49,6 +49,14 @@ class LiveSessionController extends GetxController {
   DateTime? acceleration100to200StartTime;
   RxDouble best100to200Time = 0.0.obs;
 
+  bool isAccelerating0to300 = false;
+  DateTime? acceleration0to300StartTime;
+  RxDouble best0to300Time = 0.0.obs;
+
+  bool isAccelerating200to300 = false;
+  DateTime? acceleration200to300StartTime;
+  RxDouble best200to300Time = 0.0.obs;
+
   // Sensors & API
   StreamSubscription<UserAccelerometerEvent>? accelerometerStream;
   RxDouble peakGForce = 0.0.obs;
@@ -276,10 +284,13 @@ class LiveSessionController extends GetxController {
       accelerationStartTime = null;
       isAccelerating0to200 = true;
       acceleration0to200StartTime = null;
+      isAccelerating0to300 = true;
+      acceleration0to300StartTime = null;
     } else if (speed >= 5.0 && isAccelerating0to100) {
       if (accelerationStartTime == null) {
         accelerationStartTime = DateTime.now();
         acceleration0to200StartTime = DateTime.now();
+        acceleration0to300StartTime = DateTime.now();
       } else if (speed >= 100.0) {
         final duration = DateTime.now().difference(accelerationStartTime!);
         final seconds = duration.inMilliseconds / 1000.0;
@@ -312,6 +323,30 @@ class LiveSessionController extends GetxController {
         best100to200Time.value = seconds;
       }
       isAccelerating100to200 = false;
+      
+      // Start 200-300 tracker
+      isAccelerating200to300 = true;
+      acceleration200to300StartTime = DateTime.now();
+    }
+    
+    // 0-300 Tracker
+    if (speed >= 300.0 && isAccelerating0to300 && acceleration0to300StartTime != null) {
+      final duration = DateTime.now().difference(acceleration0to300StartTime!);
+      final seconds = duration.inMilliseconds / 1000.0;
+      if (best0to300Time.value == 0.0 || seconds < best0to300Time.value) {
+        best0to300Time.value = seconds;
+      }
+      isAccelerating0to300 = false;
+    }
+    
+    // 200-300 Tracker
+    if (speed >= 300.0 && isAccelerating200to300 && acceleration200to300StartTime != null) {
+      final duration = DateTime.now().difference(acceleration200to300StartTime!);
+      final seconds = duration.inMilliseconds / 1000.0;
+      if (best200to300Time.value == 0.0 || seconds < best200to300Time.value) {
+        best200to300Time.value = seconds;
+      }
+      isAccelerating200to300 = false;
     }
 
     LatLng newPoint = LatLng(position.latitude, position.longitude);
@@ -462,6 +497,8 @@ class LiveSessionController extends GetxController {
         'best0to100Time': best0to100Time.value,
         'best0to200Time': best0to200Time.value,
         'best100to200Time': best100to200Time.value,
+        'best0to300Time': best0to300Time.value,
+        'best200to300Time': best200to300Time.value,
         'peakGForce': peakGForce.value,
         'temperature': currentTemperature.value,
       },
