@@ -234,7 +234,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Get.toNamed(AppRoutes.signupScreen);
+                                Get.offNamed(AppRoutes.signupScreen);
                               },
                               child: CustomText(
                                 text: 'signUp'.tr,
@@ -277,7 +277,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         CustomText(
-                          text: (Get.locale?.languageCode ?? 'en') == 'gr'
+                          text: (Get.locale?.languageCode ?? 'en') == 'de'
                               ? 'DE'
                               : 'EN',
                           color: Colors.white,

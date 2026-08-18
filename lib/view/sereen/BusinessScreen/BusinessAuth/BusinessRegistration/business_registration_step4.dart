@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
-import 'package:speedring/utils/app_images/app_images.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import 'package:speedring/view/components/custom_image/custom_image.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
-
 import '../controller/business_registration_controller.dart';
 
 class BusinessRegistrationStep4 extends StatelessWidget {
@@ -25,14 +22,15 @@ class BusinessRegistrationStep4 extends StatelessWidget {
             backgroundColor: Colors.black,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.yellow),
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () => Get.back(),
             ),
-            title: CustomImage(
-              imageSrc: AppImages.splashLogo,
-              imageType: ImageType.png,
-              height: 35.h,
-              fit: BoxFit.contain,
+            title: CustomText(
+              text: 'businessVerification'.tr,
+              color: Colors.white,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.5,
             ),
             centerTitle: true,
           ),
@@ -77,13 +75,13 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 CustomText(
                   text: 'createYourFirst'.tr,
                   color: Colors.white,
-                  fontSize: 32.sp,
+                  fontSize: 26.sp,
                   fontWeight: FontWeight.w900,
                 ),
                 CustomText(
                   text: 'listing'.tr,
                   color: AppColors.yellow,
-                  fontSize: 32.sp,
+                  fontSize: 26.sp,
                   fontWeight: FontWeight.w900,
                 ),
                 SizedBox(height: 12.h),
@@ -119,10 +117,9 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 _buildListingAssetCard(
                   index: 1,
                   title: 'motorcycle'.tr,
-                  classTag: "SUPERBIKE",
+                  classTag: 'superbike'.tr,
                   classNum: "#MC-02",
-                  desc:
-                      "Racing superbikes and high-performance track machines.",
+                  desc: 'superbikesDesc'.tr,
                   icon: Icons.two_wheeler_outlined,
                   controller: controller,
                 ),
@@ -130,9 +127,9 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 _buildListingAssetCard(
                   index: 2,
                   title: 'technicalPart'.tr,
-                  classTag: "COMPONENT",
+                  classTag: 'component'.tr,
                   classNum: "#TP-03",
-                  desc: "Suspension, braking systems, and aerodynamics.",
+                  desc: 'suspensionDesc'.tr,
                   icon: Icons.tune_outlined,
                   controller: controller,
                 ),
@@ -140,10 +137,9 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                 _buildListingAssetCard(
                   index: 3,
                   title: 'expertService'.tr,
-                  classTag: "TECHNICAL",
+                  classTag: 'technical'.tr,
                   classNum: "#SR-04",
-                  desc:
-                      "Telemetry, ECU tuning, and professional track-side support.",
+                  desc: 'telemetryDesc'.tr,
                   icon: Icons.build_outlined,
                   controller: controller,
                 ),
@@ -158,18 +154,11 @@ class BusinessRegistrationStep4 extends StatelessWidget {
                     },
                     title: controller.isLoading.value
                         ? "PROCESSING..."
-                        : "CREATE LISTING",
+                        : "CONTINUE",
                     fillColor: AppColors.yellow,
                     textColor: Colors.black,
                     borderRadius: 16.r,
                     isImageRight: !controller.isLoading.value,
-                    icon: controller.isLoading.value
-                        ? const SizedBox.shrink()
-                        : const Icon(
-                            Icons.arrow_forward,
-                            color: Colors.black,
-                            size: 20,
-                          ),
                   ),
                 ),
                 SizedBox(height: 20.h),
@@ -190,11 +179,15 @@ class BusinessRegistrationStep4 extends StatelessWidget {
     required IconData icon,
     required BusinessRegistrationController controller,
   }) {
-    final isSelected = controller.selectedAssetClass.value == index;
+    final isSelected = controller.selectedAssetClasses.contains(index);
 
     return GestureDetector(
       onTap: () {
-        controller.selectedAssetClass.value = index;
+        if (controller.selectedAssetClasses.contains(index)) {
+          controller.selectedAssetClasses.remove(index);
+        } else {
+          controller.selectedAssetClasses.add(index);
+        }
       },
       child: Container(
         padding: EdgeInsets.all(16.w),

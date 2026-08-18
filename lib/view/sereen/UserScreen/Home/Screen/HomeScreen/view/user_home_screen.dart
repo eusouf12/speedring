@@ -19,9 +19,11 @@ import '../../../widget/add_post_button.dart';
 import '../../../widget/post_card.dart';
 import '../../../../../../components/custom_nav_bar/navbar.dart';
 import '../../../../../../../utils/app_colors/app_colors.dart';
+import '../../../../../BusinessScreen/BusinessHome/business_navbar.dart';
 
 class UserHomeScreen extends StatelessWidget {
-  const UserHomeScreen({super.key});
+  final bool isBusiness;
+  const UserHomeScreen({super.key, this.isBusiness = false});
 
   @override
   Widget build(BuildContext context) {
@@ -723,7 +725,9 @@ class UserHomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: const CustomNavBar(currentIndex: 0),
+        bottomNavigationBar: isBusiness
+            ? const CustomBusinessNavBar(currentIndex: 2)
+            : const CustomNavBar(currentIndex: 0),
       ),
     );
   }

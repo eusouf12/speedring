@@ -26,11 +26,11 @@ class CustomBusinessNavBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(0, "DASHBOARD", Icons.grid_view_rounded),
-            _buildNavItem(1, "INVENTORY", Icons.directions_car_filled_outlined),
-            _buildNavItem(2, "SOCIAL HUB", Icons.people_outline_rounded),
-            _buildNavItem(3, "MARKET", Icons.storefront_outlined),
-            _buildNavItem(4, "PROFILE", Icons.account_circle_outlined),
+            _buildNavItem(0, 'businessDashboard'.tr.toUpperCase(), Icons.grid_view_rounded),
+            _buildNavItem(1, 'inventory'.tr.toUpperCase(), Icons.directions_car_filled_outlined),
+            _buildNavItem(2, 'socialHub'.tr.toUpperCase(), Icons.people_outline_rounded),
+            _buildNavItem(3, 'market'.tr.toUpperCase(), Icons.storefront_outlined),
+            _buildNavItem(4, 'profile'.tr.toUpperCase(), Icons.account_circle_outlined),
           ],
         ),
       ),

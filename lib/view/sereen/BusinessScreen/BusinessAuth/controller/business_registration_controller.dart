@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:speedring/service/api_client.dart';
+import 'package:http/http.dart' as http;
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
@@ -99,6 +100,7 @@ class BusinessRegistrationController extends GetxController {
 
   final philosophyCtrl = TextEditingController();
   final hqCtrl = TextEditingController();
+  final hqFocusNode = FocusNode();
   final commCtrl = TextEditingController();
   final digitalHqCtrl = TextEditingController();
   final RxString scheduleText = "Configure Schedule".obs;
@@ -109,8 +111,7 @@ class BusinessRegistrationController extends GetxController {
   final facebookCtrl = TextEditingController();
 
   // Step 4: Asset Class selection
-  final RxInt selectedAssetClass =
-      0.obs; // 0: Vehicle, 1: Motorcycle, 2: Technical Part, 3: Expert Service
+  final RxList<int> selectedAssetClasses = <int>[].obs;
 
   // File Upload Handlers
   Future<void> uploadLicense() async {
@@ -183,7 +184,54 @@ class BusinessRegistrationController extends GetxController {
     scheduleText.value = "Mon-Fri, 08:00 - 18:00 (Configured)";
   }
 
+  Future<List<String>> getPlaceSuggestions(String query) async {
+    if (query.isEmpty) return [];
+    try {
+      final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=${ApiUrl.mapKey}',
+      );
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status'] == 'OK') {
+          return (data['predictions'] as List)
+              .map((p) => p['description'] as String)
+              .toList();
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching location suggestions: $e");
+    }
+    return [];
+  }
+
   final RxBool isLoading = false.obs;
+
+  void clearAllFields() {
+    businessNameCtrl.clear();
+    ownerRepCtrl.clear();
+    emailCtrl.clear();
+    contactCtrl.clear();
+    category.value = "";
+    websiteCtrl.clear();
+    passwordCtrl.clear();
+    vatNumberCtrl.clear();
+    philosophyCtrl.clear();
+    hqCtrl.clear();
+    commCtrl.clear();
+    digitalHqCtrl.clear();
+    instagramCtrl.clear();
+    youtubeCtrl.clear();
+    tiktokCtrl.clear();
+    facebookCtrl.clear();
+    scheduleText.value = "Configure Schedule";
+    businessLicenseName.value = "";
+    tradeRegName.value = "";
+    logoFileName.value = "";
+    bannerFileName.value = "";
+    brandLogoName.value = "";
+    selectedAssetClasses.clear();
+  }
 
   Future<void> registerBusiness() async {
     if (businessNameCtrl.text.isEmpty ||
@@ -209,7 +257,7 @@ class BusinessRegistrationController extends GetxController {
       'communicationLine': commCtrl.text.trim(),
       'digitalHQ': digitalHqCtrl.text.trim(),
       'operationalHours': scheduleText.value,
-      'assetInitialization': selectedAssetClass.value.toString(),
+      'assetInitialization': selectedAssetClasses.join(','),
       'instagram': instagramCtrl.text.trim(),
       'youtube': youtubeCtrl.text.trim(),
       'tiktok': tiktokCtrl.text.trim(),
@@ -249,10 +297,11 @@ class BusinessRegistrationController extends GetxController {
           isError: false,
         );
 
-        // Auto login or proceed to verification
-        Get.toNamed(
-          AppRoutes.loginScreen,
-        ); // User can login with the credentials
+        // Clear all fields so they are empty if the user registers again
+        clearAllFields();
+
+        // Clear the route stack and go to login
+        Get.offAllNamed(AppRoutes.loginScreen);
       } else {
         var errorResponse = jsonDecode(response.body);
         showCustomSnackBar(
@@ -279,6 +328,7 @@ class BusinessRegistrationController extends GetxController {
     vatNumberCtrl.dispose();
     philosophyCtrl.dispose();
     hqCtrl.dispose();
+    hqFocusNode.dispose();
     commCtrl.dispose();
     digitalHqCtrl.dispose();
     instagramCtrl.dispose();

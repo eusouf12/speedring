@@ -111,7 +111,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                   fileName: controller.businessLicenseName.value,
                   isUploading: controller.isLicenseUploading.value,
                   onTap: () => controller.uploadLicense(),
-                  label: "CHOOSE FILE",
+                  label: 'chooseFile'.tr,
                   icon: Icons.upload_file_outlined,
                 ),
                 SizedBox(height: 24.h),
@@ -128,7 +128,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                   fileName: controller.tradeRegName.value,
                   isUploading: controller.isTradeRegUploading.value,
                   onTap: () => controller.uploadTradeReg(),
-                  label: "UPLOAD DOC",
+                  label: 'uploadDoc'.tr,
                   icon: Icons.verified_outlined,
                 ),
                 SizedBox(height: 24.h),
@@ -205,8 +205,8 @@ class BusinessRegistrationStep2 extends StatelessWidget {
                             else
                               CustomText(
                                 text: controller.logoFileName.value.isEmpty
-                                    ? "No logo uploaded"
-                                    : controller.logoFileName.value,
+                                    ? 'noLogoUploaded'.tr
+                                    : "Logo Selected",
                                 color: controller.logoFileName.value.isEmpty
                                     ? Colors.white38
                                     : AppColors.yellow,
@@ -272,7 +272,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ),
-      textConfirm: "OK",
+      textConfirm: 'ok'.tr,
       confirmTextColor: Colors.black,
       buttonColor: AppColors.yellow,
       onConfirm: () => Get.back(),
@@ -324,7 +324,7 @@ class BusinessRegistrationStep2 extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 85.h,
+        height: fileName.isNotEmpty ? 140.h : 85.h,
         width: double.infinity,
         decoration: BoxDecoration(
           color: const Color(0xff111111),
@@ -334,47 +334,80 @@ class BusinessRegistrationStep2 extends StatelessWidget {
           painter: DashedBorderPainter(
             color: fileName.isNotEmpty ? AppColors.yellow : Colors.white12,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (isUploading)
-                const CircularProgressIndicator(color: AppColors.yellow)
-              else if (fileName.isNotEmpty) ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.check_circle_outline,
-                      color: Colors.green,
-                      size: 20,
+          child: isUploading
+              ? const Center(child: CircularProgressIndicator(color: AppColors.yellow))
+              : fileName.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.file(
+                            File(fileName),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.check_circle_outline,
+                                        color: Colors.green,
+                                        size: 20,
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      CustomText(
+                                        text: fileName.split('/').last,
+                                        color: AppColors.yellow,
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.bold,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          Container(
+                            color: Colors.black.withValues(alpha: 0.6),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.check_circle_outline,
+                                color: Colors.green,
+                                size: 24,
+                              ),
+                              SizedBox(height: 4.h),
+                              CustomText(
+                                text: 'tapToChangeFile'.tr,
+                                color: Colors.white,
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(icon, color: AppColors.yellow, size: 20.r),
+                        SizedBox(height: 6.h),
+                        CustomText(
+                          text: label,
+                          color: Colors.white60,
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 8.w),
-                    CustomText(
-                      text: fileName,
-                      color: AppColors.yellow,
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-                CustomText(
-                  text: 'tapToChangeFile'.tr,
-                  color: Colors.white38,
-                  fontSize: 10.sp,
-                ),
-              ] else ...[
-                Icon(icon, color: AppColors.yellow, size: 20.r),
-                SizedBox(height: 6.h),
-                CustomText(
-                  text: label,
-                  color: Colors.white60,
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ],
-            ],
-          ),
         ),
       ),
     );

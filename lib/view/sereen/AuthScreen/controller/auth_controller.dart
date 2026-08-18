@@ -12,10 +12,12 @@ import 'package:speedring/utils/app_const/app_const.dart';
 class AuthController extends GetxController {
   // ──----------------- Login ───────────────────────────────
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController(
-    text: "ahteshamulhasan18@gmail.com",
-  );
-  final passwordController = TextEditingController(text: "SecurePassword123");
+  // final emailController = TextEditingController(
+  //   text: "ahteshamulhasan18@gmail.com",
+  // );
+  final emailController = TextEditingController(text: "riyaj@gmail.com");
+  // final passwordController = TextEditingController(text: "SecurePassword123");
+  final passwordController = TextEditingController(text: "12345Eu@");
 
   final RxBool isPasswordVisible = false.obs;
   final RxBool isLoading = false.obs;
@@ -53,7 +55,8 @@ class AuthController extends GetxController {
         String role = userMap['role']?.toString() ?? "";
         bool isProfileSetup = userMap['isProfileSetup'] == true;
 
-        var subscriptionPlan = userMap['subscriptionPlan'] as Map<String, dynamic>? ?? {};
+        var subscriptionPlan =
+            userMap['subscriptionPlan'] as Map<String, dynamic>? ?? {};
         String planName = subscriptionPlan['name']?.toString() ?? "";
 
         await SharePrefsHelper.setString(AppConstants.bearerToken, accessToken);
@@ -63,7 +66,10 @@ class AuthController extends GetxController {
         }
 
         if (planName.isNotEmpty) {
-          await SharePrefsHelper.setString(AppConstants.subscriptionPlanName, planName);
+          await SharePrefsHelper.setString(
+            AppConstants.subscriptionPlanName,
+            planName,
+          );
         }
 
         if (role == 'driver') {
@@ -73,7 +79,7 @@ class AuthController extends GetxController {
             Get.toNamed(AppRoutes.setupProfileScreen1);
           }
         } else {
-          Get.toNamed(AppRoutes.businessRegistrationStep1);
+          Get.offAllNamed(AppRoutes.businessHomeScreen);
         }
       } else {
         Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
@@ -104,7 +110,7 @@ class AuthController extends GetxController {
   final RxBool isSignupLoading = false.obs;
   final RxBool isTermsAgreed = false.obs;
   final RxBool isAgeConfirmed = false.obs; // Used as a fallback
-  
+
   final RxBool isAgeVerifiedFromPreviousScreen = false.obs;
   final RxString selectedAgeGroup = '18+'.obs; // Dropdown value
 
@@ -134,7 +140,9 @@ class AuthController extends GetxController {
       'email': signupEmailController.text.trim(),
       'password': signupPasswordController.text,
       'confirmPassword': confirmPasswordController.text,
-      'ageGroup': isAgeVerifiedFromPreviousScreen.value ? (isAgeConfirmed.value ? '18+' : '16+') : selectedAgeGroup.value,
+      'ageGroup': isAgeVerifiedFromPreviousScreen.value
+          ? (isAgeConfirmed.value ? '18+' : '16+')
+          : selectedAgeGroup.value,
       'agreedToTerms': isTermsAgreed.value,
       'role': signupRole.value,
     };

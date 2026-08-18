@@ -88,13 +88,6 @@ import '../../view/sereen/BusinessScreen/BusinessAssetsScreen/Screen/edit_listin
 import '../../view/sereen/BusinessScreen/BusinessHome/configure_asset_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/create_parts_listing_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/create_services_listing_screen.dart';
-import '../../view/sereen/BusinessScreen/BusiinessSocialHub/business_social_hub_screen.dart';
-import '../../view/sereen/BusinessScreen/BusiinessSocialHub/business_create_post_screen.dart';
-import '../../view/sereen/BusinessScreen/BusiinessSocialHub/business_create_session_post_screen.dart';
-import '../../view/sereen/BusinessScreen/BusiinessSocialHub/business_create_spot_post_screen.dart';
-import '../../view/sereen/BusinessScreen/BusiinessSocialHub/business_create_track_update_screen.dart';
-import '../../view/sereen/BusinessScreen/BusiinessSocialHub/business_create_club_post_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_marketplace_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_select_category_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_vehicle_listing_screen.dart';
 import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_motorcycle_listing_screen.dart';
@@ -204,15 +197,6 @@ class AppRoutes {
   static const String createServicesListingScreen =
       "/CreateServicesListingScreen";
   static const String businessSocialHubScreen = "/BusinessSocialHubScreen";
-  static const String businessCreatePostScreen = "/BusinessCreatePostScreen";
-  static const String businessCreateSessionPostScreen =
-      "/BusinessCreateSessionPostScreen";
-  static const String businessCreateSpotPostScreen =
-      "/BusinessCreateSpotPostScreen";
-  static const String businessCreateTrackUpdateScreen =
-      "/BusinessCreateTrackUpdateScreen";
-  static const String businessCreateClubPostScreen =
-      "/BusinessCreateClubPostScreen";
   static const String businessMarketplaceScreen = "/BusinessMarketplaceScreen";
   static const String businessCreateVehicleListingScreen =
       "/BusinessCreateVehicleListingScreen";
@@ -414,31 +398,11 @@ class AppRoutes {
     ),
     GetPage(
       name: businessSocialHubScreen,
-      page: () => const BusinessSocialHubScreen(),
-    ),
-    GetPage(
-      name: businessCreatePostScreen,
-      page: () => const BusinessCreatePostScreen(),
-    ),
-    GetPage(
-      name: businessCreateSessionPostScreen,
-      page: () => const BusinessCreateSessionPostScreen(),
-    ),
-    GetPage(
-      name: businessCreateSpotPostScreen,
-      page: () => const BusinessCreateSpotPostScreen(),
-    ),
-    GetPage(
-      name: businessCreateTrackUpdateScreen,
-      page: () => const BusinessCreateTrackUpdateScreen(),
-    ),
-    GetPage(
-      name: businessCreateClubPostScreen,
-      page: () => const BusinessCreateClubPostScreen(),
+      page: () => const UserHomeScreen(isBusiness: true),
     ),
     GetPage(
       name: businessMarketplaceScreen,
-      page: () => const BusinessMarketplaceScreen(),
+      page: () => const MarketplaceListingFeedScreen(isBusiness: true),
     ),
     GetPage(
       name: businessCreateVehicleListingScreen,

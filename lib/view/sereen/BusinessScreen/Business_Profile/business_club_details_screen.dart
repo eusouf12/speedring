@@ -271,7 +271,7 @@ class BusinessClubDetailsScreen extends StatelessWidget {
               _buildCenterOutlineButton(
                 icon: Icons.edit_outlined,
                 label: "CREATE POST",
-                onTap: () => Get.toNamed(AppRoutes.businessCreatePostScreen),
+                onTap: () => Get.toNamed(AppRoutes.createPostScreen),
               ),
               SizedBox(height: 12.h),
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/view/sereen/BusinessScreen/BusinessHome/business_navbar.dart';
 import 'package:speedring/view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 import '../../../../components/custom_appbar_user/custom_appbar_user.dart';
 import '../../../../components/custom_button/custom_button.dart';
@@ -11,7 +12,8 @@ import '../../../../../utils/app_colors/app_colors.dart';
 import '../widgets/marketplace_item_card.dart';
 
 class MarketplaceListingFeedScreen extends StatelessWidget {
-  const MarketplaceListingFeedScreen({super.key});
+  final bool isBusiness;
+  const MarketplaceListingFeedScreen({super.key, this.isBusiness = false});
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +193,9 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
         // =====================================================
         // BOTTOM NAVIGATION
         // =====================================================
-        bottomNavigationBar: const CustomNavBar(currentIndex: 3),
+        bottomNavigationBar: isBusiness
+            ? const CustomBusinessNavBar(currentIndex: 3)
+            : const CustomNavBar(currentIndex: 3),
       ),
     );
   }

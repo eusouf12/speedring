@@ -154,7 +154,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                       ),
                       validator: (v) {
                         if (v == null || v.isEmpty) {
-                          return "Enter business name";
+                          return 'enterBusinessName'.tr;
                         }
                         return null;
                       },
@@ -170,7 +170,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                         color: Colors.white38,
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return "Enter owner name";
+                        if (v == null || v.isEmpty) return 'enterOwnerName'.tr;
                         return null;
                       },
                     ),
@@ -187,10 +187,10 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                       ),
                       validator: (v) {
                         if (v == null || v.isEmpty) {
-                          return "Enter email address";
+                          return 'enterEmailAddress'.tr;
                         }
                         if (!GetUtils.isEmail(v)) {
-                          return "Enter valid email address";
+                          return 'enterValidEmailAddress'.tr;
                         }
                         return null;
                       },
@@ -208,7 +208,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                       ),
                       validator: (v) {
                         if (v == null || v.isEmpty) {
-                          return "Enter contact number";
+                          return 'enterContactNumber'.tr;
                         }
                         return null;
                       },
@@ -240,7 +240,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                               Expanded(
                                 child: CustomText(
                                   text: controller.category.value.isEmpty
-                                      ? "Select Category"
+                                      ? 'selectCategory'.tr
                                       : controller.category.value,
                                   color: controller.category.value.isEmpty
                                       ? AppColors.grey
@@ -270,7 +270,7 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                         color: Colors.white38,
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return "Enter website URL";
+                        if (v == null || v.isEmpty) return 'enterWebsiteUrl'.tr;
                         return null;
                       },
                     ),
@@ -286,8 +286,8 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                         color: Colors.white38,
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return "Enter password";
-                        if (v.length < 6) return "Minimum 6 characters";
+                        if (v == null || v.isEmpty) return 'enterPassword'.tr;
+                        if (v.length < 6) return 'minimum6Characters'.tr;
                         return null;
                       },
                     ),
@@ -327,8 +327,8 @@ class BusinessRegistrationStep1 extends StatelessWidget {
                         if (controller.step1FormKey.currentState!.validate()) {
                           if (controller.category.value.isEmpty) {
                             Get.snackbar(
-                              "Field Required",
-                              "Please select a business category to proceed.",
+                              'fieldRequired'.tr,
+                              'pleaseSelectCategoryProceed'.tr,
                               colorText: Colors.white,
                               backgroundColor: const Color(0xff111111),
                               snackPosition: SnackPosition.BOTTOM,
@@ -422,12 +422,12 @@ class BusinessRegistrationStep1 extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
             ...[
-              "Tuning Shop",
-              "Car Dealer",
-              "Services",
-              "Race Team",
-              "Parts Distributor",
-              "Custom Garage",
+              'tuningShop'.tr,
+              'carDealer'.tr,
+              'services'.tr,
+              'raceTeam'.tr,
+              'partsDistributor'.tr,
+              'customGarage'.tr,
             ].map((cat) {
               return ListTile(
                 contentPadding: EdgeInsets.zero,

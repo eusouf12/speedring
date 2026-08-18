@@ -71,8 +71,8 @@ class LanguageHelper {
                 _buildLanguageOption(
                   context,
                   title: 'Deutsch (German)',
-                  langCode: 'gr',
-                  isSelected: currentLang == 'gr',
+                  langCode: 'de',
+                  isSelected: currentLang == 'de',
                 ),
                 SizedBox(height: 8.h),
               ],

@@ -384,7 +384,7 @@ class BusinessProfileScreen extends StatelessWidget {
 
   Widget _buildAddPostButton() {
     return GestureDetector(
-      onTap: () => Get.toNamed(AppRoutes.businessCreatePostScreen),
+      onTap: () => Get.toNamed(AppRoutes.createPostScreen),
       child: Container(
         height: 44.h,
         width: double.infinity,

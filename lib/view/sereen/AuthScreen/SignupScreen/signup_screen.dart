@@ -53,7 +53,7 @@ class SignupScreen extends StatelessWidget {
                         child: CustomText(
                           text: 'createAccountTitle'.tr,
                           color: Colors.white,
-                          fontSize: 34,
+                          fontSize: 30,
                           fontWeight: FontWeight.bold,
                           textAlign: TextAlign.center,
                         ),
@@ -365,7 +365,9 @@ class SignupScreen extends StatelessWidget {
                                   const SizedBox(height: 12),
                                   CustomButton(
                                     onTap: () {
-                                      Get.toNamed(AppRoutes.businessRegistrationStep1);
+                                      Get.toNamed(
+                                        AppRoutes.businessRegistrationStep1,
+                                      );
                                     },
                                     title: 'createBusinessAccount'.tr
                                         .toUpperCase(),
@@ -395,7 +397,7 @@ class SignupScreen extends StatelessWidget {
                               fontSize: 14,
                             ),
                             GestureDetector(
-                              onTap: () => Get.toNamed(AppRoutes.loginScreen),
+                              onTap: () => Get.offNamed(AppRoutes.loginScreen),
                               child: CustomText(
                                 text: 'login'.tr,
                                 color: const Color(0xffF5C400),

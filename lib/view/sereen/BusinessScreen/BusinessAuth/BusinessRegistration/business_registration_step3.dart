@@ -236,13 +236,77 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 SizedBox(height: 16.h),
 
                 _buildFieldLabel('physicalHq'.tr),
-                CustomTextField(
+                RawAutocomplete<String>(
                   textEditingController: controller.hqCtrl,
-                  hintText: 'streetAddressCityCountry'.tr,
-                  prefixIcon: const Icon(
-                    Icons.location_on_outlined,
-                    color: Colors.white38,
-                  ),
+                  focusNode: controller.hqFocusNode,
+                  optionsBuilder: (TextEditingValue textEditingValue) async {
+                    if (textEditingValue.text.isEmpty) {
+                      return const Iterable<String>.empty();
+                    }
+                    return await controller.getPlaceSuggestions(textEditingValue.text);
+                  },
+                  onSelected: (String selection) {
+                    controller.hqCtrl.text = selection;
+                  },
+                  fieldViewBuilder: (BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
+                    return CustomTextField(
+                      textEditingController: textEditingController,
+                      focusNode: focusNode,
+                      onChanged: (v) {},
+                      hintText: 'streetAddressCityCountry'.tr,
+                      prefixIcon: const Icon(
+                        Icons.location_on_outlined,
+                        color: Colors.white38,
+                      ),
+                    );
+                  },
+                  optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
+                    return Align(
+                      alignment: Alignment.topLeft,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width - 40.w,
+                          margin: EdgeInsets.only(top: 8.h),
+                          decoration: BoxDecoration(
+                            color: const Color(0xff1C1C1C),
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(color: Colors.white24),
+                          ),
+                          child: ListView.separated(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemCount: options.length,
+                            separatorBuilder: (context, index) => const Divider(color: Colors.white12, height: 1),
+                            itemBuilder: (BuildContext context, int index) {
+                              final String option = options.elementAt(index);
+                              return InkWell(
+                                onTap: () => onSelected(option),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.location_on, color: Colors.white38, size: 20),
+                                      SizedBox(width: 12.w),
+                                      Expanded(
+                                        child: CustomText(
+                                          text: option,
+                                          color: Colors.white,
+                                          fontSize: 12.sp,
+                                          textAlign: TextAlign.start,
+                                          maxLines: 2,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: 16.h),
 
@@ -311,25 +375,25 @@ class BusinessRegistrationStep3 extends StatelessWidget {
                 SizedBox(height: 16.h),
 
                 _buildSocialSyncField(
-                  "Instagram Profile",
+                  'instagramProfile'.tr,
                   controller.instagramCtrl,
                   Icons.camera_alt_outlined,
                 ),
                 SizedBox(height: 12.h),
                 _buildSocialSyncField(
-                  "YouTube Channel",
+                  'youtubeChannel'.tr,
                   controller.youtubeCtrl,
                   Icons.play_circle_outline,
                 ),
                 SizedBox(height: 12.h),
                 _buildSocialSyncField(
-                  "TikTok Handle",
+                  'tiktokHandle'.tr,
                   controller.tiktokCtrl,
                   Icons.music_note_outlined,
                 ),
                 SizedBox(height: 12.h),
                 _buildSocialSyncField(
-                  "Facebook Page",
+                  'facebookPage'.tr,
                   controller.facebookCtrl,
                   Icons.facebook_outlined,
                 ),
@@ -374,7 +438,7 @@ class BusinessRegistrationStep3 extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ),
-      textConfirm: "OK",
+      textConfirm: 'ok'.tr,
       confirmTextColor: Colors.black,
       buttonColor: AppColors.yellow,
       onConfirm: () => Get.back(),
