@@ -284,9 +284,9 @@ class ReelsController extends GetxController {
     reels[index] = reel;
 
     try {
-      var response = await ApiClient.postData(
+      var response = await ApiClient.patchData(
         ApiUrl.toggleFollow(userId: targetUserId),
-        "",
+        jsonEncode({}),
       );
       if (response.statusCode == 200) {
         // Success
