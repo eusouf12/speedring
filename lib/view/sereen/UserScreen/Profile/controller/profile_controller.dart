@@ -22,18 +22,18 @@ class ProfileScreenController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxBool isUpdating = false.obs;
 
-  final nameController = TextEditingController();
-  final displayNameController = TextEditingController();
-  final handleController = TextEditingController();
-  final bioController = TextEditingController();
+  var nameController = TextEditingController();
+  var displayNameController = TextEditingController();
+  var handleController = TextEditingController();
+  var bioController = TextEditingController();
 
-  final instagramController = TextEditingController();
-  final tiktokController = TextEditingController();
-  final youtubeController = TextEditingController();
-  final facebookController = TextEditingController();
+  var instagramController = TextEditingController();
+  var tiktokController = TextEditingController();
+  var youtubeController = TextEditingController();
+  var facebookController = TextEditingController();
 
-  final nationalityController = TextEditingController();
-  final driverRoleController = TextEditingController();
+  var nationalityController = TextEditingController();
+  var driverRoleController = TextEditingController();
 
   final RxBool isRolePublic = false.obs;
 
@@ -58,26 +58,27 @@ class ProfileScreenController extends GetxController {
   }
 
   void initEditProfile(ProfileData profile) {
-    nameController.text = profile.name ?? '';
+    // Re-initialize to avoid GetX zombie controller issues where 
+    // the previous controllers were disposed by a route transition.
+    nameController = TextEditingController(text: profile.name ?? '');
+    displayNameController = TextEditingController(
+        text: profile.driverInfo?.displayName ?? profile.name ?? '');
+    handleController = TextEditingController(text: profile.userName ?? '');
+    bioController = TextEditingController(text: profile.driverInfo?.bio ?? profile.businessInfo?.engineeringPhilosophy ?? '');
 
-    displayNameController.text =
-        profile.driverInfo?.displayName ?? profile.name ?? '';
+    instagramController = TextEditingController(
+        text: profile.driverInfo?.socialLinks?.instagram ?? profile.businessInfo?.socialLinks?.instagram ?? '');
+    tiktokController = TextEditingController(
+        text: profile.driverInfo?.socialLinks?.tiktok ?? profile.businessInfo?.socialLinks?.tiktok ?? '');
+    youtubeController = TextEditingController(
+        text: profile.driverInfo?.socialLinks?.youtube ?? profile.businessInfo?.socialLinks?.youtube ?? '');
+    facebookController = TextEditingController(
+        text: profile.driverInfo?.socialLinks?.facebook ?? profile.businessInfo?.socialLinks?.facebook ?? '');
 
-    handleController.text = profile.userName ?? '';
-
-    bioController.text = profile.driverInfo?.bio ?? '';
-
-    instagramController.text = profile.driverInfo?.socialLinks?.instagram ?? '';
-
-    youtubeController.text = profile.driverInfo?.socialLinks?.youtube ?? '';
-
-    tiktokController.text = profile.driverInfo?.socialLinks?.tiktok ?? '';
-
-    facebookController.text = profile.driverInfo?.socialLinks?.facebook ?? '';
-
-    nationalityController.text = profile.driverInfo?.nationality ?? '';
-
-    driverRoleController.text = profile.driverInfo?.driverRole ?? '';
+    nationalityController = TextEditingController(
+        text: profile.driverInfo?.nationality ?? '');
+    driverRoleController = TextEditingController(
+        text: profile.driverInfo?.driverRole ?? '');
 
     isRolePublic.value = profile.driverInfo?.isRolePublic ?? false;
 

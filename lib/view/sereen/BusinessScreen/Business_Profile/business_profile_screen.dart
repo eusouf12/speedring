@@ -36,6 +36,11 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
     super.initState();
     controller = Get.find<ProfileScreenController>();
     final homeController = Get.find<HomeController>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      homeController.getMyEvent();
+      homeController.getMyClubs();
+      controller.getMyProfile();
+    });
   }
 
   @override
