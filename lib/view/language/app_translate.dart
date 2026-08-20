@@ -245,6 +245,13 @@ class AppTranslate extends Translations {
       'createBusinessBtn': 'CREATE BUSINESS ACCOUNT',
       'alreadyHaveAccountSignup': 'Already have account? ',
       'myListings': 'My Listings',
+      'strategicOversight': 'STRATEGIC OVERSIGHT & REAL-TIME PERFORMANCE DATA',
+      'strategicOperations': 'STRATEGIC OPERATIONS',
+      'quickActions': 'QUICK ACTIONS',
+      'organizeEvent': 'ORGANIZE EVENT',
+      'totalRevenue': 'TOTAL REVENUE',
+      'activeLeads': 'ACTIVE LEADS',
+      'conversionRate': 'CONVERSION RATE',
 
       // Forgot Password Screen
       'forgotPassword': 'Forgot Password?',
@@ -2218,6 +2225,13 @@ class AppTranslate extends Translations {
       'telemetryDesc':
           'Telemetrie, ECU-Tuning und professionelle Rennstreckenbetreuung.',
       'myListings': 'Meine Angebote',
+      'strategicOversight': 'STRATEGISCHE ÜBERSICHT & ECHTZEIT-LEISTUNGSDATEN',
+      'strategicOperations': 'STRATEGISCHE OPERATIONEN',
+      'quickActions': 'SCHNELLE AKTIONEN',
+      'organizeEvent': 'EVENT ORGANISIEREN',
+      'totalRevenue': 'GESAMTEINNAHMEN',
+      'activeLeads': 'AKTIVE LEADS',
+      'conversionRate': 'KONVERSIONS RATE',
     },
   };
 }

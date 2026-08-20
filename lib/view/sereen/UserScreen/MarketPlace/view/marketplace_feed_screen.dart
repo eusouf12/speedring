@@ -184,19 +184,20 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                             arguments: {'id': item.id},
                           );
                         },
-                        onChatTap: item.seller?.id == controller.currentUserId.value 
-                            ? null 
+                        onChatTap:
+                            item.seller?.id == controller.currentUserId.value
+                            ? null
                             : () {
-                          Get.toNamed(
-                            AppRoutes.inboxScreen,
-                            arguments: {
-                              "userName": "Anderson Racing",
-                              "avatarUrl":
-                                  "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                              "isOnline": true,
-                            },
-                          );
-                        },
+                                Get.toNamed(
+                                  AppRoutes.inboxScreen,
+                                  arguments: {
+                                    "userName": "Anderson Racing",
+                                    "avatarUrl":
+                                        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                                    "isOnline": true,
+                                  },
+                                );
+                              },
                       );
                     },
                   ),
@@ -210,7 +211,7 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
         // BOTTOM NAVIGATION
         // =====================================================
         bottomNavigationBar: isBusiness
-            ? const CustomBusinessNavBar(currentIndex: 3)
+            ? const CustomBusinessNavBar(currentIndex: 2)
             : const CustomNavBar(currentIndex: 3),
       ),
     );

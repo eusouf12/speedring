@@ -26,11 +26,27 @@ class CustomBusinessNavBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(0, 'businessDashboard'.tr.toUpperCase(), Icons.grid_view_rounded),
-            _buildNavItem(1, 'inventory'.tr.toUpperCase(), Icons.directions_car_filled_outlined),
-            _buildNavItem(2, 'socialHub'.tr.toUpperCase(), Icons.people_outline_rounded),
-            _buildNavItem(3, 'market'.tr.toUpperCase(), Icons.storefront_outlined),
-            _buildNavItem(4, 'profile'.tr.toUpperCase(), Icons.account_circle_outlined),
+            _buildNavItem(
+              0,
+              'businessDashboard'.tr.toUpperCase(),
+              Icons.grid_view_rounded,
+            ),
+            //  _buildNavItem(1, 'inventory'.tr.toUpperCase(), Icons.directions_car_filled_outlined),
+            _buildNavItem(
+              1,
+              'socialHub'.tr.toUpperCase(),
+              Icons.people_outline_rounded,
+            ),
+            _buildNavItem(
+              2,
+              'market'.tr.toUpperCase(),
+              Icons.storefront_outlined,
+            ),
+            _buildNavItem(
+              3,
+              'profile'.tr.toUpperCase(),
+              Icons.account_circle_outlined,
+            ),
           ],
         ),
       ),
@@ -75,13 +91,15 @@ class CustomBusinessNavBar extends StatelessWidget {
     if (index != currentIndex) {
       if (index == 0) {
         Get.offAllNamed(AppRoutes.businessHomeScreen);
-      } else if (index == 1) {
-        Get.offAllNamed(AppRoutes.assetInventoryScreen);
-      } else if (index == 2) {
+      }
+      //  else if (index == 1) {
+      //   Get.offAllNamed(AppRoutes.assetInventoryScreen);
+      // }
+      else if (index == 1) {
         Get.offAllNamed(AppRoutes.businessSocialHubScreen);
-      } else if (index == 3) {
+      } else if (index == 2) {
         Get.offAllNamed(AppRoutes.businessMarketplaceScreen);
-      } else if (index == 4) {
+      } else if (index == 3) {
         Get.offAllNamed(AppRoutes.businessProfileScreen);
       }
     }

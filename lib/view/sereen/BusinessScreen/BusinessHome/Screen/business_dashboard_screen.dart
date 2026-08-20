@@ -4,9 +4,10 @@ import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../core/app_routes/app_routes.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
-import '../../../../../utils/app_images/app_images.dart';
-import '../../../../components/custom_image/custom_image.dart';
+import '../../../../../service/api_url.dart';
 import '../../../../components/custom_text/custom_text.dart';
+import '../../../../components/custom_appbar_user/custom_appbar_user.dart';
+import '../../../UserScreen/Profile/controller/profile_controller.dart';
 import '../business_navbar.dart';
 
 class BusinessHomeScreen extends StatelessWidget {
@@ -29,7 +30,7 @@ class BusinessHomeScreen extends StatelessWidget {
                   Container(width: 4.w, height: 24.h, color: AppColors.yellow),
                   SizedBox(width: 8.w),
                   CustomText(
-                    text: "COMMAND CENTER",
+                    text: "commandCenter".tr.toUpperCase(),
                     color: Colors.white,
                     fontSize: 24.sp,
                     fontWeight: FontWeight.w900,
@@ -39,7 +40,7 @@ class BusinessHomeScreen extends StatelessWidget {
               ),
               SizedBox(height: 4.h),
               CustomText(
-                text: "STRATEGIC OVERSIGHT & REAL-TIME PERFORMANCE DATA",
+                text: "strategicOversight".tr.toUpperCase(),
                 color: const Color(0xffB0B0B0),
                 fontSize: 9.sp,
                 fontWeight: FontWeight.w900,
@@ -54,14 +55,14 @@ class BusinessHomeScreen extends StatelessWidget {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   CustomText(
-                    text: "STRATEGIC OPERATIONS",
+                    text: "strategicOperations".tr.toUpperCase(),
                     color: Colors.white,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 0.5,
                   ),
                   CustomText(
-                    text: "QUICK ACTIONS",
+                    text: "quickActions".tr.toUpperCase(),
                     color: const Color(0xffADAEBC),
                     fontSize: 8.sp,
                     fontWeight: FontWeight.w800,
@@ -81,36 +82,33 @@ class BusinessHomeScreen extends StatelessWidget {
                 childAspectRatio: 1.6,
                 children: [
                   _buildQuickActionCard(
-                    title: "CREATE LISTING",
+                    title: "createListing".tr.toUpperCase(),
                     icon: Icons.add_box,
-                    onTap: () => Get.toNamed(AppRoutes.addAssetCategoryScreen),
+                    onTap: () => Get.toNamed(AppRoutes.selectCategoryScreen),
                   ),
                   _buildQuickActionCard(
-                    title: "ORGANIZE EVENT",
+                    title: "organizeEvent".tr.toUpperCase(),
                     icon: Icons.calendar_today_rounded,
-                    onTap: () => _showMockSnackbar(
-                      "Organize Event",
-                      "Event creation flow is restricted to verified administrators.",
-                    ),
+                    onTap: () => Get.toNamed(AppRoutes.businessMyEventScreen),
                   ),
                   _buildQuickActionCard(
-                    title: "PROMOTE POST",
+                    title: "promotePost".tr.toUpperCase(),
                     icon: Icons.campaign_rounded,
                     onTap: () =>
                         Get.toNamed(AppRoutes.businessPromotionHubScreen),
                   ),
                   _buildQuickActionCard(
-                    title: 'CLUBS',
+                    title: "clubs".tr.toUpperCase(),
                     icon: Icons.groups_outlined,
                     onTap: () => Get.toNamed(AppRoutes.businessClubsScreen),
                   ),
                   _buildQuickActionCard(
-                    title: "TRACK ANALYTICS",
+                    title: "trackAnalytics".tr.toUpperCase(),
                     icon: Icons.analytics_rounded,
                     onTap: () => Get.toNamed(AppRoutes.businessAnalyticsScreen),
                   ),
                   _buildQuickActionCard(
-                    title: "SETTINGS",
+                    title: "settings".tr.toUpperCase(),
                     icon: Icons.tune_rounded,
                     onTap: () => _showMockSnackbar(
                       "Settings",
@@ -137,42 +135,36 @@ class BusinessHomeScreen extends StatelessWidget {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.black,
-      elevation: 0,
-      leading: Padding(
-        padding: EdgeInsets.only(left: 16.w),
-        child: const CircleAvatar(
-          backgroundColor: Color(0xff222222),
-          child: Icon(Icons.person, color: Colors.white, size: 20),
-        ),
-      ),
-      title: CustomImage(
-        imageSrc: AppImages.splashLogo,
-        imageType: ImageType.png,
-        height: 32.h,
-        fit: BoxFit.contain,
-      ),
-      centerTitle: true,
-      actions: [
-        IconButton(
-          icon: const Icon(
-            Icons.mail_outline_rounded,
-            color: Colors.white,
-            size: 22,
-          ),
-          onPressed: () => Get.toNamed(AppRoutes.messageScreen),
-        ),
-        IconButton(
-          icon: const Icon(
-            Icons.notifications_none_rounded,
-            color: Colors.white,
-            size: 22,
-          ),
-          onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
-        ),
-        SizedBox(width: 8.w),
-      ],
+    final ProfileScreenController profileController =
+        Get.find<ProfileScreenController>();
+
+    return CustomAppBarUser(
+      showSearchIcon: false,
+      leadingWidget: Obx(() {
+        final profileImage = profileController.profileData.value?.profileImage;
+        final hasImage = profileImage != null && profileImage.isNotEmpty;
+
+        return CircleAvatar(
+          radius: 16,
+          backgroundColor: const Color(0xff222222),
+          backgroundImage: hasImage
+              ? NetworkImage(
+                  profileImage.startsWith('http')
+                      ? profileImage
+                      : ApiUrl.baseUrl + profileImage,
+                )
+              : null,
+          child: !hasImage
+              ? const Icon(Icons.person, color: Colors.white, size: 30)
+              : null,
+        );
+      }),
+      onNotificationTap: () {
+        Get.toNamed(AppRoutes.notificationScreen);
+      },
+      onMailTap: () {
+        Get.toNamed(AppRoutes.messageScreen);
+      },
     );
   }
 
@@ -224,7 +216,7 @@ class BusinessHomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomText(
-                text: "TOTAL REVENUE",
+                text: "totalRevenue".tr.toUpperCase(),
                 color: const Color(0xffB0B0B0),
                 fontSize: 9.sp,
                 fontWeight: FontWeight.w900,
@@ -286,7 +278,7 @@ class BusinessHomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomText(
-                text: "ACTIVE LEADS",
+                text: "activeLeads".tr.toUpperCase(),
                 color: const Color(0xffB0B0B0),
                 fontSize: 9.sp,
                 fontWeight: FontWeight.w900,
@@ -344,7 +336,7 @@ class BusinessHomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomText(
-                text: "CONVERSION RATE",
+                text: "conversionRate".tr.toUpperCase(),
                 color: const Color(0xffB0B0B0),
                 fontSize: 9.sp,
                 fontWeight: FontWeight.w900,

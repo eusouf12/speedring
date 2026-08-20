@@ -14,6 +14,7 @@ class CustomAppBarUser extends StatelessWidget implements PreferredSizeWidget {
     this.onNotificationTap,
     this.hasNewMail = false,
     this.hasNewNotification = true,
+    this.leadingWidget,
   });
 
   final bool showSearchIcon;
@@ -23,6 +24,7 @@ class CustomAppBarUser extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onNotificationTap;
   final bool hasNewMail;
   final bool hasNewNotification;
+  final Widget? leadingWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +39,10 @@ class CustomAppBarUser extends StatelessWidget implements PreferredSizeWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
           children: [
-            /// ── Left side: Search Icon ──
-            if (showSearchIcon)
+            /// ── Left side: Search Icon or Leading ──
+            if (leadingWidget != null)
+              leadingWidget!
+            else if (showSearchIcon)
               GestureDetector(
                 onTap: onSearchTap,
                 child: const Icon(Icons.search, color: Colors.white, size: 24),

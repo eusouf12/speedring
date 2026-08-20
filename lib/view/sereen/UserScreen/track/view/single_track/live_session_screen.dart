@@ -235,8 +235,9 @@ class LiveSessionScreen extends StatelessWidget {
                         bool hasTemp =
                             controller.currentTemperature.value != "--";
 
-                        if (!showGForce && !hasTemp)
+                        if (!showGForce && !hasTemp) {
                           return const SizedBox.shrink();
+                        }
 
                         return Padding(
                           padding: const EdgeInsets.only(top: 12.0),

@@ -21,8 +21,8 @@ class DependencyInjection extends Bindings {
     ///========================== Default Custom Controller ==================
     Get.put(AuthController(), permanent: true);
     Get.lazyPut(() => SetupProfileController(), fenix: true);
-    Get.lazyPut(() => ProfileScreenController(), fenix: true);
-    Get.lazyPut(() => HomeController(), fenix: true);
+    Get.put(ProfileScreenController(), permanent: true);
+    Get.put(HomeController(), permanent: true);
     Get.lazyPut(() => ReelsController(), fenix: true);
     Get.lazyPut(() => DiscoverController(), fenix: true);
     Get.lazyPut(() => MarketplaceFeedController(), fenix: true);

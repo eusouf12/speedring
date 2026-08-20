@@ -125,8 +125,9 @@ class SignupScreen extends StatelessWidget {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty)
+                          if (v == null || v.trim().isEmpty) {
                             return 'nameRequired'.tr;
+                          }
                           if (v.trim().length < 2) return 'nameTooShort'.tr;
                           return null;
                         },
@@ -226,8 +227,9 @@ class SignupScreen extends StatelessWidget {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.isEmpty)
+                          if (v == null || v.isEmpty) {
                             return 'passwordRequired'.tr;
+                          }
                           if (v.length < 6) return 'minChar'.tr;
                           return null;
                         },
@@ -260,8 +262,9 @@ class SignupScreen extends StatelessWidget {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.isEmpty)
+                          if (v == null || v.isEmpty) {
                             return 'confirmPasswordRequired'.tr;
+                          }
                           if (v != controller.signupPasswordController.text) {
                             return 'passwordsDoNotMatch'.tr;
                           }

@@ -213,8 +213,9 @@ class CreateVehicleListingScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black,
         borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: Colors.white10),
       ),
       child: TextFormField(
         controller: controller,
@@ -225,7 +226,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
             ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))]
             : null,
         style: const TextStyle(
-          color: Colors.black,
+          color: Colors.white,
           fontSize: 13,
           fontWeight: FontWeight.bold,
         ),
@@ -233,7 +234,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
           border: InputBorder.none,
           hintText: hint,
           hintStyle: const TextStyle(
-            color: Colors.black38,
+            color: Colors.white38,
             fontSize: 13,
             fontWeight: FontWeight.bold,
           ),
@@ -250,8 +251,9 @@ class CreateVehicleListingScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black,
         borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: Colors.white10),
       ),
       child: Row(
         children: [
@@ -271,7 +273,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
                 FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
               ],
               style: const TextStyle(
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
               ),
@@ -279,7 +281,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
                 border: InputBorder.none,
                 hintText: hint,
                 hintStyle: const TextStyle(
-                  color: Colors.black38,
+                  color: Colors.white38,
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
@@ -299,14 +301,15 @@ class CreateVehicleListingScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black,
         borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: Colors.white10),
       ),
       child: Row(
         children: [
           const Icon(
             Icons.location_on_outlined,
-            color: Colors.black38,
+            color: Colors.white38,
             size: 16,
           ),
           SizedBox(width: 8.w),
@@ -314,7 +317,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
             child: TextFormField(
               controller: controller,
               style: const TextStyle(
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
               ),
@@ -322,7 +325,7 @@ class CreateVehicleListingScreen extends StatelessWidget {
                 border: InputBorder.none,
                 hintText: hint,
                 hintStyle: const TextStyle(
-                  color: Colors.black38,
+                  color: Colors.white38,
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),

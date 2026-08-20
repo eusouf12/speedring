@@ -27,6 +27,7 @@ class ProfileResponse {
 
 class ProfileData {
   final DriverInfo? driverInfo;
+  final BusinessInfo? businessInfo;
   final String? id;
   final String? name;
   final String? userName;
@@ -56,6 +57,7 @@ class ProfileData {
 
   ProfileData({
     this.driverInfo,
+    this.businessInfo,
     this.id,
     this.name,
     this.userName,
@@ -88,6 +90,9 @@ class ProfileData {
     return ProfileData(
       driverInfo: json['driverInfo'] != null
           ? DriverInfo.fromJson(json['driverInfo'])
+          : null,
+      businessInfo: json['businessInfo'] != null
+          ? BusinessInfo.fromJson(json['businessInfo'])
           : null,
       id: json['_id'],
       name: json['name'],
@@ -129,6 +134,7 @@ class ProfileData {
   Map<String, dynamic> toJson() {
     return {
       'driverInfo': driverInfo?.toJson(),
+      'businessInfo': businessInfo?.toJson(),
       '_id': id,
       'name': name,
       'userName': userName,
@@ -155,6 +161,40 @@ class ProfileData {
       'postCount': postCount,
       'joinedSessionCount': joinedSessionCount,
       'coinBalance': coinBalance,
+    };
+  }
+}
+
+class BusinessInfo {
+  final SocialLinks? socialLinks;
+  final String? engineeringPhilosophy;
+  final String? businessName;
+  final String? businessCategory;
+
+  BusinessInfo({
+    this.socialLinks,
+    this.engineeringPhilosophy,
+    this.businessName,
+    this.businessCategory,
+  });
+
+  factory BusinessInfo.fromJson(Map<String, dynamic> json) {
+    return BusinessInfo(
+      socialLinks: json['socialLinks'] != null
+          ? SocialLinks.fromJson(json['socialLinks'])
+          : null,
+      engineeringPhilosophy: json['engineeringPhilosophy'],
+      businessName: json['businessName'],
+      businessCategory: json['businessCategory'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'socialLinks': socialLinks?.toJson(),
+      'engineeringPhilosophy': engineeringPhilosophy,
+      'businessName': businessName,
+      'businessCategory': businessCategory,
     };
   }
 }

@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import '../../view/sereen/BusinessScreen/BusinessHome/Screen/business_dashboard_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Event/business_my_event_screen.dart';
 import '../../view/sereen/OnboardingScreen/age_verify_screen.dart';
 import '../../view/sereen/OnboardingScreen/widget/on_bording_controller.dart';
 import '../../view/sereen/SetupProfile/preview.dart';
@@ -81,27 +83,8 @@ import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/busin
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step2.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step3.dart';
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step4.dart';
-import '../../view/sereen/BusinessScreen/BusinessHome/Screen/business_dashboard_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessAssetsScreen/Screen/asset_inventory_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessAssetsScreen/Screen/manage_asset_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessAssetsScreen/Screen/edit_listing_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessHome/configure_asset_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessHome/create_parts_listing_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessHome/create_services_listing_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_select_category_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_vehicle_listing_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_motorcycle_listing_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_parts_listing_screen.dart';
-import '../../view/sereen/BusinessScreen/BusinessMarketPlace/business_create_services_listing_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_create_event_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_events_list_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_event_details_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_clubs_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_club_screen/business_clubs_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_profile_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_my_listings_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_club_details_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_create_club_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_edit_club_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_analytics_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_account_settings_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_select_plan_screen.dart';
@@ -187,32 +170,18 @@ class AppRoutes {
   static const String businessRegistrationStep2 = "/BusinessRegistrationStep2";
   static const String businessRegistrationStep3 = "/BusinessRegistrationStep3";
   static const String businessRegistrationStep4 = "/BusinessRegistrationStep4";
+  static const String businessMyEventScreen = "/BusinessMyEventScreen";
   static const String businessHomeScreen = "/BusinessHomeScreen";
   static const String assetInventoryScreen = "/AssetInventoryScreen";
   static const String manageAssetScreen = "/ManageAssetScreen";
   static const String editListingScreen = "/EditListingScreen";
   static const String addAssetCategoryScreen = "/AddAssetCategoryScreen";
-  static const String configureAssetScreen = "/ConfigureAssetScreen";
-  static const String createPartsListingScreen = "/CreatePartsListingScreen";
-  static const String createServicesListingScreen =
-      "/CreateServicesListingScreen";
   static const String businessSocialHubScreen = "/BusinessSocialHubScreen";
   static const String businessMarketplaceScreen = "/BusinessMarketplaceScreen";
-  static const String businessCreateVehicleListingScreen =
-      "/BusinessCreateVehicleListingScreen";
-  static const String businessCreateMotorcycleListingScreen =
-      "/BusinessCreateMotorcycleListingScreen";
-  static const String businessCreatePartsListingScreen =
-      "/BusinessCreatePartsListingScreen";
-  static const String businessCreateServicesListingScreen =
-      "/BusinessCreateServicesListingScreen";
   static const String businessCreateEventScreen = "/BusinessCreateEventScreen";
   static const String businessEventsListScreen = "/BusinessEventsListScreen";
-  static const String businessEventDetailsScreen =
-      "/BusinessEventDetailsScreen";
   static const String businessClubsScreen = "/BusinessClubsScreen";
   static const String businessProfileScreen = "/BusinessProfileScreen";
-  static const String businessMyListingsScreen = "/BusinessMyListingsScreen";
   static const String businessClubDetailsScreen = "/BusinessClubDetailsScreen";
   static const String businessCreateClubScreen = "/BusinessCreateClubScreen";
   static const String businessEditClubScreen = "/BusinessEditClubScreen";
@@ -373,29 +342,11 @@ class AppRoutes {
       name: businessRegistrationStep4,
       page: () => const BusinessRegistrationStep4(),
     ),
+    GetPage(
+      name: businessMyEventScreen,
+      page: () => const BusinessMyEventScreen(),
+    ),
     GetPage(name: businessHomeScreen, page: () => const BusinessHomeScreen()),
-    GetPage(
-      name: assetInventoryScreen,
-      page: () => const AssetInventoryScreen(),
-    ),
-    GetPage(name: manageAssetScreen, page: () => const ManageAssetScreen()),
-    GetPage(name: editListingScreen, page: () => const EditListingScreen()),
-    GetPage(
-      name: addAssetCategoryScreen,
-      page: () => const BusinessSelectCategoryScreen(),
-    ),
-    GetPage(
-      name: configureAssetScreen,
-      page: () => const ConfigureAssetScreen(),
-    ),
-    GetPage(
-      name: createPartsListingScreen,
-      page: () => const CreatePartsListingScreen(),
-    ),
-    GetPage(
-      name: createServicesListingScreen,
-      page: () => const CreateServicesListingScreen(),
-    ),
     GetPage(
       name: businessSocialHubScreen,
       page: () => const UserHomeScreen(isBusiness: true),
@@ -404,54 +355,10 @@ class AppRoutes {
       name: businessMarketplaceScreen,
       page: () => const MarketplaceListingFeedScreen(isBusiness: true),
     ),
-    GetPage(
-      name: businessCreateVehicleListingScreen,
-      page: () => const BusinessCreateVehicleListingScreen(),
-    ),
-    GetPage(
-      name: businessCreateMotorcycleListingScreen,
-      page: () => const BusinessCreateMotorcycleListingScreen(),
-    ),
-    GetPage(
-      name: businessCreatePartsListingScreen,
-      page: () => const BusinessCreatePartsListingScreen(),
-    ),
-    GetPage(
-      name: businessCreateServicesListingScreen,
-      page: () => const BusinessCreateServicesListingScreen(),
-    ),
-    GetPage(
-      name: businessCreateEventScreen,
-      page: () => const BusinessCreateEventScreen(),
-    ),
-    GetPage(
-      name: businessEventsListScreen,
-      page: () => const BusinessEventsListScreen(),
-    ),
-    GetPage(
-      name: businessEventDetailsScreen,
-      page: () => const BusinessEventDetailsScreen(),
-    ),
     GetPage(name: businessClubsScreen, page: () => const BusinessClubsScreen()),
     GetPage(
       name: businessProfileScreen,
       page: () => const BusinessProfileScreen(),
-    ),
-    GetPage(
-      name: businessMyListingsScreen,
-      page: () => const BusinessMyListingsScreen(),
-    ),
-    GetPage(
-      name: businessClubDetailsScreen,
-      page: () => const BusinessClubDetailsScreen(),
-    ),
-    GetPage(
-      name: businessCreateClubScreen,
-      page: () => const BusinessCreateClubScreen(),
-    ),
-    GetPage(
-      name: businessEditClubScreen,
-      page: () => const BusinessEditClubScreen(),
     ),
     GetPage(
       name: businessAnalyticsScreen,

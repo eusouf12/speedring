@@ -510,7 +510,7 @@ class UserHomeScreen extends StatelessWidget {
                               bannerUrl = "http://10.10.28.90:4050$bannerUrl";
                             }
 
-                            return _EventCard(
+                            return EventCard(
                               imageUrl: bannerUrl.isNotEmpty
                                   ? bannerUrl
                                   : "https://picsum.photos/seed/event_${event.id}/600/300",
@@ -726,7 +726,7 @@ class UserHomeScreen extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: isBusiness
-            ? const CustomBusinessNavBar(currentIndex: 2)
+            ? const CustomBusinessNavBar(currentIndex: 1)
             : const CustomNavBar(currentIndex: 0),
       ),
     );
@@ -912,7 +912,7 @@ class UserHomeScreen extends StatelessWidget {
 
 // ── Shared UI components for Events & Clubs ──────────────────────────────────
 
-class _EventCard extends StatelessWidget {
+class EventCard extends StatelessWidget {
   final String imageUrl;
   final String organizer;
   final String title;
@@ -933,7 +933,8 @@ class _EventCard extends StatelessWidget {
   final VoidCallback? onDelete;
   final String? organizerImage;
 
-  const _EventCard({
+  const EventCard({
+    super.key,
     required this.imageUrl,
     required this.organizer,
     required this.title,
