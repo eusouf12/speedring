@@ -87,21 +87,43 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
 
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                child: CustomButton(
-                  height: 40.h,
-                  title: 'startListing'.tr,
-                  fontSize: 12,
-                  borderRadius: 8.r,
-
-                  icon: const Icon(
-                    Icons.add_circle_outline,
-                    color: Colors.black,
-                    size: 16,
-                  ),
-
-                  onTap: () {
-                    Get.toNamed(AppRoutes.selectCategoryScreen);
-                  },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CustomButton(
+                        height: 40.h,
+                        title: 'startListing'.tr,
+                        fontSize: 12,
+                        borderRadius: 8.r,
+                        icon: const Icon(
+                          Icons.add_circle_outline,
+                          color: Colors.black,
+                          size: 16,
+                        ),
+                        onTap: () {
+                          Get.toNamed(AppRoutes.selectCategoryScreen);
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: CustomButton(
+                        height: 40.h,
+                        title: 'myListings'.tr,
+                        fontSize: 12,
+                        borderRadius: 8.r,
+                        icon: const Icon(
+                          Icons.list_alt,
+                          color: Colors.black,
+                          size: 16,
+                        ),
+                        onTap: () {
+                          controller.fetchMyListings(isRefresh: true);
+                          Get.toNamed(AppRoutes.myListingsScreen);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               );
             }),
@@ -153,10 +175,6 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                         subtitle: item.brand ?? "",
                         tag: item.itemType ?? "",
                         year: item.productionYear.toString(),
-
-                        // ===================================
-                        // VIEW DETAILS
-                        // ===================================
                         onViewDetails: () {
                           if (item.id != null) {
                             controller.fetchListingDetails(item.id!);
@@ -166,11 +184,9 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                             arguments: {'id': item.id},
                           );
                         },
-
-                        // ===================================
-                        // CHAT
-                        // ===================================
-                        onChatTap: () {
+                        onChatTap: item.seller?.id == controller.currentUserId.value 
+                            ? null 
+                            : () {
                           Get.toNamed(
                             AppRoutes.inboxScreen,
                             arguments: {

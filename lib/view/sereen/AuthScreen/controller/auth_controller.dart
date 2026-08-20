@@ -59,7 +59,13 @@ class AuthController extends GetxController {
             userMap['subscriptionPlan'] as Map<String, dynamic>? ?? {};
         String planName = subscriptionPlan['name']?.toString() ?? "";
 
+        String userId = userMap['_id']?.toString() ?? userMap['id']?.toString() ?? "";
+
         await SharePrefsHelper.setString(AppConstants.bearerToken, accessToken);
+
+        if (userId.isNotEmpty) {
+          await SharePrefsHelper.setString(AppConstants.userId, userId);
+        }
 
         if (role.isNotEmpty) {
           await SharePrefsHelper.setString(AppConstants.role, role);

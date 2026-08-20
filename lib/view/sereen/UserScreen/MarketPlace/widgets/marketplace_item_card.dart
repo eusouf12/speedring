@@ -13,7 +13,7 @@ class MarketplaceItemCard extends StatelessWidget {
   final String subtitle;
   final String tag;
   final VoidCallback onViewDetails;
-  final VoidCallback onChatTap;
+  final VoidCallback? onChatTap;
 
   const MarketplaceItemCard({
     required this.imageUrl,
@@ -22,7 +22,7 @@ class MarketplaceItemCard extends StatelessWidget {
     required this.subtitle,
     required this.tag,
     required this.onViewDetails,
-    required this.onChatTap,
+    this.onChatTap,
     super.key,
     required this.year,
   });
@@ -124,7 +124,9 @@ class MarketplaceItemCard extends StatelessWidget {
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
-                    if (subtitle.isNotEmpty && year.isNotEmpty && year != 'null')
+                    if (subtitle.isNotEmpty &&
+                        year.isNotEmpty &&
+                        year != 'null')
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.w),
                         child: Icon(
@@ -135,7 +137,10 @@ class MarketplaceItemCard extends StatelessWidget {
                       ),
                     if (year.isNotEmpty && year != 'null')
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 2.h,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(4.r),
@@ -168,24 +173,26 @@ class MarketplaceItemCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                    GestureDetector(
-                      onTap: onChatTap,
-                      child: Container(
-                        height: 40.h,
-                        width: 40.h,
-                        decoration: BoxDecoration(
-                          color: const Color(0xff222222),
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(color: Colors.white10),
-                        ),
-                        child: const Icon(
-                          Icons.chat_bubble_outline,
-                          color: Colors.white70,
-                          size: 18,
+                    if (onChatTap != null) ...[
+                      SizedBox(width: 12.w),
+                      GestureDetector(
+                        onTap: onChatTap,
+                        child: Container(
+                          height: 40.h,
+                          width: 40.h,
+                          decoration: BoxDecoration(
+                            color: const Color(0xff222222),
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(color: Colors.white10),
+                          ),
+                          child: const Icon(
+                            Icons.chat_bubble_outline,
+                            color: Colors.white70,
+                            size: 18,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ],

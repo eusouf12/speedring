@@ -6,8 +6,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:speedring/service/api_client.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
+import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
 import '../model/listing_model.dart';
 import '../model/item_detail_model.dart';
+import '../model/my_listing_model.dart';
 
 class MarketplaceFeedController extends GetxController {
   Future<void> pickImages() async {
@@ -39,13 +42,14 @@ class MarketplaceFeedController extends GetxController {
 
   // ===============================get All Listing============================================
 
+  var currentUserId = "".obs;
   final ScrollController scrollController = ScrollController();
   final RxBool isHeaderButtonHidden = false.obs;
   final RxBool showSearchBar = false.obs;
   var isLoadingFeed = false.obs;
   var isMoreLoadingFeed = false.obs;
-  int _page = 1;
-  int _totalPages = 1;
+  int page = 1;
+  int totalPages = 1;
   var listings = <MarketplaceListing>[].obs;
   final TextEditingController searchController = TextEditingController();
   var searchQuery = "".obs;
@@ -54,17 +58,17 @@ class MarketplaceFeedController extends GetxController {
     if (isLoadingFeed.value || isMoreLoadingFeed.value) return;
 
     if (refresh) {
-      _page = 1;
-      _totalPages = 1;
+      page = 1;
+      totalPages = 1;
     }
-    if (_page > _totalPages) return;
+    if (page > totalPages) return;
 
-    _page == 1 ? isLoadingFeed.value = true : isMoreLoadingFeed.value = true;
+    page == 1 ? isLoadingFeed.value = true : isMoreLoadingFeed.value = true;
 
     try {
       final response = await ApiClient.getData(
         ApiUrl.getAllMarketplaceListings(
-          page: _page,
+          page: page,
           searchTerm: searchQuery.value,
         ),
       );
@@ -75,14 +79,14 @@ class MarketplaceFeedController extends GetxController {
             : response.body;
 
         final listingResponse = MarketplaceListingResponse.fromJson(data);
-        _totalPages = listingResponse.meta?.totalPage ?? 1;
+        totalPages = listingResponse.meta?.totalPage ?? 1;
 
-        if (_page == 1) listings.clear();
+        if (page == 1) listings.clear();
 
         if (listingResponse.data != null) {
           listings.addAll(listingResponse.data!);
         }
-        _page++;
+        page++;
       }
     } catch (e) {
       debugPrint("Error fetching marketplace listings: $e");
@@ -95,6 +99,7 @@ class MarketplaceFeedController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _fetchCurrentUserId();
     scrollController.addListener(_scrollListener);
     debounce(
       searchQuery,
@@ -102,6 +107,11 @@ class MarketplaceFeedController extends GetxController {
       time: const Duration(milliseconds: 500),
     );
     fetchListings();
+    fetchMyListings();
+  }
+
+  Future<void> _fetchCurrentUserId() async {
+    currentUserId.value = await SharePrefsHelper.getString(AppConstants.userId);
   }
 
   // ==============================CREATE LISTING SECTION=============================================
@@ -546,7 +556,7 @@ class MarketplaceFeedController extends GetxController {
   // ===========================================================================
   var isLoadingMyListings = false.obs;
   var isDeleting = false.obs;
-  var myListings = <Map<String, dynamic>>[].obs;
+  var myListings = <MyListing>[].obs;
   var currentPageMyListings = 1.obs;
   var hasMoreDataMyListings = true.obs;
   var currentCategoryMyListings = "ALL".obs;
@@ -586,15 +596,14 @@ class MarketplaceFeedController extends GetxController {
           responseData = response.body;
         }
 
-        if (responseData['success'] == true) {
-          List<dynamic> rawData = responseData['data'] ?? [];
-          if (rawData.isEmpty) {
+        final myListingResponse = MyListingsResponse.fromJson(responseData);
+
+        if (myListingResponse.success == true &&
+            myListingResponse.data != null) {
+          if (myListingResponse.data!.isEmpty) {
             hasMoreDataMyListings.value = false;
           } else {
-            List<Map<String, dynamic>> mappedList = rawData
-                .map((e) => e as Map<String, dynamic>)
-                .toList();
-            myListings.addAll(mappedList);
+            myListings.addAll(myListingResponse.data!);
             currentPageMyListings.value++;
           }
         }
@@ -619,7 +628,7 @@ class MarketplaceFeedController extends GetxController {
     try {
       final response = await ApiClient.deleteData(ApiUrl.deleteListing(id));
       if (response.statusCode == 200) {
-        myListings.removeWhere((item) => item['id'] == id);
+        myListings.removeWhere((item) => item.id == id);
         fetchListings(refresh: true); // Refresh feed to reflect deletion
         Get.back(); // Pop the detail screen
         showCustomSnackBar(

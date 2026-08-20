@@ -1,3 +1,5 @@
+import 'item_detail_model.dart';
+
 class MarketplaceListingResponse {
   final bool? success;
   final String? message;
@@ -39,6 +41,7 @@ class MarketplaceListing {
   final String? brand;
   final String? modelDesignation;
   final String? productionYear;
+  final Seller? seller;
 
   MarketplaceListing({
     this.id,
@@ -54,6 +57,7 @@ class MarketplaceListing {
     this.brand,
     this.modelDesignation,
     this.productionYear,
+    this.seller,
   });
 
   factory MarketplaceListing.fromJson(Map<String, dynamic> json) {
@@ -73,6 +77,7 @@ class MarketplaceListing {
       brand: json['brand'] as String?,
       modelDesignation: json['modelDesignation'] as String?,
       productionYear: json['productionYear']?.toString(),
+      seller: json['seller'] != null ? Seller.fromJson(json['seller']) : null,
     );
   }
 }

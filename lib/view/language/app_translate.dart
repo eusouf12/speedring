@@ -244,6 +244,7 @@ class AppTranslate extends Translations {
       'createAccountBtn': 'CREATE ACCOUNT',
       'createBusinessBtn': 'CREATE BUSINESS ACCOUNT',
       'alreadyHaveAccountSignup': 'Already have account? ',
+      'myListings': 'My Listings',
 
       // Forgot Password Screen
       'forgotPassword': 'Forgot Password?',
@@ -2216,6 +2217,7 @@ class AppTranslate extends Translations {
       'suspensionDesc': 'Federung, Bremssysteme und Aerodynamik.',
       'telemetryDesc':
           'Telemetrie, ECU-Tuning und professionelle Rennstreckenbetreuung.',
+      'myListings': 'Meine Angebote',
     },
   };
 }
