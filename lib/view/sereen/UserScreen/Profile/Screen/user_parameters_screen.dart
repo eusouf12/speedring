@@ -12,6 +12,7 @@ import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/helper/guest_checker.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/profile_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 
 class UserParametersScreen extends StatelessWidget {
   const UserParametersScreen({super.key});
@@ -217,6 +218,12 @@ class UserParametersScreen extends StatelessWidget {
                     await SharePrefsHelper.remove(AppConstants.role);
                     await SharePrefsHelper.remove(AppConstants.userId);
                     await GuestChecker.setGuest(false);
+                    if (Get.isRegistered<ProfileScreenController>()) {
+                      Get.find<ProfileScreenController>().clearData();
+                    }
+                    if (Get.isRegistered<MarketplaceFeedController>()) {
+                      Get.delete<MarketplaceFeedController>(force: true);
+                    }
                     Get.offAllNamed(AppRoutes.loginScreen);
                   },
                   borderRadius: BorderRadius.circular(8.r),
@@ -307,6 +314,12 @@ class UserParametersScreen extends StatelessWidget {
                                     await SharePrefsHelper.remove(AppConstants.role);
                                     await SharePrefsHelper.remove(AppConstants.userId);
                                     await GuestChecker.setGuest(false);
+                                    if (Get.isRegistered<ProfileScreenController>()) {
+                                      Get.find<ProfileScreenController>().clearData();
+                                    }
+                                    if (Get.isRegistered<MarketplaceFeedController>()) {
+                                      Get.delete<MarketplaceFeedController>(force: true);
+                                    }
                                     Get.offAllNamed(AppRoutes.loginScreen);
                                   } else {
                                     Get.snackbar(

@@ -9,6 +9,8 @@ import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/helper/guest_checker.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
+import 'package:speedring/view/sereen/UserScreen/Profile/controller/profile_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 
 class AuthController extends GetxController {
   // ──----------------- Login ───────────────────────────────
@@ -78,6 +80,13 @@ class AuthController extends GetxController {
             AppConstants.subscriptionPlanName,
             planName,
           );
+        }
+
+        if (Get.isRegistered<ProfileScreenController>()) {
+          Get.find<ProfileScreenController>().clearData();
+        }
+        if (Get.isRegistered<MarketplaceFeedController>()) {
+          Get.delete<MarketplaceFeedController>(force: true);
         }
 
         if (role == 'driver') {

@@ -222,6 +222,22 @@ class ProfileScreenController extends GetxController {
     }
   }
 
+  void clearData() {
+    profileData.value = null;
+    favoriteVehicles.clear();
+    nameController.clear();
+    displayNameController.clear();
+    handleController.clear();
+    bioController.clear();
+    instagramController.clear();
+    tiktokController.clear();
+    youtubeController.clear();
+    facebookController.clear();
+    nationalityController.clear();
+    driverRoleController.clear();
+    isRolePublic.value = false;
+  }
+
   Future<void> updateUserProfile() async {
     if (isUpdating.value) return;
 

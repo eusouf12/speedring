@@ -10,6 +10,7 @@ import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:math';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:speedring/helper/map_snap_helper.dart';
 
 class LiveSessionController extends GetxController {
   final Track? track;
@@ -255,7 +256,7 @@ class LiveSessionController extends GetxController {
 
     // Start location tracking
     LocationSettings locationSettings = const LocationSettings(
-      accuracy: LocationAccuracy.high,
+      accuracy: LocationAccuracy.bestForNavigation,
       distanceFilter: 2, // meters
     );
 
@@ -479,16 +480,37 @@ class LiveSessionController extends GetxController {
     }
   }
 
-  void finishSession() {
+  Future<void> finishSession() async {
     isSessionActive = false;
     timer?.cancel();
     positionStream?.cancel();
+
+    // Show loading indicator
+    Get.dialog(
+      const Center(
+        child: CircularProgressIndicator(
+          color: Colors.yellow,
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    // Snap points to roads
+    List<LatLng> snappedPoints = routePoints;
+    try {
+      snappedPoints = await MapSnapHelper.snapToRoads(routePoints);
+    } catch (e) {
+      debugPrint("Road snap error: $e");
+    }
+
+    // Dismiss loading indicator
+    Get.back();
 
     Get.offNamed(
       AppRoutes.driveSummaryScreen,
       arguments: {
         'track': track,
-        'routePoints': routePoints,
+        'routePoints': snappedPoints,
         'elapsedSeconds': elapsedSeconds.value,
         'totalDistanceKm': totalDistanceKm.value,
         'averageSpeedKmh': averageSpeedKmh.value,

@@ -254,7 +254,7 @@ class ActiveDriveController extends GetxController {
 
     // Start tracking location
     const LocationSettings settings = LocationSettings(
-      accuracy: LocationAccuracy.high,
+      accuracy: LocationAccuracy.bestForNavigation,
       distanceFilter: 2,
     );
 

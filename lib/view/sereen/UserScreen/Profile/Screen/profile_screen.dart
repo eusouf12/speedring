@@ -30,6 +30,12 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileScreenController>();
+
+    // Fetch profile data when screen is built to ensure it's dynamic and fresh
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getMyProfile();
+    });
+
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
