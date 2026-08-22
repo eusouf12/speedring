@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_images/app_images.dart';
+import 'package:speedring/view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
@@ -12,6 +13,7 @@ import '../../../../utils/app_colors/app_colors.dart';
 import '../../../components/custom_text/custom_text.dart';
 import '../BusinessHome/business_navbar.dart';
 import '../../UserScreen/Profile/controller/profile_controller.dart';
+import '../../UserScreen/Profile/widgets/garage_vehicle_card.dart';
 import '../../UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 import '../../UserScreen/Home/widget/post_card.dart';
 import '../../UserScreen/Home/Screen/HomeScreen/view/post/post_detail_screen.dart';
@@ -36,10 +38,14 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
     super.initState();
     controller = Get.find<ProfileScreenController>();
     final homeController = Get.find<HomeController>();
+    final MarketplaceFeedController marketplaceFeedController =
+        Get.find<MarketplaceFeedController>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       homeController.getMyEvent();
       homeController.getMyClubs();
       controller.getMyProfile();
+      controller.getMyVehicles();
+      marketplaceFeedController.fetchMyListings();
     });
   }
 
@@ -374,7 +380,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
             ),
           );
         }),
-        bottomNavigationBar: const CustomBusinessNavBar(currentIndex: 3),
+        bottomNavigationBar: const CustomBusinessNavBar(currentIndex: 4),
       ),
     );
   }
@@ -432,7 +438,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   }
 
   Widget _buildProfileTabs() {
-    final tabs = ["POSTS", "INVENTORY", "EVENT", "CLUBS"];
+    final tabs = ["POSTS", "GARAGE", "INVENTORY", "EVENT", "CLUBS"];
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.white10, width: 1)),
@@ -485,10 +491,12 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
             case 0:
               return _buildPostsTab(homeController);
             case 1:
-              return _buildInventoryTab();
+              return _buildGarageTab();
             case 2:
-              return _buildEventsTab(homeController);
+              return _buildInventoryTab();
             case 3:
+              return _buildEventsTab(homeController);
+            case 4:
               return _buildClubsTab(homeController);
             default:
               return _buildPostsTab(homeController);
@@ -622,6 +630,70 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
           "noListingsFound".tr,
           style: const TextStyle(color: Colors.white54, fontSize: 14),
         ),
+      ),
+    );
+  }
+
+  /// ── Garage Tab ─────────────────────────────────────────────────
+  Widget _buildGarageTab() {
+    return Padding(
+      padding: EdgeInsets.all(16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 10.h),
+          CustomButton(
+            height: 44.h,
+            title: "addVehicle".tr.toUpperCase(),
+            fontSize: 12,
+            borderRadius: 8.r,
+            icon: const Icon(
+              Icons.add_circle_outline,
+              color: Colors.black,
+              size: 16,
+            ),
+            onTap: () => Get.toNamed(AppRoutes.addVehicleScreen),
+          ),
+          SizedBox(height: 24.h),
+          CustomText(
+            text: "vehicleStable".tr.toUpperCase(),
+            color: AppColors.yellow,
+            fontSize: 9,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.0,
+          ),
+          SizedBox(height: 16.h),
+          Obx(() {
+            final vehicles = controller.vehicles;
+
+            if (controller.isVehicleLoading.value) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.yellow),
+              );
+            }
+
+            if (vehicles.isEmpty) {
+              return Padding(
+                padding: EdgeInsets.only(top: 20.h),
+                child: Center(
+                  child: Text(
+                    "noVehiclesAdded".tr,
+                    style: const TextStyle(color: Colors.white54, fontSize: 14),
+                  ),
+                ),
+              );
+            }
+
+            return Column(
+              children: vehicles.map((v) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 16.h),
+                  child: GarageVehicleCard(vehicle: v),
+                );
+              }).toList(),
+            );
+          }),
+        ],
       ),
     );
   }

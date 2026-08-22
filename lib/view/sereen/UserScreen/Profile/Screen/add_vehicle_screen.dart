@@ -21,8 +21,9 @@ class AddVehicleScreen extends StatefulWidget {
 }
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
-  final ProfileScreenController profileController = Get.find<ProfileScreenController>();
-  
+  final ProfileScreenController profileController =
+      Get.find<ProfileScreenController>();
+
   String selectedPropulsion = "Combustion";
 
   final vehicleNameCtrl = TextEditingController();
@@ -45,8 +46,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   }
 
   void _saveVehicle() async {
-    if (vehicleNameCtrl.text.isEmpty || brandCtrl.text.isEmpty || modelCtrl.text.isEmpty) {
-      showCustomSnackBar("Please fill in the required fields (Name, Brand, Model)", isError: true);
+    if (vehicleNameCtrl.text.isEmpty ||
+        brandCtrl.text.isEmpty ||
+        modelCtrl.text.isEmpty) {
+      showCustomSnackBar(
+        "Please fill in the required fields (Name, Brand, Model)",
+        isError: true,
+      );
       return;
     }
 
@@ -83,7 +89,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     return CustomGradient(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: CustomRoyelAppbar(leftIcon: true, titleName: "addVehicle".tr.toUpperCase()),
+        appBar: CustomRoyelAppbar(
+          leftIcon: true,
+          titleName: "addVehicle".tr.toUpperCase(),
+        ),
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           child: Column(
@@ -161,7 +170,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   mainAxisSpacing: 12.h,
                   childAspectRatio: 2.0,
                   children: [
-                    _buildTelemetryField("hp".tr.toUpperCase(), "hpHint".tr, hpCtrl),
+                    _buildTelemetryField(
+                      "hp".tr.toUpperCase(),
+                      "hpHint".tr,
+                      hpCtrl,
+                    ),
                   ],
                 ),
               ]),
@@ -189,13 +202,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       : "saveToGarage".tr.toUpperCase(),
                   fontSize: 13,
                   borderRadius: 8.r,
-                  onTap: profileController.isUpdating.value ? () {} : _saveVehicle,
+                  onTap: profileController.isUpdating.value
+                      ? () {}
+                      : _saveVehicle,
                   isImageRight: true,
-                  icon: const Icon(
-                    Icons.chevron_right,
-                    color: Colors.black,
-                    size: 18,
-                  ),
                 );
               }),
               SizedBox(height: 20.h),
@@ -268,9 +278,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     );
   }
 
-
-
-  Widget _buildTelemetryField(String label, String hint, TextEditingController controller) {
+  Widget _buildTelemetryField(
+    String label,
+    String hint,
+    TextEditingController controller,
+  ) {
     return Container(
       padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
@@ -308,8 +320,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       ),
     );
   }
-
-
 
   Widget _buildPropulsionButton(String label) {
     final bool isSelected = selectedPropulsion == label;

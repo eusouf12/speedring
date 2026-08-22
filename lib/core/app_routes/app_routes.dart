@@ -85,11 +85,11 @@ import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/busin
 import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/business_registration_step4.dart';
 import '../../view/sereen/BusinessScreen/Business_club_screen/business_clubs_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_profile_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_analytics_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_select_plan_screen.dart';
 import '../../view/sereen/BusinessScreen/Promotion/business_promotion_hub_screen.dart';
 import '../../view/sereen/BusinessScreen/Promotion/business_create_promotion_screen.dart';
 import '../../view/sereen/UserScreen/track/view/single_track/track_details_screen.dart';
+import '../../view/sereen/BusinessScreen/Business_Network/screen/business_network_screen.dart';
 
 class AppRoutes {
   ///===========================Authentication==========================
@@ -177,6 +177,7 @@ class AppRoutes {
   static const String addAssetCategoryScreen = "/AddAssetCategoryScreen";
   static const String businessSocialHubScreen = "/BusinessSocialHubScreen";
   static const String businessMarketplaceScreen = "/BusinessMarketplaceScreen";
+  static const String businessTrackHubScreen = "/BusinessTrackHubScreen";
   static const String businessCreateEventScreen = "/BusinessCreateEventScreen";
   static const String businessEventsListScreen = "/BusinessEventsListScreen";
   static const String businessClubsScreen = "/BusinessClubsScreen";
@@ -192,6 +193,7 @@ class AppRoutes {
       "/BusinessPromotionHubScreen";
   static const String businessCreatePromotionScreen =
       "/BusinessCreatePromotionScreen";
+  static const String businessNetworkScreen = "/BusinessNetworkScreen";
 
   static const String reelsScreen = "/ReelsScreen";
   static const String createReelScreen = "/CreateReelScreen";
@@ -354,14 +356,14 @@ class AppRoutes {
       name: businessMarketplaceScreen,
       page: () => const MarketplaceListingFeedScreen(isBusiness: true),
     ),
+    GetPage(
+      name: businessTrackHubScreen,
+      page: () => TrackHubScreen(isBusiness: true),
+    ),
     GetPage(name: businessClubsScreen, page: () => const BusinessClubsScreen()),
     GetPage(
       name: businessProfileScreen,
       page: () => const BusinessProfileScreen(),
-    ),
-    GetPage(
-      name: businessAnalyticsScreen,
-      page: () => const BusinessAnalyticsScreen(),
     ),
     GetPage(
       name: businessSelectPlanScreen,
@@ -392,5 +394,9 @@ class AppRoutes {
       page: () => const speedring_my_sessions.MySessionsScreen(),
     ),
     GetPage(name: savedReelsScreen, page: () => const SavedReelsScreen()),
+    GetPage(
+      name: businessNetworkScreen,
+      page: () => const BusinessNetworkScreen(),
+    ),
   ];
 }

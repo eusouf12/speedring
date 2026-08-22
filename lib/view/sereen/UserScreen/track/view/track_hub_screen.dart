@@ -6,13 +6,15 @@ import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/utils/app_images/app_images.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
+import 'package:speedring/view/sereen/BusinessScreen/BusinessHome/business_navbar.dart';
 import '../widgets/track_appbar.dart';
 import '../../Profile/controller/profile_controller.dart'
     show ProfileScreenController;
 import '../controller/track_controller.dart';
 
 class TrackHubScreen extends StatelessWidget {
-  TrackHubScreen({super.key});
+  final bool isBusiness;
+  TrackHubScreen({super.key, this.isBusiness = false});
   final ProfileScreenController profileController =
       Get.find<ProfileScreenController>();
   final TrackController trackController = Get.find<TrackController>();
@@ -363,7 +365,9 @@ class TrackHubScreen extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: const CustomNavBar(currentIndex: 2),
+        bottomNavigationBar: isBusiness
+            ? const CustomBusinessNavBar(currentIndex: 2)
+            : const CustomNavBar(currentIndex: 2),
       ),
     );
   }

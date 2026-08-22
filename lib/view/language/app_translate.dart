@@ -1131,6 +1131,8 @@ class AppTranslate extends Translations {
       'loginRequired': 'Login Required',
       'pleaseLoginFirst': 'Please login first to access this feature.',
       'continueAsGuest': 'Continue as Guest',
+      'network': 'Network',
+      'businessNetworkTitle': 'NETWORK',
     },
     'de': {
       'title': 'Deutsch',
@@ -2260,6 +2262,8 @@ class AppTranslate extends Translations {
       'pleaseLoginFirst':
           'Bitte melde dich zuerst an, um diese Funktion zu nutzen.',
       'continueAsGuest': 'Als Gast fortfahren',
+      'network': 'Netzwerk',
+      'businessNetworkTitle': 'NETZWERK',
     },
   };
 }

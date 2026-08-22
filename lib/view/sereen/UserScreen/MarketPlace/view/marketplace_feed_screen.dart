@@ -215,7 +215,7 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
         // BOTTOM NAVIGATION
         // =====================================================
         bottomNavigationBar: isBusiness
-            ? const CustomBusinessNavBar(currentIndex: 2)
+            ? const CustomBusinessNavBar(currentIndex: 3)
             : const CustomNavBar(currentIndex: 3),
       ),
     );
