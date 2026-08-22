@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/app_routes/app_routes.dart';
 import '../../../../utils/app_colors/app_colors.dart';
+import 'package:speedring/helper/guest_checker.dart';
 
 class CustomBusinessNavBar extends StatelessWidget {
   final int currentIndex;
@@ -89,6 +90,9 @@ class CustomBusinessNavBar extends StatelessWidget {
 
   void _onTap(int index) {
     if (index != currentIndex) {
+      if (index == 0 || index == 3) {
+        if (GuestChecker.showLoginDialogIfGuest()) return;
+      }
       if (index == 0) {
         Get.offAllNamed(AppRoutes.businessHomeScreen);
       }

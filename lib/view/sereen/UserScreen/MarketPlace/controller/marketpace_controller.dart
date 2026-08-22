@@ -11,6 +11,7 @@ import 'package:speedring/utils/app_const/app_const.dart';
 import '../model/listing_model.dart';
 import '../model/item_detail_model.dart';
 import '../model/my_listing_model.dart';
+import 'package:speedring/helper/guest_checker.dart';
 
 class MarketplaceFeedController extends GetxController {
   Future<void> pickImages() async {
@@ -107,7 +108,9 @@ class MarketplaceFeedController extends GetxController {
       time: const Duration(milliseconds: 500),
     );
     fetchListings();
-    fetchMyListings();
+    if (!GuestChecker.isGuest) {
+      fetchMyListings();
+    }
   }
 
   Future<void> _fetchCurrentUserId() async {
@@ -568,6 +571,7 @@ class MarketplaceFeedController extends GetxController {
   var isFollowing = false.obs;
 
   Future<void> fetchMyListings({bool isRefresh = false}) async {
+    if (GuestChecker.isGuest) return;
     if (isLoadingMyListings.value) return;
 
     if (isRefresh) {

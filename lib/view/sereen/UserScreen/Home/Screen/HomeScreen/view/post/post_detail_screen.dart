@@ -10,6 +10,7 @@ import '../../controller/home_controller.dart';
 import '../user_home_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'comment_screen.dart';
+import 'package:speedring/helper/guest_checker.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final String postId;
@@ -298,7 +299,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           Row(
                             children: [
                               GestureDetector(
-                                onTap: () => controller.reactToPost(post.id!),
+                                onTap: () {
+                                  if (GuestChecker.showLoginDialogIfGuest()) return;
+                                  controller.reactToPost(post.id!);
+                                },
                                 child: Row(
                                   children: [
                                     Icon(

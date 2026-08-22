@@ -6,6 +6,7 @@ import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/components/custom_appbar_user/custom_appbar_user.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_nav_bar/navbar.dart';
+import 'package:speedring/helper/guest_checker.dart';
 import 'package:speedring/utils/navigation_utils.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/model/discover_model.dart';
@@ -214,7 +215,10 @@ class DiscoverScreen extends StatelessWidget {
                   ),
                   elevation: 0,
                 ),
-                onPressed: () => Get.toNamed(AppRoutes.addSpotScreen),
+                onPressed: () {
+                  if (GuestChecker.showLoginDialogIfGuest()) return;
+                  Get.toNamed(AppRoutes.addSpotScreen);
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -676,7 +680,10 @@ class DiscoverScreen extends StatelessWidget {
                   ),
                   elevation: 0,
                 ),
-                onPressed: () => Get.toNamed(AppRoutes.addVideoScreen),
+                onPressed: () {
+                  if (GuestChecker.showLoginDialogIfGuest()) return;
+                  Get.toNamed(AppRoutes.addVideoScreen);
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -932,6 +939,7 @@ class DiscoverScreen extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
+              if (GuestChecker.showLoginDialogIfGuest()) return;
               if (user.id != null) {
                 controller.toggleFollowUser(user.id!);
               }

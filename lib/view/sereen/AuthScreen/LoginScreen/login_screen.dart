@@ -12,6 +12,7 @@ import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_text_field/custom_text_field.dart';
 import 'package:speedring/view/sereen/AuthScreen/controller/auth_controller.dart';
 import 'package:speedring/view/language/language_helper.dart';
+import 'package:speedring/helper/guest_checker.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -217,6 +218,25 @@ class LoginScreen extends StatelessWidget {
                           Icons.apple,
                           color: Colors.white,
                           size: 22,
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // ── Continue as Guest ─────────────────────────────────────
+                      Center(
+                        child: GestureDetector(
+                          onTap: () async {
+                            await GuestChecker.setGuest(true);
+                            Get.offAllNamed(AppRoutes.userHomeScreen);
+                          },
+                          child: CustomText(
+                            text: 'continueAsGuest'.tr,
+                            color: Colors.white70,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
 

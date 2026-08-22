@@ -5,6 +5,7 @@ import '../../../../../../../../utils/navigation_utils.dart'
 import '../../controller/home_controller.dart';
 import '../../controller/reels_controller.dart';
 import '../../model/post_model.dart';
+import 'package:speedring/helper/guest_checker.dart';
 
 void showCommentSheet(
   BuildContext context, {
@@ -12,6 +13,7 @@ void showCommentSheet(
   bool isReel = false,
   int reelIndex = -1,
 }) {
+  if (GuestChecker.showLoginDialogIfGuest()) return;
   if (post == null) return;
   showModalBottomSheet(
     context: context,

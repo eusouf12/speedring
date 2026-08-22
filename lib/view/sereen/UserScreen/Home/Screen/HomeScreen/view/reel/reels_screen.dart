@@ -11,6 +11,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../model/post_model.dart';
 import '../post/comment_screen.dart';
+import 'package:speedring/helper/guest_checker.dart';
 
 class ReelsScreen extends StatefulWidget {
   const ReelsScreen({super.key});
@@ -89,7 +90,10 @@ class _ReelsScreenState extends State<ReelsScreen> {
                     children: [
                       // Create Reel button
                       GestureDetector(
-                        onTap: () => Get.toNamed(AppRoutes.createReelScreen),
+                        onTap: () {
+                          if (GuestChecker.showLoginDialogIfGuest()) return;
+                          Get.toNamed(AppRoutes.createReelScreen);
+                        },
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -512,10 +516,13 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                         const SizedBox(width: 10),
                         if (!isMyReel)
                           GestureDetector(
-                            onTap: () => widget.controller.toggleFollow(
-                              widget.index,
-                              reelUserId,
-                            ),
+                            onTap: () {
+                              if (GuestChecker.showLoginDialogIfGuest()) return;
+                              widget.controller.toggleFollow(
+                                widget.index,
+                                reelUserId,
+                              );
+                            },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
@@ -612,7 +619,10 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                           : Icons.favorite_border_rounded,
                       color: isReacted ? Colors.red : Colors.white,
                       label: _formatCount(reelData['reactCount']),
-                      onTap: () => widget.controller.toggleLike(widget.index),
+                      onTap: () {
+                        if (GuestChecker.showLoginDialogIfGuest()) return;
+                        widget.controller.toggleLike(widget.index);
+                      },
                     ),
                     const SizedBox(height: 18),
 
@@ -624,6 +634,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                         reelData['commentCount'] ?? reelData['comments'],
                       ),
                       onTap: () {
+                        if (GuestChecker.showLoginDialogIfGuest()) return;
                         widget.controller.getReelInteractions(
                           reelData['_id'] ?? reelData['id'],
                         );
@@ -708,10 +719,13 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                           : Icons.bookmark_border_rounded,
                       color: isBookmarked ? AppColors.yellow : Colors.white,
                       label: "BOOKMARK".tr,
-                      onTap: () => widget.controller.toggleBookmark(
-                        widget.index,
-                        widget.reelData['_id'] ?? widget.reelData['id'] ?? '',
-                      ),
+                      onTap: () {
+                        if (GuestChecker.showLoginDialogIfGuest()) return;
+                        widget.controller.toggleBookmark(
+                          widget.index,
+                          widget.reelData['_id'] ?? widget.reelData['id'] ?? '',
+                        );
+                      },
                     ),
                     const SizedBox(height: 24),
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/helper/guest_checker.dart';
 import 'package:speedring/view/sereen/BusinessScreen/BusinessHome/business_navbar.dart';
 import 'package:speedring/view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 import '../../../../components/custom_appbar_user/custom_appbar_user.dart';
@@ -101,6 +102,7 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                           size: 16,
                         ),
                         onTap: () {
+                          if (GuestChecker.showLoginDialogIfGuest()) return;
                           Get.toNamed(AppRoutes.selectCategoryScreen);
                         },
                       ),
@@ -118,6 +120,7 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                           size: 16,
                         ),
                         onTap: () {
+                          if (GuestChecker.showLoginDialogIfGuest()) return;
                           controller.fetchMyListings(isRefresh: true);
                           Get.toNamed(AppRoutes.myListingsScreen);
                         },
@@ -188,6 +191,7 @@ class MarketplaceListingFeedScreen extends StatelessWidget {
                             item.seller?.id == controller.currentUserId.value
                             ? null
                             : () {
+                                if (GuestChecker.showLoginDialogIfGuest()) return;
                                 Get.toNamed(
                                   AppRoutes.inboxScreen,
                                   arguments: {

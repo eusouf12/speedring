@@ -4,6 +4,7 @@ import 'package:speedring/view/components/custom_text/custom_text.dart';
 import '../../../core/app_routes/app_routes.dart';
 import 'widget/custom_onboarding_card.dart';
 import 'widget/on_bording_controller.dart';
+import 'package:speedring/helper/guest_checker.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -200,6 +201,22 @@ class OnboardingScreen extends StatelessWidget {
                       color: Colors.white70,
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  GestureDetector(
+                    onTap: () async {
+                      await GuestChecker.setGuest(true);
+                      Get.offAllNamed(AppRoutes.userHomeScreen);
+                    },
+                    child: CustomText(
+                      text: 'continueAsGuest'.tr,
+                      color: Colors.white70,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
 

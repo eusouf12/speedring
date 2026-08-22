@@ -58,27 +58,51 @@ class ProfileScreenController extends GetxController {
   }
 
   void initEditProfile(ProfileData profile) {
-    // Re-initialize to avoid GetX zombie controller issues where 
+    // Re-initialize to avoid GetX zombie controller issues where
     // the previous controllers were disposed by a route transition.
     nameController = TextEditingController(text: profile.name ?? '');
     displayNameController = TextEditingController(
-        text: profile.driverInfo?.displayName ?? profile.name ?? '');
+      text: profile.driverInfo?.displayName ?? profile.name ?? '',
+    );
     handleController = TextEditingController(text: profile.userName ?? '');
-    bioController = TextEditingController(text: profile.driverInfo?.bio ?? profile.businessInfo?.engineeringPhilosophy ?? '');
+    bioController = TextEditingController(
+      text:
+          profile.driverInfo?.bio ??
+          profile.businessInfo?.engineeringPhilosophy ??
+          '',
+    );
 
     instagramController = TextEditingController(
-        text: profile.driverInfo?.socialLinks?.instagram ?? profile.businessInfo?.socialLinks?.instagram ?? '');
+      text:
+          profile.driverInfo?.socialLinks?.instagram ??
+          profile.businessInfo?.socialLinks?.instagram ??
+          '',
+    );
     tiktokController = TextEditingController(
-        text: profile.driverInfo?.socialLinks?.tiktok ?? profile.businessInfo?.socialLinks?.tiktok ?? '');
+      text:
+          profile.driverInfo?.socialLinks?.tiktok ??
+          profile.businessInfo?.socialLinks?.tiktok ??
+          '',
+    );
     youtubeController = TextEditingController(
-        text: profile.driverInfo?.socialLinks?.youtube ?? profile.businessInfo?.socialLinks?.youtube ?? '');
+      text:
+          profile.driverInfo?.socialLinks?.youtube ??
+          profile.businessInfo?.socialLinks?.youtube ??
+          '',
+    );
     facebookController = TextEditingController(
-        text: profile.driverInfo?.socialLinks?.facebook ?? profile.businessInfo?.socialLinks?.facebook ?? '');
+      text:
+          profile.driverInfo?.socialLinks?.facebook ??
+          profile.businessInfo?.socialLinks?.facebook ??
+          '',
+    );
 
     nationalityController = TextEditingController(
-        text: profile.driverInfo?.nationality ?? '');
+      text: profile.driverInfo?.nationality ?? '',
+    );
     driverRoleController = TextEditingController(
-        text: profile.driverInfo?.driverRole ?? '');
+      text: profile.driverInfo?.driverRole ?? '',
+    );
 
     isRolePublic.value = profile.driverInfo?.isRolePublic ?? false;
 

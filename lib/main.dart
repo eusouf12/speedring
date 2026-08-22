@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/core/dependency/dependency_injection.dart';
+import 'package:speedring/helper/guest_checker.dart';
 import 'package:speedring/service/deeplink_service.dart';
 import 'package:speedring/view/language/app_translate.dart';
 import 'package:speedring/view/language/language_helper.dart';
@@ -12,6 +13,7 @@ import 'utils/app_colors/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GuestChecker.init();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

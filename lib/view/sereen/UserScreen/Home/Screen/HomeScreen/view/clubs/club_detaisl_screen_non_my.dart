@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/helper/guest_checker.dart';
 
 class ClubDetaislScreenNonMy extends StatefulWidget {
   const ClubDetaislScreenNonMy({super.key});
@@ -235,6 +236,7 @@ class _ClubDetaislScreenNonMyState extends State<ClubDetaislScreenNonMy> {
                             ),
                           ),
                           onPressed: controller.isJoinClubLoading.value ? null : () {
+                            if (GuestChecker.showLoginDialogIfGuest()) return;
                             if (club.id != null) {
                               controller.joinClub(club.id!);
                             }

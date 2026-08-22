@@ -7,6 +7,7 @@ import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:speedring/service/api_client.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
+import 'package:speedring/helper/guest_checker.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 
 class AuthController extends GetxController {
@@ -62,6 +63,7 @@ class AuthController extends GetxController {
         String userId = userMap['_id']?.toString() ?? userMap['id']?.toString() ?? "";
 
         await SharePrefsHelper.setString(AppConstants.bearerToken, accessToken);
+        await GuestChecker.setGuest(false);
 
         if (userId.isNotEmpty) {
           await SharePrefsHelper.setString(AppConstants.userId, userId);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../utils/navigation_utils.dart';
+import '../../../../../helper/guest_checker.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({
@@ -133,7 +134,10 @@ class PostCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       GestureDetector(
-                        onTap: onLike,
+                        onTap: () {
+                          if (GuestChecker.showLoginDialogIfGuest()) return;
+                          if (onLike != null) onLike!();
+                        },
                         child: Icon(
                           isLiked ? Icons.favorite : Icons.favorite_border,
                           color: isLiked ? Colors.red : Colors.white,
@@ -156,7 +160,10 @@ class PostCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       GestureDetector(
-                        onTap: onComment,
+                        onTap: () {
+                          if (GuestChecker.showLoginDialogIfGuest()) return;
+                          if (onComment != null) onComment!();
+                        },
                         child: const Icon(
                           Icons.chat_bubble_outline,
                           color: Colors.white,

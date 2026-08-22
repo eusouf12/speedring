@@ -8,6 +8,7 @@ import '../../../../../../../utils/navigation_utils.dart';
 import '../../../../../../components/custom_appbar_user/custom_appbar_user.dart';
 import '../controller/home_controller.dart';
 import '../model/post_model.dart';
+import 'package:speedring/helper/guest_checker.dart';
 import 'post/comment_screen.dart' show showCommentSheet;
 import 'event/event_comment_screen.dart'
     show showEventCommentSheet, shareEventLink;
@@ -36,9 +37,11 @@ class UserHomeScreen extends StatelessWidget {
           showSearchIcon: true,
           onSearchTap: () => controller.showSearchBar.toggle(),
           onNotificationTap: () {
+            if (GuestChecker.showLoginDialogIfGuest()) return;
             Get.toNamed(AppRoutes.notificationScreen);
           },
           onMailTap: () {
+            if (GuestChecker.showLoginDialogIfGuest()) return;
             Get.toNamed(AppRoutes.messageScreen);
           },
         ),
@@ -138,6 +141,7 @@ class UserHomeScreen extends StatelessWidget {
                           if (index == 0) {
                             return GestureDetector(
                               onTap: () {
+                                if (GuestChecker.showLoginDialogIfGuest()) return;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -225,8 +229,10 @@ class UserHomeScreen extends StatelessWidget {
                                 children: [
                                   AddPostButton(
                                     label: "addPost".tr.toUpperCase(),
-                                    onTap: () =>
-                                        Get.toNamed(AppRoutes.createPostScreen),
+                                    onTap: () {
+                                      if (GuestChecker.showLoginDialogIfGuest()) return;
+                                      Get.toNamed(AppRoutes.createPostScreen);
+                                    },
                                   ),
                                   const SizedBox(height: 20),
                                 ],
@@ -466,6 +472,7 @@ class UserHomeScreen extends StatelessWidget {
                                   AddPostButton(
                                     label: "addEvent".tr,
                                     onTap: () {
+                                      if (GuestChecker.showLoginDialogIfGuest()) return;
                                       Get.toNamed(AppRoutes.createEventScreen);
                                     },
                                   ),
@@ -530,12 +537,18 @@ class UserHomeScreen extends StatelessWidget {
                               isReacted: event.isReacted ?? false,
                               isMyEvent: isMyEvent,
                               eventId: event.id ?? "",
-                              onJoin: () =>
-                                  controller.joinEvent(eventId: event.id!),
-                              onLike: () =>
-                                  controller.reactToEvent(eventId: event.id!),
-                              onComment: () =>
-                                  showEventCommentSheet(context, event),
+                              onJoin: () {
+                                if (GuestChecker.showLoginDialogIfGuest()) return;
+                                controller.joinEvent(eventId: event.id!);
+                              },
+                              onLike: () {
+                                if (GuestChecker.showLoginDialogIfGuest()) return;
+                                controller.reactToEvent(eventId: event.id!);
+                              },
+                              onComment: () {
+                                if (GuestChecker.showLoginDialogIfGuest()) return;
+                                showEventCommentSheet(context, event);
+                              },
                               onShare: () {
                                 controller.shareEvent(eventId: event.id!);
                                 shareEventLink(event);
@@ -595,8 +608,10 @@ class UserHomeScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(right: 20),
                                 child: GestureDetector(
-                                  onTap: () =>
-                                      Get.toNamed(AppRoutes.createClubScreen),
+                                  onTap: () {
+                                    if (GuestChecker.showLoginDialogIfGuest()) return;
+                                    Get.toNamed(AppRoutes.createClubScreen);
+                                  },
                                   child: Column(
                                     children: [
                                       Container(
@@ -703,6 +718,7 @@ class UserHomeScreen extends StatelessWidget {
                               isJoined: club.isClubJoined ?? false,
                               isPending: club.isJoinRequestPending ?? false,
                               onJoinTap: () {
+                                if (GuestChecker.showLoginDialogIfGuest()) return;
                                 if (club.id != null) {
                                   controller.joinClub(club.id!);
                                 }

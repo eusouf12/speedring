@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/app_routes/app_routes.dart';
 import '../../../utils/app_colors/app_colors.dart';
+import 'package:speedring/helper/guest_checker.dart';
 
 class CustomNavBar extends StatefulWidget {
   final int currentIndex;
@@ -172,6 +173,9 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
   void onTap(int index) {
     if (index != bottomNavIndex) {
+      if (index == 2 || index == 4) {
+        if (GuestChecker.showLoginDialogIfGuest()) return;
+      }
       setState(() {
         bottomNavIndex = index;
       });

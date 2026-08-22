@@ -1118,6 +1118,9 @@ class AppTranslate extends Translations {
       'startListing': 'Start Listing',
       'SAVED_REELS': 'Saved Reels',
       'NO_SAVED_REELS_FOUND': 'No saved reels found.',
+      'loginRequired': 'Login Required',
+      'pleaseLoginFirst': 'Please login first to access this feature.',
+      'continueAsGuest': 'Continue as Guest',
     },
     'de': {
       'title': 'Deutsch',
@@ -2232,6 +2235,9 @@ class AppTranslate extends Translations {
       'totalRevenue': 'GESAMTEINNAHMEN',
       'activeLeads': 'AKTIVE LEADS',
       'conversionRate': 'KONVERSIONS RATE',
+      'loginRequired': 'Anmeldung erforderlich',
+      'pleaseLoginFirst': 'Bitte melde dich zuerst an, um diese Funktion zu nutzen.',
+      'continueAsGuest': 'Als Gast fortfahren',
     },
   };
 }

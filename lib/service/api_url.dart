@@ -7,7 +7,7 @@ class ApiUrl {
   //=============== wINDOWS ======================
   static const String baseUrl = "http://10.10.28.90:4050/api/v1";
   static const String imageUrl = "http://10.10.28.90:4050";
-
+  // static const String baseUrl = "https://api.speedring.online/api/v1"
   //========================= Mac ========================
   // static const String baseUrl = "http://10.0.2.2:4050/api/v1";
   // static const String imageUrl = "http://10.0.2.2:4050";
