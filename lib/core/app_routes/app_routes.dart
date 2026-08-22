@@ -86,7 +86,6 @@ import '../../view/sereen/BusinessScreen/BusinessAuth/BusinessRegistration/busin
 import '../../view/sereen/BusinessScreen/Business_club_screen/business_clubs_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_profile_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_analytics_screen.dart';
-import '../../view/sereen/BusinessScreen/Business_Profile/business_account_settings_screen.dart';
 import '../../view/sereen/BusinessScreen/Business_Profile/business_select_plan_screen.dart';
 import '../../view/sereen/BusinessScreen/Promotion/business_promotion_hub_screen.dart';
 import '../../view/sereen/BusinessScreen/Promotion/business_create_promotion_screen.dart';
@@ -363,10 +362,6 @@ class AppRoutes {
     GetPage(
       name: businessAnalyticsScreen,
       page: () => const BusinessAnalyticsScreen(),
-    ),
-    GetPage(
-      name: businessAccountSettingsScreen,
-      page: () => const BusinessAccountSettingsScreen(),
     ),
     GetPage(
       name: businessSelectPlanScreen,

@@ -9,6 +9,10 @@ import 'package:http/http.dart' as http;
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:speedring/view/components/custom_text/custom_text.dart';
+
+import '../../../../../utils/app_colors/app_colors.dart';
 
 // ── Dashed Border Painter for Document Uploads ──────────────────────────────
 class DashedBorderPainter extends CustomPainter {
@@ -103,6 +107,9 @@ class BusinessRegistrationController extends GetxController {
   final hqFocusNode = FocusNode();
   final commCtrl = TextEditingController();
   final digitalHqCtrl = TextEditingController();
+  final RxString startTime = "08:00".obs;
+  final RxString endTime = "18:00".obs;
+  final RxString selectedDays = "Mon-Fri".obs;
   final RxString scheduleText = "Configure Schedule".obs;
 
   final instagramCtrl = TextEditingController();
@@ -181,7 +188,232 @@ class BusinessRegistrationController extends GetxController {
   }
 
   void configureSchedule() {
-    scheduleText.value = "Mon-Fri, 08:00 - 18:00 (Configured)";
+    final context = Get.context!;
+    Get.bottomSheet(
+      Container(
+        padding: EdgeInsets.only(
+          left: 20.r,
+          right: 20.r,
+          top: 20.r,
+          bottom: 20.r + MediaQuery.of(context).padding.bottom,
+        ),
+        decoration: BoxDecoration(
+          color: const Color(0xff111111),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+          border: Border.all(color: Colors.white10),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              CustomText(
+                text: "Configure Operational Hours",
+                color: Colors.white,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
+              SizedBox(height: 20.h),
+              CustomText(
+                text: "Select Working Days",
+                color: Colors.white60,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.bold,
+              ),
+              SizedBox(height: 8.h),
+              Obx(
+                () => Wrap(
+                  spacing: 8.w,
+                  runSpacing: 8.h,
+                  children: ["Mon-Fri", "Mon-Sat", "Mon-Sun", "Sat-Sun"].map((
+                    dayOpt,
+                  ) {
+                    final isSel = selectedDays.value == dayOpt;
+                    return GestureDetector(
+                      onTap: () => selectedDays.value = dayOpt,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 14.w,
+                          vertical: 8.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSel ? AppColors.yellow : Colors.white10,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: CustomText(
+                          text: dayOpt,
+                          color: isSel ? Colors.black : Colors.white,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: "Start Time",
+                          color: Colors.white60,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        SizedBox(height: 8.h),
+                        GestureDetector(
+                          onTap: () async {
+                            final TimeOfDay? picked = await showTimePicker(
+                              context: context,
+                              initialTime: const TimeOfDay(hour: 8, minute: 0),
+                              builder: (context, child) => Theme(
+                                data: ThemeData.dark().copyWith(
+                                  colorScheme: const ColorScheme.dark(
+                                    primary: AppColors.yellow,
+                                    onPrimary: Colors.black,
+                                    surface: Color(0xff1c1c1c),
+                                    onSurface: Colors.white,
+                                  ),
+                                ),
+                                child: child!,
+                              ),
+                            );
+                            if (picked != null) {
+                              final hr = picked.hour.toString().padLeft(2, '0');
+                              final min = picked.minute.toString().padLeft(
+                                2,
+                                '0',
+                              );
+                              startTime.value = "$hr:$min";
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 12.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white10,
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Obx(
+                              () => CustomText(
+                                text: startTime.value,
+                                color: Colors.white,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 16.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: "End Time",
+                          color: Colors.white60,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        SizedBox(height: 8.h),
+                        GestureDetector(
+                          onTap: () async {
+                            final TimeOfDay? picked = await showTimePicker(
+                              context: context,
+                              initialTime: const TimeOfDay(hour: 18, minute: 0),
+                              builder: (context, child) => Theme(
+                                data: ThemeData.dark().copyWith(
+                                  colorScheme: const ColorScheme.dark(
+                                    primary: AppColors.yellow,
+                                    onPrimary: Colors.black,
+                                    surface: Color(0xff1c1c1c),
+                                    onSurface: Colors.white,
+                                  ),
+                                ),
+                                child: child!,
+                              ),
+                            );
+                            if (picked != null) {
+                              final hr = picked.hour.toString().padLeft(2, '0');
+                              final min = picked.minute.toString().padLeft(
+                                2,
+                                '0',
+                              );
+                              endTime.value = "$hr:$min";
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 12.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white10,
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Obx(
+                              () => CustomText(
+                                text: endTime.value,
+                                color: Colors.white,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30.h),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.yellow,
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  onPressed: () {
+                    scheduleText.value =
+                        "${selectedDays.value}, ${startTime.value} - ${endTime.value}";
+                    Get.back();
+                  },
+                  child: CustomText(
+                    text: "Save Hours",
+                    color: Colors.black,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      isScrollControlled: true,
+    );
   }
 
   Future<List<String>> getPlaceSuggestions(String query) async {

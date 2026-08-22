@@ -72,8 +72,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                 Icons.settings_outlined,
                 color: AppColors.yellow,
               ),
-              onPressed: () =>
-                  Get.toNamed(AppRoutes.businessAccountSettingsScreen),
+              onPressed: () => Get.toNamed(AppRoutes.userParametersScreen),
             ),
           ],
         ),

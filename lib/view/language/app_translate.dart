@@ -381,6 +381,15 @@ class AppTranslate extends Translations {
       'terminateSession': 'TERMINATE SESSION',
       'appLanguageOption': 'APP LANGUAGE',
       'selectLanguageTitle': 'SELECT LANGUAGE',
+      'businessParams': 'BUSINESS PARAMETERS',
+      'businessProfile': 'BUSINESS PROFILE',
+      'deleteAccountOption': 'DELETE ACCOUNT',
+      'deleteAccountTitle': 'Delete Account',
+      'deleteAccountConfirm': 'Are you sure you want to delete your account permanently? This action cannot be undone.',
+      'noLabel': 'NO',
+      'yesLabel': 'YES',
+      'deleteAccountFailed': 'Failed to delete account. Please try again.',
+      'errorLabel': 'Error',
 
       // Verify OTP Extra
       'weSentCode': 'We sent a 4-digit code to\n',
@@ -1523,6 +1532,15 @@ class AppTranslate extends Translations {
       'terminateSession': 'SITZUNG BEENDEN',
       'appLanguageOption': 'APP-SPRACHE',
       'selectLanguageTitle': 'SPRACHE AUSWÄHLEN',
+      'businessParams': 'GESCHÄFTSPARAMETER',
+      'businessProfile': 'GESCHÄFTSPROFIL',
+      'deleteAccountOption': 'KONTO LÖSCHEN',
+      'deleteAccountTitle': 'Konto löschen',
+      'deleteAccountConfirm': 'Sind Sie sicher, dass Sie Ihr Konto dauerhaft löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
+      'noLabel': 'NEIN',
+      'yesLabel': 'JA',
+      'deleteAccountFailed': 'Konto konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.',
+      'errorLabel': 'Fehler',
 
       // Verify OTP Extra
       'weSentCode': 'Wir haben einen 4-stelligen Code gesendet an\n',

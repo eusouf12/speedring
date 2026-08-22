@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../core/app_routes/app_routes.dart';
+import '../../../helper/shared_prefe/shared_prefe.dart';
+import '../../../utils/app_const/app_const.dart';
+import '../../../helper/guest_checker.dart';
 
 class SplashController extends GetxController with GetTickerProviderStateMixin {
   // ── Observable state ──
@@ -101,9 +104,23 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
   }
 
   void _navigateAfterDelay() {
-    Future.delayed(const Duration(milliseconds: 4000), () {
+    Future.delayed(const Duration(milliseconds: 4000), () async {
       if (!isClosed) {
-        Get.offAllNamed(AppRoutes.onboardingScreen);
+        final token = await SharePrefsHelper.getString(AppConstants.bearerToken);
+        final isGuest = GuestChecker.isGuest;
+
+        if (isGuest) {
+          Get.offAllNamed(AppRoutes.userHomeScreen);
+        } else if (token.isNotEmpty) {
+          final role = await SharePrefsHelper.getString(AppConstants.role);
+          if (role == 'business') {
+            Get.offAllNamed(AppRoutes.businessHomeScreen);
+          } else {
+            Get.offAllNamed(AppRoutes.userHomeScreen);
+          }
+        } else {
+          Get.offAllNamed(AppRoutes.onboardingScreen);
+        }
       }
     });
   }

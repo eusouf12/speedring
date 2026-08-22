@@ -12,7 +12,7 @@ class ApiUrl {
   // static const String baseUrl = "http://10.0.2.2:4050/api/v1";
   // static const String imageUrl = "http://10.0.2.2:4050";
   static String socketUrl = imageUrl;
-  static String mapKey = "AIzaSyCHBKvR2Wgc4eF53nYTlGYxULSQuVpb9t4";
+  static String mapKey = "AIzaSyDHmHgdJYzTLD-j7p710yc_5yM2486JmuE";
 
   ///========================= Authentication =========================
   static const String signUp = "/auth/register";
@@ -53,6 +53,8 @@ class ApiUrl {
   static const String aboutUs = "/legal-docs/about-us";
   static const String contactUs = "/contact";
   static const String changePassword = "/auth/change-password";
+  static const String logout = "/auth/logout";
+  static String deleteAccount(String userId) => "/users/delete/$userId";
 
   ///========================= User =========================
   static const String createStory = "/stories/create-story";
