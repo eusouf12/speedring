@@ -385,7 +385,8 @@ class AppTranslate extends Translations {
       'businessProfile': 'BUSINESS PROFILE',
       'deleteAccountOption': 'DELETE ACCOUNT',
       'deleteAccountTitle': 'Delete Account',
-      'deleteAccountConfirm': 'Are you sure you want to delete your account permanently? This action cannot be undone.',
+      'deleteAccountConfirm':
+          'Are you sure you want to delete your account permanently? This action cannot be undone.',
       'noLabel': 'NO',
       'yesLabel': 'YES',
       'deleteAccountFailed': 'Failed to delete account. Please try again.',
@@ -1536,10 +1537,12 @@ class AppTranslate extends Translations {
       'businessProfile': 'GESCHÄFTSPROFIL',
       'deleteAccountOption': 'KONTO LÖSCHEN',
       'deleteAccountTitle': 'Konto löschen',
-      'deleteAccountConfirm': 'Sind Sie sicher, dass Sie Ihr Konto dauerhaft löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
+      'deleteAccountConfirm':
+          'Sind Sie sicher, dass Sie Ihr Konto dauerhaft löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
       'noLabel': 'NEIN',
       'yesLabel': 'JA',
-      'deleteAccountFailed': 'Konto konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.',
+      'deleteAccountFailed':
+          'Konto konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.',
       'errorLabel': 'Fehler',
 
       // Verify OTP Extra
@@ -2254,7 +2257,8 @@ class AppTranslate extends Translations {
       'activeLeads': 'AKTIVE LEADS',
       'conversionRate': 'KONVERSIONS RATE',
       'loginRequired': 'Anmeldung erforderlich',
-      'pleaseLoginFirst': 'Bitte melde dich zuerst an, um diese Funktion zu nutzen.',
+      'pleaseLoginFirst':
+          'Bitte melde dich zuerst an, um diese Funktion zu nutzen.',
       'continueAsGuest': 'Als Gast fortfahren',
     },
   };
