@@ -2,84 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import '../../../../../../core/app_routes/app_routes.dart';
 import '../../../../../../utils/navigation_utils.dart';
+import 'controller/inbox_controller.dart';
+import 'package:speedring/view/components/custom_loader/custom_loader.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class InboxScreen extends StatefulWidget {
-  final String userName;
-  final String avatarUrl;
-  final bool isOnline;
-  final String? userId;
-
-  const InboxScreen({
-    super.key,
-    required this.userName,
-    required this.avatarUrl,
-    required this.isOnline,
-    this.userId,
-  });
+  const InboxScreen({super.key});
 
   @override
   State<InboxScreen> createState() => _InboxScreenState();
 }
 
 class _InboxScreenState extends State<InboxScreen> {
-  late final List<Map<String, dynamic>> _messages;
+  late final InboxController controller;
+  late final String userName;
+  late final String avatarUrl;
+  late final bool isOnline;
+  late final String? userId;
+  File? _selectedImage;
 
   @override
   void initState() {
     super.initState();
-    _messages = [
-      {
-        "text": "Hey! Did you check out my latest lap session video?",
-        "isMe": false,
-        "time": "10:30 AM",
-        "likes": 0,
-        "loves": 0,
-        "isLiked": false,
-        "isLoved": false,
-      },
-      {
-        "text":
-            "Yeah, your line through Maggotts was spot on. Very smooth transition.",
-        "isMe": true,
-        "time": "10:32 AM",
-        "likes": 0,
-        "loves": 0,
-        "isLiked": false,
-        "isLoved": false,
-      },
-      {
-        "text":
-            "Thanks! I've been experimenting with the rebound settings on the front damper.",
-        "isMe": false,
-        "time": "10:35 AM",
-        "likes": 0,
-        "loves": 0,
-        "isLiked": false,
-        "isLoved": false,
-      },
-      {
-        "text":
-            "Are you experiencing higher thermal deg in the Bus Stop chicane?",
-        "isMe": false,
-        "time": "10:36 AM",
-        "likes": 2,
-        "loves": 8,
-        "isLiked": false,
-        "isLoved": false,
-      },
-      {
-        "text":
-            "Definitely! I'll register my session on the app. Let's compare telemetry data after the run.",
-        "isMe": true,
-        "time": "10:38 AM",
-        "likes": 0,
-        "loves": 0,
-        "isLiked": false,
-        "isLoved": false,
-      },
-    ];
+    final args = Get.arguments as Map<String, dynamic>? ?? {};
+    final chatId = args['chatId'] ?? '';
+    userName = args['userName'] ?? 'Chat';
+    avatarUrl = args['avatarUrl'] ?? '';
+    isOnline = args['isOnline'] ?? false;
+    userId = args['userId'];
+
+    controller = Get.put(InboxController(chatId: chatId), tag: chatId);
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedImage = File(image.path);
+      });
+    }
+  }
+
+  void _sendMessage() {
+    controller.sendMessage(imageFile: _selectedImage);
+    setState(() {
+      _selectedImage = null;
+    });
   }
 
   @override
@@ -101,64 +72,39 @@ class _InboxScreenState extends State<InboxScreen> {
             children: [
               GestureDetector(
                 onTap: () {
-                  if (widget.userId != null) {
-                    NavigationUtils.navigateToUserProfile(widget.userId!);
+                  if (userId != null) {
+                    NavigationUtils.navigateToUserProfile(userId!);
                   }
                 },
-                child: Stack(
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: avatarUrl.isNotEmpty
+                      ? NetworkImage(avatarUrl)
+                      : null,
+                  backgroundColor: const Color(0xff1A1A1A),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundImage: NetworkImage(widget.avatarUrl),
-                      backgroundColor: const Color(0xff1A1A1A),
+                    Text(
+                      userName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    if (widget.isOnline)
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          width: 9,
-                          height: 9,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 1.5),
-                          ),
-                        ),
+                    if (isOnline)
+                      const Text(
+                        "Active now",
+                        style: TextStyle(color: Colors.white54, fontSize: 11),
                       ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      if (widget.userId != null) {
-                        NavigationUtils.navigateToUserProfile(widget.userId!);
-                      }
-                    },
-                    child: Text(
-                      widget.userName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    widget.isOnline ? "Online" : "Offline",
-                    style: TextStyle(
-                      color: widget.isOnline ? Colors.green : Colors.white30,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
@@ -173,362 +119,275 @@ class _InboxScreenState extends State<InboxScreen> {
         /// ── Body ───────────────────────────────────────────────────────────
         body: Column(
           children: [
-            const Divider(color: Colors.white10, height: 1),
-
             /// Message List
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final msg = _messages[index];
-                  final isMe = msg["isMe"] == true;
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CustomLoader());
+                }
 
-                  return Align(
-                    alignment: isMe
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
-                      ),
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isMe
-                            ? AppColors.yellow
-                            : const Color(0xff1A1A1A),
-                        borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(16),
-                          topRight: const Radius.circular(16),
-                          bottomLeft: Radius.circular(isMe ? 16 : 4),
-                          bottomRight: Radius.circular(isMe ? 4 : 16),
-                        ),
-                        border: isMe ? null : Border.all(color: Colors.white10),
-                      ),
+                if (controller.messages.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      "No messages yet. Say hi!",
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  reverse: false,
+                  itemCount: controller.messages.length,
+                  itemBuilder: (context, index) {
+                    final msg = controller.messages[index];
+                    final isMe = msg.sender?.id == controller.currentUserId;
+                    final text = msg.content ?? "";
+                    final time = msg.createdAt != null
+                        ? msg.createdAt!.substring(11, 16)
+                        : "";
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
                       child: Column(
                         crossAxisAlignment: isMe
                             ? CrossAxisAlignment.end
                             : CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            msg["text"],
-                            style: TextStyle(
-                              color: isMe ? Colors.black : Colors.white,
-                              fontSize: 12.5,
-                              fontWeight: isMe
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              height: 1.45,
-                            ),
+                          Row(
+                            mainAxisAlignment: isMe
+                                ? MainAxisAlignment.end
+                                : MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              if (!isMe) ...[
+                                CircleAvatar(
+                                  radius: 14,
+                                  backgroundImage:
+                                      msg.sender?.profileImage != null
+                                      ? NetworkImage(msg.sender!.profileImage!)
+                                      : const NetworkImage(
+                                          "https://ui-avatars.com/api/?name=User",
+                                        ),
+                                  backgroundColor: const Color(0xff1A1A1A),
+                                ),
+                                const SizedBox(width: 8),
+                              ],
+                              Flexible(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isMe
+                                        ? AppColors.yellow
+                                        : const Color(0xff1A1A1A),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: const Radius.circular(20),
+                                      topRight: const Radius.circular(20),
+                                      bottomLeft: Radius.circular(
+                                        isMe ? 20 : 4,
+                                      ),
+                                      bottomRight: Radius.circular(
+                                        isMe ? 4 : 20,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (msg.imageUrl != null) ...[
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          child: Image.network(
+                                            msg.imageUrl!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                      ],
+                                      if (text.isNotEmpty)
+                                        Text(
+                                          text,
+                                          style: TextStyle(
+                                            color: isMe
+                                                ? Colors.black
+                                                : Colors.white,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            msg["time"],
-                            style: TextStyle(
-                              color: isMe ? Colors.black45 : Colors.white30,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w600,
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: isMe ? 0 : 36,
+                              right: isMe ? 4 : 0,
+                            ),
+                            child: Text(
+                              time,
+                              style: const TextStyle(
+                                color: Colors.white38,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                          if (!isMe) ...[
-                            const SizedBox(height: 8),
-                            if (msg["likes"] > 0 || msg["loves"] > 0) ...[
-                              Row(
-                                children: [
-                                  if (msg["likes"] > 0) ...[
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xff2A2A2A),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons.thumb_up,
-                                            color: Colors.white70,
-                                            size: 12,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            "${msg["likes"]}",
-                                            style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                  ],
-                                  if (msg["loves"] > 0) ...[
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xff2A2A2A),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons.favorite,
-                                            color: Colors.white70,
-                                            size: 12,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            "${msg["loves"]}",
-                                            style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ],
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }),
+            ),
+
+            /// Message Input Area
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                border: Border(
+                  top: BorderSide(color: Colors.white10, width: 1),
+                ),
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    if (_selectedImage != null)
+                      Stack(
+                        children: [
+                          Container(
+                            height: 100,
+                            margin: const EdgeInsets.only(bottom: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                image: FileImage(_selectedImage!),
+                                fit: BoxFit.cover,
                               ),
-                              const SizedBox(height: 8),
-                            ],
-                            const Divider(color: Colors.white10, height: 1),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            ),
+                          ),
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedImage = null;
+                                });
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.black54,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: _pickImage,
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: const Color(0xff1A1A1A),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt_outlined,
+                              color: Colors.white54,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xff1A1A1A),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Row(
                               children: [
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      msg["isLiked"] = !msg["isLiked"];
-                                      if (msg["isLiked"]) {
-                                        msg["likes"] += 1;
-                                      } else {
-                                        msg["likes"] -= 1;
-                                      }
-                                    });
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        msg["isLiked"]
-                                            ? Icons.thumb_up
-                                            : Icons.thumb_up_outlined,
-                                        color: msg["isLiked"]
-                                            ? AppColors.yellow
-                                            : Colors.white70,
-                                        size: 13,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        "LIKE",
-                                        style: TextStyle(
-                                          color: msg["isLiked"]
-                                              ? AppColors.yellow
-                                              : Colors.white70,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      msg["isLoved"] = !msg["isLoved"];
-                                      if (msg["isLoved"]) {
-                                        msg["loves"] += 1;
-                                      } else {
-                                        msg["loves"] -= 1;
-                                      }
-                                    });
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        msg["isLoved"]
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: msg["isLoved"]
-                                            ? Colors.red
-                                            : Colors.white70,
-                                        size: 13,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        "LOVE",
-                                        style: TextStyle(
-                                          color: msg["isLoved"]
-                                              ? Colors.red
-                                              : Colors.white70,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Get.toNamed(
-                                      AppRoutes.supportMemberScreen,
-                                      arguments: {
-                                        "userName": widget.userName,
-                                        "avatarUrl": widget.avatarUrl,
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 6,
+                                Expanded(
+                                  child: TextField(
+                                    controller: controller.messageController,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
                                     ),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: AppColors.yellow,
-                                        width: 1,
+                                    decoration: const InputDecoration(
+                                      hintText: "Type a message...",
+                                      hintStyle: TextStyle(
+                                        color: Colors.white38,
+                                        fontSize: 14,
                                       ),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.yellow,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          padding: const EdgeInsets.all(1.5),
-                                          child: const Icon(
-                                            Icons.star,
-                                            color: Colors.black,
-                                            size: 9,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        const Text(
-                                          "SUPPORT",
-                                          style: TextStyle(
-                                            color: AppColors.yellow,
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                        ),
-                                      ],
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            /// Input field bar
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                16,
-                8,
-                16,
-                MediaQuery.of(context).padding.bottom + 12,
-              ),
-              decoration: const BoxDecoration(
-                color: Color(0xff0A0A0A),
-                border: Border(top: BorderSide(color: Colors.white10)),
-              ),
-              child: Row(
-                children: [
-                  /// Attachment
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
-                        color: Color(0xff151515),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white70,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  /// Text Field Box
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xff151515),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white10),
-                      ),
-                      child: TextFormField(
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        decoration: const InputDecoration(
-                          hintText: "Type a message...",
-                          hintStyle: TextStyle(
-                            color: Colors.white24,
-                            fontSize: 13,
                           ),
-                          border: InputBorder.none,
-                          isDense: true,
                         ),
-                      ),
+                        const SizedBox(width: 12),
+                        Obx(() {
+                          if (controller.isSending.value) {
+                            return const SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.yellow,
+                                ),
+                              ),
+                            );
+                          }
+                          return GestureDetector(
+                            onTap: _sendMessage,
+                            child: Container(
+                              height: 40,
+                              width: 40,
+                              decoration: const BoxDecoration(
+                                color: AppColors.yellow,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.send,
+                                color: Colors.black,
+                                size: 18,
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
                     ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  /// Send Button
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
-                        color: AppColors.yellow,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.send,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

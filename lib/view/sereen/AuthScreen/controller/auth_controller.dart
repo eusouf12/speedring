@@ -18,9 +18,9 @@ class AuthController extends GetxController {
   // final emailController = TextEditingController(
   //   text: "ahteshamulhasan18@gmail.com",
   // );
-  final emailController = TextEditingController(text: "riyaj@gmail.com");
-  // final passwordController = TextEditingController(text: "SecurePassword123");
-  final passwordController = TextEditingController(text: "12345Eu@");
+  final emailController = TextEditingController(text: "");
+  // final passwordController = TextEditingController(text: "SecurePassword123");riyaj@gmail.com
+  final passwordController = TextEditingController(text: "");
 
   final RxBool isPasswordVisible = false.obs;
   final RxBool isLoading = false.obs;
@@ -62,7 +62,8 @@ class AuthController extends GetxController {
             userMap['subscriptionPlan'] as Map<String, dynamic>? ?? {};
         String planName = subscriptionPlan['name']?.toString() ?? "";
 
-        String userId = userMap['_id']?.toString() ?? userMap['id']?.toString() ?? "";
+        String userId =
+            userMap['_id']?.toString() ?? userMap['id']?.toString() ?? "";
 
         await SharePrefsHelper.setString(AppConstants.bearerToken, accessToken);
         await GuestChecker.setGuest(false);

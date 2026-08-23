@@ -6,8 +6,8 @@ class ApiUrl {
 
   //=============== wINDOWS ======================
   static const String baseUrl = "http://10.10.28.90:4050/api/v1";
-  static const String imageUrl = "http://10.10.28.90:4050";
-  // static const String baseUrl = "https://api.speedring.online/api/v1"
+  static const String imageUrl = "https://api.speedring.online";
+  // static const String baseUrl = "https://api.speedring.online/api/v1";
   //========================= Mac ========================
   // static const String baseUrl = "http://10.0.2.2:4050/api/v1";
   // static const String imageUrl = "http://10.0.2.2:4050";
@@ -24,7 +24,6 @@ class ApiUrl {
   static const String resendOtp = "/auth/resend-otp";
   static const String registerBusiness = "/auth/register-business";
   static const String setupUserProfile = "/users/driver/setup-profile";
-
   static const String newPassword = "/auth/reset-password";
 
   // =================== my profile =====================================
@@ -48,9 +47,8 @@ class ApiUrl {
   static const String supportDriver = "/wallets/support-driver";
   static const String getMyFollowing = "/users/my-following";
 
-  static const String privacyPolicy = "/legal-docs/privacy-policy";
-  static const String termsCondition = "/legal-docs/terms-conditions";
-  static const String aboutUs = "/legal-docs/about-us";
+  static const String getFaq = "/manage-web/all-faq";
+  static String getWebContent(String type) => "/manage-web/content/$type";
   static const String contactUs = "/contact";
   static const String changePassword = "/auth/change-password";
   static const String logout = "/auth/logout";
@@ -121,6 +119,14 @@ class ApiUrl {
   static String getUserVehicles({required String userId, int page = 1}) =>
       "/users/user-vehicles/$userId?page=$page";
   static const String getMyClubs = "/clubs/get-my-clubs";
+  static const String createContact = "/contact/create-contact";
+
+  // Chat & Messages
+  static const String allChats = "/chats/all-chats";
+  static const String accessChat = "/chats/access-chat";
+  static String allMessages(String chatId) => "/messages/all-messages/$chatId";
+  static const String sendMessage = "/messages/send-message";
+
   static String getEvents({int page = 1, int limit = 10, String? searchTerm}) {
     String url = "/events/get-all-events?page=$page&limit=$limit";
     if (searchTerm != null && searchTerm.isNotEmpty) {

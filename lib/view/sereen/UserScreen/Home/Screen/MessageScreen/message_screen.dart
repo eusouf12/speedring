@@ -3,58 +3,16 @@ import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../../core/app_routes/app_routes.dart';
-import '../../../../../../utils/navigation_utils.dart';
+import 'controller/message_screen_controller.dart';
+import 'package:speedring/view/components/custom_loader/custom_loader.dart';
+import 'package:intl/intl.dart';
 
 class MessageScreen extends StatelessWidget {
   const MessageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> chats = [
-      {
-        "id": "dummy_id",
-        "name": "Alex Racer",
-        "username": "@alex_racer",
-        "lastMsg": "Are you down for the Silverstone track day next weekend?",
-        "time": "12m ago",
-        "unreadCount": 2,
-        "isOnline": true,
-        "avatarUrl": "https://picsum.photos/seed/alex/100/100",
-      },
-      {
-        "id": "dummy_id",
-        "name": "Speed Master",
-        "username": "@speedmaster",
-        "lastMsg":
-            "That lap time was absolutely insane! How did you optimize Copse?",
-        "time": "1h ago",
-        "unreadCount": 0,
-        "isOnline": true,
-        "avatarUrl": "https://picsum.photos/seed/speedmaster/100/100",
-      },
-      {
-        "id": "dummy_id",
-        "name": "Clara Ferrari",
-        "username": "@clara_f",
-        "lastMsg":
-            "Just posted the specifications for the new suspension setup.",
-        "time": "4h ago",
-        "unreadCount": 0,
-        "isOnline": false,
-        "avatarUrl": "https://picsum.photos/seed/clara/100/100",
-      },
-      {
-        "id": "dummy_id",
-        "name": "Track King",
-        "username": "@track_king",
-        "lastMsg":
-            "We need to check the tyre pressures before the next session.",
-        "time": "Yesterday",
-        "unreadCount": 0,
-        "isOnline": false,
-        "avatarUrl": "https://picsum.photos/seed/trackking/100/100",
-      },
-    ];
+    final controller = Get.put(MessageScreenController());
 
     return CustomGradient(
       child: Scaffold(
@@ -108,6 +66,7 @@ class MessageScreen extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextFormField(
+                        onChanged: controller.onSearchChanged,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 13,
@@ -132,120 +91,154 @@ class MessageScreen extends StatelessWidget {
 
             /// Chats List
             Expanded(
-              child: ListView.separated(
-                itemCount: chats.length,
-                separatorBuilder: (_, _) =>
-                    const Divider(color: Colors.white10, height: 1, indent: 70),
-                itemBuilder: (context, index) {
-                  final chat = chats[index];
-                  return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 6,
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CustomLoader());
+                }
+                
+                if (controller.chats.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      "No Chats Found",
+                      style: TextStyle(color: Colors.white54),
                     ),
-                    onTap: () {
-                      Get.toNamed(
-                        AppRoutes.inboxScreen,
-                        arguments: {
-                          "userName": chat["name"],
-                          "avatarUrl": chat["avatarUrl"],
-                          "isOnline": chat["isOnline"],
-                          "userId": chat["id"],
-                        },
-                      );
-                    },
-                    leading: GestureDetector(
+                  );
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.only(top: 8),
+                  itemCount: controller.chats.length,
+                  itemBuilder: (context, index) {
+                    final chat = controller.chats[index];
+                    final otherUser = controller.getOtherUser(chat);
+                    
+                    final displayImage = chat.isGroupChat == true 
+                        ? "https://ui-avatars.com/api/?name=${chat.chatName}&background=random" 
+                        : (otherUser?.profileImage ?? "https://ui-avatars.com/api/?name=User");
+                        
+                    final displayName = chat.isGroupChat == true 
+                        ? (chat.chatName ?? "Group") 
+                        : (otherUser?.name ?? "Unknown");
+
+                    final displayUsername = chat.isGroupChat == true 
+                        ? "" 
+                        : "@${otherUser?.userName ?? ""}";
+
+                    final latestMessage = chat.latestMessage?.content ?? (chat.latestMessage?.imageUrl != null ? "Photo" : "");
+                    String latestMessageText = latestMessage;
+                    if (chat.latestMessage?.senderName != null && latestMessageText.isNotEmpty) {
+                      latestMessageText = "${chat.latestMessage!.senderName}: $latestMessageText";
+                    }
+                    final isOnline = chat.isGroupChat != true && otherUser?.status == 'active';
+                    final isOffline = chat.isGroupChat != true && !isOnline;
+
+                    String displayTime = "";
+                    if (chat.createdAt != null) {
+                      try {
+                        DateTime parsedTime = DateTime.parse(chat.createdAt!).toLocal();
+                        displayTime = DateFormat('hh:mm a').format(parsedTime);
+                      } catch (e) {
+                        displayTime = chat.createdAt!.length > 16 ? chat.createdAt!.substring(11, 16) : "";
+                      }
+                    }
+
+                    return ListTile(
                       onTap: () {
-                        if (chat["id"] != null) {
-                          NavigationUtils.navigateToUserProfile(chat["id"]);
-                        }
+                        Get.toNamed(
+                          AppRoutes.inboxScreen,
+                          arguments: {
+                            'chatId': chat.id,
+                            'userName': displayName,
+                            'avatarUrl': displayImage,
+                            'isOnline': isOnline,
+                            'userId': otherUser?.id,
+                          },
+                        );
                       },
-                      child: Stack(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      leading: Stack(
                         children: [
                           CircleAvatar(
                             radius: 24,
-                            backgroundImage: NetworkImage(chat["avatarUrl"]),
-                            backgroundColor: const Color(0xff1A1A1A),
+                            backgroundImage: NetworkImage(displayImage),
                           ),
-                          if (chat["isOnline"])
+                          if (isOnline || isOffline)
                             Positioned(
-                              right: 0,
                               bottom: 0,
+                              right: 0,
                               child: Container(
-                                width: 12,
-                                height: 12,
+                                width: 14,
+                                height: 14,
                                 decoration: BoxDecoration(
-                                  color: Colors.green,
+                                  color: isOnline ? Colors.green : Colors.grey,
                                   shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
+                                  border: Border.all(color: Colors.black, width: 2),
                                 ),
                               ),
                             ),
                         ],
                       ),
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          chat["name"],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        Text(
-                          chat["time"],
-                          style: const TextStyle(
-                            color: Colors.white38,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Row(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child: Text(
-                              chat["lastMsg"],
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.white60,
-                                fontSize: 12,
-                              ),
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    displayName,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (displayUsername.isNotEmpty) ...[
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Text(
+                                      displayUsername,
+                                      style: const TextStyle(
+                                        color: Colors.white54,
+                                        fontSize: 12,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                           ),
-                          if (chat["unreadCount"] > 0)
-                            Container(
-                              margin: const EdgeInsets.only(left: 8),
-                              padding: const EdgeInsets.all(6),
-                              decoration: const BoxDecoration(
-                                color: AppColors.yellow,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                chat["unreadCount"].toString(),
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
+                          Text(
+                            displayTime,
+                            style: const TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
                             ),
+                          ),
                         ],
                       ),
-                    ),
-                  );
-                },
-              ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          latestMessageText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),

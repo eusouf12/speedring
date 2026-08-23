@@ -347,7 +347,6 @@ class ReelsController extends GetxController {
             ? jsonDecode(response.body)
             : response.body;
 
-        fetchAllReels();
         // Immediately update comments list from response data
         if (body['data'] != null && body['data']['comments'] != null) {
           final List list = body['data']['comments'];
@@ -397,7 +396,6 @@ class ReelsController extends GetxController {
             ? jsonDecode(response.body)
             : response.body;
 
-        fetchAllReels();
         // Immediately update comments list from response data to show the reply instantly
         if (body['data'] != null && body['data']['comments'] != null) {
           final List list = body['data']['comments'];
@@ -424,7 +422,6 @@ class ReelsController extends GetxController {
       );
       if (response.statusCode == 200) {
         // Refresh comments
-        fetchAllReels();
         getReelInteractions(reelId);
       } else {
         showCustomSnackBar("Failed to delete comment", isError: true);

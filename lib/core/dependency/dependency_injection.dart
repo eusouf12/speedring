@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:speedring/view/sereen/AuthScreen/controller/auth_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/Profile/Screen/help_support_screen.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/settings_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/single_profile_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
@@ -9,6 +10,7 @@ import '../../view/sereen/BusinessScreen/BusinessAuth/controller/business_regist
 import '../../view/sereen/SetupProfile/setup_profile_controller.dart';
 import '../../view/sereen/BusinessScreen/BusinessHome/Controller/business_dashboard_controller.dart';
 import '../../view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
+import '../../view/sereen/UserScreen/Profile/controller/manage_web_controller.dart';
 import '../../view/sereen/UserScreen/Profile/controller/profile_controller.dart';
 import '../../view/sereen/UserScreen/Wallet/controller/support_controller.dart';
 import '../../view/sereen/UserScreen/Wallet/controller/transaction_history_controller.dart';
@@ -34,5 +36,7 @@ class DependencyInjection extends Bindings {
     Get.lazyPut(() => SingleProfileController(), fenix: true);
     Get.lazyPut(() => SettingsController(), fenix: true);
     Get.lazyPut(() => BusinessRegistrationController(), fenix: true);
+    Get.lazyPut(() => ManageWebController(), fenix: true);
+    Get.lazyPut(() => HelpSupportController(), fenix: true);
   }
 }

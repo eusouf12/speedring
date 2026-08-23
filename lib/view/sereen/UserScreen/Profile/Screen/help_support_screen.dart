@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import '../../../../components/custom_button/custom_button.dart';
-import '../../../../components/custom_text/custom_text.dart';
-import '../../../../../utils/app_colors/app_colors.dart';
+import 'package:speedring/view/components/custom_text/custom_text.dart';
+import 'package:speedring/view/components/custom_button/custom_button.dart';
+import 'package:speedring/utils/app_colors/app_colors.dart';
+import 'package:speedring/view/components/custom_loader/custom_loader.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:speedring/service/api_client.dart';
+import 'package:speedring/service/api_url.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
+import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
+import 'dart:convert';
+import '../controller/manage_web_controller.dart';
 
 class HelpSupportController extends GetxController {
   final ticketSubjectController = TextEditingController();
@@ -27,12 +36,14 @@ class HelpSupportController extends GetxController {
     }
   }
 
-  void submitTicket() {
+  final RxBool isLoading = false.obs;
+
+  void submitTicket() async {
     if (ticketSubjectController.text.isEmpty ||
         ticketMessageController.text.isEmpty) {
       Get.snackbar(
-        "Validation Error",
-        "Subject and description are required to submit a ticket.",
+        "validationError".tr,
+        "subjectDescRequired".tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: const Color(0xff181818),
         colorText: Colors.redAccent,
@@ -42,18 +53,41 @@ class HelpSupportController extends GetxController {
       return;
     }
 
-    ticketSubjectController.clear();
-    ticketMessageController.clear();
+    isLoading.value = true;
+    try {
+      String name = await SharePrefsHelper.getString(
+        AppConstants.name,
+        defaultValue: "User",
+      );
+      String email = await SharePrefsHelper.getString(
+        AppConstants.email,
+        defaultValue: "user@example.com",
+      );
 
-    Get.snackbar(
-      "Ticket Submitted",
-      "Support has received your ticket and will respond via notification shortly.",
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: const Color(0xff181818),
-      colorText: Colors.white,
-      borderColor: AppColors.yellow,
-      borderWidth: 1,
-    );
+      Map<String, dynamic> body = {
+        "name": name,
+        "email": email,
+        "subject": ticketSubjectController.text,
+        "desc": ticketMessageController.text,
+      };
+
+      var response = await ApiClient.postData(
+        ApiUrl.createContact,
+        jsonEncode(body),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ticketSubjectController.clear();
+        ticketMessageController.clear();
+        showCustomSnackBar("ticketSubmitted".tr, isError: false);
+      } else {
+        showCustomSnackBar("failedSubmitTicket".tr);
+      }
+    } catch (e) {
+      showCustomSnackBar("errorOccurred".tr);
+    } finally {
+      isLoading.value = false;
+    }
   }
 }
 
@@ -62,24 +96,8 @@ class HelpSupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(HelpSupportController());
-    final List<Map<String, String>> faqs = [
-      {
-        "q": "HOW DOES TELEMETRY LOGGING WORK?",
-        "a":
-            "Speedring connects to your device's internal GPS sensor and maps coordinates, speed, and elevation in real time during a session. Ensure location services are set to 'Always Allow' for the best tracking performance.",
-      },
-      {
-        "q": "HOW DO I UPGRADE TO PRO CERTIFIED STATUS?",
-        "a":
-            "Pro status is granted when a driver completes a verification checklist including verified track session completions, slot occupancy, and positive driver rating metrics.",
-      },
-      {
-        "q": "CAN I EXPORT MY SESSION METRICS?",
-        "a":
-            "Yes! Advanced analytics are exportable as CSV or JSON dossiers for integration with professional telemetry tools. This feature requires an active premium subscription.",
-      },
-    ];
+    final controller = Get.find<HelpSupportController>();
+    final manageWebController = Get.find<ManageWebController>()..fetchFaq();
 
     return CustomGradient(
       child: Scaffold(
@@ -92,24 +110,11 @@ class HelpSupportScreen extends StatelessWidget {
             onPressed: () => Get.back(),
           ),
           titleSpacing: 0,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CustomText(
-                text: "SYSTEM SUPPORT",
-                color: AppColors.yellow,
-                fontSize: 8.sp,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.0,
-              ),
-              CustomText(
-                text: "HELP & SUPPORT",
-                color: Colors.white,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w900,
-              ),
-            ],
+          title: CustomText(
+            text: "helpSupport".tr.toUpperCase(),
+            color: AppColors.yellow,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w900,
           ),
         ),
         body: SingleChildScrollView(
@@ -118,69 +123,94 @@ class HelpSupportScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// FAQ header
-              _buildSectionHeader("FREQUENTLY ASKED QUESTIONS"),
+              _buildSectionHeader("FREQUENTLY ASKED QUESTIONS".tr),
               SizedBox(height: 12.h),
 
               /// FAQ Items
-              ...List.generate(faqs.length, (idx) {
-                final faq = faqs[idx];
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 12.h),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xff111111),
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.08),
-                      ),
+              Obx(() {
+                if (manageWebController.isLoadingFaq.value) {
+                  return const Center(child: CustomLoader());
+                }
+
+                final faqs = manageWebController.faqList;
+                if (faqs.isEmpty) {
+                  return Center(
+                    child: CustomText(
+                      text: "No FAQs available".tr,
+                      color: Colors.white54,
                     ),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          onTap: () => controller.toggleFaq(idx),
-                          title: CustomText(
-                            text: faq["q"]!,
-                            color: Colors.white,
-                            fontSize: 11.sp,
-                            fontWeight: FontWeight.bold,
-                            textAlign: TextAlign.start,
+                  );
+                }
+
+                return Column(
+                  children: List.generate(faqs.length, (idx) {
+                    final faq = faqs[idx];
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 12.h),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff111111),
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.08),
                           ),
-                          trailing: Obx(
-                            () => Icon(
-                              controller.expandedFaqIndex.value == idx
-                                  ? Icons.keyboard_arrow_up
-                                  : Icons.keyboard_arrow_down,
-                              color: Colors.white60,
+                        ),
+                        child: Column(
+                          children: [
+                            Material(
+                              color: Colors.transparent,
+                              child: ListTile(
+                                onTap: () => controller.toggleFaq(idx),
+                                title: CustomText(
+                                  text: faq["question"] ?? '',
+                                  color: Colors.white,
+                                  fontSize: 11.sp,
+                                  fontWeight: FontWeight.bold,
+                                  textAlign: TextAlign.start,
+                                ),
+                                trailing: Obx(
+                                  () => Icon(
+                                    controller.expandedFaqIndex.value == idx
+                                        ? Icons.keyboard_arrow_up
+                                        : Icons.keyboard_arrow_down,
+                                    color: Colors.white60,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                            Obx(
+                              () => controller.expandedFaqIndex.value == idx
+                                  ? Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 16.w,
+                                        right: 16.w,
+                                        bottom: 16.h,
+                                      ),
+                                      child: Html(
+                                        data: faq["answer"] ?? '',
+                                        style: {
+                                          "body": Style(
+                                            color: Colors.white54,
+                                            fontSize: FontSize(11.0),
+                                            margin: Margins.zero,
+                                            padding: HtmlPaddings.zero,
+                                          ),
+                                        },
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                          ],
                         ),
-                        Obx(
-                          () => controller.expandedFaqIndex.value == idx
-                              ? Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 16.w,
-                                    right: 16.w,
-                                    bottom: 16.h,
-                                  ),
-                                  child: CustomText(
-                                    text: faq["a"]!,
-                                    color: Colors.white54,
-                                    fontSize: 11,
-                                    textAlign: TextAlign.start,
-                                    height: 1.5,
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }),
                 );
               }),
               SizedBox(height: 24.h),
 
               /// Contact Support section
-              _buildSectionHeader("SUBMIT A SUPPORT TICKET"),
+              _buildSectionHeader("submitSupportTicket".tr),
               SizedBox(height: 12.h),
 
               Container(
@@ -195,25 +225,30 @@ class HelpSupportScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildFieldLabel("SUBJECT"),
+                    _buildFieldLabel("subject".tr),
                     _buildTextField(
                       controller: controller.ticketSubjectController,
-                      hint: "Enter ticket topic...",
+                      hint: "enterTicketTopic".tr,
                     ),
                     SizedBox(height: 16.h),
-                    _buildFieldLabel("DESCRIPTION / DETAILS"),
+                    _buildFieldLabel("descriptionDetails".tr),
                     _buildTextField(
                       controller: controller.ticketMessageController,
-                      hint: "Explain your issue or question in detail...",
+                      hint: "explainIssueDetail".tr,
                       maxLines: 4,
                     ),
                     SizedBox(height: 20.h),
-                    CustomButton(
-                      height: 44.h,
-                      title: "SUBMIT TICKET",
-                      fontSize: 12,
-                      borderRadius: 8.r,
-                      onTap: controller.submitTicket,
+                    Obx(
+                      () => CustomButton(
+                        height: 44.h,
+                        title: "SUBMIT TICKET".tr,
+                        fontSize: 12,
+                        borderRadius: 8.r,
+                        isLoading: controller.isLoading.value,
+                        fillColor: AppColors.yellow,
+                        textColor: Colors.black,
+                        onTap: controller.submitTicket,
+                      ),
                     ),
                   ],
                 ),

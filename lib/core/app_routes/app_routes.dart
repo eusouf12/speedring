@@ -233,13 +233,7 @@ class AppRoutes {
     GetPage(name: messageScreen, page: () => const MessageScreen()),
     GetPage(
       name: inboxScreen,
-      page: () => InboxScreen(
-        userName: Get.arguments?["userName"] ?? "Driver",
-        avatarUrl:
-            Get.arguments?["avatarUrl"] ?? "https://picsum.photos/100/100",
-        isOnline: Get.arguments?["isOnline"] ?? false,
-        userId: Get.arguments?["userId"],
-      ),
+      page: () => const InboxScreen(),
     ),
     GetPage(name: supportMemberScreen, page: () => const SupportMemberScreen()),
     GetPage(name: eventDetailScreen, page: () => const EventDetailScreen()),

@@ -498,7 +498,9 @@ class SignupScreen extends StatelessWidget {
         TextSpan(text: 'agreeTo'.tr),
         WidgetSpan(
           child: GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Get.toNamed(AppRoutes.termsScreen);
+            },
             child: Text(
               'termsOfService'.tr,
               style: const TextStyle(
@@ -513,7 +515,9 @@ class SignupScreen extends StatelessWidget {
         TextSpan(text: ' ${'and'.tr} '),
         WidgetSpan(
           child: GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Get.toNamed(AppRoutes.privacyScreen);
+            },
             child: Text(
               'privacyPolicy'.tr,
               style: const TextStyle(

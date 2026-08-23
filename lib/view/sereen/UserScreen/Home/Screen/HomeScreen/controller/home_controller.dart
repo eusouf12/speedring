@@ -319,6 +319,36 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> _refreshSinglePostInList(String postId) async {
+    try {
+      var response = await ApiClient.getData(
+        ApiUrl.getSinglePost(postId: postId),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final raw = response.body['data'];
+        if (raw != null) {
+          final updatedPost = PostModel.fromJson(raw);
+          
+          final globalIndex = postsList.indexWhere((element) => element.id == postId);
+          if (globalIndex != -1) {
+            postsList[globalIndex] = updatedPost;
+          }
+          
+          final clubIndex = clubPosts.indexWhere((element) => element.id == postId);
+          if (clubIndex != -1) {
+            clubPosts[clubIndex] = updatedPost;
+          }
+          
+          if (currentPostDetail.value?.id == postId) {
+            currentPostDetail.value = updatedPost;
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Error refreshing single post: $e");
+    }
+  }
+
   Future<void> commentOnPost(String postId, String commentText) async {
     try {
       var response = await ApiClient.postData(
@@ -326,8 +356,7 @@ class HomeController extends GetxController {
         jsonEncode({"comment": commentText}),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        getPost();
-        if (currentPostDetail.value?.id == postId) getSinglePost(postId);
+        await _refreshSinglePostInList(postId);
         showCustomSnackBar("Comment added successfully", isError: false);
       } else {
         showCustomSnackBar("Failed to add comment", isError: true);
@@ -343,8 +372,7 @@ class HomeController extends GetxController {
         ApiUrl.deleteComment(postId: postId, commentId: commentId),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        getPost();
-        if (currentPostDetail.value?.id == postId) getSinglePost(postId);
+        await _refreshSinglePostInList(postId);
         showCustomSnackBar("Comment deleted successfully", isError: false);
       } else {
         showCustomSnackBar("Failed to delete comment", isError: true);
@@ -365,8 +393,7 @@ class HomeController extends GetxController {
         jsonEncode({"comment": replyText}),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        getPost();
-        if (currentPostDetail.value?.id == postId) getSinglePost(postId);
+        await _refreshSinglePostInList(postId);
         showCustomSnackBar("Reply added successfully", isError: false);
       } else {
         showCustomSnackBar("Failed to add reply", isError: true);
