@@ -267,7 +267,7 @@ class PrepareSessionScreen extends StatelessWidget {
                                   Image.network(
                                     selectedVehicle.vehicleImage ??
                                         "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&auto=format&fit=crop",
-                                    height: 180,
+                                    height: 200,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
                                   ),
@@ -304,7 +304,10 @@ class PrepareSessionScreen extends StatelessWidget {
 
                               /// Car Description
                               Padding(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 6,
+                                  horizontal: 10,
+                                ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -357,13 +360,16 @@ class PrepareSessionScreen extends StatelessWidget {
                   }),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               /// 2. THE TRACK Selector Card
               GestureDetector(
                 onTap: () => _showTrackSelectionBottomSheet(context),
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xff111111),
                     borderRadius: BorderRadius.circular(12),
@@ -383,7 +389,7 @@ class PrepareSessionScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 2),
                             Obx(() {
                               final selectedTrack =
                                   trackController.selectedTrack.value;
@@ -392,7 +398,7 @@ class PrepareSessionScreen extends StatelessWidget {
                                     "selectTrack".tr,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w900,
                                 ),
                               );
@@ -415,11 +421,14 @@ class PrepareSessionScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
 
               /// 3. Telemetry card
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 10,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xff111111),
                   borderRadius: BorderRadius.circular(12),
@@ -439,12 +448,12 @@ class PrepareSessionScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 2),
                         Text(
                           "recordMyLaps".tr,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -465,7 +474,7 @@ class PrepareSessionScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 24),
 
               /// 4. START SESSION button
               SizedBox(
