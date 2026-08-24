@@ -48,7 +48,7 @@ class LoginScreen extends StatelessWidget {
                         child: CustomText(
                           text: 'welcomeBack'.tr,
                           color: Colors.white,
-                          fontSize: 36,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                           textAlign: TextAlign.center,
                         ),
@@ -58,7 +58,7 @@ class LoginScreen extends StatelessWidget {
                         child: CustomText(
                           text: 'loginSubtitle'.tr,
                           color: Colors.white54,
-                          fontSize: 15,
+                          fontSize: 13,
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           fontFamily: "Barlow",
@@ -112,6 +112,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
+                              controller.clearForgotPasswordData();
                               Get.toNamed(AppRoutes.forgotPasswordScreen);
                             },
                             child: CustomText(

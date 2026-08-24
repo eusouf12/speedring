@@ -35,35 +35,14 @@ class ResetPasswordScreen extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
 
-                // ── Back arrow ────────────────────────────────────────────
-                GestureDetector(
-                  onTap: () => Get.back(),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1A1A1A),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white10),
-                    ),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // ── Heading ───────────────────────────────────────────────
-                // ── Heading ───────────────────────────────────────────────
+                
                 CustomText(
-                  text: 'resetPasswordTitle'.tr,
+                  text: 'resetPassword'.tr,
                   color: Colors.white,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   maxLines: 2,
+                  textAlign: TextAlign.center,
                 ),
 
                 const SizedBox(height: 32),
@@ -135,7 +114,8 @@ class ResetPasswordScreen extends StatelessWidget {
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'confirmPasswordRequired'.tr;
+                    if (v == null || v.isEmpty)
+                      return 'confirmPasswordRequired'.tr;
                     if (v != controller.newPasswordController.text) {
                       return 'passwordsDoNotMatch'.tr;
                     }
@@ -164,7 +144,10 @@ class ResetPasswordScreen extends StatelessWidget {
                           pwd.contains(RegExp(r'[A-Z]')),
                         ),
                         const SizedBox(height: 10),
-                        _strengthRow('number'.tr, pwd.contains(RegExp(r'[0-9]'))),
+                        _strengthRow(
+                          'number'.tr,
+                          pwd.contains(RegExp(r'[0-9]')),
+                        ),
                         const SizedBox(height: 10),
                         _strengthRow(
                           'specialChar'.tr,

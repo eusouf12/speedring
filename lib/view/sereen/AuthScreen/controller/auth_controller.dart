@@ -202,6 +202,17 @@ class AuthController extends GetxController {
   final forgotEmailController = TextEditingController();
   final RxBool isForgotLoading = false.obs;
 
+  void clearForgotPasswordData() {
+    forgotEmailController.clear();
+    for (var c in otpControllers) {
+      c.clear();
+    }
+    newPasswordController.clear();
+    confirmNewPasswordController.clear();
+    resetPasswordStrength.value = '';
+    _resetToken = '';
+  }
+
   Future<void> sendOtp() async {
     if (!forgotFormKey.currentState!.validate()) return;
     isForgotLoading.value = true;
@@ -400,6 +411,7 @@ class AuthController extends GetxController {
         await SharePrefsHelper.remove(AppConstants.bearerToken);
 
         formKey = GlobalKey<FormState>();
+        clearForgotPasswordData();
         Get.offAllNamed(AppRoutes.loginScreen);
       } else {
         Map<String, dynamic> errorResponse = _parseResponseBody(response.body);
