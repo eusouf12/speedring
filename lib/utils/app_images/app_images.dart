@@ -16,4 +16,5 @@ class AppImages {
   static const String helmed2 = "$basePath/helmed2.png";
   static const String spotters = "$basePath/spotters.png";
   static const String others = "$basePath/others.png";
+  static const String logoApp = "$basePath/app_logo.png";
 }

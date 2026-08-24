@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:speedring/view/sereen/UserScreen/track/mode/track_model.dart';
+import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/settings_controller.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -165,6 +167,7 @@ class LiveSessionController extends GetxController {
   }
 
   void _setupMarkers() {
+    final trackController = Get.find<TrackController>();
     if (track?.startCoordinates != null) {
       markers.add(
         Marker(
@@ -174,7 +177,7 @@ class LiveSessionController extends GetxController {
             track!.startCoordinates!.lng ?? 0,
           ),
           infoWindow: InfoWindow(title: 'startLocation'.tr),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
+          icon: trackController.startMarkerIcon ?? BitmapDescriptor.defaultMarkerWithHue(
             BitmapDescriptor.hueGreen,
           ),
         ),
@@ -189,7 +192,7 @@ class LiveSessionController extends GetxController {
             track!.finishCoordinates!.lng ?? 0,
           ),
           infoWindow: InfoWindow(title: 'finishLocation'.tr),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          icon: trackController.finishMarkerIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         ),
       );
     }
@@ -254,11 +257,33 @@ class LiveSessionController extends GetxController {
 
     _startGForceTracking();
 
-    // Start location tracking
-    LocationSettings locationSettings = const LocationSettings(
-      accuracy: LocationAccuracy.bestForNavigation,
-      distanceFilter: 2, // meters
-    );
+    // Start location tracking with optimized settings for real-time high-speed data
+    late LocationSettings locationSettings;
+    if (Platform.isAndroid) {
+      locationSettings = AndroidSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        distanceFilter: 0, // 0 for continuous updates
+        intervalDuration: const Duration(seconds: 1), // 1 update per second
+        forceLocationManager: true, // uses raw GPS provider which is often faster
+        foregroundNotificationConfig: const ForegroundNotificationConfig(
+          notificationText: "Speedring is tracking your session in real-time.",
+          notificationTitle: "Live Tracking Active",
+          enableWakeLock: true,
+        ),
+      );
+    } else if (Platform.isIOS || Platform.isMacOS) {
+      locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        activityType: ActivityType.automotiveNavigation,
+        distanceFilter: 0,
+        pauseLocationUpdatesAutomatically: false,
+      );
+    } else {
+      locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        distanceFilter: 0,
+      );
+    }
 
     positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings).listen(
@@ -538,7 +563,7 @@ class LiveSessionController extends GetxController {
 
   Future<void> _fetchTemperature(double lat, double lng) async {
     try {
-      final response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=\$lat&longitude=\$lng&current_weather=true'));
+      final response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lng&current_weather=true'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         double tempC = data['current_weather']['temperature'];

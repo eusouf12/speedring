@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:ui' as ui;
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:speedring/service/api_client.dart';
@@ -22,6 +25,9 @@ class TrackController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isLoadMore = false.obs;
 
+  BitmapDescriptor? startMarkerIcon;
+  BitmapDescriptor? finishMarkerIcon;
+
   // Prepare Session State
   RxBool recordLaps = false.obs;
   Rxn<Track> selectedTrack = Rxn<Track>();
@@ -37,8 +43,94 @@ class TrackController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _loadMarkerIcons();
     getAllTracks(refresh: true);
     getMySessionStats();
+  }
+
+  Future<Uint8List> _getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(
+      data.buffer.asUint8List(),
+      targetWidth: width,
+    );
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(
+      format: ui.ImageByteFormat.png,
+    ))!.buffer.asUint8List();
+  }
+
+  Future<Uint8List> _createCustomPinMarker(Color color, int width) async {
+    final int height = (width * 1.5).toInt();
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    
+    final Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+      
+    final Paint borderPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width * 0.05;
+
+    final Path path = Path();
+    final double radius = width / 2;
+    
+    // Draw teardrop shape
+    path.moveTo(0, radius);
+    path.arcToPoint(
+      Offset(width.toDouble(), radius),
+      radius: Radius.circular(radius),
+      clockwise: true,
+    );
+    path.quadraticBezierTo(width.toDouble(), radius * 1.3, radius, height.toDouble());
+    path.quadraticBezierTo(0, radius * 1.3, 0, radius);
+    path.close();
+
+    canvas.drawPath(path, paint);
+    canvas.drawPath(path, borderPaint);
+
+    // Add a small inner circle
+    final Paint innerPaint = Paint()..color = Colors.black87;
+    canvas.drawCircle(Offset(radius, radius), radius * 0.35, innerPaint);
+
+    final ui.Picture picture = pictureRecorder.endRecording();
+    final ui.Image image = await picture.toImage(width, height);
+    final ByteData? byteData = await image.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
+    return byteData!.buffer.asUint8List();
+  }
+
+  Future<void> _loadMarkerIcons() async {
+    try {
+      // Create a small yellow pin for start marker (e.g., width 50 pixels)
+      final Uint8List startMarkerData = await _createCustomPinMarker(
+        Colors.yellow,
+        50,
+      );
+      startMarkerIcon = BitmapDescriptor.fromBytes(startMarkerData);
+    } catch (e) {
+      debugPrint("Error creating start marker: $e");
+      startMarkerIcon = BitmapDescriptor.defaultMarkerWithHue(
+        BitmapDescriptor.hueYellow,
+      );
+    }
+
+    try {
+      // Resize the logo for finish marker to be small (e.g., width 80)
+      final Uint8List finishMarkerData = await _getBytesFromAsset(
+        'assets/images/app_logo.png',
+        60,
+      );
+      finishMarkerIcon = BitmapDescriptor.fromBytes(finishMarkerData);
+    } catch (e) {
+      debugPrint("Error loading custom marker icon: $e");
+      finishMarkerIcon = BitmapDescriptor.defaultMarkerWithHue(
+        BitmapDescriptor.hueRed,
+      );
+    }
   }
 
   Timer? _debounce;

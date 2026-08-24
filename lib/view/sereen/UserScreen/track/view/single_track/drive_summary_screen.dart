@@ -21,6 +21,23 @@ class DriveSummaryScreen extends StatelessWidget {
       return "00:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}";
     }
   }
+  LatLngBounds _getBounds(List<LatLng> points) {
+    double minLat = points.first.latitude;
+    double maxLat = points.first.latitude;
+    double minLng = points.first.longitude;
+    double maxLng = points.first.longitude;
+
+    for (var point in points) {
+      if (point.latitude < minLat) minLat = point.latitude;
+      if (point.latitude > maxLat) maxLat = point.latitude;
+      if (point.longitude < minLng) minLng = point.longitude;
+      if (point.longitude > maxLng) maxLng = point.longitude;
+    }
+    return LatLngBounds(
+      southwest: LatLng(minLat, minLng),
+      northeast: LatLng(maxLat, maxLng),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -311,6 +328,17 @@ class DriveSummaryScreen extends StatelessWidget {
     ''';
                             // ignore: deprecated_member_use
                             controller.setMapStyle(darkStyle);
+
+                            if (routePoints.isNotEmpty) {
+                              Future.delayed(const Duration(milliseconds: 300), () {
+                                controller.animateCamera(
+                                  CameraUpdate.newLatLngBounds(
+                                    _getBounds(routePoints),
+                                    50.0, // padding
+                                  ),
+                                );
+                              });
+                            }
                           },
                           initialCameraPosition: CameraPosition(
                             target: routePoints.isNotEmpty
@@ -350,21 +378,17 @@ class DriveSummaryScreen extends StatelessWidget {
                               ),
                           },
                           markers: {
-                            if (routePoints.isNotEmpty)
+                            if (routePoints.isNotEmpty && trackController.startMarkerIcon != null)
                               Marker(
                                 markerId: const MarkerId('start'),
                                 position: routePoints.first,
-                                icon: BitmapDescriptor.defaultMarkerWithHue(
-                                  BitmapDescriptor.hueGreen,
-                                ),
+                                icon: trackController.startMarkerIcon!,
                               ),
-                            if (routePoints.isNotEmpty)
+                            if (routePoints.isNotEmpty && trackController.finishMarkerIcon != null)
                               Marker(
                                 markerId: const MarkerId('finish'),
                                 position: routePoints.last,
-                                icon: BitmapDescriptor.defaultMarkerWithHue(
-                                  BitmapDescriptor.hueRed,
-                                ),
+                                icon: trackController.finishMarkerIcon!,
                               ),
                           },
                           zoomControlsEnabled: false,
@@ -378,7 +402,7 @@ class DriveSummaryScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const Icon(Icons.circle, color: Colors.green, size: 6),
+                        const Icon(Icons.circle, color: Colors.yellow, size: 6),
                         const SizedBox(width: 4),
                         Text(
                           "startUpper".tr,
@@ -389,7 +413,7 @@ class DriveSummaryScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Icon(Icons.circle, color: Colors.red, size: 6),
+                        Image.asset(AppImages.logoApp, height: 10, width: 10),
                         const SizedBox(width: 4),
                         Text(
                           "endUpper".tr,
