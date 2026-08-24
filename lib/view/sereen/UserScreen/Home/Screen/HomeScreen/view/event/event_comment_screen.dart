@@ -111,7 +111,7 @@ class _EventCommentSheet extends StatelessWidget {
                     ),
                     itemCount: comments.length,
                     separatorBuilder: (_, _) =>
-                        const Divider(color: Colors.white12, height: 24),
+                        const Divider(color: Colors.white12, height: 16),
                     itemBuilder: (_, i) {
                       return _EventCommentTile(
                         eventId: event.id!,
@@ -172,7 +172,7 @@ class _EventCommentTile extends StatelessWidget {
                 }
               },
               child: CircleAvatar(
-                radius: 18,
+                radius: 16,
                 backgroundColor: const Color(0xff2A2A2A),
                 backgroundImage: comment.user?.profileImage != null
                     ? NetworkImage(comment.user!.profileImage!)
@@ -204,7 +204,7 @@ class _EventCommentTile extends StatelessWidget {
                               "User",
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 11,
+                            fontSize: 13, // increased from 11
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -221,7 +221,7 @@ class _EventCommentTile extends StatelessWidget {
                           child: const Icon(
                             Icons.delete,
                             color: Colors.redAccent,
-                            size: 16,
+                            size: 14,
                           ),
                         ),
                     ],
@@ -232,8 +232,8 @@ class _EventCommentTile extends StatelessWidget {
                   Text(
                     comment.comment ?? "",
                     style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
+                      color: Colors.white, // brighter text
+                      fontSize: 14, // increased from 12
                       height: 1.5,
                     ),
                   ),
@@ -344,8 +344,8 @@ class _EventCommentTile extends StatelessWidget {
                                       reply.user?.userName ??
                                       "User",
                                   style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 10,
+                                    color: Colors.white,
+                                    fontSize: 12, // increased from 10
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -354,8 +354,8 @@ class _EventCommentTile extends StatelessWidget {
                               Text(
                                 reply.comment ?? "",
                                 style: const TextStyle(
-                                  color: Colors.white60,
-                                  fontSize: 11,
+                                  color: Colors.white,
+                                  fontSize: 13, // increased from 11
                                 ),
                               ),
                               // Reply react count removed
@@ -506,7 +506,11 @@ class _EventCommentInputBar extends StatelessWidget {
                       controller: ctrl.ctrl,
                       focusNode: ctrl.focusNode,
                       cursorColor: Colors.yellow,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      keyboardType: TextInputType.multiline,
+                      textCapitalization: TextCapitalization.sentences,
+                      minLines: 1,
+                      maxLines: 4,
                       decoration: InputDecoration(
                         hintText: "addComment".tr,
                         hintStyle: TextStyle(color: Colors.white30),

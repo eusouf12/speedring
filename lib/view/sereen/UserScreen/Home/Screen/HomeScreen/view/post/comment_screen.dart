@@ -127,7 +127,7 @@ class _CommentSheet extends StatelessWidget {
                     ),
                     itemCount: commentsList.length,
                     separatorBuilder: (_, _) =>
-                        const Divider(color: Colors.white12, height: 24),
+                        const Divider(color: Colors.white12, height: 16),
                     itemBuilder: (_, i) {
                       final comment = commentsList[i];
                       return _CommentTile(
@@ -218,7 +218,7 @@ class _CommentTile extends StatelessWidget {
                 }
               },
               child: CircleAvatar(
-                radius: 18,
+                radius: 16,
                 backgroundColor: const Color(0xff2A2A2A),
                 backgroundImage: comment.user?.profileImage != null
                     ? NetworkImage(comment.user!.profileImage!)
@@ -249,20 +249,15 @@ class _CommentTile extends StatelessWidget {
                               "User",
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 11,
+                            fontSize: 13, // increased from 11
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
                       const Spacer(),
                       if (isMyComment)
-                        IconButton(
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.redAccent,
-                            size: 14,
-                          ),
-                          onPressed: () {
+                        GestureDetector(
+                          onTap: () {
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -307,8 +302,11 @@ class _CommentTile extends StatelessWidget {
                               ),
                             );
                           },
-                          constraints: const BoxConstraints(),
-                          padding: EdgeInsets.zero,
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.redAccent,
+                            size: 14,
+                          ),
                         ),
                     ],
                   ),
@@ -316,8 +314,8 @@ class _CommentTile extends StatelessWidget {
                   Text(
                     comment.comment ?? "",
                     style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
+                      color: Colors.white, // brighter text
+                      fontSize: 14, // increased from 12
                       height: 1.5,
                     ),
                   ),
@@ -545,7 +543,11 @@ class _CommentInputBar extends StatelessWidget {
                       controller: controller.ctrl,
                       focusNode: controller.focusNode,
                       cursorColor: Colors.yellow,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      keyboardType: TextInputType.multiline,
+                      textCapitalization: TextCapitalization.sentences,
+                      minLines: 1,
+                      maxLines: 4,
                       decoration: InputDecoration(
                         hintText: "addComment".tr,
                         hintStyle: TextStyle(color: Colors.white30),
