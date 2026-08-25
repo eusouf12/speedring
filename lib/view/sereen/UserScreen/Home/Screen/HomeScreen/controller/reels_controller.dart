@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 import '../../../../../../../../service/api_client.dart';
 import '../../../../../../../../service/api_url.dart';
 import '../../../../../../../../utils/ToastMsg/toast_message.dart';
 import '../../../../../../../../helper/shared_prefe/shared_prefe.dart';
 import '../../../../../../../../utils/app_const/app_const.dart';
-import '../home_controller.dart';
 
 class ReelsController extends GetxController {
   RxList<Map<String, dynamic>> reels = <Map<String, dynamic>>[].obs;
@@ -73,7 +73,7 @@ class ReelsController extends GetxController {
             _hasMoreReels = false;
           }
           final newReels = list.map((e) => e as Map<String, dynamic>).toList();
-          
+
           if (isLoadMore) {
             reels.addAll(newReels);
           } else {
@@ -81,7 +81,7 @@ class ReelsController extends GetxController {
           }
           _reelPage++;
         } else {
-           _hasMoreReels = false;
+          _hasMoreReels = false;
         }
       }
     } catch (e) {
@@ -179,7 +179,7 @@ class ReelsController extends GetxController {
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         fetchAllReels();
-        
+
         try {
           if (Get.isRegistered<HomeController>()) {
             Get.find<HomeController>().getPost();
