@@ -11,6 +11,7 @@ import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:speedring/service/api_client.dart';
 import 'package:speedring/view/sereen/UserScreen/discover/model/network_user_model.dart';
+import '../../Home/Screen/HomeScreen/controller/home_controller.dart';
 
 class DiscoverController extends GetxController {
   // ─── Search ───
@@ -192,6 +193,13 @@ class DiscoverController extends GetxController {
           isError: false,
         );
         await getAllVideoPosts(refresh: true);
+
+        try {
+          if (Get.isRegistered<HomeController>()) {
+            Get.find<HomeController>().getPost();
+          }
+        } catch (_) {}
+
         Get.back();
       } else {
         showCustomSnackBar(
@@ -509,14 +517,14 @@ class DiscoverController extends GetxController {
         final res = NetworkUserResponse.fromJson(data);
         _networkTotalPages = res.meta?.totalPage ?? 1;
         if (_networkPage == 1) networkUsers.clear();
-        
+
         final newUsers = res.data ?? [];
         for (var user in newUsers) {
           if (!networkUsers.any((u) => u.id == user.id)) {
             networkUsers.add(user);
           }
         }
-        
+
         _networkPage++;
       } else {
         showCustomSnackBar("Failed to fetch network users", isError: true);

@@ -8,6 +8,7 @@ import '../../../../../../../../service/api_url.dart';
 import '../../../../../../../../utils/ToastMsg/toast_message.dart';
 import '../../../../../../../../helper/shared_prefe/shared_prefe.dart';
 import '../../../../../../../../utils/app_const/app_const.dart';
+import '../home_controller.dart';
 
 class ReelsController extends GetxController {
   RxList<Map<String, dynamic>> reels = <Map<String, dynamic>>[].obs;
@@ -178,9 +179,15 @@ class ReelsController extends GetxController {
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         fetchAllReels();
+        
+        try {
+          if (Get.isRegistered<HomeController>()) {
+            Get.find<HomeController>().getPost();
+          }
+        } catch (_) {}
+
         showCustomSnackBar("Reel created successfully", isError: false);
         Get.offNamed(AppRoutes.reelsScreen); // Go back to Reels screen
-        // Refresh the list
       } else {
         final body = response.body is String
             ? jsonDecode(response.body)
