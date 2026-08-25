@@ -50,10 +50,9 @@ class PostModel {
   final String? id;
   final String? category;
   final String? visibility;
-  final String? club;
   final String? status;
-
   final PostUser? user;
+  final PostClub? club;
 
   final ClubPostDetails? clubPostDetails;
   final BusinessPostDetails? businessPostDetails;
@@ -77,9 +76,9 @@ class PostModel {
     this.id,
     this.category,
     this.visibility,
-    this.club,
     this.status,
     this.user,
+    this.club,
     this.clubPostDetails,
     this.businessPostDetails,
     this.sessionDetails,
@@ -101,10 +100,15 @@ class PostModel {
       id: json["_id"],
       category: json["category"],
       visibility: json["visibility"],
-      club: json["club"],
       status: json["status"],
 
       user: json["user"] != null ? PostUser.fromJson(json["user"]) : null,
+
+      club: json["club"] != null 
+          ? (json["club"] is Map<String, dynamic> 
+              ? PostClub.fromJson(json["club"]) 
+              : PostClub(id: json["club"]))
+          : null,
 
       clubPostDetails: json["clubPostDetails"] != null
           ? ClubPostDetails.fromJson(json["clubPostDetails"])
@@ -160,14 +164,48 @@ class PostModel {
   }
 }
 
+class PostClub {
+  final String? id;
+  final String? clubName;
+  final String? logo;
+  final String? description;
+  bool isFollow;
+
+  PostClub({
+    this.id, 
+    this.clubName, 
+    this.logo, 
+    this.description,
+    this.isFollow = false,
+  });
+
+  factory PostClub.fromJson(Map<String, dynamic> json) {
+    return PostClub(
+      id: json["_id"],
+      clubName: json["clubName"],
+      logo: json["logo"],
+      description: json["description"],
+      isFollow: json["isFollow"] ?? false,
+    );
+  }
+}
+
 class PostUser {
   final String? id;
   final String? name;
   final String? role;
   final String? profileImage;
   final String? userName;
+  bool isFollow;
 
-  PostUser({this.id, this.name, this.role, this.profileImage, this.userName});
+  PostUser({
+    this.id, 
+    this.name, 
+    this.role, 
+    this.profileImage, 
+    this.userName,
+    this.isFollow = false,
+  });
 
   factory PostUser.fromJson(Map<String, dynamic> json) {
     return PostUser(
@@ -176,6 +214,7 @@ class PostUser {
       role: json["role"],
       profileImage: json["profileImage"],
       userName: json["userName"],
+      isFollow: json["isFollow"] ?? false,
     );
   }
 }

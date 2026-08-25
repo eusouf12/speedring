@@ -9,6 +9,7 @@ import '../../../../../../components/custom_appbar_user/custom_appbar_user.dart'
 import '../controller/home_controller.dart';
 import '../model/post_model.dart';
 import 'package:speedring/helper/guest_checker.dart';
+import 'package:speedring/view/sereen/UserScreen/discover/controller/discover_controller.dart';
 import 'post/comment_screen.dart' show showCommentSheet;
 import 'event/event_comment_screen.dart'
     show showEventCommentSheet, shareEventLink;
@@ -262,33 +263,93 @@ class UserHomeScreen extends StatelessWidget {
                             }
 
                             final post = controller.postsList[index - 1];
-                            final categoryLabel = post.category != null
+                            final categoryLabel = post.category != null && post.category != 'CLUB_POST'
                                 ? post.category!
                                       .replaceAll('_', ' ')
                                       .toUpperCase()
                                 : '';
-                            final userName =
+                            
+                            final bool isClubPost = post.category == 'CLUB_POST';
+                            
+                            final originalUserName =
                                 post.user?.name ??
                                 post.user?.userName ??
                                 'User';
-                            final profileImage = post.user?.profileImage;
+                                
+                            final userName = isClubPost 
+                                ? (post.club?.clubName ?? originalUserName)
+                                : originalUserName;
+                                
+                            String? profileImage = isClubPost
+                                ? (post.club?.logo ?? post.user?.profileImage)
+                                : post.user?.profileImage;
+                            
+                            if (profileImage != null && profileImage.isNotEmpty && !profileImage.startsWith('http')) {
+                              profileImage = "${ApiUrl.imageUrl}$profileImage";
+                            }
 
                             final loc =
                                 post.spotDetails?.region ??
                                 post.trackUpdateDetails?.circuit ??
                                 post.sessionDetails?.trackName;
 
-                            final location = loc != null && loc.isNotEmpty
+                            String location = loc != null && loc.isNotEmpty
                                 ? (categoryLabel.isNotEmpty
                                       ? "$categoryLabel • $loc"
                                       : loc)
                                 : (categoryLabel.isNotEmpty
                                       ? categoryLabel
-                                      : 'Unknown Location');
+                                      : '');
+                                      
+                            Widget? subtitleWidget;
+                            if (isClubPost) {
+                              subtitleWidget = GestureDetector(
+                                onTap: post.user?.id != null
+                                    ? () => NavigationUtils.navigateToUserProfile(post.user!.id)
+                                    : null,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          const TextSpan(text: "Posted by ", style: TextStyle(color: Colors.grey)),
+                                          TextSpan(
+                                            text: originalUserName,
+                                            style: const TextStyle(
+                                              color: AppColors.yellow, 
+                                              fontWeight: FontWeight.bold,
+                                              decoration: TextDecoration.underline,
+                                            ),
+                                          ),
+                                          if (location.isNotEmpty)
+                                            TextSpan(text: " • $location", style: const TextStyle(color: Colors.grey)),
+                                        ],
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      post.category?.replaceAll('_', ' ').toUpperCase() ?? "CLUB POST",
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+
                             final imageUrl =
                                 post.media != null && post.media!.isNotEmpty
                                 ? post.media!.first.url ?? ''
                                 : '';
+                            final mediaType = post.media != null && post.media!.isNotEmpty
+                                ? post.media!.first.type
+                                : 'image';
                             final caption =
                                 post.clubPostDetails?.details ??
                                 post.businessPostDetails?.description ??
@@ -303,16 +364,40 @@ class UserHomeScreen extends StatelessWidget {
                             return Column(
                               children: [
                                 PostCard(
-                                  userId: post.user?.id,
+                                  userId: isClubPost ? post.club?.id : post.user?.id,
+                                  onProfileTap: isClubPost && post.club?.id != null
+                                      ? () => Get.toNamed(
+                                            (post.club?.isFollow == true)
+                                                ? AppRoutes.clubDetailsScreen
+                                                : AppRoutes.clubDetaislScreenNonMy,
+                                            arguments: {"id": post.club!.id},
+                                          )
+                                      : null,
                                   userName: userName,
                                   location: location,
                                   imageUrl: imageUrl,
+                                  mediaType: mediaType,
                                   caption: caption,
                                   profileImage: profileImage,
                                   reactCount: post.reactCount,
                                   commentCount: post.commentCount,
                                   isLiked: post.isReacted ?? false,
+                                  isFollow: isClubPost 
+                                      ? post.club?.isFollow 
+                                      : (post.user?.id == controller.currentUserId.value ? true : post.user?.isFollow),
+                                  onFollow: () {
+                                    if (isClubPost && post.club?.id != null) {
+                                      final newFollow = !(post.club?.isFollow ?? false);
+                                      controller.toggleClubFollowInFeed(post.club!.id!, newFollow);
+                                      controller.joinClub(post.club!.id!);
+                                    } else if (!isClubPost && post.user?.id != null && post.user!.id != controller.currentUserId.value) {
+                                      final newFollow = !(post.user?.isFollow ?? false);
+                                      controller.toggleUserFollowInFeed(post.user!.id!, newFollow);
+                                      Get.put(DiscoverController()).toggleFollowUser(post.user!.id!);
+                                    }
+                                  },
                                   detailsWidget: buildPostDetails(post),
+                                  subtitleWidget: subtitleWidget,
                                   onTap: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -1432,19 +1517,6 @@ Widget? buildPostDetails(PostModel post) {
             buildDetailRow(Icons.warning, "Hazards", track.hazards!.join(", ")),
           ],
         ],
-      ),
-    );
-  } else if (category == "CLUB_POST" && post.clubPostDetails != null) {
-    final club = post.clubPostDetails!;
-    final hasTitle = club.title != null && club.title!.isNotEmpty;
-    if (!hasTitle) return null;
-
-    return Text(
-      club.title!,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
       ),
     );
   }

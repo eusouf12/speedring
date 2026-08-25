@@ -937,30 +937,31 @@ class DiscoverScreen extends StatelessWidget {
               ],
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              if (GuestChecker.showLoginDialogIfGuest()) return;
-              if (user.id != null) {
-                controller.toggleFollowUser(user.id!);
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: isFollowing ? AppColors.yellow : Colors.white12,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                isFollowing ? 'followingUpper'.tr : 'follow'.tr,
-                style: TextStyle(
-                  color: isFollowing ? Colors.black : Colors.white,
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
+          if (user.id != controller.currentUserId.value)
+            GestureDetector(
+              onTap: () {
+                if (GuestChecker.showLoginDialogIfGuest()) return;
+                if (user.id != null) {
+                  controller.toggleFollowUser(user.id!);
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isFollowing ? AppColors.yellow : Colors.white12,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  isFollowing ? 'followingUpper'.tr : 'follow'.tr,
+                  style: TextStyle(
+                    color: isFollowing ? Colors.black : Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_netwrok_image/custom_network_image.dart';
 import 'package:speedring/utils/navigation_utils.dart';
+import '../../../../../../../../core/app_routes/app_routes.dart';
 import '../../controller/home_controller.dart';
 import '../user_home_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'comment_screen.dart';
 import 'package:speedring/helper/guest_checker.dart';
+import '../../../../../discover/controller/discover_controller.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final String postId;
@@ -50,9 +53,25 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             );
           }
 
-          final userName =
+          final bool isClubPost = post.category == 'CLUB_POST';
+
+          final originalUserName =
               post.user?.userName ?? post.user?.name ?? "unknown".tr;
-          final profileImage = post.user?.profileImage;
+
+          final userName = isClubPost
+              ? (post.club?.clubName ?? originalUserName)
+              : originalUserName;
+
+          String? profileImage = isClubPost
+              ? (post.club?.logo ?? post.user?.profileImage)
+              : post.user?.profileImage;
+
+          if (profileImage != null &&
+              profileImage.isNotEmpty &&
+              !profileImage.startsWith('http')) {
+            profileImage = "${ApiUrl.imageUrl}$profileImage";
+          }
+
           final imageUrls = (post.media ?? [])
               .map((e) => e.url ?? "")
               .where((u) => u.isNotEmpty)
@@ -63,7 +82,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               post.user?.id != null &&
               post.user!.id == controller.currentUserId.value;
 
-          final categoryLabel = post.category != null
+          final categoryLabel =
+              post.category != null && post.category != 'CLUB_POST'
               ? post.category!.replaceAll('_', ' ').toUpperCase()
               : '';
           final loc =
@@ -74,6 +94,58 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           String subtitle = loc != null && loc.isNotEmpty
               ? (categoryLabel.isNotEmpty ? "$categoryLabel • $loc" : loc)
               : (categoryLabel.isNotEmpty ? categoryLabel : '');
+
+          Widget? subtitleWidget;
+          if (isClubPost) {
+            subtitleWidget = GestureDetector(
+              onTap: post.user?.id != null
+                  ? () => NavigationUtils.navigateToUserProfile(post.user!.id)
+                  : null,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: "Posted by ",
+                          style: TextStyle(color: Colors.white54, fontSize: 11),
+                        ),
+                        TextSpan(
+                          text: originalUserName,
+                          style: const TextStyle(
+                            color: AppColors.yellow,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                        if (subtitle.isNotEmpty)
+                          TextSpan(
+                            text: " • $subtitle",
+                            style: const TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
+                            ),
+                          ),
+                      ],
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    post.category?.replaceAll('_', ' ').toUpperCase() ?? "CLUB POST",
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
 
           // Get specific caption
           String caption = "";
@@ -86,10 +158,43 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           } else if (post.trackUpdateDetails != null) {
             caption = post.trackUpdateDetails!.notes ?? "";
           } else if (post.clubPostDetails != null) {
-            caption =
-                post.clubPostDetails!.details ??
-                post.clubPostDetails!.title ??
-                "";
+            caption = post.clubPostDetails!.details ?? "";
+          }
+
+          void handleProfileNavigation() {
+            if (isClubPost && post.club?.id != null) {
+              Get.toNamed(
+                (post.club?.isFollow == true)
+                    ? AppRoutes.clubDetailsScreen
+                    : AppRoutes.clubDetaislScreenNonMy,
+                arguments: {"id": post.club!.id},
+              );
+            } else if (post.user?.id != null) {
+              NavigationUtils.navigateToUserProfile(post.user!.id);
+            }
+          }
+
+          // Determine whether to show Follow button
+          final bool showFollowBtn = isClubPost
+              ? (post.club?.isFollow == false)
+              : (!isMyPost && post.user?.isFollow == false);
+
+          void handleFollow() {
+            if (GuestChecker.showLoginDialogIfGuest()) return;
+            if (isClubPost && post.club?.id != null) {
+              final newFollow = !(post.club?.isFollow ?? false);
+              controller.toggleClubFollowInFeed(post.club!.id!, newFollow);
+              // also update currentPostDetail
+              post.club?.isFollow = newFollow;
+              controller.currentPostDetail.refresh();
+              controller.joinClub(post.club!.id!);
+            } else if (!isClubPost && post.user?.id != null && !isMyPost) {
+              final newFollow = !(post.user?.isFollow ?? false);
+              controller.toggleUserFollowInFeed(post.user!.id!, newFollow);
+              post.user?.isFollow = newFollow;
+              controller.currentPostDetail.refresh();
+              Get.put(DiscoverController()).toggleFollowUser(post.user!.id!);
+            }
           }
 
           return CustomScrollView(
@@ -115,13 +220,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             children: [
                               /// Avatar
                               GestureDetector(
-                                onTap: () {
-                                  if (post.user?.id != null) {
-                                    NavigationUtils.navigateToUserProfile(
-                                      post.user!.id,
-                                    );
-                                  }
-                                },
+                                onTap: handleProfileNavigation,
                                 child: Container(
                                   width: 46,
                                   height: 46,
@@ -158,13 +257,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     Row(
                                       children: [
                                         GestureDetector(
-                                          onTap: () {
-                                            if (post.user?.id != null) {
-                                              NavigationUtils.navigateToUserProfile(
-                                                post.user!.id,
-                                              );
-                                            }
-                                          },
+                                          onTap: handleProfileNavigation,
                                           child: CustomText(
                                             text: userName,
                                             color: Colors.white,
@@ -173,9 +266,33 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                             letterSpacing: 0.5,
                                           ),
                                         ),
+                                        if (showFollowBtn) ...[  
+                                          const SizedBox(width: 8),
+                                          GestureDetector(
+                                            onTap: handleFollow,
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: Colors.amber,
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              child: Text(
+                                                'follow'.tr,
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ],
                                     ),
-                                    if (subtitle.isNotEmpty) ...[
+                                    if (subtitleWidget != null) ...[
+                                      const SizedBox(height: 2),
+                                      subtitleWidget,
+                                    ] else if (subtitle.isNotEmpty) ...[
                                       const SizedBox(height: 2),
                                       CustomText(
                                         text: subtitle,
@@ -300,7 +417,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  if (GuestChecker.showLoginDialogIfGuest()) return;
+                                  if (GuestChecker.showLoginDialogIfGuest()) {
+                                    return;
+                                  }
                                   controller.reactToPost(post.id!);
                                 },
                                 child: Row(

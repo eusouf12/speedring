@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import '../post/post_detail_screen.dart';
 import '../post/comment_screen.dart' show showCommentSheet;
 import '../user_home_screen.dart' show buildPostDetails;
+import 'package:speedring/utils/navigation_utils.dart';
 
 class ClubDetailsScreen extends StatefulWidget {
   const ClubDetailsScreen({super.key});
@@ -526,24 +527,31 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                       .replaceAll('_', ' ')
                                       .toUpperCase()
                                 : '';
+                                
                             final userName =
                                 post.user?.name ??
                                 post.user?.userName ??
                                 'User';
-                            final profileImage = post.user?.profileImage;
+                                
+                            String? profileImage = post.user?.profileImage;
+                            
+                            if (profileImage != null && profileImage.isNotEmpty && !profileImage.startsWith('http')) {
+                              profileImage = "${ApiUrl.imageUrl}$profileImage";
+                            }
 
                             final loc =
                                 post.spotDetails?.region ??
                                 post.trackUpdateDetails?.circuit ??
                                 post.sessionDetails?.trackName;
 
-                            final location = loc != null && loc.isNotEmpty
+                            String location = loc != null && loc.isNotEmpty
                                 ? (categoryLabel.isNotEmpty
                                       ? "$categoryLabel • $loc"
                                       : loc)
                                 : (categoryLabel.isNotEmpty
                                       ? categoryLabel
                                       : 'unknownLocation'.tr);
+
                             final imageUrl =
                                 post.media != null && post.media!.isNotEmpty
                                 ? post.media!.first.url ?? ''
@@ -561,7 +569,11 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16),
-                              child: PostCard(
+                                child: PostCard(
+                                  userId: post.user?.id,
+                                  onProfileTap: post.user?.id != null
+                                      ? () => NavigationUtils.navigateToUserProfile(post.user!.id)
+                                      : null,
                                 userName: userName,
                                 location: location,
                                 imageUrl: imageUrl,
@@ -570,7 +582,6 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                 reactCount: post.reactCount,
                                 commentCount: post.commentCount,
                                 isLiked: post.isReacted ?? false,
-                                userId: post.user?.id,
                                 detailsWidget: buildPostDetails(post),
                                 onTap: () => Navigator.push(
                                   context,

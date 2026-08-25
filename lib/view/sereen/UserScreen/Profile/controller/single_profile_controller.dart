@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../service/api_client.dart';
 import '../../../../../service/api_url.dart';
 import '../model/profile_model.dart';
 import '../../Home/Screen/HomeScreen/model/post_model.dart';
+import 'package:speedring/helper/guest_checker.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
+import '../../Home/Screen/HomeScreen/controller/home_controller.dart';
 
 class SingleProfileController extends GetxController {
   final _activeTab = 0.obs;
@@ -134,6 +138,95 @@ class SingleProfileController extends GetxController {
     } finally {
       isPostLoading.value = false;
       isPostLoadingMore.value = false;
+    }
+  }
+
+  void toggleLikeLocally(String postId) {
+    final index = posts.indexWhere((p) => p.id == postId);
+    if (index != -1) {
+      final old = posts[index];
+      final isReacted = old.isReacted ?? false;
+      final count = old.reactCount ?? 0;
+      final newReacted = !isReacted;
+      final newCount = isReacted ? (count > 0 ? count - 1 : 0) : count + 1;
+
+      posts[index] = PostModel(
+        id: old.id,
+        category: old.category,
+        visibility: old.visibility,
+        status: old.status,
+        user: old.user,
+        club: old.club,
+        clubPostDetails: old.clubPostDetails,
+        businessPostDetails: old.businessPostDetails,
+        sessionDetails: old.sessionDetails,
+        spotDetails: old.spotDetails,
+        trackUpdateDetails: old.trackUpdateDetails,
+        media: old.media,
+        reacts: old.reacts,
+        commentCount: old.commentCount,
+        reactCount: newCount,
+        isReacted: newReacted,
+        myReactType: old.myReactType,
+        comments: old.comments,
+        createdAt: old.createdAt,
+        updatedAt: old.updatedAt,
+      );
+    }
+  }
+
+  void updatePostFromJson(String postId, Map<String, dynamic> json) {
+    final index = posts.indexWhere((p) => p.id == postId);
+    if (index != -1) {
+      posts[index] = PostModel.fromJson(json);
+    }
+  }
+
+  Future<void> toggleFollow() async {
+    if (GuestChecker.showLoginDialogIfGuest()) return;
+    final currentStatus = profileData.value?.isFollow ?? false;
+    final newStatus = !currentStatus;
+
+    // Optimistic update on profile
+    profileData.value?.isFollow = newStatus;
+    profileData.refresh();
+
+    try {
+      final res = await ApiClient.patchData(
+        ApiUrl.toggleFollow(userId: targetUserId),
+        jsonEncode({}),
+      );
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        // Sync the feed: update all posts by this user in HomeController.postsList
+        _syncFeedFollowStatus(targetUserId, newStatus);
+      } else {
+        // Revert on fail
+        profileData.value?.isFollow = currentStatus;
+        profileData.refresh();
+        showCustomSnackBar("Failed to follow/unfollow user", isError: true);
+      }
+    } catch (e) {
+      // Revert on error
+      profileData.value?.isFollow = currentStatus;
+      profileData.refresh();
+    }
+  }
+
+  /// Updates the isFollow status on all posts in the feed by [userId]
+  void _syncFeedFollowStatus(String userId, bool newIsFollow) {
+    try {
+      final homeCtrl = Get.find<HomeController>();
+      bool changed = false;
+      for (int i = 0; i < homeCtrl.postsList.length; i++) {
+        final post = homeCtrl.postsList[i];
+        if (post.user?.id == userId) {
+          post.user?.isFollow = newIsFollow;
+          changed = true;
+        }
+      }
+      if (changed) homeCtrl.postsList.refresh();
+    } catch (_) {
+      // HomeController may not be registered yet — safe to ignore
     }
   }
 }

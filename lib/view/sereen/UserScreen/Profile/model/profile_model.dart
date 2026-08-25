@@ -54,6 +54,7 @@ class ProfileData {
   final int? postCount;
   final int? joinedSessionCount;
   final num? coinBalance;
+  bool isFollow;
 
   ProfileData({
     this.driverInfo,
@@ -84,6 +85,7 @@ class ProfileData {
     this.postCount,
     this.joinedSessionCount,
     this.coinBalance,
+    this.isFollow = false,
   });
 
   factory ProfileData.fromJson(Map<String, dynamic> json) {
@@ -128,6 +130,7 @@ class ProfileData {
       postCount: json['postCount'],
       joinedSessionCount: json['joinedSessionCount'],
       coinBalance: json['coinBalance'],
+      isFollow: json['isFollow'] ?? false,
     );
   }
 

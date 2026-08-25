@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../../../utils/navigation_utils.dart';
 import '../../../../../helper/guest_checker.dart';
+import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({
@@ -9,6 +12,7 @@ class PostCard extends StatelessWidget {
     required this.location,
     required this.imageUrl,
     required this.caption,
+    this.mediaType,
     this.userId,
     this.profileImage,
     this.onTap,
@@ -16,28 +20,37 @@ class PostCard extends StatelessWidget {
     this.onComment,
     this.onShare,
     this.onMore,
+    this.onProfileTap,
+    this.onFollow,
+    this.isFollow,
     this.reactCount,
     this.commentCount,
     this.isLiked = false,
     this.detailsWidget,
+    this.subtitleWidget,
   });
 
   final String userName;
   final String location;
   final String imageUrl;
   final String caption;
+  final String? mediaType;
   final String? userId;
   final String? profileImage;
   final int? reactCount;
   final int? commentCount;
   final bool isLiked;
   final Widget? detailsWidget;
+  final Widget? subtitleWidget;
 
   final VoidCallback? onTap;
   final VoidCallback? onLike;
   final VoidCallback? onComment;
   final VoidCallback? onShare;
   final VoidCallback? onMore;
+  final VoidCallback? onProfileTap;
+  final VoidCallback? onFollow;
+  final bool? isFollow;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +68,7 @@ class PostCard extends StatelessWidget {
             /// Header
             ListTile(
               leading: GestureDetector(
-                onTap: () => NavigationUtils.navigateToUserProfile(userId),
+                onTap: onProfileTap ?? () => NavigationUtils.navigateToUserProfile(userId),
                 child: CircleAvatar(
                   backgroundImage: profileImage != null
                       ? NetworkImage(profileImage!)
@@ -63,18 +76,52 @@ class PostCard extends StatelessWidget {
                   child: profileImage == null ? const Icon(Icons.person) : null,
                 ),
               ),
-              title: GestureDetector(
-                onTap: () => NavigationUtils.navigateToUserProfile(userId),
-                child: Text(
-                  userName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+              title: Row(
+                children: [
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: onProfileTap ?? () => NavigationUtils.navigateToUserProfile(userId),
+                      child: Text(
+                        userName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  if (isFollow == false && onFollow != null) ...[
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        if (GuestChecker.showLoginDialogIfGuest()) return;
+                        onFollow!();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'follow'.tr,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-              subtitle: Text(
+              subtitle: subtitleWidget ?? Text(
                 location,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(color: Colors.grey),
               ),
               trailing: onMore != null
@@ -85,18 +132,34 @@ class PostCard extends StatelessWidget {
                   : null,
             ),
 
-            /// Post Image
+            /// Post Image or Video
             if (imageUrl.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  imageUrl,
-                  height: 250,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const SizedBox.shrink(),
-                ),
+                child: mediaType == 'video'
+                    ? _InlineVideoPlayer(videoUrl: imageUrl)
+                    : Image.network(
+                        imageUrl,
+                        width: double.infinity,
+                        height: 200,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return SizedBox(
+                            height: 200,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ?? 1)
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
               ),
 
             const SizedBox(height: 12),
@@ -191,6 +254,87 @@ class PostCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _InlineVideoPlayer extends StatefulWidget {
+  final String videoUrl;
+
+  const _InlineVideoPlayer({required this.videoUrl});
+
+  @override
+  State<_InlineVideoPlayer> createState() => _InlineVideoPlayerState();
+}
+
+class _InlineVideoPlayerState extends State<_InlineVideoPlayer> {
+  late VideoPlayerController _controller;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
+      ..initialize().then((_) {
+        setState(() {
+          _isInitialized = true;
+        });
+        _controller.setLooping(true);
+        _controller.setVolume(0.0);
+      }).catchError((e) {
+        debugPrint('Error initializing inline video: $e');
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return const SizedBox(
+        height: 200,
+        child: Center(
+          child: CircularProgressIndicator(color: Colors.amber),
+        ),
+      );
+    }
+    return VisibilityDetector(
+      key: Key(widget.videoUrl),
+      onVisibilityChanged: (info) {
+        if (info.visibleFraction > 0.5) {
+          _controller.play();
+        } else {
+          _controller.pause();
+        }
+      },
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _controller.value.isPlaying
+                ? _controller.pause()
+                : _controller.play();
+          });
+        },
+        child: AspectRatio(
+          aspectRatio: _controller.value.aspectRatio,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              VideoPlayer(_controller),
+              if (!_controller.value.isPlaying)
+                const Icon(
+                  Icons.play_circle_fill,
+                  color: Colors.white70,
+                  size: 50,
+                ),
+            ],
+          ),
         ),
       ),
     );

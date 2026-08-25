@@ -114,8 +114,9 @@ class ResetPasswordScreen extends StatelessWidget {
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty)
+                    if (v == null || v.isEmpty) {
                       return 'confirmPasswordRequired'.tr;
+                    }
                     if (v != controller.newPasswordController.text) {
                       return 'passwordsDoNotMatch'.tr;
                     }

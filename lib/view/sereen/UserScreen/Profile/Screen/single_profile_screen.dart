@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:speedring/service/api_url.dart';
+import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../utils/app_images/app_images.dart';
@@ -122,49 +124,6 @@ class SingleProfileScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
-                      /// Coins indicator
-                      Positioned(
-                        bottom: 4.h,
-                        right: 16.w,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.w,
-                                vertical: 4.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xff161616),
-                                borderRadius: BorderRadius.circular(8.r),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.05),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.wallet,
-                                    color: AppColors.yellow,
-                                    size: 14,
-                                  ),
-                                  SizedBox(width: 4.w),
-                                  CustomText(
-                                    text:
-                                        "${profile?.coinBalance ?? 0} ${'coins'.tr}"
-                                            .toUpperCase(),
-                                    color: AppColors.yellow1,
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -251,6 +210,35 @@ class SingleProfileScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(height: 10.h),
+                Obx(() {
+                  final isFollow =
+                      controller.profileData.value?.isFollow ?? false;
+                  return GestureDetector(
+                    onTap: () {
+                      controller.toggleFollow();
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 16.w),
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                      decoration: BoxDecoration(
+                        color: isFollow ? Colors.transparent : AppColors.yellow,
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(color: AppColors.yellow),
+                      ),
+                      child: Center(
+                        child: Text(
+                          isFollow ? 'followingUpper'.tr : 'follow'.tr,
+                          style: TextStyle(
+                            color: isFollow ? AppColors.yellow : Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
                 SizedBox(height: 20.h),
 
                 /// Stats section
@@ -445,22 +433,40 @@ class SingleProfileScreen extends StatelessWidget {
                   final categoryLabel = post.category != null
                       ? post.category!.replaceAll('_', ' ').toUpperCase()
                       : '';
-                  final userName =
+
+                  final bool isClubPost = post.category == 'CLUB_POST';
+
+                  final originalUserName =
                       post.user?.name ?? post.user?.userName ?? 'User';
-                  final profileImage = post.user?.profileImage;
+
+                  final userName = isClubPost
+                      ? (post.club?.clubName ?? originalUserName)
+                      : originalUserName;
+
+                  String? profileImage = isClubPost
+                      ? (post.club?.logo ?? post.user?.profileImage)
+                      : post.user?.profileImage;
+
+                  if (profileImage != null &&
+                      profileImage.isNotEmpty &&
+                      !profileImage.startsWith('http')) {
+                    profileImage = "${ApiUrl.imageUrl}$profileImage";
+                  }
 
                   final loc =
                       post.spotDetails?.region ??
                       post.trackUpdateDetails?.circuit ??
                       post.sessionDetails?.trackName;
 
-                  final location = loc != null && loc.isNotEmpty
+                  String location = loc != null && loc.isNotEmpty
                       ? (categoryLabel.isNotEmpty
                             ? "$categoryLabel • $loc"
                             : loc)
-                      : (categoryLabel.isNotEmpty
-                            ? categoryLabel
-                            : 'Unknown Location');
+                      : (categoryLabel.isNotEmpty ? categoryLabel : '');
+
+                  if (isClubPost) {
+                    location = "Posted by $originalUserName • $location";
+                  }
 
                   final imageUrl = post.media != null && post.media!.isNotEmpty
                       ? post.media!.first.url ?? ''
@@ -480,10 +486,21 @@ class SingleProfileScreen extends StatelessWidget {
                   return Padding(
                     padding: EdgeInsets.only(bottom: 20.h),
                     child: PostCard(
-                      userId: post.user?.id,
+                      userId: isClubPost ? post.club?.id : post.user?.id,
+                      onProfileTap: isClubPost && post.club?.id != null
+                          ? () => Get.toNamed(
+                                (post.club?.isFollow == true)
+                                    ? AppRoutes.clubDetailsScreen
+                                    : AppRoutes.clubDetaislScreenNonMy,
+                                arguments: {"id": post.club!.id},
+                              )
+                          : null,
                       userName: userName,
                       location: location,
                       imageUrl: imageUrl,
+                      mediaType: post.media != null && post.media!.isNotEmpty
+                          ? post.media!.first.type
+                          : 'image',
                       caption: caption,
                       profileImage: profileImage,
                       reactCount: post.reactCount,
@@ -496,7 +513,10 @@ class SingleProfileScreen extends StatelessWidget {
                           builder: (_) => PostDetailScreen(postId: post.id!),
                         ),
                       ),
-                      onLike: () => homeController.reactToPost(post.id!),
+                      onLike: () {
+                        homeController.reactToPost(post.id!);
+                        profileController.toggleLikeLocally(post.id!);
+                      },
                       onComment: () =>
                           showCommentSheet(Get.context!, post: post),
                       onShare: () {

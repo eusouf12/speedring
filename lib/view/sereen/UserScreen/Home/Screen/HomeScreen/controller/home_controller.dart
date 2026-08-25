@@ -13,12 +13,15 @@ import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import '../../../../../../../helper/shared_prefe/shared_prefe.dart';
+import '../../../../discover/controller/discover_controller.dart';
 import '../model/story_model.dart';
 import '../model/view_story_model.dart';
 import '../model/post_model.dart';
 import '../model/audio_model.dart';
 import '../model/event_model.dart';
 import '../model/club_model.dart';
+import '../../../../Profile/Controller/profile_controller.dart';
+import '../../../../Profile/Controller/single_profile_controller.dart';
 
 class HomeController extends GetxController {
   final rxActiveTab = 0.obs; // 0: POST, 1: EVENTS, 2: CLUBS
@@ -196,6 +199,7 @@ class HomeController extends GetxController {
     final originalPost = globalIndex != -1
         ? postsList[globalIndex]
         : clubPosts[clubIndex];
+
     final alreadyLiked = originalPost.isReacted ?? false;
 
     List<PostReact> updatedReacts = List.from(originalPost.reacts ?? []);
@@ -328,19 +332,36 @@ class HomeController extends GetxController {
         final raw = response.body['data'];
         if (raw != null) {
           final updatedPost = PostModel.fromJson(raw);
-          
-          final globalIndex = postsList.indexWhere((element) => element.id == postId);
+
+          final globalIndex = postsList.indexWhere(
+            (element) => element.id == postId,
+          );
           if (globalIndex != -1) {
             postsList[globalIndex] = updatedPost;
           }
-          
-          final clubIndex = clubPosts.indexWhere((element) => element.id == postId);
+
+          final clubIndex = clubPosts.indexWhere(
+            (element) => element.id == postId,
+          );
           if (clubIndex != -1) {
             clubPosts[clubIndex] = updatedPost;
           }
-          
+
           if (currentPostDetail.value?.id == postId) {
             currentPostDetail.value = updatedPost;
+          }
+
+          if (Get.isRegistered<ProfileScreenController>()) {
+            Get.find<ProfileScreenController>().updatePostFromJson(
+              postId,
+              raw as Map<String, dynamic>,
+            );
+          }
+          if (Get.isRegistered<SingleProfileController>()) {
+            Get.find<SingleProfileController>().updatePostFromJson(
+              postId,
+              raw as Map<String, dynamic>,
+            );
           }
         }
       }
@@ -400,6 +421,27 @@ class HomeController extends GetxController {
       }
     } catch (e) {
       debugPrint("Error replying to comment: $e");
+    }
+  }
+
+  Future<void> toggleFollowUser(String targetUserId) async {
+    try {
+      final res = await ApiClient.patchData(
+        "${ApiUrl.baseUrl}/users/$targetUserId/toggle-follow",
+        {},
+      );
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        showCustomSnackBar("Followed successfully", isError: false);
+        // Refresh all instances where this user appears in postsList
+        for (var i = 0; i < postsList.length; i++) {
+          if (postsList[i].user?.id == targetUserId) {
+            postsList[i].user?.isFollow = true;
+          }
+        }
+        postsList.refresh();
+      }
+    } catch (e) {
+      debugPrint("Error following user: $e");
     }
   }
 
@@ -635,10 +677,7 @@ class HomeController extends GetxController {
       }
       if (mediaUrl != null && mediaUrl.isNotEmpty) {
         dataMap["media"] = [
-          {
-            "url": mediaUrl,
-            "type": "image"
-          }
+          {"url": mediaUrl, "type": "image"},
         ];
       }
 
@@ -671,6 +710,13 @@ class HomeController extends GetxController {
           isError: false,
         );
         getPost();
+
+        try {
+          if (Get.isRegistered<DiscoverController>()) {
+            Get.find<DiscoverController>().getAllDiscoverPosts(refresh: true);
+          }
+        } catch (_) {}
+
         return true;
       } else {
         showCustomSnackBar(
@@ -1076,6 +1122,30 @@ class HomeController extends GetxController {
     }
   }
 
+  /// Instantly updates isFollow for all posts by [userId] in the feed.
+  void toggleUserFollowInFeed(String userId, bool newIsFollow) {
+    bool changed = false;
+    for (int i = 0; i < postsList.length; i++) {
+      if (postsList[i].user?.id == userId) {
+        postsList[i].user?.isFollow = newIsFollow;
+        changed = true;
+      }
+    }
+    if (changed) postsList.refresh();
+  }
+
+  /// Instantly updates isFollow for all club posts by [clubId] in the feed.
+  void toggleClubFollowInFeed(String clubId, bool newIsFollow) {
+    bool changed = false;
+    for (int i = 0; i < postsList.length; i++) {
+      if (postsList[i].club?.id == clubId) {
+        postsList[i].club?.isFollow = newIsFollow;
+        changed = true;
+      }
+    }
+    if (changed) postsList.refresh();
+  }
+
   // ================== Event =======================================
   final RxList<EventModel> eventsList = <EventModel>[].obs;
   final RxBool isEventsLoading = false.obs;
@@ -1222,11 +1292,24 @@ class HomeController extends GetxController {
   }
 
   Future<bool> joinEvent({required String eventId}) async {
-    // Optimistic update
+    bool isSuccess = false;
+
+    // Optimistic update for single event detail
+    final currentDetail = currentEventDetail.value;
+    bool alreadyJoinedDetail = false;
+    if (currentDetail != null && currentDetail.id == eventId) {
+      alreadyJoinedDetail = currentDetail.isEventJoined ?? false;
+      currentDetail.isEventJoined = !alreadyJoinedDetail;
+      currentEventDetail.refresh();
+    }
+
+    // Optimistic update for list
     final index = eventsList.indexWhere((e) => e.id == eventId);
+    EventModel? original;
+    bool alreadyJoinedList = false;
     if (index != -1) {
-      final original = eventsList[index];
-      final alreadyJoined = original.isEventJoined ?? false;
+      original = eventsList[index];
+      alreadyJoinedList = original.isEventJoined ?? false;
       eventsList[index] = EventModel(
         id: original.id,
         eventName: original.eventName,
@@ -1239,38 +1322,47 @@ class HomeController extends GetxController {
         bannerImage: original.bannerImage,
         shareCount: original.shareCount,
         status: original.status,
-        joinCount: alreadyJoined
+        joinCount: alreadyJoinedList
             ? ((original.joinCount ?? 1) - 1)
             : ((original.joinCount ?? 0) + 1),
         reactCount: original.reactCount,
         commentCount: original.commentCount,
         isReacted: original.isReacted,
-        isEventJoined: !alreadyJoined,
+        isEventJoined: !alreadyJoinedList,
         myReactType: original.myReactType,
         timeWindow: original.timeWindow,
         user: original.user,
         comments: original.comments,
       );
-      try {
-        final response = await ApiClient.postData(
-          ApiUrl.joinEvent(eventId: eventId),
-          jsonEncode({}),
-        );
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          return true;
-        } else {
-          // rollback
-          eventsList[index] = original;
-          showCustomSnackBar("Failed to join event", isError: true);
-          return false;
-        }
-      } catch (e) {
+    }
+
+    try {
+      final response = await ApiClient.postData(
+        ApiUrl.joinEvent(eventId: eventId),
+        jsonEncode({}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        isSuccess = true;
+      } else {
+        showCustomSnackBar("Failed to join event", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error joining event: $e");
+    }
+
+    if (!isSuccess) {
+      // Rollback detail
+      if (currentDetail != null && currentDetail.id == eventId) {
+        currentDetail.isEventJoined = alreadyJoinedDetail;
+        currentEventDetail.refresh();
+      }
+      // Rollback list
+      if (index != -1 && original != null) {
         eventsList[index] = original;
-        debugPrint("Error joining event: $e");
-        return false;
       }
     }
-    return false;
+
+    return isSuccess;
   }
 
   final RxSet<String> reactingEventIds = <String>{}.obs;
@@ -2033,6 +2125,20 @@ class HomeController extends GetxController {
           allClubs.refresh();
         }
 
+        // Optimistic update for posts
+        for (var i = 0; i < postsList.length; i++) {
+          if (postsList[i].club?.id == clubId) {
+            postsList[i].club?.isFollow = true;
+          }
+        }
+        for (var i = 0; i < clubPosts.length; i++) {
+          if (clubPosts[i].club?.id == clubId) {
+            clubPosts[i].club?.isFollow = true;
+          }
+        }
+        postsList.refresh();
+        clubPosts.refresh();
+
         getSingleClub(clubId); // Refresh details
         getMyClubs(); // Refresh my clubs
       } else {
@@ -2066,8 +2172,24 @@ class HomeController extends GetxController {
           allClubs.refresh();
         }
 
-        getSingleClub(clubId); // Refresh details
-        getMyClubs(); // Refresh my clubs
+        // Sync feed: update isFollow=false for all club posts in postsList
+        toggleClubFollowInFeed(clubId, false);
+
+        // Also update clubPosts list isFollow
+        for (int i = 0; i < clubPosts.length; i++) {
+          if (clubPosts[i].club?.id == clubId) {
+            clubPosts[i].club?.isFollow = false;
+          }
+        }
+        if (clubPosts.isNotEmpty) clubPosts.refresh();
+
+        // Refresh data silently
+        getSingleClub(clubId);
+        getMyClubs();
+        getPost(); // refresh global feed to reflect latest state
+
+        // Navigate back to previous screen
+        Get.back();
       } else {
         showCustomSnackBar(response.body['message'] ?? 'Failed to leave club');
       }

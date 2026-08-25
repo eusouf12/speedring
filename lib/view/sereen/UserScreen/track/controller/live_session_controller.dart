@@ -376,7 +376,7 @@ class LiveSessionController extends GetxController {
     // 1. Dual-Source Speed Calculation (Instant GPS + Delta distance/time fallback)
     double rawSpeedKmh = 0.0;
 
-    if (position.speed > 0) {
+    if (position.speed >= 0.0) {
       rawSpeedKmh = position.speed * 3.6;
     } else if (_previousPosition != null && _previousPositionTime != null) {
       // Calculate delta distance & time

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../utils/app_images/app_images.dart';
@@ -647,22 +648,39 @@ class ProfileScreen extends StatelessWidget {
                   final categoryLabel = post.category != null
                       ? post.category!.replaceAll('_', ' ').toUpperCase()
                       : '';
-                  final userName =
-                      post.user?.name ?? post.user?.userName ?? 'User';
-                  final profileImage = post.user?.profileImage;
+                      
+                  final bool isClubPost = post.category == 'CLUB_POST';
+                  
+                  final originalUserName = post.user?.name ?? post.user?.userName ?? 'User';
+                  
+                  final userName = isClubPost
+                      ? (post.club?.clubName ?? originalUserName)
+                      : originalUserName;
+                      
+                  String? profileImage = isClubPost
+                      ? (post.club?.logo ?? post.user?.profileImage)
+                      : post.user?.profileImage;
+                      
+                  if (profileImage != null && profileImage.isNotEmpty && !profileImage.startsWith('http')) {
+                    profileImage = "${ApiUrl.imageUrl}$profileImage";
+                  }
 
                   final loc =
                       post.spotDetails?.region ??
                       post.trackUpdateDetails?.circuit ??
                       post.sessionDetails?.trackName;
 
-                  final location = loc != null && loc.isNotEmpty
+                  String location = loc != null && loc.isNotEmpty
                       ? (categoryLabel.isNotEmpty
                             ? "$categoryLabel • $loc"
                             : loc)
                       : (categoryLabel.isNotEmpty
                             ? categoryLabel
                             : 'Unknown Location');
+                            
+                  if (isClubPost) {
+                    location = "Posted by $originalUserName • $location";
+                  }
 
                   final imageUrl = post.media != null && post.media!.isNotEmpty
                       ? post.media!.first.url ?? ''
@@ -682,7 +700,10 @@ class ProfileScreen extends StatelessWidget {
                   return Padding(
                     padding: EdgeInsets.only(bottom: 20.h),
                     child: PostCard(
-                      userId: post.user?.id,
+                      userId: isClubPost ? post.club?.id : post.user?.id,
+                      onProfileTap: isClubPost && post.club?.id != null
+                          ? () => Get.toNamed(AppRoutes.clubDetaislScreenNonMy, arguments: {"id": post.club!.id})
+                          : null,
                       userName: userName,
                       location: location,
                       imageUrl: imageUrl,
@@ -698,7 +719,10 @@ class ProfileScreen extends StatelessWidget {
                           builder: (_) => PostDetailScreen(postId: post.id!),
                         ),
                       ),
-                      onLike: () => homeController.reactToPost(post.id!),
+                      onLike: () {
+                        homeController.reactToPost(post.id!);
+                        profileController.toggleLikeLocally(post.id!);
+                      },
                       onComment: () => showCommentSheet(Get.context!, post: post),
                       onShare: () {
                         final postLink =

@@ -472,14 +472,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
 
-                  if (!isMyEvent)
+                  if (!isMyEvent && event.isEventJoined != true)
                     Expanded(
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
-                          color: event.isEventJoined == true
-                              ? Colors.white12
-                              : AppColors.yellow,
+                          color: AppColors.yellow,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Material(
@@ -488,15 +486,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             onTap: () {
                               controller.joinEvent(eventId: event.id!);
                             },
-                            child: Center(
+                            child: const Center(
                               child: Text(
-                                event.isEventJoined == true
-                                    ? "WITHDRAW"
-                                    : "CONFIRM DEPLOYMENT",
+                                "CONFIRM DEPLOYMENT",
                                 style: TextStyle(
-                                  color: event.isEventJoined == true
-                                      ? Colors.white60
-                                      : Colors.black,
+                                  color: Colors.black,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: 1.0,

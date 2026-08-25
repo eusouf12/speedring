@@ -110,7 +110,7 @@ class TrackController extends GetxController {
         Colors.yellow,
         50,
       );
-      startMarkerIcon = BitmapDescriptor.fromBytes(startMarkerData);
+      startMarkerIcon = BitmapDescriptor.bytes(startMarkerData);
     } catch (e) {
       debugPrint("Error creating start marker: $e");
       startMarkerIcon = BitmapDescriptor.defaultMarkerWithHue(
@@ -124,7 +124,7 @@ class TrackController extends GetxController {
         'assets/images/app_logo.png',
         60,
       );
-      finishMarkerIcon = BitmapDescriptor.fromBytes(finishMarkerData);
+      finishMarkerIcon = BitmapDescriptor.bytes(finishMarkerData);
     } catch (e) {
       debugPrint("Error loading custom marker icon: $e");
       finishMarkerIcon = BitmapDescriptor.defaultMarkerWithHue(

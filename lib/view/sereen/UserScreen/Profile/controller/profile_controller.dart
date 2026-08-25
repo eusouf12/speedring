@@ -547,6 +547,39 @@ class ProfileScreenController extends GetxController {
       isPostLoadingMore.value = false;
     }
   }
+  void toggleLikeLocally(String postId) {
+    final index = myPosts.indexWhere((p) => p.id == postId);
+    if (index != -1) {
+      final old = myPosts[index];
+      final isReacted = old.isReacted ?? false;
+      final count = old.reactCount ?? 0;
+      final newReacted = !isReacted;
+      final newCount = isReacted ? (count > 0 ? count - 1 : 0) : count + 1;
+
+      myPosts[index] = PostModel(
+        id: old.id,
+        category: old.category,
+        visibility: old.visibility,
+        status: old.status,
+        user: old.user,
+        club: old.club,
+        clubPostDetails: old.clubPostDetails,
+        businessPostDetails: old.businessPostDetails,
+        sessionDetails: old.sessionDetails,
+        spotDetails: old.spotDetails,
+        trackUpdateDetails: old.trackUpdateDetails,
+        media: old.media,
+        reacts: old.reacts,
+        commentCount: old.commentCount,
+        reactCount: newCount,
+        isReacted: newReacted,
+        myReactType: old.myReactType,
+        comments: old.comments,
+        createdAt: old.createdAt,
+        updatedAt: old.updatedAt,
+      );
+    }
+  }
 
   @override
   void onClose() {
@@ -564,5 +597,12 @@ class ProfileScreenController extends GetxController {
     driverRoleController.dispose();
 
     super.onClose();
+  }
+
+  void updatePostFromJson(String postId, Map<String, dynamic> json) {
+    final index = myPosts.indexWhere((p) => p.id == postId);
+    if (index != -1) {
+      myPosts[index] = PostModel.fromJson(json);
+    }
   }
 }
