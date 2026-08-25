@@ -45,6 +45,11 @@ class DriveSummaryScreen extends StatelessWidget {
 
     final Map<String, dynamic> args = Get.arguments ?? {};
     final List<LatLng> routePoints = args['routePoints'] ?? [];
+    final List<Map<String, dynamic>> detailedSessionTrack =
+        (args['detailedSessionTrack'] as List<dynamic>?)
+            ?.map((e) => Map<String, dynamic>.from(e as Map))
+            .toList() ??
+        [];
     final int elapsedSeconds = args['elapsedSeconds'] ?? 0;
     final double totalDistanceKm = args['totalDistanceKm'] ?? 0.0;
     final double averageSpeedKmh = args['averageSpeedKmh'] ?? 0.0;
@@ -550,9 +555,11 @@ class DriveSummaryScreen extends StatelessWidget {
                               },
                             )
                             .toList(),
-                        "sessionTrack": routePoints
-                            .map((e) => {"lat": e.latitude, "lng": e.longitude})
-                            .toList(),
+                        "sessionTrack": detailedSessionTrack.isNotEmpty
+                            ? detailedSessionTrack
+                            : routePoints
+                                .map((e) => {"lat": e.latitude, "lng": e.longitude})
+                                .toList(),
                         "best0to100Time": best0to100Time,
                         "best100to200Time": best100to200Time,
                         "best0to200Time": best0to200Time,
