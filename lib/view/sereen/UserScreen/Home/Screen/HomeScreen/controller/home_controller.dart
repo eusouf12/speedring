@@ -960,6 +960,12 @@ class HomeController extends GetxController {
   final RxList<StoryUserGroup> allStories = <StoryUserGroup>[].obs;
   final RxBool isStoriesLoading = false.obs;
   final RxString currentUserId = "".obs;
+  // Track which story groups have been viewed (locally, per session)
+  final RxSet<String> viewedStoryGroupIds = <String>{}.obs;
+
+  void markStoryGroupViewed(String userId) {
+    viewedStoryGroupIds.add(userId);
+  }
 
   @override
   void onInit() {

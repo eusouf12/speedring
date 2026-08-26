@@ -1,9 +1,11 @@
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../controller/home_controller.dart';
 import '../../model/story_model.dart';
@@ -27,7 +29,26 @@ class _StoryViewScreenState extends State<StoryViewScreen>
   final List<int> _floatingHearts = [];
   int _heartCounter = 0;
   bool _isLikedLocally = false;
+
+  // Audio (background music)
   AudioPlayer? _audioPlayer;
+
+  // Video
+  VideoPlayerController? _videoController;
+  bool _isVideoReady = false;
+
+  // State flags
+  bool _isPausedByLongPress = false;
+  bool _isMediaLoading = true;
+
+  // Whether current story is video
+  bool get _isVideo {
+    if (currentIndex < 0 || currentIndex >= _localStories.length) return false;
+    final media = _localStories[currentIndex].media;
+    if (media == null || media.isEmpty) return false;
+    final type = media.first.type?.toLowerCase() ?? '';
+    return type == 'video' || type == 'mp4' || type == 'mov';
+  }
 
   @override
   void initState() {
@@ -36,7 +57,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     _progressController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 8),
-    )..forward();
+    );
 
     _progressController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -45,70 +66,184 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     });
 
     _audioPlayer = AudioPlayer();
-    _playStoryMusic(currentIndex);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _triggerStoryView(currentIndex);
+      _initMedia(currentIndex);
     });
   }
 
-  Future<void> _playStoryMusic(int index) async {
+  // ── Media Initialization ───────────────────────────────────────────────────
+
+  Future<void> _initMedia(int index) async {
+    if (!mounted) return;
+    setState(() {
+      _isMediaLoading = true;
+      _isVideoReady = false;
+    });
+
+    // Stop previous video
+    await _videoController?.pause();
+    await _videoController?.dispose();
+    _videoController = null;
+
+    // Stop audio
+    await _audioPlayer?.stop();
+
+    if (index < 0 || index >= _localStories.length) return;
+    final story = _localStories[index];
+    final media = story.media;
+
+    if (media != null && media.isNotEmpty) {
+      final url = media.first.url ?? '';
+      final type = media.first.type?.toLowerCase() ?? '';
+      final isVideo = type == 'video' || type == 'mp4' || type == 'mov' ||
+          url.endsWith('.mp4') || url.endsWith('.mov');
+
+      if (isVideo && url.isNotEmpty) {
+        await _initVideo(url, story);
+        return;
+      }
+    }
+
+    // It's an image — play background music if available
+    await _playStoryMusic(story);
+    // Image loading handled by CachedNetworkImage callbacks
+  }
+
+  Future<void> _initVideo(String url, Story story) async {
     try {
-      await _audioPlayer?.stop();
-      if (index >= 0 && index < _localStories.length) {
-        final story = _localStories[index];
-        final musicUrl = story.music?.url;
-        if (musicUrl != null && musicUrl.isNotEmpty) {
-          await _audioPlayer?.setUrl(musicUrl);
+      _videoController = VideoPlayerController.networkUrl(Uri.parse(url));
+      await _videoController!.initialize();
+      if (!mounted) return;
+
+      final duration = _videoController!.value.duration;
+      // Set progress timer to video duration (min 3s, max 30s)
+      final seconds = duration.inSeconds.clamp(3, 30).toDouble();
+      _progressController.duration = Duration(seconds: seconds.toInt());
+
+      _videoController!.addListener(_onVideoListener);
+      _videoController!.setLooping(false);
+
+      setState(() {
+        _isVideoReady = true;
+        _isMediaLoading = false;
+      });
+
+      if (!_isPausedByLongPress) {
+        _videoController!.play();
+        _progressController.forward();
+      }
+
+      // Play background music if story also has music
+      await _playStoryMusic(story);
+    } catch (e) {
+      debugPrint('Video init error: $e');
+      if (mounted) {
+        setState(() => _isMediaLoading = false);
+        if (!_isPausedByLongPress) _progressController.forward();
+      }
+    }
+  }
+
+  void _onVideoListener() {
+    if (!mounted) return;
+    final controller = _videoController;
+    if (controller == null) return;
+    if (controller.value.position >= controller.value.duration &&
+        controller.value.duration > Duration.zero) {
+      _nextStory();
+    }
+  }
+
+  Future<void> _playStoryMusic(Story story) async {
+    try {
+      final musicUrl = story.music?.url;
+      if (musicUrl != null && musicUrl.isNotEmpty) {
+        await _audioPlayer?.setUrl(musicUrl);
+        if (!_isPausedByLongPress) {
           await _audioPlayer?.play();
         }
       }
     } catch (e) {
-      debugPrint("Error playing music: $e");
+      debugPrint('Music error: $e');
     }
   }
 
+  // Called by CachedNetworkImage when image is fully loaded
+  void _onImageLoaded() {
+    if (!mounted || !_isMediaLoading) return;
+    setState(() => _isMediaLoading = false);
+    if (!_isPausedByLongPress) {
+      _progressController.duration = const Duration(seconds: 8);
+      _progressController.forward();
+      _audioPlayer?.play();
+    }
+  }
+
+  // Called if image fails to load
+  void _onImageError() {
+    if (!mounted) return;
+    setState(() => _isMediaLoading = false);
+    if (!_isPausedByLongPress) {
+      _progressController.duration = const Duration(seconds: 8);
+      _progressController.forward();
+    }
+  }
+
+  // ── Navigation ────────────────────────────────────────────────────────────
+
   void _triggerStoryView(int index) {
-    debugPrint("--- _triggerStoryView called for index: $index");
     if (index >= 0 && index < _localStories.length) {
       final story = _localStories[index];
-      debugPrint("--- Story ID: ${story.id}");
       if (story.id != null) {
         final homeController = Get.find<HomeController>();
         homeController.postViewStory(story.id!);
       }
-    } else {
-      debugPrint("--- Index out of range in _triggerStoryView");
     }
   }
 
   void _nextStory() {
+    if (!mounted) return;
     if (currentIndex < _localStories.length - 1) {
       setState(() {
         currentIndex++;
         _isLikedLocally = false;
       });
-      _playStoryMusic(currentIndex);
-      _triggerStoryView(currentIndex);
       _progressController.reset();
-      _progressController.forward();
+      _triggerStoryView(currentIndex);
+      _initMedia(currentIndex);
     } else {
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
+      Navigator.of(context).pop();
     }
   }
 
   void _previousStory() {
+    if (!mounted) return;
     if (currentIndex > 0) {
       setState(() {
         currentIndex--;
         _isLikedLocally = false;
       });
-      _playStoryMusic(currentIndex);
-      _triggerStoryView(currentIndex);
       _progressController.reset();
+      _triggerStoryView(currentIndex);
+      _initMedia(currentIndex);
+    }
+  }
+
+  void _pauseAll() {
+    _isPausedByLongPress = true;
+    _progressController.stop();
+    _videoController?.pause();
+    _audioPlayer?.pause();
+  }
+
+  void _resumeAll() {
+    _isPausedByLongPress = false;
+    if (!_isMediaLoading) {
       _progressController.forward();
+      if (_isVideo && _isVideoReady) _videoController?.play();
+      _audioPlayer?.play();
     }
   }
 
@@ -116,13 +251,17 @@ class _StoryViewScreenState extends State<StoryViewScreen>
   void dispose() {
     _progressController.dispose();
     _messageCtrl.dispose();
+    _videoController?.removeListener(_onVideoListener);
+    _videoController?.dispose();
     _audioPlayer?.dispose();
     super.dispose();
   }
 
+  // ── Story Viewers Sheet ───────────────────────────────────────────────────
+
   void _showStoryViewersSheet(BuildContext context, String storyId) {
     final controller = Get.find<HomeController>();
-    _audioPlayer?.pause();
+    _pauseAll();
     showModalBottomSheet(
       context: context,
       useSafeArea: true,
@@ -147,7 +286,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                 height: 200,
                 child: Center(
                   child: Text(
-                    "Failed to load viewers",
+                    'Failed to load viewers',
                     style: TextStyle(color: Colors.white70),
                   ),
                 ),
@@ -162,7 +301,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                 height: 200,
                 child: Center(
                   child: Text(
-                    "No views yet",
+                    'No views yet',
                     style: TextStyle(color: Colors.white70),
                   ),
                 ),
@@ -187,9 +326,9 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                   ),
                   const SizedBox(height: 20),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      "Viewers (${viewersData?.viewCount ?? viewers.length})",
+                      'Viewers (${viewersData?.viewCount ?? viewers.length})',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -213,8 +352,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                     user!.profileImage!.isNotEmpty
                                 ? NetworkImage(user.profileImage!)
                                 : null,
-                            child:
-                                user?.profileImage == null ||
+                            child: user?.profileImage == null ||
                                     user!.profileImage!.isEmpty
                                 ? const Icon(Icons.person, color: Colors.white)
                                 : null,
@@ -223,7 +361,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                user?.name ?? "User",
+                                user?.name ?? 'User',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -258,23 +396,23 @@ class _StoryViewScreenState extends State<StoryViewScreen>
         );
       },
     ).then((_) {
-      if (mounted && !_progressController.isAnimating) {
-        _progressController.forward();
+      if (mounted && !_progressController.isAnimating && !_isMediaLoading) {
+        _resumeAll();
       }
-      _audioPlayer?.play();
     });
   }
 
   String _formatViewedTime(DateTime? time) {
-    if (time == null) return "";
+    if (time == null) return '';
     final localTime = time.toLocal();
     final diff = DateTime.now().difference(localTime);
-    if (diff.isNegative) return "JUST NOW";
-    if (diff.inSeconds < 60) return "JUST NOW";
-    if (diff.inMinutes < 60) return "${diff.inMinutes}M AGO";
-    if (diff.inHours < 24) return "${diff.inHours}H AGO";
-    return "${localTime.day}/${localTime.month}";
+    if (diff.isNegative || diff.inSeconds < 60) return 'JUST NOW';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}M AGO';
+    if (diff.inHours < 24) return '${diff.inHours}H AGO';
+    return '${localTime.day}/${localTime.month}';
   }
+
+  // ── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -285,33 +423,31 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     final currentStory = stories.isNotEmpty ? stories[currentIndex] : null;
     final user = widget.storyGroup.user;
 
-    String? storyImageUrl;
+    // Media URL
+    String? mediaUrl;
     if (currentStory?.media != null && currentStory!.media!.isNotEmpty) {
-      storyImageUrl = currentStory.media!.first.url;
+      mediaUrl = currentStory.media!.first.url;
     }
 
-    String userName = user?.name ?? 'User';
-    String? profileImageUrl = user?.profileImage;
+    final userName = user?.name ?? 'User';
+    final profileImageUrl = user?.profileImage;
 
-    String timeAgo = "";
-    if (currentStory != null && currentStory.createdAt != null) {
-      DateTime localTime = currentStory.createdAt!.toLocal();
-      Duration diff = DateTime.now().difference(localTime);
-      if (diff.isNegative) {
-        timeAgo = "JUST NOW";
-      } else if (diff.inSeconds < 60) {
-        timeAgo = "JUST NOW";
+    // Time ago
+    String timeAgo = '';
+    if (currentStory?.createdAt != null) {
+      final diff = DateTime.now().difference(currentStory!.createdAt!.toLocal());
+      if (diff.isNegative || diff.inSeconds < 60) {
+        timeAgo = 'JUST NOW';
       } else if (diff.inMinutes < 60) {
-        timeAgo = "${diff.inMinutes}M AGO";
+        timeAgo = '${diff.inMinutes}M AGO';
       } else if (diff.inHours < 24) {
-        timeAgo = "${diff.inHours}H AGO";
+        timeAgo = '${diff.inHours}H AGO';
       } else if (diff.inDays < 30) {
-        timeAgo = "${diff.inDays}D AGO";
+        timeAgo = '${diff.inDays}D AGO';
       } else {
-        timeAgo = "${localTime.day}/${localTime.month}/${localTime.year}";
+        final t = currentStory.createdAt!.toLocal();
+        timeAgo = '${t.day}/${t.month}/${t.year}';
       }
-    } else {
-      timeAgo = "";
     }
 
     return CustomGradient(
@@ -319,7 +455,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
         backgroundColor: Colors.black,
         body: Stack(
           children: [
-            /// ── Full-screen story background ──────────────────────────────
+            // ── Full-screen media ───────────────────────────────────────────
             Positioned.fill(
               child: GestureDetector(
                 onTapDown: (details) {
@@ -330,49 +466,13 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                     _nextStory();
                   }
                 },
-                onLongPressDown: (_) {
-                  _progressController.stop();
-                  _audioPlayer?.pause();
-                },
-                onLongPressUp: () {
-                  _progressController.forward();
-                  _audioPlayer?.play();
-                },
-                child: storyImageUrl != null
-                    ? Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          // Blurred background (fills the screen, hides black bars)
-                          ImageFiltered(
-                            imageFilter: ImageFilter.blur(
-                              sigmaX: 20,
-                              sigmaY: 20,
-                            ),
-                            child: Image.network(
-                              storyImageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, _, _) =>
-                                  Container(color: const Color(0xff1a1a1a)),
-                            ),
-                          ),
-                          // Dark dim over the blur
-                          Container(
-                            color: Colors.black.withValues(alpha: 0.35),
-                          ),
-                          // Full image without cropping
-                          Image.network(
-                            storyImageUrl,
-                            fit: BoxFit.contain,
-                            errorBuilder: (_, _, _) =>
-                                Container(color: const Color(0xff1a1a1a)),
-                          ),
-                        ],
-                      )
-                    : Container(color: const Color(0xff1a1a1a)),
+                onLongPressStart: (_) => _pauseAll(),
+                onLongPressEnd: (_) => _resumeAll(),
+                child: _buildMediaWidget(mediaUrl),
               ),
             ),
 
-            /// Dark gradient overlay — top & bottom
+            // ── Dark gradient overlay ────────────────────────────────────────
             Positioned.fill(
               child: IgnorePointer(
                 child: DecoratedBox(
@@ -393,7 +493,17 @@ class _StoryViewScreenState extends State<StoryViewScreen>
               ),
             ),
 
-            /// ── Progress bar ──────────────────────────────────────────────
+            // ── Loading indicator (while media loads) ───────────────────────
+            if (_isMediaLoading)
+              const Positioned.fill(
+                child: IgnorePointer(
+                  child: Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
+                ),
+              ),
+
+            // ── Progress bars ───────────────────────────────────────────────
             Positioned(
               top: MediaQuery.of(context).padding.top + 8,
               left: 12,
@@ -402,10 +512,10 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                 children: List.generate(stories.length, (index) {
                   return Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: AnimatedBuilder(
                         animation: _progressController,
-                        builder: (context, child) {
+                        builder: (context, _) {
                           double value = 0.0;
                           if (index < currentIndex) {
                             value = 1.0;
@@ -431,14 +541,14 @@ class _StoryViewScreenState extends State<StoryViewScreen>
               ),
             ),
 
-            /// ── Top bar — avatar + name + close ──────────────────────────
+            // ── Top bar — avatar + name + close ──────────────────────────────
             Positioned(
               top: MediaQuery.of(context).padding.top + 22,
               left: 16,
               right: 16,
               child: Row(
                 children: [
-                  /// Avatar
+                  // Avatar
                   Container(
                     width: 40,
                     height: 40,
@@ -448,14 +558,21 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                     ),
                     child: ClipOval(
                       child: profileImageUrl != null
-                          ? Image.network(profileImageUrl, fit: BoxFit.cover)
+                          ? CachedNetworkImage(
+                              imageUrl: profileImageUrl,
+                              fit: BoxFit.cover,
+                              errorWidget: (_, _, _) => const Icon(
+                                Icons.person,
+                                color: Colors.white,
+                              ),
+                            )
                           : const Icon(Icons.person, color: Colors.white),
                     ),
                   ),
 
                   const SizedBox(width: 10),
 
-                  /// Name + time
+                  // Name + time
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,7 +647,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                     ),
                   ),
 
-                  /// Close button
+                  // Close button
                   GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
                     child: Container(
@@ -551,7 +668,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
               ),
             ),
 
-            /// ── Bottom bar — message + actions ───────────────────────────
+            // ── Bottom bar ─────────────────────────────────────────────────
             Positioned(
               left: 16,
               right: 16,
@@ -559,7 +676,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Left side: Viewer count / Activity (Only for my story)
+                  // Viewer count (my story)
                   if (isMyStory && currentStory != null)
                     GestureDetector(
                       onTap: () {
@@ -576,7 +693,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            "${currentStory.viewCount ?? 0}",
+                            '${currentStory.viewCount ?? 0}',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,
@@ -589,7 +706,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                   else
                     const SizedBox.shrink(),
 
-                  // Right side: Actions
+                  // Like / More buttons
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -615,14 +732,10 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                       ],
                       if (isMyStory) ...[
                         const SizedBox(width: 16),
-
-                        /// More
+                        // More (delete) button
                         GestureDetector(
                           onTap: () {
-                            // Pause progress bar
-                            _progressController.stop();
-                            _audioPlayer?.pause();
-
+                            _pauseAll();
                             showModalBottomSheet(
                               context: context,
                               useSafeArea: true,
@@ -643,9 +756,8 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                         height: 4,
                                         decoration: BoxDecoration(
                                           color: Colors.white24,
-                                          borderRadius: BorderRadius.circular(
-                                            2,
-                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(2),
                                         ),
                                       ),
                                       const SizedBox(height: 20),
@@ -655,39 +767,33 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                           color: Colors.redAccent,
                                         ),
                                         title: const Text(
-                                          "Delete Story",
+                                          'Delete Story',
                                           style: TextStyle(
                                             color: Colors.redAccent,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         onTap: () {
-                                          Navigator.pop(
-                                            sheetContext,
-                                            'delete',
-                                          ); // Close bottom sheet with result
-
-                                          // Show confirmation dialog (Yes / No)
+                                          Navigator.pop(sheetContext, 'delete');
                                           showDialog(
                                             context: context,
                                             barrierDismissible: false,
                                             builder: (dialogContext) {
                                               return AlertDialog(
-                                                backgroundColor: const Color(
-                                                  0xff1C1C1C,
-                                                ),
+                                                backgroundColor:
+                                                    const Color(0xff1C1C1C),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(16),
                                                 ),
                                                 title: const Text(
-                                                  "Delete Story?",
+                                                  'Delete Story?',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                   ),
                                                 ),
                                                 content: const Text(
-                                                  "Are you sure you want to delete this story?",
+                                                  'Are you sure you want to delete this story?',
                                                   style: TextStyle(
                                                     color: Colors.white70,
                                                   ),
@@ -696,14 +802,11 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                                   TextButton(
                                                     onPressed: () {
                                                       Navigator.pop(
-                                                        dialogContext,
-                                                      ); // Close dialog
-                                                      _progressController
-                                                          .forward(); // Resume progress
-                                                      _audioPlayer?.play();
+                                                          dialogContext);
+                                                      _resumeAll();
                                                     },
                                                     child: const Text(
-                                                      "NO",
+                                                      'NO',
                                                       style: TextStyle(
                                                         color: Colors.white54,
                                                       ),
@@ -712,61 +815,51 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                                   TextButton(
                                                     onPressed: () async {
                                                       Navigator.pop(
-                                                        dialogContext,
-                                                      ); // Close dialog
+                                                          dialogContext);
                                                       if (currentStory?.id !=
                                                           null) {
                                                         bool success =
                                                             await controller
                                                                 .deleteStory(
-                                                                  currentStory!
-                                                                      .id!,
-                                                                );
-                                                        if (success &&
-                                                            mounted) {
+                                                                    currentStory!
+                                                                        .id!);
+                                                        if (success && mounted) {
                                                           setState(() {
                                                             _localStories
                                                                 .removeWhere(
-                                                                  (story) =>
-                                                                      story
-                                                                          .id ==
-                                                                      currentStory
-                                                                          .id,
-                                                                );
+                                                              (s) =>
+                                                                  s.id ==
+                                                                  currentStory.id,
+                                                            );
                                                             if (_localStories
                                                                 .isEmpty) {
                                                               Navigator.of(
-                                                                context,
-                                                              ).pop();
+                                                                      context)
+                                                                  .pop();
                                                             } else {
                                                               if (currentIndex >=
                                                                   _localStories
                                                                       .length) {
                                                                 currentIndex =
                                                                     _localStories
-                                                                        .length -
-                                                                    1;
+                                                                            .length -
+                                                                        1;
                                                               }
-                                                              _playStoryMusic(currentIndex);
                                                               _progressController
                                                                   .reset();
-                                                              _progressController
-                                                                  .forward();
+                                                              _initMedia(
+                                                                  currentIndex);
                                                             }
                                                           });
                                                         } else {
-                                                          _progressController
-                                                              .forward();
-                                                          _audioPlayer?.play();
+                                                          _resumeAll();
                                                         }
                                                       } else {
-                                                        _progressController
-                                                            .forward();
-                                                        _audioPlayer?.play();
+                                                        _resumeAll();
                                                       }
                                                     },
                                                     child: const Text(
-                                                      "YES",
+                                                      'YES',
                                                       style: TextStyle(
                                                         color: Colors.redAccent,
                                                         fontWeight:
@@ -786,13 +879,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                                 );
                               },
                             ).then((value) {
-                              if (value != 'delete') {
-                                if (mounted &&
-                                    !_progressController.isAnimating) {
-                                  _progressController.forward();
-                                }
-                                _audioPlayer?.play();
-                              }
+                              if (value != 'delete') _resumeAll();
                             });
                           },
                           child: const Icon(
@@ -807,6 +894,8 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                 ],
               ),
             ),
+
+            // ── Floating hearts ─────────────────────────────────────────────
             ..._floatingHearts.map((heartId) {
               return Positioned(
                 bottom: MediaQuery.of(context).padding.bottom + 26,
@@ -816,9 +905,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
                     key: ValueKey(heartId),
                     onAnimationComplete: () {
                       if (mounted) {
-                        setState(() {
-                          _floatingHearts.remove(heartId);
-                        });
+                        setState(() => _floatingHearts.remove(heartId));
                       }
                     },
                   ),
@@ -830,56 +917,88 @@ class _StoryViewScreenState extends State<StoryViewScreen>
       ),
     );
   }
-}
 
-/// ── Pulsing yellow dot ────────────────────────────────────────────────────────
+  // ── Media Widget ──────────────────────────────────────────────────────────
 
-class _PulsingDot extends StatefulWidget {
-  @override
-  State<_PulsingDot> createState() => _PulsingDotState();
-}
+  Widget _buildMediaWidget(String? mediaUrl) {
+    if (mediaUrl == null || mediaUrl.isEmpty) {
+      return Container(color: const Color(0xff1a1a1a));
+    }
 
-class _PulsingDotState extends State<_PulsingDot>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _ctrl;
-  late Animation<double> _anim;
+    if (_isVideo) {
+      return _buildVideoWidget();
+    }
 
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    )..repeat(reverse: true);
-    _anim = Tween<double>(begin: 0.4, end: 1.0).animate(_ctrl);
+    return _buildImageWidget(mediaUrl);
   }
 
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
+  Widget _buildVideoWidget() {
+    if (!_isVideoReady || _videoController == null) {
+      return Container(
+        color: Colors.black,
+        child: const Center(
+          child: CircularProgressIndicator(color: Colors.white),
+        ),
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _anim,
-      builder: (_, _) => Opacity(
-        opacity: _anim.value,
-        child: Container(
-          width: 8,
-          height: 8,
-          decoration: const BoxDecoration(
-            color: AppColors.yellow,
-            shape: BoxShape.circle,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Blurred background
+        Container(color: Colors.black),
+        // Video centered
+        Center(
+          child: AspectRatio(
+            aspectRatio: _videoController!.value.aspectRatio,
+            child: VideoPlayer(_videoController!),
           ),
         ),
-      ),
+      ],
+    );
+  }
+
+  Widget _buildImageWidget(String imageUrl) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Blurred background
+        ImageFiltered(
+          imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: BoxFit.cover,
+            errorWidget: (context, url, error) =>
+                Container(color: const Color(0xff1a1a1a)),
+          ),
+        ),
+        // Dark overlay
+        Container(color: Colors.black.withValues(alpha: 0.35)),
+        // Main image
+        CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.contain,
+          progressIndicatorBuilder: (_, _, _) => const SizedBox.shrink(),
+          imageBuilder: (context, imageProvider) {
+            // Call after frame so setState is safe
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _onImageLoaded();
+            });
+            return Image(image: imageProvider, fit: BoxFit.contain);
+          },
+          errorWidget: (_, _, _) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _onImageError();
+            });
+            return Container(color: const Color(0xff1a1a1a));
+          },
+        ),
+      ],
     );
   }
 }
 
-/// ── Floating Heart Animation Widget ───────────────────────────────────────────
+// ── Floating Heart Animation ────────────────────────────────────────────────
 
 class _FloatingHeartWidget extends StatefulWidget {
   final VoidCallback onAnimationComplete;
@@ -907,7 +1026,6 @@ class _FloatingHeartWidgetState extends State<_FloatingHeartWidget>
       vsync: this,
     );
 
-    // Random Sway: range from -30 to 30
     _randomX =
         (double.tryParse(
                   (DateTime.now().microsecondsSinceEpoch % 100).toString(),
@@ -917,28 +1035,22 @@ class _FloatingHeartWidgetState extends State<_FloatingHeartWidget>
             60.0 -
         30.0;
 
-    _yAnim = Tween<double>(
-      begin: 0,
-      end: -200,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    _xAnim = Tween<double>(
-      begin: 0,
-      end: _randomX,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _yAnim = Tween<double>(begin: 0, end: -200).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+    _xAnim = Tween<double>(begin: 0, end: _randomX).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
     _opacityAnim = TweenSequence<double>([
       TweenSequenceItem(tween: Tween<double>(begin: 0.0, end: 1.0), weight: 15),
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: 55),
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: 30),
     ]).animate(_controller);
+    _scaleAnim = Tween<double>(begin: 0.4, end: 1.1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+    );
 
-    _scaleAnim = Tween<double>(
-      begin: 0.4,
-      end: 1.1,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
-
-    _controller.forward().then((_) {
-      widget.onAnimationComplete();
-    });
+    _controller.forward().then((_) => widget.onAnimationComplete());
   }
 
   @override
@@ -951,7 +1063,7 @@ class _FloatingHeartWidgetState extends State<_FloatingHeartWidget>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
-      builder: (context, child) {
+      builder: (context, _) {
         return Transform.translate(
           offset: Offset(_xAnim.value, _yAnim.value),
           child: Opacity(

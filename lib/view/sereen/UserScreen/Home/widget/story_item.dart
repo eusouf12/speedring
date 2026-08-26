@@ -10,12 +10,14 @@ class StoryItem extends StatelessWidget {
     required this.name,
     this.imageSrc,
     this.icon,
+    this.hasViewed = false,
   });
 
   final bool isMe;
   final String name;
   final String? imageSrc;
   final IconData? icon;
+  final bool hasViewed;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,10 @@ class StoryItem extends StatelessWidget {
               height: 66,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.yellow, width: 1.5),
+                border: Border.all(
+                  color: hasViewed ? Colors.grey[800]! : AppColors.yellow,
+                  width: hasViewed ? 1.0 : 1.5,
+                ),
               ),
               child: ClipOval(
                 child: imageSrc != null

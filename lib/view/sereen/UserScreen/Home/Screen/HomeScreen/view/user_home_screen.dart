@@ -172,23 +172,34 @@ class UserHomeScreen extends StatelessWidget {
                             imageUrl = storyGroup.user?.profileImage;
                           }
 
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      StoryViewScreen(storyGroup: storyGroup),
-                                ),
-                              );
-                            },
-                            child: StoryItem(
-                              isMe: false,
-                              name: storyGroup.user?.name ?? 'Unknown',
-                              imageSrc: imageUrl,
-                              icon: null,
-                            ),
-                          );
+                          return Obx(() {
+                            final userId = storyGroup.user?.id ?? '';
+                            final isMyStory = userId == controller.currentUserId.value;
+                            final hasViewed = !isMyStory &&
+                                controller.viewedStoryGroupIds.contains(userId);
+
+                            return GestureDetector(
+                              onTap: () {
+                                if (userId.isNotEmpty) {
+                                  controller.markStoryGroupViewed(userId);
+                                }
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        StoryViewScreen(storyGroup: storyGroup),
+                                  ),
+                                );
+                              },
+                              child: StoryItem(
+                                isMe: false,
+                                name: storyGroup.user?.name ?? 'Unknown',
+                                imageSrc: imageUrl,
+                                icon: null,
+                                hasViewed: hasViewed,
+                              ),
+                            );
+                          });
                         },
                       );
                     }),
