@@ -81,23 +81,23 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                     Get.dialog(
                       AlertDialog(
                         backgroundColor: const Color(0xff181818),
-                        title: const Text(
-                          "Delete Club?",
-                          style: TextStyle(
+                        title: Text(
+                          "deleteClubQuestion".tr,
+                          style: const TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        content: const Text(
-                          "Are you sure you want to delete this club? This action cannot be undone.",
+                        content: Text(
+                          "deleteClubDesc".tr,
                           style: TextStyle(color: Colors.white70),
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Get.back(),
-                            child: const Text(
-                              "CANCEL",
-                              style: TextStyle(color: Colors.white54),
+                            child: Text(
+                              "cancel".tr.toUpperCase(),
+                              style: const TextStyle(color: Colors.white54),
                             ),
                           ),
                           TextButton(
@@ -111,9 +111,9 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                 });
                               }
                             },
-                            child: const Text(
-                              "YES",
-                              style: TextStyle(color: Colors.red),
+                            child: Text(
+                              "yes".tr.toUpperCase(),
+                              style: const TextStyle(color: Colors.red),
                             ),
                           ),
                         ],
@@ -123,23 +123,23 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                     Get.dialog(
                       AlertDialog(
                         backgroundColor: const Color(0xff181818),
-                        title: const Text(
-                          "Leave Club?",
-                          style: TextStyle(
+                        title: Text(
+                          "leaveClubQuestion".tr,
+                          style: const TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        content: const Text(
-                          "Are you sure you want to leave this club?",
+                        content: Text(
+                          "leaveClubDesc".tr,
                           style: TextStyle(color: Colors.white70),
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Get.back(),
-                            child: const Text(
-                              "CANCEL",
-                              style: TextStyle(color: Colors.white54),
+                            child: Text(
+                              "cancel".tr.toUpperCase(),
+                              style: const TextStyle(color: Colors.white54),
                             ),
                           ),
                           TextButton(
@@ -150,8 +150,8 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                               }
                             },
                             child: Text(
-                              "yes".tr,
-                              style: TextStyle(color: Colors.red),
+                              "yes".tr.toUpperCase(),
+                              style: const TextStyle(color: Colors.red),
                             ),
                           ),
                         ],

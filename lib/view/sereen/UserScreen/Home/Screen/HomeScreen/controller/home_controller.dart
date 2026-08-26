@@ -2198,6 +2198,8 @@ class HomeController extends GetxController {
     } catch (e) {
       debugPrint("Error joining club: $e");
       showCustomSnackBar('An error occurred');
+    } finally {
+      isJoinClubLoading.value = false;
     }
   }
 

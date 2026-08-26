@@ -252,14 +252,12 @@ class CreateClubScreen extends StatelessWidget {
                     const SizedBox(height: 12),
                     Obx(
                       () => Row(
-                        children: ["PUBLIC", "APPROVAL", "INVITE"].map((type) {
+                        children: ["PUBLIC", "APPROVAL"].map((type) {
                           final bool isSel =
                               type == controller.selectedAccess.value;
                           final String label = type == "PUBLIC"
                               ? 'public'.tr.toUpperCase()
-                              : type == "APPROVAL"
-                              ? 'approval'.tr.toUpperCase()
-                              : 'invite'.tr.toUpperCase();
+                              : 'approval'.tr.toUpperCase();
                           return Expanded(
                             child: GestureDetector(
                               onTap: () {

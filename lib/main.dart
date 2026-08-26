@@ -8,7 +8,6 @@ import 'package:speedring/helper/guest_checker.dart';
 import 'package:speedring/service/deeplink_service.dart';
 import 'package:speedring/view/language/app_translate.dart';
 import 'package:speedring/view/language/language_helper.dart';
-import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'utils/app_colors/app_colors.dart';
