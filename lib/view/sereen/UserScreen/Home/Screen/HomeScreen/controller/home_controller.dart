@@ -57,7 +57,9 @@ class HomeController extends GetxController {
       if (!_hasMorePosts || isLoadMoreLoading.value) return;
       isLoadMoreLoading.value = true;
     } else {
-      isPostLoading.value = true;
+      if (postsList.isEmpty) {
+        isPostLoading.value = true;
+      }
       _postPage = 1;
       _hasMorePosts = true;
     }

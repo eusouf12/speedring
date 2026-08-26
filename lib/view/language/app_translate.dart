@@ -18,7 +18,8 @@ class AppTranslate extends Translations {
       'descriptionDetails': 'DESCRIPTION / DETAILS',
       'explainIssueDetail': 'Explain your issue or question in detail...',
       'validationError': 'Validation Error',
-      'subjectDescRequired': 'Subject and description are required to submit a ticket.',
+      'subjectDescRequired':
+          'Subject and description are required to submit a ticket.',
       'ticketSubmitted': 'Ticket Submitted',
       'failedSubmitTicket': 'Error: Failed to submit ticket. Please try again.',
       'errorOccurred': 'Error: An error occurred. Please try again.',
@@ -593,6 +594,10 @@ class AppTranslate extends Translations {
       'businessPostDesc': 'Post services, parts, or vehicles.',
       'postToClub': 'POST TO CLUB',
       'selectYourClub': 'Select your club',
+      'unfollow': 'Unfollow',
+      'followBack': 'Follow Back',
+      'noFollowersFound': 'No followers found.',
+      'noFollowingFound': 'No following found.',
       // Missing Keys
       'transmission': 'transmission',
       'status': 'status',
@@ -1151,8 +1156,6 @@ class AppTranslate extends Translations {
       'SAVED_REELS': 'Saved Reels',
       'NO_SAVED_REELS_FOUND': 'No saved reels found.',
       'following': 'Following',
-      'noFollowersFound': 'No followers found',
-      'noFollowingFound': 'No following found',
       'loginRequired': 'Login Required',
       'pleaseLoginFirst': 'Please login first to access this feature.',
       'continueAsGuest': 'Continue as Guest',
@@ -1751,7 +1754,9 @@ class AppTranslate extends Translations {
       'promoDescHint': 'Vollständige Details angeben...',
       'publishPromo': 'PROMO VERÖFFENTLICHEN',
       'postToClub': 'IM CLUB POSTEN',
-      'selectYourClub': 'Wählen Sie Ihren Club',
+      'selectYourClub': 'Wähle deinen Club aus',
+      'unfollow': 'Entfolgen',
+      'followBack': 'Zurück folgen',
 
       // Missing Keys - German
       'listingDetails': 'ANGEBOTSDETAILS',

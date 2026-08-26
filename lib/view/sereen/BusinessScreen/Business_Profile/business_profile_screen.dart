@@ -11,6 +11,8 @@ import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
 import '../../../../core/app_routes/app_routes.dart';
 import '../../../../utils/app_colors/app_colors.dart';
+import '../../../components/custom_netwrok_image/custom_network_image.dart'
+    show CustomNetworkImage;
 import '../../../components/custom_text/custom_text.dart';
 import '../BusinessHome/business_navbar.dart';
 import '../../UserScreen/Profile/controller/profile_controller.dart';
@@ -114,20 +116,44 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                         left: 0,
                         right: 0,
                         height: 180.h,
-                        child: Image.network(
-                          profile?.profileBanner ?? "",
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(
-                                color: const Color(0xff1C1C1C),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.image,
-                                    color: Colors.white24,
-                                    size: 48,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (profile?.profileBanner != null &&
+                                profile!.profileBanner!.isNotEmpty) {
+                              Get.to(
+                                () => Scaffold(
+                                  backgroundColor: Colors.black,
+                                  appBar: AppBar(
+                                    backgroundColor: Colors.transparent,
+                                    elevation: 0,
+                                  ),
+                                  body: InteractiveViewer(
+                                    child: Center(
+                                      child: CustomNetworkImage(
+                                        imageUrl: profile.profileBanner!,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              );
+                            }
+                          },
+                          child: Image.network(
+                            profile?.profileBanner ?? "",
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                                  color: const Color(0xff1C1C1C),
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.image,
+                                      color: Colors.white24,
+                                      size: 48,
+                                    ),
+                                  ),
+                                ),
+                          ),
                         ),
                       ),
                       Positioned(
@@ -192,20 +218,45 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                                   width: 3,
                                 ),
                               ),
-                              child: ClipOval(
-                                child: Image.network(
-                                  profile?.profileImage ??
-                                      AppConstants.profileImage,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(
-                                        color: const Color(0xff1C1C1C),
-                                        child: const Icon(
-                                          Icons.person,
-                                          color: Colors.white24,
-                                          size: 40,
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (profile?.profileImage != null &&
+                                      profile!.profileImage!.isNotEmpty) {
+                                    Get.to(
+                                      () => Scaffold(
+                                        backgroundColor: Colors.black,
+                                        appBar: AppBar(
+                                          backgroundColor: Colors.transparent,
+                                          elevation: 0,
+                                        ),
+                                        body: InteractiveViewer(
+                                          child: Center(
+                                            child: CustomNetworkImage(
+                                              imageUrl: profile.profileImage!,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
                                         ),
                                       ),
+                                    );
+                                  }
+                                },
+                                child: ClipOval(
+                                  child: Image.network(
+                                    profile?.profileImage ??
+                                        AppConstants.profileImage,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Container(
+                                              color: const Color(0xff1C1C1C),
+                                              child: const Icon(
+                                                Icons.person,
+                                                color: Colors.white24,
+                                                size: 40,
+                                              ),
+                                            ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -354,28 +405,36 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                   ),
                   child: Row(
                     children: [
-                      GestureDetector(
+                      _buildStatItem(
+                        "followers".tr.toUpperCase(),
+                        "${profile?.followerCount ?? 0}",
                         onTap: () {
                           if (profile?.id != null) {
-                            Get.toNamed(AppRoutes.followListScreen, arguments: {'userId': profile!.id, 'listType': 'followers'});
+                            Get.toNamed(
+                              AppRoutes.followListScreen,
+                              arguments: {
+                                'userId': profile!.id,
+                                'listType': 'followers',
+                              },
+                            );
                           }
                         },
-                        child: _buildStatItem(
-                          "followers".tr.toUpperCase(),
-                          "${profile?.followerCount ?? 0}",
-                        ),
                       ),
                       _buildStatDivider(),
-                      GestureDetector(
+                      _buildStatItem(
+                        "following".tr.toUpperCase(),
+                        "${profile?.followingCount ?? profile?.following?.length ?? 0}",
                         onTap: () {
                           if (profile?.id != null) {
-                            Get.toNamed(AppRoutes.followListScreen, arguments: {'userId': profile!.id, 'listType': 'following'});
+                            Get.toNamed(
+                              AppRoutes.followListScreen,
+                              arguments: {
+                                'userId': profile!.id,
+                                'listType': 'following',
+                              },
+                            );
                           }
                         },
-                        child: _buildStatItem(
-                          "following".tr.toUpperCase(),
-                          "${profile?.followingCount ?? 0}",
-                        ),
                       ),
                       _buildStatDivider(),
                       _buildStatItem("listings".tr.toUpperCase(), "0"),
@@ -400,24 +459,31 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
     );
   }
 
-  Widget _buildStatItem(String label, String value) {
+  Widget _buildStatItem(String label, String value, {VoidCallback? onTap}) {
     return Expanded(
-      child: Column(
-        children: [
-          CustomText(
-            text: value,
-            color: Colors.white,
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w900,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          color: Colors.transparent,
+          child: Column(
+            children: [
+              CustomText(
+                text: label,
+                color: Colors.white38,
+                fontSize: 8,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+              SizedBox(height: 4.h),
+              CustomText(
+                text: value,
+                color: AppColors.yellow,
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
+              ),
+            ],
           ),
-          SizedBox(height: 2.h),
-          CustomText(
-            text: label,
-            color: Colors.white38,
-            fontSize: 9.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ],
+        ),
       ),
     );
   }

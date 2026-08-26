@@ -6,6 +6,7 @@ import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../utils/app_images/app_images.dart';
 import '../../../../components/custom_button/custom_button.dart';
+import '../../../../components/custom_netwrok_image/custom_network_image.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../components/custom_nav_bar/navbar.dart';
 import '../../../../../../utils/app_colors/app_colors.dart';
@@ -89,25 +90,31 @@ class ProfileScreen extends StatelessWidget {
                     clipBehavior: Clip.none,
                     children: [
                       /// Banner Image
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: 180.h,
-                        child: Image.network(
-                          profile?.profileBanner ?? "",
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(
-                                color: const Color(0xff1C1C1C),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.image,
-                                    color: Colors.white24,
-                                    size: 48,
-                                  ),
-                                ),
-                              ),
+                      Positioned.fill(
+                        child: GestureDetector(
+                          onTap: () {
+                            if (profile?.profileBanner != null &&
+                                profile!.profileBanner!.isNotEmpty) {
+                              Get.to(() => Scaffold(
+                                    backgroundColor: Colors.black,
+                                    appBar: AppBar(
+                                        backgroundColor: Colors.transparent,
+                                        elevation: 0),
+                                    body: InteractiveViewer(
+                                      child: Center(
+                                        child: CustomNetworkImage(
+                                          imageUrl: profile.profileBanner!,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  ));
+                            }
+                          },
+                          child: CustomNetworkImage(
+                            imageUrl: profile?.profileBanner ?? '',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       Positioned(
@@ -169,24 +176,41 @@ class ProfileScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   width: 3,
                                 ),
                               ),
-                              child: ClipOval(
-                                child: Image.network(
-                                  profile?.profileImage ??
-                                      AppConstants.profileImage,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(
-                                        color: const Color(0xff1C1C1C),
-                                        child: const Icon(
-                                          Icons.person,
-                                          color: Colors.white24,
-                                          size: 40,
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (profile?.profileImage != null && profile!.profileImage!.isNotEmpty) {
+                                    Get.to(() => Scaffold(
+                                      backgroundColor: Colors.black,
+                                      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+                                      body: InteractiveViewer(
+                                        child: Center(
+                                          child: CustomNetworkImage(
+                                            imageUrl: profile.profileImage!,
+                                            fit: BoxFit.contain,
+                                          ),
                                         ),
                                       ),
+                                    ));
+                                  }
+                                },
+                                child: ClipOval(
+                                  child: Image.network(
+                                    profile?.profileImage ?? AppConstants.profileImage,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        Container(
+                                          color: const Color(0xff1C1C1C),
+                                          child: const Icon(
+                                            Icons.person,
+                                            color: Colors.white24,
+                                            size: 40,
+                                          ),
+                                        ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -355,28 +379,24 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      GestureDetector(
+                      _buildStatItem(
+                        "followers".tr.toUpperCase(),
+                        "${profile?.followerCount ?? 0}",
                         onTap: () {
                           if (profile?.id != null) {
                             Get.toNamed(AppRoutes.followListScreen, arguments: {'userId': profile!.id, 'listType': 'followers'});
                           }
                         },
-                        child: _buildStatItem(
-                          "followers".tr.toUpperCase(),
-                          "${profile?.followerCount ?? 0}",
-                        ),
                       ),
                       _buildStatDivider(),
-                      GestureDetector(
+                      _buildStatItem(
+                        "following".tr.toUpperCase(),
+                        "${profile?.followingCount ?? profile?.following?.length ?? 0}",
                         onTap: () {
                           if (profile?.id != null) {
                             Get.toNamed(AppRoutes.followListScreen, arguments: {'userId': profile!.id, 'listType': 'following'});
                           }
                         },
-                        child: _buildStatItem(
-                          "following".tr.toUpperCase(),
-                          "${profile?.followingCount ?? 0}",
-                        ),
                       ),
                       _buildStatDivider(),
                       _buildStatItem(
@@ -524,25 +544,31 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(String label, String value) {
+  Widget _buildStatItem(String label, String value, {VoidCallback? onTap}) {
     return Expanded(
-      child: Column(
-        children: [
-          CustomText(
-            text: label,
-            color: Colors.white38,
-            fontSize: 8,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          color: Colors.transparent,
+          child: Column(
+            children: [
+              CustomText(
+                text: label,
+                color: Colors.white38,
+                fontSize: 8,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+              SizedBox(height: 4.h),
+              CustomText(
+                text: value,
+                color: AppColors.yellow,
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
+              ),
+            ],
           ),
-          SizedBox(height: 4.h),
-          CustomText(
-            text: value,
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w900,
-          ),
-        ],
+        ),
       ),
     );
   }

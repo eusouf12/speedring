@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:speedring/service/api_client.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/Profile/controller/profile_controller.dart';
 
 class FollowUserModel {
   final String id;
@@ -195,12 +197,18 @@ class ShareController extends GetxController {
     isFollowLoadingMore.value = false;
   }
 
-  Future<void> toggleFollowUser(String targetUserId) async {
+  Future<void> toggleFollowUser(String targetUserId, {String? listType}) async {
     try {
       // Optimistic UI update
       int index = followUsersList.indexWhere((u) => u.id == targetUserId);
+      FollowUserModel? removedUser;
+
       if (index != -1) {
-        followUsersList[index].isFollow = !followUsersList[index].isFollow;
+        if (listType == 'following') {
+          removedUser = followUsersList.removeAt(index);
+        } else {
+          followUsersList[index].isFollow = !followUsersList[index].isFollow;
+        }
         followUsersList.refresh();
       }
 
@@ -210,19 +218,32 @@ class ShareController extends GetxController {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Success, nothing to do
+        // Success, nothing to do here as UI is optimistically updated.
+        // Refresh home posts if registered
+        if (Get.isRegistered<HomeController>()) {
+          Get.find<HomeController>().getPost();
+        }
+        // Refresh profile if registered
+        if (Get.isRegistered<ProfileScreenController>()) {
+          Get.find<ProfileScreenController>().getMyProfile();
+        }
       } else {
         // Revert UI update if failed
-        if (index != -1) {
+        if (listType == 'following' && removedUser != null) {
+          followUsersList.insert(index, removedUser);
+        } else if (index != -1 && listType != 'following') {
           followUsersList[index].isFollow = !followUsersList[index].isFollow;
-          followUsersList.refresh();
         }
+        followUsersList.refresh();
         showCustomSnackBar("Failed to follow/unfollow user", isError: true);
       }
     } catch (e) {
       // Revert UI update if failed
       int index = followUsersList.indexWhere((u) => u.id == targetUserId);
-      if (index != -1) {
+      if (listType == 'following') {
+        // We can't easily revert if we don't have the removed user, but we'll try to refetch
+        fetchFollowUsers(targetUserId, listType!); // fallback
+      } else if (index != -1) {
         followUsersList[index].isFollow = !followUsersList[index].isFollow;
         followUsersList.refresh();
       }

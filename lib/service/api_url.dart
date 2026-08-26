@@ -5,11 +5,11 @@ class ApiUrl {
   //     "https://comparable-leasing-overcome-prix.trycloudflare.com";
 
   //=============== wINDOWS ======================
- // static const String baseUrl = "http://10.10.28.90:4050/api/v1";
+  // static const String baseUrl = "http://10.10.28.90:4050/api/v1";
   static const String imageUrl = "https://api.speedring.online";
-   static const String baseUrl = "https://api.speedring.online/api/v1";
+  static const String baseUrl = "https://api.speedring.online/api/v1";
   //========================= Mac ========================
-   //static const String baseUrl = "http://10.0.2.2:4050/api/v1";
+  //static const String baseUrl = "http://10.0.2.2:4050/api/v1";
   // static const String imageUrl = "http://10.0.2.2:4050";
   static String socketUrl = imageUrl;
   static String mapKey = "AIzaSyDHmHgdJYzTLD-j7p710yc_5yM2486JmuE";
@@ -199,7 +199,8 @@ class ApiUrl {
   static String deleteClub({required String clubId}) =>
       "/clubs/delete-club/$clubId";
   static String joinClub({required String clubId}) => "/clubs/$clubId/join";
-  static String inviteToClub({required String clubId}) => "/clubs/$clubId/invite";
+  static String inviteToClub({required String clubId}) =>
+      "/clubs/$clubId/invite";
   static String leaveClub({required String clubId}) => "/clubs/$clubId/leave";
   static String getSingleClub({required String clubId}) =>
       "/clubs/view-club/$clubId";

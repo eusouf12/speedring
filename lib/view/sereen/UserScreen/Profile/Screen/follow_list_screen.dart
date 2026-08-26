@@ -144,33 +144,54 @@ class _FollowListScreenState extends State<FollowListScreen> {
                       ],
                     ),
                   ),
-                  Builder(builder: (context) {
-                    bool isFollowing = user.isFollow;
-                    return GestureDetector(
-                      onTap: () => controller.toggleFollowUser(user.id),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 8.h,
+                  Builder(
+                    builder: (context) {
+                      bool isFollowing = user.isFollow;
+                      String buttonText = '';
+
+                      bool isUnfollowState = false;
+
+                      if (widget.listType == 'following') {
+                        buttonText = 'unfollow'.tr;
+                        isUnfollowState = true;
+                      } else {
+                        buttonText = isFollowing
+                            ? 'unfollow'.tr
+                            : 'followBack'.tr;
+                        isUnfollowState = isFollowing;
+                      }
+
+                      return GestureDetector(
+                        onTap: () => controller.toggleFollowUser(
+                          user.id,
+                          listType: widget.listType,
                         ),
-                        decoration: BoxDecoration(
-                          color: isFollowing
-                              ? Colors.transparent
-                              : AppColors.yellow,
-                          border: isFollowing
-                              ? Border.all(color: Colors.white38)
-                              : null,
-                          borderRadius: BorderRadius.circular(8.r),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 8.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isUnfollowState
+                                ? Colors.transparent
+                                : AppColors.yellow,
+                            border: isUnfollowState
+                                ? Border.all(color: AppColors.yellow)
+                                : null,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: CustomText(
+                            text: buttonText,
+                            color: isUnfollowState
+                                ? AppColors.yellow
+                                : Colors.black,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                        child: CustomText(
-                          text: isFollowing ? 'following'.tr : 'follow'.tr,
-                          color: isFollowing ? Colors.white : Colors.black,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    );
-                  }),
+                      );
+                    },
+                  ),
                 ],
               ),
             );

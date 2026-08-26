@@ -193,7 +193,9 @@ class ProfileScreenController extends GetxController {
   }
 
   Future<void> getMyProfile() async {
-    isLoading.value = true;
+    if (profileData.value == null) {
+      isLoading.value = true;
+    }
 
     try {
       final response = await ApiClient.getData(ApiUrl.myProfile);
@@ -356,7 +358,9 @@ class ProfileScreenController extends GetxController {
     } else {
       vehiclePage = 1;
       hasNextVehiclePage = true;
-      isVehicleLoading.value = true;
+      if (vehicles.isEmpty) {
+        isVehicleLoading.value = true;
+      }
     }
 
     try {
@@ -514,7 +518,9 @@ class ProfileScreenController extends GetxController {
     } else {
       postPage = 1;
       hasNextPostPage = true;
-      isPostLoading.value = true;
+      if (myPosts.isEmpty) {
+        isPostLoading.value = true;
+      }
     }
 
     try {
