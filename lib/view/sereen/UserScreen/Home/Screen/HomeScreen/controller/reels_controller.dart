@@ -264,6 +264,16 @@ class ReelsController extends GetxController {
     reel['isBookmarked'] = !isBookmarked;
     reels[index] = reel;
 
+    if (!isBookmarked) {
+      // Added to bookmarks
+      if (!savedReels.any((element) => element['_id'] == postId || element['id'] == postId)) {
+        savedReels.insert(0, reel);
+      }
+    } else {
+      // Removed from bookmarks
+      savedReels.removeWhere((element) => element['_id'] == postId || element['id'] == postId);
+    }
+
     try {
       var response = await ApiClient.postData(
         ApiUrl.toggleSavePost(postId: postId),
@@ -284,11 +294,19 @@ class ReelsController extends GetxController {
     if (index < 0 || index >= reels.length || targetUserId.isEmpty) return;
 
     final reel = reels[index];
-    final bool isFollowing = reel['isFollowing'] ?? false;
+    final bool isFollowing = reel['user']?['isFollow'] ?? false;
 
-    // Optimistic update
-    reel['isFollowing'] = !isFollowing;
-    reels[index] = reel;
+    // Optimistic update for ALL reels by this user
+    for (int i = 0; i < reels.length; i++) {
+      if (reels[i]['user'] != null && 
+         (reels[i]['user']['_id'] == targetUserId || reels[i]['user']['id'] == targetUserId)) {
+        // Need to create a new Map for user if we are updating it to trigger rx changes properly and avoid unmodifiable map issues
+        final updatedUser = Map<String, dynamic>.from(reels[i]['user']);
+        updatedUser['isFollow'] = !isFollowing;
+        reels[i]['user'] = updatedUser;
+        reels[i] = reels[i];
+      }
+    }
 
     try {
       var response = await ApiClient.patchData(
@@ -298,9 +316,16 @@ class ReelsController extends GetxController {
       if (response.statusCode == 200) {
         // Success
       } else {
-        // Revert on failure
-        reels[index]['isFollowing'] = isFollowing;
-        reels[index] = reels[index];
+        // Revert on failure for ALL reels by this user
+        for (int i = 0; i < reels.length; i++) {
+          if (reels[i]['user'] != null && 
+             (reels[i]['user']['_id'] == targetUserId || reels[i]['user']['id'] == targetUserId)) {
+            final updatedUser = Map<String, dynamic>.from(reels[i]['user']);
+            updatedUser['isFollow'] = isFollowing;
+            reels[i]['user'] = updatedUser;
+            reels[i] = reels[i];
+          }
+        }
         showCustomSnackBar("Failed to follow user", isError: true);
       }
     } catch (e) {

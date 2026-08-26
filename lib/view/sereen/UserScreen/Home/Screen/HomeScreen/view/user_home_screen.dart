@@ -38,11 +38,15 @@ class UserHomeScreen extends StatelessWidget {
           showSearchIcon: true,
           onSearchTap: () => controller.showSearchBar.toggle(),
           onNotificationTap: () {
-            if (GuestChecker.showLoginDialogIfGuest()) return;
+            if (GuestChecker.showLoginDialogIfGuest()) {
+              return;
+            }
             Get.toNamed(AppRoutes.notificationScreen);
           },
           onMailTap: () {
-            if (GuestChecker.showLoginDialogIfGuest()) return;
+            if (GuestChecker.showLoginDialogIfGuest()) {
+              return;
+            }
             Get.toNamed(AppRoutes.messageScreen);
           },
         ),
@@ -142,8 +146,9 @@ class UserHomeScreen extends StatelessWidget {
                           if (index == 0) {
                             return GestureDetector(
                               onTap: () {
-                                if (GuestChecker.showLoginDialogIfGuest())
+                                if (GuestChecker.showLoginDialogIfGuest()) {
                                   return;
+                                }
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -191,8 +196,11 @@ class UserHomeScreen extends StatelessWidget {
                             } else {
                               allStoriesViewed = false;
                             }
-                            final hasLocallyViewed = controller.viewedStoryGroupIds.contains(userId);
-                            final hasViewed = allStoriesViewed || hasLocallyViewed;
+                            final hasLocallyViewed = controller
+                                .viewedStoryGroupIds
+                                .contains(userId);
+                            final hasViewed =
+                                allStoriesViewed || hasLocallyViewed;
                             debugPrint(
                               "User ${storyGroup.user?.name} hasViewed: $hasViewed, allViewed: $allStoriesViewed",
                             );
@@ -261,8 +269,9 @@ class UserHomeScreen extends StatelessWidget {
                                   AddPostButton(
                                     label: "addPost".tr.toUpperCase(),
                                     onTap: () {
-                                      if (GuestChecker.showLoginDialogIfGuest())
+                                      if (GuestChecker.showLoginDialogIfGuest()) {
                                         return;
+                                      }
                                       Get.toNamed(AppRoutes.createPostScreen);
                                     },
                                   ),
@@ -635,8 +644,9 @@ class UserHomeScreen extends StatelessWidget {
                                   AddPostButton(
                                     label: "addEvent".tr,
                                     onTap: () {
-                                      if (GuestChecker.showLoginDialogIfGuest())
+                                      if (GuestChecker.showLoginDialogIfGuest()) {
                                         return;
+                                      }
                                       Get.toNamed(AppRoutes.createEventScreen);
                                     },
                                   ),
@@ -702,18 +712,21 @@ class UserHomeScreen extends StatelessWidget {
                               isMyEvent: isMyEvent,
                               eventId: event.id ?? "",
                               onJoin: () {
-                                if (GuestChecker.showLoginDialogIfGuest())
+                                if (GuestChecker.showLoginDialogIfGuest()) {
                                   return;
+                                }
                                 controller.joinEvent(eventId: event.id!);
                               },
                               onLike: () {
-                                if (GuestChecker.showLoginDialogIfGuest())
+                                if (GuestChecker.showLoginDialogIfGuest()) {
                                   return;
+                                }
                                 controller.reactToEvent(eventId: event.id!);
                               },
                               onComment: () {
-                                if (GuestChecker.showLoginDialogIfGuest())
+                                if (GuestChecker.showLoginDialogIfGuest()) {
                                   return;
+                                }
                                 showEventCommentSheet(context, event);
                               },
                               onShare: () {
@@ -776,8 +789,9 @@ class UserHomeScreen extends StatelessWidget {
                                 padding: const EdgeInsets.only(right: 20),
                                 child: GestureDetector(
                                   onTap: () {
-                                    if (GuestChecker.showLoginDialogIfGuest())
+                                    if (GuestChecker.showLoginDialogIfGuest()) {
                                       return;
+                                    }
                                     Get.toNamed(AppRoutes.createClubScreen);
                                   },
                                   child: Column(
@@ -886,8 +900,9 @@ class UserHomeScreen extends StatelessWidget {
                               isJoined: club.isClubJoined ?? false,
                               isPending: club.isJoinRequestPending ?? false,
                               onJoinTap: () {
-                                if (GuestChecker.showLoginDialogIfGuest())
+                                if (GuestChecker.showLoginDialogIfGuest()) {
                                   return;
+                                }
                                 if (club.id != null) {
                                   controller.joinClub(club.id!);
                                 }

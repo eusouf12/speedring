@@ -12,6 +12,8 @@ import 'package:visibility_detector/visibility_detector.dart';
 import '../../model/post_model.dart';
 import '../post/comment_screen.dart';
 import 'package:speedring/helper/guest_checker.dart';
+import 'package:speedring/view/components/share/share_bottom_sheet.dart';
+import '../../../../../../../../service/api_url.dart';
 
 class ReelsScreen extends StatefulWidget {
   const ReelsScreen({super.key});
@@ -531,23 +533,23 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color:
-                                      (widget.reelData['isFollowing'] == true)
+                                      (widget.reelData['user']?['isFollow'] == true)
                                       ? Colors.grey
                                       : AppColors.yellow,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(4),
-                                color: (widget.reelData['isFollowing'] == true)
+                                color: (widget.reelData['user']?['isFollow'] == true)
                                     ? Colors.grey.withValues(alpha: 0.2)
                                     : Colors.transparent,
                               ),
                               child: Text(
-                                (widget.reelData['isFollowing'] == true)
+                                (widget.reelData['user']?['isFollow'] == true)
                                     ? "FOLLOWING".tr
                                     : "FOLLOW".tr,
                                 style: TextStyle(
                                   color:
-                                      (widget.reelData['isFollowing'] == true)
+                                      (widget.reelData['user']?['isFollow'] == true)
                                       ? Colors.white
                                       : AppColors.yellow,
                                   fontSize: 9,
@@ -652,18 +654,23 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                     _buildActionButton(
                       icon: Icons.send_rounded,
                       color: Colors.white,
-                      label: _formatCount(
-                        widget.reelData['shareCount'] ??
-                            widget.reelData['shares'] ??
-                            0,
-                      ),
+                      label: "", // Empty label to hide share count
                       onTap: () {
-                        Get.snackbar(
-                          "SHARED".tr,
-                          "REEL_LINK_COPIED".tr,
-                          backgroundColor: Colors.black87,
-                          colorText: Colors.white,
-                          snackPosition: SnackPosition.BOTTOM,
+                        if (GuestChecker.showLoginDialogIfGuest()) return;
+                        
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => ShareBottomSheet(
+                            shareText: widget.reelData['caption'] ?? widget.reelData['videoDetails']?['title'] ?? '',
+                            shareSubject: "SpeedRing Reel",
+                            shareLink: ApiUrl.imageUrl +
+                                (widget.reelData['media'] != null &&
+                                        (widget.reelData['media'] as List).isNotEmpty
+                                    ? widget.reelData['media'][0]['url']
+                                    : ''),
+                          ),
                         );
                       },
                     ),

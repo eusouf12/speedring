@@ -11,11 +11,11 @@ class ShareBottomSheet extends StatelessWidget {
   final String shareLink;
 
   const ShareBottomSheet({
-    Key? key,
+    super.key,
     required this.shareText,
     required this.shareSubject,
     required this.shareLink,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +124,7 @@ class ShareBottomSheet extends StatelessWidget {
                       vertical: 8,
                     ),
                     itemCount: controller.filteredList.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final user = controller.filteredList[index];
                       final name =

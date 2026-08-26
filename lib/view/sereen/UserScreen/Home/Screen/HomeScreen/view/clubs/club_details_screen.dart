@@ -11,6 +11,7 @@ import '../post/post_detail_screen.dart';
 import '../post/comment_screen.dart' show showCommentSheet;
 import '../user_home_screen.dart' show buildPostDetails;
 import 'package:speedring/utils/navigation_utils.dart';
+import 'invite_followers_bottom_sheet.dart';
 
 class ClubDetailsScreen extends StatefulWidget {
   const ClubDetailsScreen({super.key});
@@ -70,6 +71,10 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                         m.role == "ADMIN",
                   ) ??
                   false;
+                  
+              bool isJoined = club.members?.any(
+                    (m) => m.user?.id == controller.currentUserId.value,
+                  ) ?? false;
 
               return PopupMenuButton<String>(
                 icon: const Icon(Icons.more_vert, color: AppColors.yellow),
@@ -171,65 +176,70 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                         arguments: {'id': club.id},
                       );
                     }
+                  } else if (value == 'invite') {
+                    if (club.id != null) {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => InviteFollowersBottomSheet(clubId: club.id!),
+                      );
+                    }
                   }
                 },
                 itemBuilder: (context) {
+                  List<PopupMenuEntry<String>> items = [];
+                  
                   if (isAdmin) {
-                    return [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text(
-                          'editGroup'.tr,
-                          style: TextStyle(color: Colors.white),
-                        ),
+                    items.add(PopupMenuItem(
+                      value: 'edit',
+                      child: Text(
+                        'editGroup'.tr,
+                        style: const TextStyle(color: Colors.white),
                       ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text(
-                          'deleteGroup'.tr,
-                          style: TextStyle(color: Colors.red),
-                        ),
+                    ));
+                    items.add(PopupMenuItem(
+                      value: 'delete',
+                      child: Text(
+                        'deleteGroup'.tr,
+                        style: const TextStyle(color: Colors.red),
                       ),
-                      PopupMenuItem(
-                        value: 'requests',
-                        child: Text(
-                          'viewJoinRequests'.tr,
-                          style: TextStyle(color: Colors.white),
-                        ),
+                    ));
+                    items.add(PopupMenuItem(
+                      value: 'requests',
+                      child: Text(
+                        'viewJoinRequests'.tr,
+                        style: const TextStyle(color: Colors.white),
                       ),
-                      PopupMenuItem(
-                        value: 'members',
-                        child: Text(
-                          'viewMembers'.tr,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'leave',
-                        child: Text(
-                          'leaveGroup'.tr,
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ),
-                    ];
-                  } else {
-                    return [
-                      PopupMenuItem(
-                        value: 'members',
-                        child: Text(
-                          'viewMembers'.tr,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'leave',
-                        child: Text(
-                          'leaveGroup'.tr,
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ),
-                    ];
+                    ));
                   }
+                  
+                  items.add(PopupMenuItem(
+                    value: 'members',
+                    child: Text(
+                      'viewMembers'.tr,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ));
+                  
+                  if (isJoined || isAdmin) {
+                    items.add(PopupMenuItem(
+                      value: 'invite',
+                      child: Text(
+                        'inviteFollowers'.tr,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ));
+                    items.add(PopupMenuItem(
+                      value: 'leave',
+                      child: Text(
+                        'leaveGroup'.tr,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ));
+                  }
+                  
+                  return items;
                 },
               );
             }),

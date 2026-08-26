@@ -13,10 +13,10 @@ class FollowListScreen extends StatefulWidget {
   final String listType; // "followers" or "following"
 
   const FollowListScreen({
-    Key? key,
+    super.key,
     required this.userId,
     required this.listType,
-  }) : super(key: key);
+  });
 
   @override
   State<FollowListScreen> createState() => _FollowListScreenState();
