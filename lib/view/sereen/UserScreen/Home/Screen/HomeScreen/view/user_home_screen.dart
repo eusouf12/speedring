@@ -172,11 +172,24 @@ class UserHomeScreen extends StatelessWidget {
                             imageUrl = storyGroup.user?.profileImage;
                           }
 
-                          return Obx(() {
-                            final userId = storyGroup.user?.id ?? '';
-                            final isMyStory = userId == controller.currentUserId.value;
-                            final hasViewed = !isMyStory &&
-                                controller.viewedStoryGroupIds.contains(userId);
+                            return Obx(() {
+                              final userId = storyGroup.user?.id ?? '';
+                              final isMyStory = userId == controller.currentUserId.value;
+                              
+                              bool allStoriesViewed = true;
+                              if (storyGroup.stories != null && storyGroup.stories!.isNotEmpty) {
+                                for (var s in storyGroup.stories!) {
+                                  debugPrint("User ${storyGroup.user?.name} Story ${s.id} isView: ${s.isView}");
+                                  if (s.isView != true) {
+                                    allStoriesViewed = false;
+                                    break;
+                                  }
+                                }
+                              } else {
+                                allStoriesViewed = false;
+                              }
+                              final hasViewed = allStoriesViewed || controller.viewedStoryGroupIds.contains(userId);
+                              debugPrint("User ${storyGroup.user?.name} hasViewed: $hasViewed, allViewed: $allStoriesViewed");
 
                             return GestureDetector(
                               onTap: () {

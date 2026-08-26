@@ -65,6 +65,7 @@ class Story {
   final int? v;
   final int? viewCount;
   final int? reactCount;
+  final bool? isView;
 
   Story({
     this.id,
@@ -83,6 +84,7 @@ class Story {
     this.v,
     this.viewCount,
     this.reactCount,
+    this.isView,
   });
 
   factory Story.fromJson(Map<String, dynamic> json) {
@@ -115,6 +117,7 @@ class Story {
       v: json["__v"],
       viewCount: json["viewCount"],
       reactCount: json["reactCount"],
+      isView: json["isView"],
     );
   }
 
@@ -135,6 +138,7 @@ class Story {
     "__v": v,
     "viewCount": viewCount,
     "reactCount": reactCount,
+    "isView": isView,
   };
 }
 

@@ -478,6 +478,18 @@ class ProfileScreen extends StatelessWidget {
                               imageUrl = storyGroup.user?.profileImage;
                             }
 
+                            bool allStoriesViewed = true;
+                            if (storyGroup.stories != null && storyGroup.stories!.isNotEmpty) {
+                              for (var s in storyGroup.stories!) {
+                                if (s.isView != true) {
+                                  allStoriesViewed = false;
+                                  break;
+                                }
+                              }
+                            } else {
+                              allStoriesViewed = false;
+                            }
+                            
                             return GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -492,6 +504,7 @@ class ProfileScreen extends StatelessWidget {
                                 isMe: false,
                                 name: storyGroup.user?.name ?? 'Unknown',
                                 imageSrc: imageUrl,
+                                hasViewed: allStoriesViewed,
                               ),
                             );
                           },
