@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/view/components/share/share_bottom_sheet.dart';
 import '../../../../widget/post_card.dart';
 import '../../controller/home_controller.dart';
 import 'package:speedring/service/api_url.dart';
-import 'package:share_plus/share_plus.dart';
 import '../post/post_detail_screen.dart';
 import '../post/comment_screen.dart' show showCommentSheet;
 import '../user_home_screen.dart' show buildPostDetails;
@@ -527,15 +527,17 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                       .replaceAll('_', ' ')
                                       .toUpperCase()
                                 : '';
-                                
+
                             final userName =
                                 post.user?.name ??
                                 post.user?.userName ??
                                 'User';
-                                
+
                             String? profileImage = post.user?.profileImage;
-                            
-                            if (profileImage != null && profileImage.isNotEmpty && !profileImage.startsWith('http')) {
+
+                            if (profileImage != null &&
+                                profileImage.isNotEmpty &&
+                                !profileImage.startsWith('http')) {
                               profileImage = "${ApiUrl.imageUrl}$profileImage";
                             }
 
@@ -569,11 +571,14 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16),
-                                child: PostCard(
-                                  userId: post.user?.id,
-                                  onProfileTap: post.user?.id != null
-                                      ? () => NavigationUtils.navigateToUserProfile(post.user!.id)
-                                      : null,
+                              child: PostCard(
+                                userId: post.user?.id,
+                                onProfileTap: post.user?.id != null
+                                    ? () =>
+                                          NavigationUtils.navigateToUserProfile(
+                                            post.user!.id,
+                                          )
+                                    : null,
                                 userName: userName,
                                 location: location,
                                 imageUrl: imageUrl,
@@ -596,11 +601,15 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                                 onShare: () {
                                   final postLink =
                                       "https://speedring.com/post/${post.id}";
-                                  SharePlus.instance.share(
-                                    ShareParams(
-                                      text:
-                                          "Check out this post on Speedring:\n\n$postLink",
-                                      subject: "sharePostSubject".tr,
+                                  showModalBottomSheet(
+                                    context: Get.context!,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (_) => ShareBottomSheet(
+                                      shareText:
+                                          "Check out this post on Speedring:",
+                                      shareSubject: "sharePostSubject".tr,
+                                      shareLink: postLink,
                                     ),
                                   );
                                 },

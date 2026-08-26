@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:share_plus/share_plus.dart';
+import '../../../../../view/components/share/share_bottom_sheet.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/components/custom_appbar_user/custom_appbar_user.dart';
@@ -61,8 +61,8 @@ class DiscoverScreen extends StatelessWidget {
                       hintText: isVideo
                           ? 'searchVideosHint'.tr
                           : isNetwork
-                              ? 'searchUsersHint'.tr
-                              : 'searchSpotsHint'.tr,
+                          ? 'searchUsersHint'.tr
+                          : 'searchSpotsHint'.tr,
                       hintStyle: const TextStyle(color: Colors.white30),
                       prefixIcon: const Icon(
                         Icons.search,
@@ -391,7 +391,10 @@ class DiscoverScreen extends StatelessWidget {
                               size: 16,
                             ),
                             SizedBox(width: 10),
-                            Text('edit'.tr, style: TextStyle(color: Colors.white)),
+                            Text(
+                              'edit'.tr,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ],
                         ),
                       ),
@@ -405,7 +408,10 @@ class DiscoverScreen extends StatelessWidget {
                               size: 16,
                             ),
                             SizedBox(width: 10),
-                            Text('delete'.tr, style: TextStyle(color: Colors.red)),
+                            Text(
+                              'delete'.tr,
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ],
                         ),
                       ),
@@ -495,11 +501,14 @@ class DiscoverScreen extends StatelessWidget {
                       onTap: () {
                         final link =
                             "https://speedring.com/discover/${post.id}";
-                        SharePlus.instance.share(
-                          ShareParams(
-                            text:
-                                'checkOutSpot'.tr + link,
-                            subject: "Speedring Car Spot",
+                        showModalBottomSheet(
+                          context: Get.context!,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => ShareBottomSheet(
+                            shareText: 'checkOutSpot'.tr,
+                            shareSubject: "Speedring Car Spot",
+                            shareLink: link,
                           ),
                         );
                       },
@@ -651,7 +660,15 @@ class DiscoverScreen extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            tag == 'All' ? 'all'.tr : tag == 'Onboard' ? 'onboard'.tr : tag == 'Technical' ? 'technical'.tr : tag == 'Vlogs' ? 'vlogs'.tr : tag.tr,
+                            tag == 'All'
+                                ? 'all'.tr
+                                : tag == 'Onboard'
+                                ? 'onboard'.tr
+                                : tag == 'Technical'
+                                ? 'technical'.tr
+                                : tag == 'Vlogs'
+                                ? 'vlogs'.tr
+                                : tag.tr,
                             style: TextStyle(
                               color: isSel ? Colors.black : Colors.white70,
                               fontSize: 10,
@@ -946,7 +963,10 @@ class DiscoverScreen extends StatelessWidget {
                 }
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: isFollowing ? AppColors.yellow : Colors.white12,
                   borderRadius: BorderRadius.circular(20),

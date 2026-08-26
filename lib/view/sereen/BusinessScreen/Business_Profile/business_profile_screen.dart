@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/app_images/app_images.dart';
+import '../../../../view/components/share/share_bottom_sheet.dart';
 import 'package:speedring/view/sereen/UserScreen/MarketPlace/controller/marketpace_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_button/custom_button.dart';
 import 'package:speedring/utils/app_const/app_const.dart';
@@ -555,20 +555,23 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
             final categoryLabel = post.category != null
                 ? post.category!.replaceAll('_', ' ').toUpperCase()
                 : '';
-                
+
             final bool isClubPost = post.category == 'CLUB_POST';
-            
-            final originalUserName = post.user?.name ?? post.user?.userName ?? 'User';
-            
+
+            final originalUserName =
+                post.user?.name ?? post.user?.userName ?? 'User';
+
             final userName = isClubPost
                 ? (post.club?.clubName ?? originalUserName)
                 : originalUserName;
-                
+
             String? profileImage = isClubPost
                 ? (post.club?.logo ?? post.user?.profileImage)
                 : post.user?.profileImage;
-                
-            if (profileImage != null && profileImage.isNotEmpty && !profileImage.startsWith('http')) {
+
+            if (profileImage != null &&
+                profileImage.isNotEmpty &&
+                !profileImage.startsWith('http')) {
               profileImage = "${ApiUrl.imageUrl}$profileImage";
             }
 
@@ -582,7 +585,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                 : (categoryLabel.isNotEmpty
                       ? categoryLabel
                       : 'Unknown Location');
-                      
+
             if (isClubPost) {
               location = "Posted by $originalUserName • $location";
             }
@@ -607,7 +610,10 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
               child: PostCard(
                 userId: isClubPost ? post.club?.id : post.user?.id,
                 onProfileTap: isClubPost && post.club?.id != null
-                    ? () => Get.toNamed(AppRoutes.clubDetaislScreenNonMy, arguments: {"id": post.club!.id})
+                    ? () => Get.toNamed(
+                        AppRoutes.clubDetaislScreenNonMy,
+                        arguments: {"id": post.club!.id},
+                      )
                     : null,
                 userName: userName,
                 location: location,
@@ -628,10 +634,14 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                 onComment: () => showCommentSheet(context, post: post),
                 onShare: () {
                   final postLink = "https://speedring.com/post/${post.id}";
-                  SharePlus.instance.share(
-                    ShareParams(
-                      text: "Check out this post on Speedring:\n\n$postLink",
-                      subject: "Speedring Post",
+                  showModalBottomSheet(
+                    context: Get.context!,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => ShareBottomSheet(
+                      shareText: "Check out this post on Speedring:",
+                      shareSubject: "Speedring Post",
+                      shareLink: postLink,
                     ),
                   );
                 },

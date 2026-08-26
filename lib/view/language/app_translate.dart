@@ -620,7 +620,7 @@ class AppTranslate extends Translations {
       'displacement': 'displacement',
       'type': 'type',
       'experience': 'experience',
-      'messageSeller': 'messageSeller',
+      'messageSeller': 'Message Seller',
       'listingDetails': 'Listing Details',
       'locationTelemetry': "LOCATION TELEMETRY",
 
@@ -894,6 +894,10 @@ class AppTranslate extends Translations {
       'locationPermissionsDeniedForever':
           'Location permissions are permanently denied, we cannot request permissions.',
       'shareToFriends': 'Share to Friends',
+      'moreOptions': 'More Options...',
+      'searchFriendsHint': 'Search friends...',
+      'noFriendsFound': 'No friends found.',
+      'sendButton': 'Send',
       'postToApp': 'Post to App',
       'mySessions': 'My Sessions',
       'deleteSession': 'Delete Session',
@@ -2017,6 +2021,10 @@ class AppTranslate extends Translations {
       'locationPermissionsDeniedForever':
           'Standortberechtigungen werden dauerhaft verweigert, wir können keine Berechtigungen anfordern.',
       'shareToFriends': 'Mit Freunden teilen',
+      'moreOptions': 'Mehr Optionen...',
+      'searchFriendsHint': 'Freunde suchen...',
+      'noFriendsFound': 'Keine Freunde gefunden.',
+      'sendButton': 'Senden',
       'postToApp': 'In App posten',
       'mySessions': 'Meine Sitzungen',
       'deleteSession': 'Sitzung löschen',

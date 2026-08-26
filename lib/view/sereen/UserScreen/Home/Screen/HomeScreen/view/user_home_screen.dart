@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:speedring/view/components/share/share_bottom_sheet.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../../../core/app_routes/app_routes.dart';
@@ -423,11 +423,14 @@ class UserHomeScreen extends StatelessWidget {
                                   onShare: () {
                                     final postLink =
                                         "https://speedring.com/post/${post.id}";
-                                    SharePlus.instance.share(
-                                      ShareParams(
-                                        text:
-                                            "Check out this post on Speedring:\n\n$postLink",
-                                        subject: "Speedring Post",
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (_) => ShareBottomSheet(
+                                        shareText: "Check out this post on Speedring:",
+                                        shareSubject: "Speedring Post",
+                                        shareLink: postLink,
                                       ),
                                     );
                                   },

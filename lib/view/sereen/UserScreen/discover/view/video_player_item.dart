@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
+import '../../../../../view/components/share/share_bottom_sheet.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/utils/navigation_utils.dart';
@@ -577,10 +577,14 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                 onTap: () {
                   final link =
                       "https://speedring.com/discover/${widget.video.id}";
-                  SharePlus.instance.share(
-                    ShareParams(
-                      text: ('checkOutVideo'.tr + link),
-                      subject: "Speedring Video",
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => ShareBottomSheet(
+                      shareText: 'checkOutVideo'.tr,
+                      shareSubject: "Speedring Video",
+                      shareLink: link,
                     ),
                   );
                 },

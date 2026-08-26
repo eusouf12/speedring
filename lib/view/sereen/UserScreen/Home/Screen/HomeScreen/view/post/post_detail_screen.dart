@@ -8,9 +8,9 @@ import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_netwrok_image/custom_network_image.dart';
 import 'package:speedring/utils/navigation_utils.dart';
 import '../../../../../../../../core/app_routes/app_routes.dart';
+import '../../../../../../../components/share/share_bottom_sheet.dart';
 import '../../controller/home_controller.dart';
 import '../user_home_screen.dart';
-import 'package:share_plus/share_plus.dart';
 import 'comment_screen.dart';
 import 'package:speedring/helper/guest_checker.dart';
 import '../../../../../discover/controller/discover_controller.dart';
@@ -135,7 +135,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    post.category?.replaceAll('_', ' ').toUpperCase() ?? "CLUB POST",
+                    post.category?.replaceAll('_', ' ').toUpperCase() ??
+                        "CLUB POST",
                     style: const TextStyle(
                       color: Colors.white54,
                       fontSize: 11,
@@ -266,15 +267,20 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                             letterSpacing: 0.5,
                                           ),
                                         ),
-                                        if (showFollowBtn) ...[  
+                                        if (showFollowBtn) ...[
                                           const SizedBox(width: 8),
                                           GestureDetector(
                                             onTap: handleFollow,
                                             child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 4,
+                                                  ),
                                               decoration: BoxDecoration(
                                                 color: Colors.amber,
-                                                borderRadius: BorderRadius.circular(12),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                               ),
                                               child: Text(
                                                 'follow'.tr,
@@ -473,11 +479,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 onTap: () {
                                   final postLink =
                                       "https://speedring.com/post/${post.id}";
-                                  SharePlus.instance.share(
-                                    ShareParams(
-                                      text:
-                                          "Check out this post on Speedring:\n\n$postLink",
-                                      subject: "Speedring Post",
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (_) => ShareBottomSheet(
+                                      shareText:
+                                          "Check out this post on Speedring:",
+                                      shareSubject: "Speedring Post",
+                                      shareLink: postLink,
                                     ),
                                   );
                                 },

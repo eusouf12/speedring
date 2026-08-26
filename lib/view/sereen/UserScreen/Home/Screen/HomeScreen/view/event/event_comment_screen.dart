@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../../../../../../utils/navigation_utils.dart';
 import '../../controller/home_controller.dart';
 import '../../model/event_model.dart';
-
+import 'package:speedring/view/components/share/share_bottom_sheet.dart';
 // ─── Public entry points ───────────────────────────────────────────────────────
 
 void showEventCommentSheet(BuildContext context, EventModel event) {
@@ -18,11 +17,16 @@ void showEventCommentSheet(BuildContext context, EventModel event) {
 
 void shareEventLink(EventModel event) {
   final link = "https://speedring.com/event/${event.id}";
-  SharePlus.instance.share(
-    ShareParams(
-      text:
-          "Check out this event on Speedring:\n${event.eventName ?? 'Event'}\n\n$link",
-      subject: "Speedring Event",
+
+  showModalBottomSheet(
+    context: Get.context!,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => ShareBottomSheet(
+      shareText:
+          "Check out this event on Speedring:\n${event.eventName ?? 'Event'}",
+      shareSubject: "Speedring Event",
+      shareLink: link,
     ),
   );
 }

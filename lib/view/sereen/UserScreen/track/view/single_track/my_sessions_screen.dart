@@ -6,6 +6,7 @@ import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
 import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../../../components/share/share_bottom_sheet.dart';
 import '../../../../../components/custom_royel_appbar/custom_royel_appbar.dart'
     show CustomRoyelAppbar;
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
@@ -329,6 +330,17 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                 ),
                 onTap: () {
                   Get.back();
+                  showModalBottomSheet(
+                    context: Get.context!,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => ShareBottomSheet(
+                      shareText:
+                          "Check out my session on Speedring! Distance: ${session['distance'] ?? '0.0'} km in ${session['time'] ?? 'N/A'}.",
+                      shareSubject: "Speedring Session",
+                      shareLink: "https://speedring.com",
+                    ),
+                  );
                 },
               ),
               ListTile(

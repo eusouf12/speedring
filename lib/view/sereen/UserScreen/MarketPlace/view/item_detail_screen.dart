@@ -208,24 +208,26 @@ class ItemDetailScreen extends StatelessWidget {
                 SizedBox(height: 24.h),
 
                 /// Purchase & Offer Actions
-                CustomButton(
-                  height: 48.h,
-                  title: 'messageSeller'.tr,
-                  fontSize: 13,
-                  borderRadius: 8.r,
-                  onTap: () {
-                    Get.toNamed(
-                      AppRoutes.inboxScreen,
-                      arguments: {
-                        "userName": "Anderson Racing",
-                        "avatarUrl":
-                            "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
-                        "isOnline": true,
-                      },
-                    );
-                  },
-                ),
-                SizedBox(height: 12.h),
+                if (controller.currentUserId.value != data.seller?.id) ...[
+                  CustomButton(
+                    height: 48.h,
+                    title: 'messageSeller'.tr,
+                    fontSize: 13,
+                    borderRadius: 8.r,
+                    onTap: () {
+                      Get.toNamed(
+                        AppRoutes.inboxScreen,
+                        arguments: {
+                          "userName": data.seller?.name ?? "Anderson Racing",
+                          "avatarUrl": data.seller?.profileImage ??
+                              "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&fit=crop",
+                          "isOnline": true,
+                        },
+                      );
+                    },
+                  ),
+                  SizedBox(height: 12.h),
+                ],
 
                 /// PHASE 01: TECH SPECS
                 _buildSectionHeader('phase01TechSpecs'.tr),

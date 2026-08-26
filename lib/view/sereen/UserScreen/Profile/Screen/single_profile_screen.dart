@@ -7,6 +7,7 @@ import 'package:speedring/utils/app_const/app_const.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import '../../../../../utils/app_images/app_images.dart';
 import '../../../../components/custom_text/custom_text.dart';
+import '../../../../../../view/components/share/share_bottom_sheet.dart';
 import '../../../../../utils/app_colors/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../controller/single_profile_controller.dart';
@@ -18,7 +19,6 @@ import '../../Home/Screen/HomeScreen/view/post/comment_screen.dart'
     show showCommentSheet;
 import '../../Home/Screen/HomeScreen/view/user_home_screen.dart'
     show buildPostDetails;
-import 'package:share_plus/share_plus.dart';
 
 class SingleProfileScreen extends StatelessWidget {
   const SingleProfileScreen({super.key});
@@ -489,11 +489,11 @@ class SingleProfileScreen extends StatelessWidget {
                       userId: isClubPost ? post.club?.id : post.user?.id,
                       onProfileTap: isClubPost && post.club?.id != null
                           ? () => Get.toNamed(
-                                (post.club?.isFollow == true)
-                                    ? AppRoutes.clubDetailsScreen
-                                    : AppRoutes.clubDetaislScreenNonMy,
-                                arguments: {"id": post.club!.id},
-                              )
+                              (post.club?.isFollow == true)
+                                  ? AppRoutes.clubDetailsScreen
+                                  : AppRoutes.clubDetaislScreenNonMy,
+                              arguments: {"id": post.club!.id},
+                            )
                           : null,
                       userName: userName,
                       location: location,
@@ -522,11 +522,14 @@ class SingleProfileScreen extends StatelessWidget {
                       onShare: () {
                         final postLink =
                             "https://speedring.com/post/${post.id}";
-                        SharePlus.instance.share(
-                          ShareParams(
-                            text:
-                                "Check out this post on Speedring:\n\n$postLink",
-                            subject: "Speedring Post",
+                        showModalBottomSheet(
+                          context: Get.context!,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => ShareBottomSheet(
+                            shareText: "Check out this post on Speedring:",
+                            shareSubject: "Speedring Post",
+                            shareLink: postLink,
                           ),
                         );
                       },

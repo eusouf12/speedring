@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:share_plus/share_plus.dart';
+import '../../../../../components/share/share_bottom_sheet.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
@@ -48,7 +48,8 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
   Future<void> _initSocketLobby() async {
     if (driveArg != null && driveArg!.id != null) {
       final token = await SharePrefsHelper.getString(AppConstants.bearerToken);
-      final currentUserId = profileController.profileData.value?.id ?? "unknown";
+      final currentUserId =
+          profileController.profileData.value?.id ?? "unknown";
       SocketApi.init(ApiUrl.socketUrl, currentUserId, token: token);
       SocketApi.emit('join_expedition_room', driveArg!.id);
 
@@ -381,7 +382,8 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                                         ),
                                       ),
                                       TextSpan(
-                                        text: " ${"driversJoined".tr.toUpperCase()}",
+                                        text:
+                                            " ${"driversJoined".tr.toUpperCase()}",
                                         style: const TextStyle(
                                           color: Colors.white38,
                                           fontWeight: FontWeight.bold,
@@ -643,9 +645,16 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                           Icons.share_outlined,
                           onTap: () {
                             String url = "${ApiUrl.baseUrl}/invite/${drive.id}";
-                            // ignore: deprecated_member_use
-                            Share.share(
-                              "Join my trip '${drive.tripName}' on Speedring! Link: $url",
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (_) => ShareBottomSheet(
+                                shareText:
+                                    "Join my trip '${drive.tripName}' on Speedring!",
+                                shareSubject: "Speedring Trip Invite",
+                                shareLink: url,
+                              ),
                             );
                           },
                         ),
@@ -713,9 +722,16 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
                           Icons.share_outlined,
                           onTap: () {
                             String url = "${ApiUrl.baseUrl}/invite/${drive.id}";
-                            // ignore: deprecated_member_use
-                            Share.share(
-                              "Join the trip '${drive.tripName}' on Speedring! Link: $url",
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (_) => ShareBottomSheet(
+                                shareText:
+                                    "Join the trip '${drive.tripName}' on Speedring!",
+                                shareSubject: "Speedring Trip Invite",
+                                shareLink: url,
+                              ),
                             );
                           },
                         ),

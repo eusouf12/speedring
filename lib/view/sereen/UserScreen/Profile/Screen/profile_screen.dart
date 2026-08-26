@@ -8,7 +8,8 @@ import '../../../../../utils/app_images/app_images.dart';
 import '../../../../components/custom_button/custom_button.dart';
 import '../../../../components/custom_text/custom_text.dart';
 import '../../../../components/custom_nav_bar/navbar.dart';
-import '../../../../../utils/app_colors/app_colors.dart';
+import '../../../../../../utils/app_colors/app_colors.dart';
+import '../../../../../../view/components/share/share_bottom_sheet.dart';
 import '../../../../../core/app_routes/app_routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../controller/profile_controller.dart';
@@ -23,7 +24,6 @@ import '../../Home/Screen/HomeScreen/view/post/comment_screen.dart'
     show showCommentSheet;
 import '../../Home/Screen/HomeScreen/view/user_home_screen.dart'
     show buildPostDetails;
-import 'package:share_plus/share_plus.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -648,20 +648,23 @@ class ProfileScreen extends StatelessWidget {
                   final categoryLabel = post.category != null
                       ? post.category!.replaceAll('_', ' ').toUpperCase()
                       : '';
-                      
+
                   final bool isClubPost = post.category == 'CLUB_POST';
-                  
-                  final originalUserName = post.user?.name ?? post.user?.userName ?? 'User';
-                  
+
+                  final originalUserName =
+                      post.user?.name ?? post.user?.userName ?? 'User';
+
                   final userName = isClubPost
                       ? (post.club?.clubName ?? originalUserName)
                       : originalUserName;
-                      
+
                   String? profileImage = isClubPost
                       ? (post.club?.logo ?? post.user?.profileImage)
                       : post.user?.profileImage;
-                      
-                  if (profileImage != null && profileImage.isNotEmpty && !profileImage.startsWith('http')) {
+
+                  if (profileImage != null &&
+                      profileImage.isNotEmpty &&
+                      !profileImage.startsWith('http')) {
                     profileImage = "${ApiUrl.imageUrl}$profileImage";
                   }
 
@@ -677,7 +680,7 @@ class ProfileScreen extends StatelessWidget {
                       : (categoryLabel.isNotEmpty
                             ? categoryLabel
                             : 'Unknown Location');
-                            
+
                   if (isClubPost) {
                     location = "Posted by $originalUserName • $location";
                   }
@@ -702,7 +705,10 @@ class ProfileScreen extends StatelessWidget {
                     child: PostCard(
                       userId: isClubPost ? post.club?.id : post.user?.id,
                       onProfileTap: isClubPost && post.club?.id != null
-                          ? () => Get.toNamed(AppRoutes.clubDetaislScreenNonMy, arguments: {"id": post.club!.id})
+                          ? () => Get.toNamed(
+                              AppRoutes.clubDetaislScreenNonMy,
+                              arguments: {"id": post.club!.id},
+                            )
                           : null,
                       userName: userName,
                       location: location,
@@ -723,15 +729,19 @@ class ProfileScreen extends StatelessWidget {
                         homeController.reactToPost(post.id!);
                         profileController.toggleLikeLocally(post.id!);
                       },
-                      onComment: () => showCommentSheet(Get.context!, post: post),
+                      onComment: () =>
+                          showCommentSheet(Get.context!, post: post),
                       onShare: () {
                         final postLink =
                             "https://speedring.com/post/${post.id}";
-                        SharePlus.instance.share(
-                          ShareParams(
-                            text:
-                                "Check out this post on Speedring:\n\n$postLink",
-                            subject: "Speedring Post",
+                        showModalBottomSheet(
+                          context: Get.context!,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => ShareBottomSheet(
+                            shareText: "Check out this post on Speedring:",
+                            shareSubject: "Speedring Post",
+                            shareLink: postLink,
                           ),
                         );
                       },
