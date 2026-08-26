@@ -1169,6 +1169,16 @@ class AppTranslate extends Translations {
       'continueAsGuest': 'Continue as Guest',
       'network': 'Network',
       'businessNetworkTitle': 'NETWORK',
+
+      // Invite Followers Bottom Sheet
+      'membersAvailable': '@total members available',
+      'selectToInvite': 'Select who to invite',
+      'selectedCount': '@count selected',
+      'noFollowersToInvite': 'No followers to invite',
+      'growNetworkInvite': 'Grow your network to invite people',
+      'memberLabel': 'Member',
+      'selectMembersToInvite': 'Select members to invite',
+      'inviteSelectedCount': 'Invite @count Selected',
     },
     'de': {
       'title': 'Deutsch',
@@ -2318,6 +2328,16 @@ class AppTranslate extends Translations {
       'continueAsGuest': 'Als Gast fortfahren',
       'network': 'Netzwerk',
       'businessNetworkTitle': 'NETZWERK',
+
+      // Invite Followers Bottom Sheet
+      'membersAvailable': '@total Mitglieder verfügbar',
+      'selectToInvite': 'Zum Einladen auswählen',
+      'selectedCount': '@count ausgewählt',
+      'noFollowersToInvite': 'Keine Follower zum Einladen',
+      'growNetworkInvite': 'Erweitere dein Netzwerk, um Leute einzuladen',
+      'memberLabel': 'Mitglied',
+      'selectMembersToInvite': 'Mitglieder zum Einladen auswählen',
+      'inviteSelectedCount': '@count Ausgewählte einladen',
     },
   };
 }
