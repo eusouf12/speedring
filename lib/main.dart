@@ -8,6 +8,8 @@ import 'package:speedring/helper/guest_checker.dart';
 import 'package:speedring/service/deeplink_service.dart';
 import 'package:speedring/view/language/app_translate.dart';
 import 'package:speedring/view/language/language_helper.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'utils/app_colors/app_colors.dart';
 
@@ -66,6 +68,15 @@ class MyApp extends StatelessWidget {
         translations: AppTranslate(),
         locale: initialLocale,
         fallbackLocale: const Locale('en'),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en', 'US'),
+          Locale('de', 'DE'),
+        ],
         initialBinding: DependencyInjection(),
         initialRoute: AppRoutes.splashScreen,
         navigatorKey: Get.key,

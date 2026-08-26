@@ -101,7 +101,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             surface: Color(0xff1C1C1C),
           ),
         ),
-        child: child!,
+        child: MediaQuery(
+          data: MediaQuery.of(ctx).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        ),
       ),
     );
     if (picked != null) {

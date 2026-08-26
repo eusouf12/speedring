@@ -142,7 +142,8 @@ class UserHomeScreen extends StatelessWidget {
                           if (index == 0) {
                             return GestureDetector(
                               onTap: () {
-                                if (GuestChecker.showLoginDialogIfGuest()) return;
+                                if (GuestChecker.showLoginDialogIfGuest())
+                                  return;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -172,24 +173,29 @@ class UserHomeScreen extends StatelessWidget {
                             imageUrl = storyGroup.user?.profileImage;
                           }
 
-                            return Obx(() {
-                              final userId = storyGroup.user?.id ?? '';
-                              final isMyStory = userId == controller.currentUserId.value;
-                              
-                              bool allStoriesViewed = true;
-                              if (storyGroup.stories != null && storyGroup.stories!.isNotEmpty) {
-                                for (var s in storyGroup.stories!) {
-                                  debugPrint("User ${storyGroup.user?.name} Story ${s.id} isView: ${s.isView}");
-                                  if (s.isView != true) {
-                                    allStoriesViewed = false;
-                                    break;
-                                  }
+                          return Obx(() {
+                            final userId = storyGroup.user?.id ?? '';
+
+                            bool allStoriesViewed = true;
+                            if (storyGroup.stories != null &&
+                                storyGroup.stories!.isNotEmpty) {
+                              for (var s in storyGroup.stories!) {
+                                debugPrint(
+                                  "User ${storyGroup.user?.name} Story ${s.id} isView: ${s.isView}",
+                                );
+                                if (s.isView != true) {
+                                  allStoriesViewed = false;
+                                  break;
                                 }
-                              } else {
-                                allStoriesViewed = false;
                               }
-                              final hasViewed = allStoriesViewed || controller.viewedStoryGroupIds.contains(userId);
-                              debugPrint("User ${storyGroup.user?.name} hasViewed: $hasViewed, allViewed: $allStoriesViewed");
+                            } else {
+                              allStoriesViewed = false;
+                            }
+                            final hasLocallyViewed = controller.viewedStoryGroupIds.contains(userId);
+                            final hasViewed = allStoriesViewed || hasLocallyViewed;
+                            debugPrint(
+                              "User ${storyGroup.user?.name} hasViewed: $hasViewed, allViewed: $allStoriesViewed",
+                            );
 
                             return GestureDetector(
                               onTap: () {
@@ -255,7 +261,8 @@ class UserHomeScreen extends StatelessWidget {
                                   AddPostButton(
                                     label: "addPost".tr.toUpperCase(),
                                     onTap: () {
-                                      if (GuestChecker.showLoginDialogIfGuest()) return;
+                                      if (GuestChecker.showLoginDialogIfGuest())
+                                        return;
                                       Get.toNamed(AppRoutes.createPostScreen);
                                     },
                                   ),
@@ -287,28 +294,33 @@ class UserHomeScreen extends StatelessWidget {
                             }
 
                             final post = controller.postsList[index - 1];
-                            final categoryLabel = post.category != null && post.category != 'CLUB_POST'
+                            final categoryLabel =
+                                post.category != null &&
+                                    post.category != 'CLUB_POST'
                                 ? post.category!
                                       .replaceAll('_', ' ')
                                       .toUpperCase()
                                 : '';
-                            
-                            final bool isClubPost = post.category == 'CLUB_POST';
-                            
+
+                            final bool isClubPost =
+                                post.category == 'CLUB_POST';
+
                             final originalUserName =
                                 post.user?.name ??
                                 post.user?.userName ??
                                 'User';
-                                
-                            final userName = isClubPost 
+
+                            final userName = isClubPost
                                 ? (post.club?.clubName ?? originalUserName)
                                 : originalUserName;
-                                
+
                             String? profileImage = isClubPost
                                 ? (post.club?.logo ?? post.user?.profileImage)
                                 : post.user?.profileImage;
-                            
-                            if (profileImage != null && profileImage.isNotEmpty && !profileImage.startsWith('http')) {
+
+                            if (profileImage != null &&
+                                profileImage.isNotEmpty &&
+                                !profileImage.startsWith('http')) {
                               profileImage = "${ApiUrl.imageUrl}$profileImage";
                             }
 
@@ -324,12 +336,15 @@ class UserHomeScreen extends StatelessWidget {
                                 : (categoryLabel.isNotEmpty
                                       ? categoryLabel
                                       : '');
-                                      
+
                             Widget? subtitleWidget;
                             if (isClubPost) {
                               subtitleWidget = GestureDetector(
                                 onTap: post.user?.id != null
-                                    ? () => NavigationUtils.navigateToUserProfile(post.user!.id)
+                                    ? () =>
+                                          NavigationUtils.navigateToUserProfile(
+                                            post.user!.id,
+                                          )
                                     : null,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,17 +352,28 @@ class UserHomeScreen extends StatelessWidget {
                                     Text.rich(
                                       TextSpan(
                                         children: [
-                                          const TextSpan(text: "Posted by ", style: TextStyle(color: Colors.grey)),
+                                          const TextSpan(
+                                            text: "Posted by ",
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
                                           TextSpan(
                                             text: originalUserName,
                                             style: const TextStyle(
-                                              color: AppColors.yellow, 
+                                              color: AppColors.yellow,
                                               fontWeight: FontWeight.bold,
-                                              decoration: TextDecoration.underline,
+                                              decoration:
+                                                  TextDecoration.underline,
                                             ),
                                           ),
                                           if (location.isNotEmpty)
-                                            TextSpan(text: " • $location", style: const TextStyle(color: Colors.grey)),
+                                            TextSpan(
+                                              text: " • $location",
+                                              style: const TextStyle(
+                                                color: Colors.grey,
+                                              ),
+                                            ),
                                         ],
                                       ),
                                       maxLines: 1,
@@ -355,7 +381,10 @@ class UserHomeScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      post.category?.replaceAll('_', ' ').toUpperCase() ?? "CLUB POST",
+                                      post.category
+                                              ?.replaceAll('_', ' ')
+                                              .toUpperCase() ??
+                                          "CLUB POST",
                                       style: const TextStyle(
                                         color: Colors.white70,
                                         fontSize: 12,
@@ -371,7 +400,8 @@ class UserHomeScreen extends StatelessWidget {
                                 post.media != null && post.media!.isNotEmpty
                                 ? post.media!.first.url ?? ''
                                 : '';
-                            final mediaType = post.media != null && post.media!.isNotEmpty
+                            final mediaType =
+                                post.media != null && post.media!.isNotEmpty
                                 ? post.media!.first.type
                                 : 'image';
                             final caption =
@@ -388,14 +418,18 @@ class UserHomeScreen extends StatelessWidget {
                             return Column(
                               children: [
                                 PostCard(
-                                  userId: isClubPost ? post.club?.id : post.user?.id,
-                                  onProfileTap: isClubPost && post.club?.id != null
+                                  userId: isClubPost
+                                      ? post.club?.id
+                                      : post.user?.id,
+                                  onProfileTap:
+                                      isClubPost && post.club?.id != null
                                       ? () => Get.toNamed(
-                                            (post.club?.isFollow == true)
-                                                ? AppRoutes.clubDetailsScreen
-                                                : AppRoutes.clubDetaislScreenNonMy,
-                                            arguments: {"id": post.club!.id},
-                                          )
+                                          (post.club?.isFollow == true)
+                                              ? AppRoutes.clubDetailsScreen
+                                              : AppRoutes
+                                                    .clubDetaislScreenNonMy,
+                                          arguments: {"id": post.club!.id},
+                                        )
                                       : null,
                                   userName: userName,
                                   location: location,
@@ -406,18 +440,34 @@ class UserHomeScreen extends StatelessWidget {
                                   reactCount: post.reactCount,
                                   commentCount: post.commentCount,
                                   isLiked: post.isReacted ?? false,
-                                  isFollow: isClubPost 
-                                      ? post.club?.isFollow 
-                                      : (post.user?.id == controller.currentUserId.value ? true : post.user?.isFollow),
+                                  isFollow: isClubPost
+                                      ? post.club?.isFollow
+                                      : (post.user?.id ==
+                                                controller.currentUserId.value
+                                            ? true
+                                            : post.user?.isFollow),
                                   onFollow: () {
                                     if (isClubPost && post.club?.id != null) {
-                                      final newFollow = !(post.club?.isFollow ?? false);
-                                      controller.toggleClubFollowInFeed(post.club!.id!, newFollow);
+                                      final newFollow =
+                                          !(post.club?.isFollow ?? false);
+                                      controller.toggleClubFollowInFeed(
+                                        post.club!.id!,
+                                        newFollow,
+                                      );
                                       controller.joinClub(post.club!.id!);
-                                    } else if (!isClubPost && post.user?.id != null && post.user!.id != controller.currentUserId.value) {
-                                      final newFollow = !(post.user?.isFollow ?? false);
-                                      controller.toggleUserFollowInFeed(post.user!.id!, newFollow);
-                                      Get.put(DiscoverController()).toggleFollowUser(post.user!.id!);
+                                    } else if (!isClubPost &&
+                                        post.user?.id != null &&
+                                        post.user!.id !=
+                                            controller.currentUserId.value) {
+                                      final newFollow =
+                                          !(post.user?.isFollow ?? false);
+                                      controller.toggleUserFollowInFeed(
+                                        post.user!.id!,
+                                        newFollow,
+                                      );
+                                      Get.put(
+                                        DiscoverController(),
+                                      ).toggleFollowUser(post.user!.id!);
                                     }
                                   },
                                   detailsWidget: buildPostDetails(post),
@@ -441,7 +491,8 @@ class UserHomeScreen extends StatelessWidget {
                                       isScrollControlled: true,
                                       backgroundColor: Colors.transparent,
                                       builder: (_) => ShareBottomSheet(
-                                        shareText: "Check out this post on Speedring:",
+                                        shareText:
+                                            "Check out this post on Speedring:",
                                         shareSubject: "Speedring Post",
                                         shareLink: postLink,
                                       ),
@@ -584,7 +635,8 @@ class UserHomeScreen extends StatelessWidget {
                                   AddPostButton(
                                     label: "addEvent".tr,
                                     onTap: () {
-                                      if (GuestChecker.showLoginDialogIfGuest()) return;
+                                      if (GuestChecker.showLoginDialogIfGuest())
+                                        return;
                                       Get.toNamed(AppRoutes.createEventScreen);
                                     },
                                   ),
@@ -650,15 +702,18 @@ class UserHomeScreen extends StatelessWidget {
                               isMyEvent: isMyEvent,
                               eventId: event.id ?? "",
                               onJoin: () {
-                                if (GuestChecker.showLoginDialogIfGuest()) return;
+                                if (GuestChecker.showLoginDialogIfGuest())
+                                  return;
                                 controller.joinEvent(eventId: event.id!);
                               },
                               onLike: () {
-                                if (GuestChecker.showLoginDialogIfGuest()) return;
+                                if (GuestChecker.showLoginDialogIfGuest())
+                                  return;
                                 controller.reactToEvent(eventId: event.id!);
                               },
                               onComment: () {
-                                if (GuestChecker.showLoginDialogIfGuest()) return;
+                                if (GuestChecker.showLoginDialogIfGuest())
+                                  return;
                                 showEventCommentSheet(context, event);
                               },
                               onShare: () {
@@ -721,7 +776,8 @@ class UserHomeScreen extends StatelessWidget {
                                 padding: const EdgeInsets.only(right: 20),
                                 child: GestureDetector(
                                   onTap: () {
-                                    if (GuestChecker.showLoginDialogIfGuest()) return;
+                                    if (GuestChecker.showLoginDialogIfGuest())
+                                      return;
                                     Get.toNamed(AppRoutes.createClubScreen);
                                   },
                                   child: Column(
@@ -830,7 +886,8 @@ class UserHomeScreen extends StatelessWidget {
                               isJoined: club.isClubJoined ?? false,
                               isPending: club.isJoinRequestPending ?? false,
                               onJoinTap: () {
-                                if (GuestChecker.showLoginDialogIfGuest()) return;
+                                if (GuestChecker.showLoginDialogIfGuest())
+                                  return;
                                 if (club.id != null) {
                                   controller.joinClub(club.id!);
                                 }

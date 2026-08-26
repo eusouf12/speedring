@@ -1151,6 +1151,9 @@ class AppTranslate extends Translations {
 
       // Extra
       'startNewDrive': 'Start New Drive',
+      'upcoming': 'UPCOMING',
+      'mydrives': 'MY DRIVES',
+      'history': 'HISTORY',
       'whatDoYouWantToBuy': 'What do you want to buy?',
       'startListing': 'Start Listing',
       'SAVED_REELS': 'Saved Reels',
@@ -1765,6 +1768,10 @@ class AppTranslate extends Translations {
       'description': 'Beschreibung',
       'partNo': 'Teilenummer',
       'whatDoYouWantToBuy': 'Was möchten Sie kaufen?',
+      'startNewDrive': 'NEUE FAHRT STARTEN',
+      'upcoming': 'BEVORSTEHEND',
+      'mydrives': 'MEINE FAHRTEN',
+      'history': 'VERLAUF',
       'manufacturerBrand': 'Hersteller / Marke',
       'mileage': 'Kilometerstand',
       'provider': 'Anbieter',

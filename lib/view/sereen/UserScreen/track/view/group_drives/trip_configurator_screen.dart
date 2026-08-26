@@ -138,7 +138,10 @@ class TripConfiguratorScreen extends StatelessWidget {
                             onSurface: Colors.white,
                           ),
                         ),
-                        child: child!,
+                        child: MediaQuery(
+                          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+                          child: child!,
+                        ),
                       );
                     },
                   );
