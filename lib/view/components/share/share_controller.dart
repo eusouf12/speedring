@@ -5,11 +5,47 @@ import 'package:speedring/service/api_client.dart';
 import 'package:speedring/service/api_url.dart';
 import 'package:speedring/utils/ToastMsg/toast_message.dart';
 
+class FollowUserModel {
+  final String id;
+  final String name;
+  final String userName;
+  final String profileImage;
+  final String role;
+  bool isFollow;
+
+  FollowUserModel({
+    required this.id,
+    required this.name,
+    required this.userName,
+    required this.profileImage,
+    required this.role,
+    required this.isFollow,
+  });
+
+  factory FollowUserModel.fromJson(Map<String, dynamic> json) {
+    return FollowUserModel(
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
+      userName: json['userName'] ?? '',
+      profileImage: json['profileImage'] ?? '',
+      role: json['role'] ?? '',
+      isFollow: json['isFollow'] ?? false,
+    );
+  }
+}
+
 class ShareController extends GetxController {
   RxList<Map<String, dynamic>> followingList = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> filteredList = <Map<String, dynamic>>[].obs;
   RxBool isLoading = false.obs;
   RxBool isSending = false.obs;
+
+  // State for FollowListScreen
+  var isFollowUsersLoading = true.obs;
+  var followUsersList = <FollowUserModel>[].obs;
+  var followPage = 1;
+  var hasMoreFollowUsers = true.obs;
+  var isFollowLoadingMore = false.obs;
 
   @override
   void onInit() {
@@ -44,10 +80,14 @@ class ShareController extends GetxController {
     if (query.isEmpty) {
       filteredList.assignAll(followingList);
     } else {
-      filteredList.assignAll(followingList.where((user) {
-        final name = (user['name'] ?? user['userName'] ?? '').toString().toLowerCase();
-        return name.contains(query.toLowerCase());
-      }).toList());
+      filteredList.assignAll(
+        followingList.where((user) {
+          final name = (user['name'] ?? user['userName'] ?? '')
+              .toString()
+              .toLowerCase();
+          return name.contains(query.toLowerCase());
+        }).toList(),
+      );
     }
   }
 
@@ -73,10 +113,7 @@ class ShareController extends GetxController {
       // 2. Send message
       var msgResponse = await ApiClient.postData(
         ApiUrl.sendMessage,
-        jsonEncode({
-          "chatId": chatId,
-          "content": messageText,
-        }),
+        jsonEncode({"chatId": chatId, "content": messageText}),
       );
 
       if (msgResponse.statusCode == 200 || msgResponse.statusCode == 201) {
@@ -92,6 +129,104 @@ class ShareController extends GetxController {
       return false;
     } finally {
       isSending.value = false;
+    }
+  }
+
+  // ================= Follow List Logic ================= //
+
+  Future<void> fetchFollowUsers(String userId, String listType) async {
+    isFollowUsersLoading.value = true;
+    followPage = 1;
+    String url = listType == 'followers'
+        ? ApiUrl.getUserFollowers(userId)
+        : ApiUrl.getUserFollowing(userId);
+
+    url += "?page=$followPage&limit=20";
+
+    final response = await ApiClient.getData(url);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final body = response.body is String
+          ? jsonDecode(response.body)
+          : response.body;
+      final List list = body['data'] ?? [];
+      followUsersList.value = list.map((e) {
+        var user = FollowUserModel.fromJson(e);
+        return user;
+      }).toList();
+
+      final meta = body['meta'];
+      if (meta != null) {
+        hasMoreFollowUsers.value = followPage < (meta['totalPage'] ?? 1);
+      }
+    }
+    isFollowUsersLoading.value = false;
+  }
+
+  Future<void> loadMoreFollowUsers(String userId, String listType) async {
+    if (isFollowLoadingMore.value || !hasMoreFollowUsers.value) return;
+    isFollowLoadingMore.value = true;
+    followPage++;
+
+    String url = listType == 'followers'
+        ? ApiUrl.getUserFollowers(userId)
+        : ApiUrl.getUserFollowing(userId);
+
+    url += "?page=$followPage&limit=20";
+
+    final response = await ApiClient.getData(url);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final body = response.body is String
+          ? jsonDecode(response.body)
+          : response.body;
+      final List list = body['data'] ?? [];
+      final newUsers = list.map((e) {
+        var user = FollowUserModel.fromJson(e);
+        return user;
+      }).toList();
+      followUsersList.addAll(newUsers);
+
+      final meta = body['meta'];
+      if (meta != null) {
+        hasMoreFollowUsers.value = followPage < (meta['totalPage'] ?? 1);
+      } else {
+        hasMoreFollowUsers.value = false;
+      }
+    }
+    isFollowLoadingMore.value = false;
+  }
+
+  Future<void> toggleFollowUser(String targetUserId) async {
+    try {
+      // Optimistic UI update
+      int index = followUsersList.indexWhere((u) => u.id == targetUserId);
+      if (index != -1) {
+        followUsersList[index].isFollow = !followUsersList[index].isFollow;
+        followUsersList.refresh();
+      }
+
+      final response = await ApiClient.patchData(
+        ApiUrl.toggleFollow(userId: targetUserId),
+        jsonEncode({}),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Success, nothing to do
+      } else {
+        // Revert UI update if failed
+        if (index != -1) {
+          followUsersList[index].isFollow = !followUsersList[index].isFollow;
+          followUsersList.refresh();
+        }
+        showCustomSnackBar("Failed to follow/unfollow user", isError: true);
+      }
+    } catch (e) {
+      // Revert UI update if failed
+      int index = followUsersList.indexWhere((u) => u.id == targetUserId);
+      if (index != -1) {
+        followUsersList[index].isFollow = !followUsersList[index].isFollow;
+        followUsersList.refresh();
+      }
+      showCustomSnackBar(e.toString(), isError: true);
     }
   }
 }

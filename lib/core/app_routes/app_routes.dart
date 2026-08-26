@@ -73,6 +73,7 @@ import '../../view/sereen/UserScreen/Profile/Screen/edit_vehicle_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/change_password_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/terms_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/privacy_screen.dart';
+import '../../view/sereen/UserScreen/Profile/Screen/follow_list_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/help_support_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/about_screen.dart';
 import '../../view/sereen/UserScreen/Profile/Screen/personalize_interest_screen.dart';
@@ -164,6 +165,7 @@ class AppRoutes {
   static const String privacyScreen = "/PrivacyScreen";
   static const String helpSupportScreen = "/HelpSupportScreen";
   static const String aboutScreen = "/AboutScreen";
+  static const String followListScreen = "/FollowListScreen";
   static const String personalizeInterestScreen = "/PersonalizeInterestScreen";
   static const String businessRegistrationStep1 = "/BusinessRegistrationStep1";
   static const String businessRegistrationStep2 = "/BusinessRegistrationStep2";
@@ -282,6 +284,13 @@ class AppRoutes {
     ),
     GetPage(name: profileScreen, page: () => const ProfileScreen()),
     GetPage(name: singleProfileScreen, page: () => const SingleProfileScreen()),
+    GetPage(
+      name: followListScreen,
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>;
+        return FollowListScreen(userId: args['userId'], listType: args['listType']);
+      },
+    ),
     GetPage(name: walletScreen, page: () => const WalletScreen()),
     GetPage(name: buyCoinsScreen, page: () => const BuyCoinsScreen()),
     GetPage(

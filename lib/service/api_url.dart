@@ -47,6 +47,8 @@ class ApiUrl {
   static const String supportDriver = "/wallets/support-driver";
   static const String getMyFollowing = "/users/my-following";
   static const String getMyFollowers = "/users/my-followers";
+  static String getUserFollowers(String userId) => "/users/$userId/followers";
+  static String getUserFollowing(String userId) => "/users/$userId/following";
 
   static const String getFaq = "/manage-web/all-faq";
   static String getWebContent(String type) => "/manage-web/content/$type";

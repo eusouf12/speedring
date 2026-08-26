@@ -10,7 +10,6 @@ import '../../controller/track_controller.dart';
 import '../../../Profile/controller/profile_controller.dart';
 import '../../mode/expedition_model.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/services.dart';
 import '../../../../../components/share/share_bottom_sheet.dart';
 
 class GroupDrivesScreen extends StatefulWidget {
@@ -413,9 +412,11 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
                             isScrollControlled: true,
                             backgroundColor: Colors.transparent,
                             builder: (_) => ShareBottomSheet(
-                              shareText: "Join my expedition '${drive.tripName}' on Speedring! Date: $formattedDate. Location: ${drive.meetingPoint?.address ?? ''}",
+                              shareText:
+                                  "Join my expedition '${drive.tripName}' on Speedring! Date: $formattedDate. Location: ${drive.meetingPoint?.address ?? ''}",
                               shareSubject: "Join ${drive.tripName}",
-                              shareLink: "https://speedring.com/invite/${drive.id}",
+                              shareLink:
+                                  "https://speedring.com/invite/${drive.id}",
                             ),
                           );
                         },

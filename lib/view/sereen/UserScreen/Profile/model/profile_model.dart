@@ -51,6 +51,7 @@ class ProfileData {
   final List<String>? following;
   final bool? isProfileSetup;
   final int? followerCount;
+  final int? followingCount;
   final int? postCount;
   final int? joinedSessionCount;
   final num? coinBalance;
@@ -82,6 +83,7 @@ class ProfileData {
     this.following,
     this.isProfileSetup,
     this.followerCount,
+    this.followingCount,
     this.postCount,
     this.joinedSessionCount,
     this.coinBalance,
@@ -127,6 +129,7 @@ class ProfileData {
           : null,
       isProfileSetup: json['isProfileSetup'],
       followerCount: json['followerCount'],
+      followingCount: json['followingCount'],
       postCount: json['postCount'],
       joinedSessionCount: json['joinedSessionCount'],
       coinBalance: json['coinBalance'],
@@ -161,6 +164,7 @@ class ProfileData {
       'following': following,
       'isProfileSetup': isProfileSetup,
       'followerCount': followerCount,
+      'followingCount': followingCount,
       'postCount': postCount,
       'joinedSessionCount': joinedSessionCount,
       'coinBalance': coinBalance,

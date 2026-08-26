@@ -16,6 +16,7 @@ import '../../view/sereen/UserScreen/Wallet/controller/support_controller.dart';
 import '../../view/sereen/UserScreen/Wallet/controller/transaction_history_controller.dart';
 import '../../view/sereen/UserScreen/Wallet/controller/send_support_controller.dart';
 import '../../view/sereen/UserScreen/track/controller/track_controller.dart';
+import 'package:speedring/view/components/share/share_controller.dart';
 
 class DependencyInjection extends Bindings {
   @override
@@ -38,5 +39,6 @@ class DependencyInjection extends Bindings {
     Get.lazyPut(() => BusinessRegistrationController(), fenix: true);
     Get.lazyPut(() => ManageWebController(), fenix: true);
     Get.lazyPut(() => HelpSupportController(), fenix: true);
+    Get.lazyPut(() => ShareController(), fenix: true);
   }
 }

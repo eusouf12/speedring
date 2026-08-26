@@ -354,14 +354,28 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                   ),
                   child: Row(
                     children: [
-                      _buildStatItem(
-                        "posts".tr.toUpperCase(),
-                        "${profile?.postCount ?? 0}",
+                      GestureDetector(
+                        onTap: () {
+                          if (profile?.id != null) {
+                            Get.toNamed(AppRoutes.followListScreen, arguments: {'userId': profile!.id, 'listType': 'followers'});
+                          }
+                        },
+                        child: _buildStatItem(
+                          "followers".tr.toUpperCase(),
+                          "${profile?.followerCount ?? 0}",
+                        ),
                       ),
                       _buildStatDivider(),
-                      _buildStatItem(
-                        "followers".tr.toUpperCase(),
-                        "${profile?.followerCount ?? 0}",
+                      GestureDetector(
+                        onTap: () {
+                          if (profile?.id != null) {
+                            Get.toNamed(AppRoutes.followListScreen, arguments: {'userId': profile!.id, 'listType': 'following'});
+                          }
+                        },
+                        child: _buildStatItem(
+                          "following".tr.toUpperCase(),
+                          "${profile?.followingCount ?? 0}",
+                        ),
                       ),
                       _buildStatDivider(),
                       _buildStatItem("listings".tr.toUpperCase(), "0"),
