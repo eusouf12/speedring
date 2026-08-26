@@ -46,6 +46,7 @@ class ApiUrl {
   static const String getMyTransactions = "/payments/my-transactions";
   static const String supportDriver = "/wallets/support-driver";
   static const String getMyFollowing = "/users/my-following";
+  static const String getMyFollowers = "/users/my-followers";
 
   static const String getFaq = "/manage-web/all-faq";
   static String getWebContent(String type) => "/manage-web/content/$type";
@@ -196,6 +197,7 @@ class ApiUrl {
   static String deleteClub({required String clubId}) =>
       "/clubs/delete-club/$clubId";
   static String joinClub({required String clubId}) => "/clubs/$clubId/join";
+  static String inviteToClub({required String clubId}) => "/clubs/$clubId/invite";
   static String leaveClub({required String clubId}) => "/clubs/$clubId/leave";
   static String getSingleClub({required String clubId}) =>
       "/clubs/view-club/$clubId";

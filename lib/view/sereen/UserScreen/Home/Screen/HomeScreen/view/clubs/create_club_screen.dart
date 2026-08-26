@@ -6,6 +6,7 @@ import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_royel_appbar/custom_royel_appbar.dart';
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/invite_followers_bottom_sheet.dart';
 
 // ─── Controller ────────────────────────────────────────────────
 class CreateClubController extends GetxController {
@@ -481,8 +482,14 @@ class CreateClubScreen extends StatelessWidget {
                               banner: controller.bannerImage.value,
                             );
 
-                            if (success) {
+                            if (success != null) {
                               Get.back();
+                              if (controller.selectedAccess.value == "INVITE") {
+                                Get.bottomSheet(
+                                  InviteFollowersBottomSheet(clubId: success),
+                                  isScrollControlled: true,
+                                );
+                              }
                             }
                           },
                     child: homeController.isCreateClubLoading.value

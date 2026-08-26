@@ -1838,7 +1838,7 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<bool> createClub({
+  Future<String?> createClub({
     required String clubName,
     required String description,
     List<String>? categories,
@@ -1874,14 +1874,15 @@ class HomeController extends GetxController {
         showCustomSnackBar("Club created successfully!", isError: false);
         getAllClubs();
         getMyClubs();
-        return true;
+        final clubId = response.body['data']?['_id'] ?? response.body['data']?['id'];
+        return clubId?.toString();
       } else {
         showCustomSnackBar(response.body['message'] ?? 'Failed to create club');
-        return false;
+        return null;
       }
     } catch (e) {
       debugPrint("Error creating club: $e");
-      return false;
+      return null;
     } finally {
       isCreateClubLoading.value = false;
     }
@@ -2090,6 +2091,48 @@ class HomeController extends GetxController {
 
   // Loading state for joining a club
   final RxBool isJoinClubLoading = false.obs;
+
+  // Get followers for invitation
+  final RxList<dynamic> myFollowers = <dynamic>[].obs;
+  final RxBool isFollowersLoading = false.obs;
+
+  Future<void> getMyFollowers() async {
+    isFollowersLoading.value = true;
+    try {
+      final response = await ApiClient.getData(ApiUrl.getMyFollowers);
+      if (response.statusCode == 200) {
+        myFollowers.value = response.body["data"] ?? [];
+      }
+    } catch (e) {
+      debugPrint("Error getting followers: $e");
+    } finally {
+      isFollowersLoading.value = false;
+    }
+  }
+
+  // Invite users to club
+  final RxBool isInvitingUsers = false.obs;
+  
+  Future<bool> inviteUsersToClub(String clubId, List<String> userIds) async {
+    if (userIds.isEmpty) return false;
+    isInvitingUsers.value = true;
+    try {
+      final response = await ApiClient.postData(
+        ApiUrl.inviteToClub(clubId: clubId),
+        jsonEncode({"userIds": userIds}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("Users invited successfully", isError: false);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Error inviting users to club: $e");
+      return false;
+    } finally {
+      isInvitingUsers.value = false;
+    }
+  }
 
   Future<void> joinClub(String clubId) async {
     if (isJoinClubLoading.value) return; // prevent duplicate calls
