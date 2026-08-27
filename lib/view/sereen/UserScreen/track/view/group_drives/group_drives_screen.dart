@@ -186,10 +186,10 @@ class _GroupDrivesScreenState extends State<GroupDrivesScreen> {
 
   Widget _buildDriveCard(Expedition drive) {
     final bool isOpen = drive.status == "upcoming";
-    final String currentUserId = profileController.profileData.value?.id ?? "";
+    final String currentUserId = trackController.currentUserId;
     final bool isHost = drive.host?.id == currentUserId;
-    final bool isJoined =
-        drive.participants?.any((p) => p.id == currentUserId) ?? false;
+    final bool isJoined = drive.isJoined ||
+        (drive.participants?.any((p) => p.id == currentUserId) ?? false);
     final bool isFull =
         (drive.participants?.length ?? 0) >= (drive.maxParticipants ?? 0);
 

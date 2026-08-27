@@ -239,10 +239,9 @@ class LiveSessionController extends GetxController {
             track!.startCoordinates!.lng ?? 0,
           ),
           infoWindow: InfoWindow(title: 'startLocation'.tr),
-          icon: startMarkerIcon ??
-              BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
+          icon:
+              startMarkerIcon ??
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
           zIndexInt: 2,
         ),
       );
@@ -256,10 +255,9 @@ class LiveSessionController extends GetxController {
             track!.finishCoordinates!.lng ?? 0,
           ),
           infoWindow: InfoWindow(title: 'finishLocation'.tr),
-          icon: finishMarkerIcon ??
-              BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed,
-              ),
+          icon:
+              finishMarkerIcon ??
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
           zIndexInt: 2,
         ),
       );
@@ -292,15 +290,20 @@ class LiveSessionController extends GetxController {
   }
 
   Future<void> _requestLocationPermissionAndStart() async {
+    debugPrint("[GPS] ▶ _requestLocationPermissionAndStart() called");
+
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    debugPrint("[GPS] Location service enabled: $serviceEnabled");
     if (!serviceEnabled) {
       Get.snackbar('error'.tr, 'locationServicesDisabled'.tr);
       return;
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
+    debugPrint("[GPS] Initial permission status: $permission");
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+      debugPrint("[GPS] Permission after request: $permission");
       if (permission == LocationPermission.denied) {
         Get.snackbar('error'.tr, 'locationPermissionsDenied'.tr);
         return;
@@ -308,20 +311,42 @@ class LiveSessionController extends GetxController {
     }
 
     if (permission == LocationPermission.deniedForever) {
+      debugPrint("[GPS] ❌ Permission denied forever");
       Get.snackbar('error'.tr, 'locationPermissionsDeniedForever'.tr);
       return;
     }
 
-    // Permissions granted, warm up/wake up GPS hardware and fetch initial location
+    debugPrint("[GPS] ✅ Permission granted. Starting GPS warmup...");
+
+    // Permissions granted — warm up GPS hardware by priming _previousPosition.
+    // This guarantees delta-speed calculation works from the very first stream update.
+    // We do NOT call _updateTracking here to avoid counting pre-session movement.
     try {
+      final warmupStart = DateTime.now();
       final initialPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation,
-      ).timeout(const Duration(seconds: 4));
-      _updateTracking(initialPosition);
+      ).timeout(const Duration(seconds: 10));
+      final warmupMs = DateTime.now().difference(warmupStart).inMilliseconds;
+      debugPrint("[GPS] ✅ Warmup SUCCESS in ${warmupMs}ms");
+      debugPrint(
+        "[GPS]    lat=${initialPosition.latitude.toStringAsFixed(6)}, lng=${initialPosition.longitude.toStringAsFixed(6)}",
+      );
+      debugPrint(
+        "[GPS]    accuracy=${initialPosition.accuracy.toStringAsFixed(1)}m, speed=${initialPosition.speed} m/s",
+      );
+      // Prime the previous position reference so delta calc is instant on first stream update
+      _previousPosition = initialPosition;
+      _previousPositionTime = DateTime.now();
+      // Set current location marker so map shows user position immediately
+      currentLocation.value = initialPosition;
     } catch (e) {
-      debugPrint("GPS warm up fetch failed or timed out: $e");
+      debugPrint("[GPS] ⚠️ Warmup FAILED or timed out: $e");
+      debugPrint(
+        "[GPS]    Falling back to first stream emission for _previousPosition.",
+      );
     }
 
+    debugPrint("[GPS] Starting position stream...");
     // Start tracking stream
     _startSession();
   }
@@ -349,7 +374,8 @@ class LiveSessionController extends GetxController {
         accuracy: LocationAccuracy.bestForNavigation,
         distanceFilter: 0, // Continuous live stream
         intervalDuration: const Duration(milliseconds: 500), // 500ms updates
-        forceLocationManager: false, // Use FusedLocationProvider for best speed and bearing
+        forceLocationManager:
+            false, // Use FusedLocationProvider for best speed and bearing
         foregroundNotificationConfig: const ForegroundNotificationConfig(
           notificationText: "Speedring is tracking your session in real-time.",
           notificationTitle: "Live Tracking Active",
@@ -370,13 +396,23 @@ class LiveSessionController extends GetxController {
       );
     }
 
-    positionStream = Geolocator.getPositionStream(
-      locationSettings: locationSettings,
-    ).listen((Position? position) {
-      if (position != null && isSessionActive) {
-        _updateTracking(position);
-      }
-    });
+    positionStream =
+        Geolocator.getPositionStream(
+          locationSettings: locationSettings,
+        ).listen((Position? position) {
+          if (position != null && isSessionActive) {
+            // If warmup failed and _previousPosition is still null, prime it now from
+            // the first stream emission — this guarantees delta speed calc works immediately.
+            if (_previousPosition == null) {
+              debugPrint(
+                "[GPS] 🔵 Stream first emission (warmup had failed). Priming _previousPosition.",
+              );
+              _previousPosition = position;
+              _previousPositionTime = DateTime.now();
+            }
+            _updateTracking(position);
+          }
+        });
   }
 
   void _updateTracking(Position position) {
@@ -386,8 +422,11 @@ class LiveSessionController extends GetxController {
     // 1. Dual-Source Speed Calculation (Instant GPS + Delta distance/time fallback)
     double rawSpeedKmh = 0.0;
 
-    if (position.speed >= 0.0) {
+    if (position.speed > 0.0) {
       rawSpeedKmh = position.speed * 3.6;
+      debugPrint(
+        "[SPEED] Source=GPS  raw=${position.speed.toStringAsFixed(3)} m/s  → ${rawSpeedKmh.toStringAsFixed(1)} km/h",
+      );
     } else if (_previousPosition != null && _previousPositionTime != null) {
       // Calculate delta distance & time
       final double deltaDistanceMeters = Geolocator.distanceBetween(
@@ -400,19 +439,43 @@ class LiveSessionController extends GetxController {
           now.difference(_previousPositionTime!).inMilliseconds / 1000.0;
 
       if (deltaTimeSeconds > 0.1) {
-        final double calculatedSpeedMps = deltaDistanceMeters / deltaTimeSeconds;
+        final double calculatedSpeedMps =
+            deltaDistanceMeters / deltaTimeSeconds;
         rawSpeedKmh = calculatedSpeedMps * 3.6;
+        debugPrint(
+          "[SPEED] Source=DELTA  dist=${deltaDistanceMeters.toStringAsFixed(2)}m  dt=${deltaTimeSeconds.toStringAsFixed(2)}s  → ${rawSpeedKmh.toStringAsFixed(1)} km/h",
+        );
+      } else {
+        debugPrint(
+          "[SPEED] Source=DELTA  dt too small (${deltaTimeSeconds.toStringAsFixed(3)}s), skipping.",
+        );
       }
+    } else {
+      debugPrint(
+        "[SPEED] ⚠️ GPS speed=0 AND _previousPosition=null. Speed stays 0.",
+      );
     }
 
-    if (rawSpeedKmh < 0.5) {
+    if (rawSpeedKmh < 1.0) {
+      // Ignore small GPS drift under 1 km/h
       rawSpeedKmh = 0.0;
     }
 
-    // Apply smooth low-pass filter (prevents GPS jitter while maintaining snappy response)
-    double filteredSpeed = (currentSpeedKmh.value * 0.25) + (rawSpeedKmh * 0.75);
+    // Dynamic low-pass filter for smoother speed updates
+    double speedDiff = (rawSpeedKmh - currentSpeedKmh.value).abs();
+
+    // Use much higher alpha for a snappier, real-time feel
+    double alpha = 0.5; // Fast response even for small changes
+
+    if (speedDiff > 5.0) {
+      alpha = 0.8; // Almost instant response for real acceleration/braking
+    }
+
+    double filteredSpeed =
+        (currentSpeedKmh.value * (1.0 - alpha)) + (rawSpeedKmh * alpha);
+
     if (rawSpeedKmh == 0.0) {
-      filteredSpeed = 0.0;
+      filteredSpeed = 0.0; // Snap to 0 immediately when stopped
     }
     currentSpeedKmh.value = double.parse(filteredSpeed.toStringAsFixed(1));
 
@@ -422,7 +485,9 @@ class LiveSessionController extends GetxController {
 
     // 2. Heading / Bearing Calculation
     double targetHeading = currentHeading.value;
-    if (position.heading >= 0 && position.heading <= 360 && position.headingAccuracy < 35) {
+    if (position.heading >= 0 &&
+        position.heading <= 360 &&
+        position.headingAccuracy < 35) {
       targetHeading = position.heading;
     } else if (_previousPosition != null) {
       final double distanceDelta = Geolocator.distanceBetween(
@@ -516,7 +581,12 @@ class LiveSessionController extends GetxController {
     _checkDestinationReached(position);
   }
 
-  double _calculateBearing(double startLat, double startLng, double endLat, double endLng) {
+  double _calculateBearing(
+    double startLat,
+    double startLng,
+    double endLat,
+    double endLng,
+  ) {
     final double dLng = (endLng - startLng) * (pi / 180.0);
     final double lat1 = startLat * (pi / 180.0);
     final double lat2 = endLat * (pi / 180.0);
@@ -536,10 +606,9 @@ class LiveSessionController extends GetxController {
         rotation: heading,
         anchor: const Offset(0.5, 0.5),
         flat: true, // Rotates smoothly flat with the map plane
-        icon: carMarkerIcon ??
-            BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueYellow,
-            ),
+        icon:
+            carMarkerIcon ??
+            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
         zIndexInt: 10, // Always stays above route polylines
       ),
     );
@@ -564,12 +633,7 @@ class LiveSessionController extends GetxController {
       // 2D Navigation Mode: Centered, locked on vehicle
       mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: target,
-            zoom: 17.0,
-            bearing: 0.0,
-            tilt: 0.0,
-          ),
+          CameraPosition(target: target, zoom: 17.0, bearing: 0.0, tilt: 0.0),
         ),
       );
     }
@@ -661,7 +725,9 @@ class LiveSessionController extends GetxController {
     }
 
     // 0-200 Tracker
-    if (speed >= 200.0 && isAccelerating0to200 && acceleration0to200StartTime != null) {
+    if (speed >= 200.0 &&
+        isAccelerating0to200 &&
+        acceleration0to200StartTime != null) {
       final duration = DateTime.now().difference(acceleration0to200StartTime!);
       final seconds = duration.inMilliseconds / 1000.0;
       if (best0to200Time.value == 0.0 || seconds < best0to200Time.value) {
@@ -671,8 +737,12 @@ class LiveSessionController extends GetxController {
     }
 
     // 100-200 Tracker
-    if (speed >= 200.0 && isAccelerating100to200 && acceleration100to200StartTime != null) {
-      final duration = DateTime.now().difference(acceleration100to200StartTime!);
+    if (speed >= 200.0 &&
+        isAccelerating100to200 &&
+        acceleration100to200StartTime != null) {
+      final duration = DateTime.now().difference(
+        acceleration100to200StartTime!,
+      );
       final seconds = duration.inMilliseconds / 1000.0;
       if (best100to200Time.value == 0.0 || seconds < best100to200Time.value) {
         best100to200Time.value = seconds;
@@ -685,7 +755,9 @@ class LiveSessionController extends GetxController {
     }
 
     // 0-300 Tracker
-    if (speed >= 300.0 && isAccelerating0to300 && acceleration0to300StartTime != null) {
+    if (speed >= 300.0 &&
+        isAccelerating0to300 &&
+        acceleration0to300StartTime != null) {
       final duration = DateTime.now().difference(acceleration0to300StartTime!);
       final seconds = duration.inMilliseconds / 1000.0;
       if (best0to300Time.value == 0.0 || seconds < best0to300Time.value) {
@@ -695,8 +767,12 @@ class LiveSessionController extends GetxController {
     }
 
     // 200-300 Tracker
-    if (speed >= 300.0 && isAccelerating200to300 && acceleration200to300StartTime != null) {
-      final duration = DateTime.now().difference(acceleration200to300StartTime!);
+    if (speed >= 300.0 &&
+        isAccelerating200to300 &&
+        acceleration200to300StartTime != null) {
+      final duration = DateTime.now().difference(
+        acceleration200to300StartTime!,
+      );
       final seconds = duration.inMilliseconds / 1000.0;
       if (best200to300Time.value == 0.0 || seconds < best200to300Time.value) {
         best200to300Time.value = seconds;
@@ -731,7 +807,10 @@ class LiveSessionController extends GetxController {
         ),
         title: const Text(
           "Destination Reached",
-          style: TextStyle(color: AppColors.yellow, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: AppColors.yellow,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         content: const Text(
           "You have arrived at your end location.",
@@ -775,9 +854,7 @@ class LiveSessionController extends GetxController {
     positionStream?.cancel();
 
     Get.dialog(
-      const Center(
-        child: CircularProgressIndicator(color: AppColors.yellow),
-      ),
+      const Center(child: CircularProgressIndicator(color: AppColors.yellow)),
       barrierDismissible: false,
     );
 
@@ -846,4 +923,3 @@ class LiveSessionController extends GetxController {
     }
   }
 }
-

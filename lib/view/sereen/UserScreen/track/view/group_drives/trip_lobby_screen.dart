@@ -138,8 +138,7 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
             );
           }
 
-          final bool isHost =
-              drive.host?.id == profileController.profileData.value?.id;
+          final bool isHost = drive.host?.id == trackController.currentUserId;
           final bool canStart = _timeLeft == Duration.zero;
 
           return SingleChildScrollView(

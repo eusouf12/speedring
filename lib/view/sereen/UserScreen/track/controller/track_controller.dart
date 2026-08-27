@@ -16,6 +16,8 @@ import '../mode/track_model.dart';
 import '../../Profile/model/profile_model.dart';
 import '../mode/session_stats_model.dart';
 import 'package:speedring/view/sereen/UserScreen/track/mode/expedition_model.dart';
+import 'package:speedring/utils/app_const/app_const.dart';
+import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -24,6 +26,7 @@ class TrackController extends GetxController {
   RxList<Track> tracks = <Track>[].obs;
   RxBool isLoading = false.obs;
   RxBool isLoadMore = false.obs;
+  String currentUserId = "";
 
   BitmapDescriptor? startMarkerIcon;
   BitmapDescriptor? finishMarkerIcon;
@@ -43,9 +46,14 @@ class TrackController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _loadUserId();
     _loadMarkerIcons();
     getAllTracks(refresh: true);
     getMySessionStats();
+  }
+
+  Future<void> _loadUserId() async {
+    currentUserId = await SharePrefsHelper.getString(AppConstants.userId);
   }
 
   Future<Uint8List> _getBytesFromAsset(String path, int width) async {

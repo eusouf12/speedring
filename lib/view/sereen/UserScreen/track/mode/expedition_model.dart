@@ -59,6 +59,7 @@ class Expedition {
   final Host? host;
   final List<Host>? participants;
   final String? status;
+  final bool isJoined;
 
   Expedition({
     this.id,
@@ -75,6 +76,7 @@ class Expedition {
     this.host,
     this.participants,
     this.status,
+    this.isJoined = false,
   });
 
   factory Expedition.fromJson(Map<String, dynamic> json) {
@@ -95,6 +97,7 @@ class Expedition {
           ? List<Host>.from(json['participants'].map((x) => Host.fromJson(x)))
           : null,
       status: json['status'],
+      isJoined: json['isJoined'] ?? false,
     );
   }
 }
