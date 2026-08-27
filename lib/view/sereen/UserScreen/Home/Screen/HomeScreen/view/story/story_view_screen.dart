@@ -12,9 +12,14 @@ import '../../model/story_model.dart';
 import '../../model/view_story_model.dart';
 
 class StoryViewScreen extends StatefulWidget {
-  const StoryViewScreen({super.key, required this.storyGroup});
+  const StoryViewScreen({
+    super.key,
+    required this.storyGroups,
+    required this.initialGroupIndex,
+  });
 
-  final StoryUserGroup storyGroup;
+  final List<StoryUserGroup> storyGroups;
+  final int initialGroupIndex;
 
   @override
   State<StoryViewScreen> createState() => _StoryViewScreenState();
@@ -25,10 +30,12 @@ class _StoryViewScreenState extends State<StoryViewScreen>
   late AnimationController _progressController;
   final TextEditingController _messageCtrl = TextEditingController();
   int currentIndex = 0;
+  late int currentGroupIndex;
   List<Story> _localStories = [];
   final List<int> _floatingHearts = [];
   int _heartCounter = 0;
   bool _isLikedLocally = false;
+  bool _isPopped = false;
 
   // Audio (background music)
   AudioPlayer? _audioPlayer;
@@ -50,10 +57,22 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     return type == 'video' || type == 'mp4' || type == 'mov';
   }
 
+  int _getFirstUnviewedStoryIndex(List<Story> stories) {
+    if (stories.isEmpty) return 0;
+    final index = stories.indexWhere((s) => s.isView != true);
+    return index == -1 ? 0 : index;
+  }
+
   @override
   void initState() {
     super.initState();
-    _localStories = List.from(widget.storyGroup.stories ?? []);
+    currentGroupIndex = widget.initialGroupIndex;
+    _localStories = List.from(
+      currentGroupIndex >= 0 && currentGroupIndex < widget.storyGroups.length
+          ? (widget.storyGroups[currentGroupIndex].stories ?? [])
+          : [],
+    );
+    currentIndex = _getFirstUnviewedStoryIndex(_localStories);
     _progressController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 8),
@@ -83,9 +102,12 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     });
 
     // Stop previous video
-    await _videoController?.pause();
-    await _videoController?.dispose();
-    _videoController = null;
+    if (_videoController != null) {
+      _videoController!.removeListener(_onVideoListener);
+      await _videoController!.pause();
+      await _videoController!.dispose();
+      _videoController = null;
+    }
 
     // Stop audio
     await _audioPlayer?.stop();
@@ -150,9 +172,42 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     if (!mounted) return;
     final controller = _videoController;
     if (controller == null) return;
+
     if (controller.value.position >= controller.value.duration &&
         controller.value.duration > Duration.zero) {
       _nextStory();
+      return;
+    }
+
+    if (!_isPausedByLongPress) {
+      if (controller.value.isBuffering) {
+        if (_progressController.isAnimating) {
+          _progressController.stop();
+        }
+        if (_audioPlayer?.playing == true) {
+          _audioPlayer?.pause();
+        }
+        if (!_isMediaLoading) {
+          setState(() {
+            _isMediaLoading = true;
+          });
+        }
+      } else {
+        if (!_progressController.isAnimating && _isVideoReady) {
+          _progressController.forward();
+        }
+        if (_audioPlayer?.playing == false &&
+            _isVideoReady &&
+            currentIndex < _localStories.length &&
+            _localStories[currentIndex].music?.url != null) {
+          _audioPlayer?.play();
+        }
+        if (_isMediaLoading) {
+          setState(() {
+            _isMediaLoading = false;
+          });
+        }
+      }
     }
   }
 
@@ -197,6 +252,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
     if (index >= 0 && index < _localStories.length) {
       final story = _localStories[index];
       if (story.id != null) {
+        story.isView = true;
         final homeController = Get.find<HomeController>();
         homeController.postViewStory(story.id!);
       }
@@ -214,7 +270,7 @@ class _StoryViewScreenState extends State<StoryViewScreen>
       _triggerStoryView(currentIndex);
       _initMedia(currentIndex);
     } else {
-      Navigator.of(context).pop();
+      _goToNextStoryGroup();
     }
   }
 
@@ -228,6 +284,50 @@ class _StoryViewScreenState extends State<StoryViewScreen>
       _progressController.reset();
       _triggerStoryView(currentIndex);
       _initMedia(currentIndex);
+    } else {
+      _goToPreviousStoryGroup();
+    }
+  }
+
+  void _goToNextStoryGroup() {
+    if (currentGroupIndex < widget.storyGroups.length - 1) {
+      setState(() {
+        currentGroupIndex++;
+        final nextStories = widget.storyGroups[currentGroupIndex].stories ?? [];
+        _localStories = List.from(nextStories);
+        currentIndex = _getFirstUnviewedStoryIndex(nextStories);
+        _isLikedLocally = false;
+      });
+      final nextUserId = widget.storyGroups[currentGroupIndex].user?.id ?? '';
+      if (nextUserId.isNotEmpty) {
+        Get.find<HomeController>().markStoryGroupViewed(nextUserId);
+      }
+      _progressController.reset();
+      _triggerStoryView(currentIndex);
+      _initMedia(currentIndex);
+    } else {
+      if (!_isPopped) {
+        _isPopped = true;
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
+  void _goToPreviousStoryGroup() {
+    if (currentGroupIndex > 0) {
+      setState(() {
+        currentGroupIndex--;
+        final prevStories = widget.storyGroups[currentGroupIndex].stories ?? [];
+        _localStories = List.from(prevStories);
+        currentIndex = prevStories.isNotEmpty ? prevStories.length - 1 : 0;
+        _isLikedLocally = false;
+      });
+      _progressController.reset();
+      _triggerStoryView(currentIndex);
+      _initMedia(currentIndex);
+    } else {
+      _progressController.reset();
+      _progressController.forward();
     }
   }
 
@@ -418,10 +518,10 @@ class _StoryViewScreenState extends State<StoryViewScreen>
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
     final isMyStory =
-        widget.storyGroup.user?.id == controller.currentUserId.value;
+        widget.storyGroups[currentGroupIndex].user?.id == controller.currentUserId.value;
     final stories = _localStories;
     final currentStory = stories.isNotEmpty ? stories[currentIndex] : null;
-    final user = widget.storyGroup.user;
+    final user = widget.storyGroups[currentGroupIndex].user;
 
     // Media URL
     String? mediaUrl;
@@ -649,7 +749,12 @@ class _StoryViewScreenState extends State<StoryViewScreen>
 
                   // Close button
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () {
+                      if (!_isPopped) {
+                        _isPopped = true;
+                        Navigator.of(context).pop();
+                      }
+                    },
                     child: Container(
                       width: 34,
                       height: 34,

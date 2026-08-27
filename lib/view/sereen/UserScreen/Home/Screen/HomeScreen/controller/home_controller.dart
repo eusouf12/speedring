@@ -985,6 +985,7 @@ class HomeController extends GetxController {
     try {
       var response = await ApiClient.getData(ApiUrl.getAllStory);
       if (response.statusCode == 200) {
+        viewedStoryGroupIds.clear();
         var storyResponse = StoryResponse.fromJson(
           response.body is String ? jsonDecode(response.body) : response.body,
         );

@@ -58,7 +58,7 @@ class StoryItem extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: hasViewed ? Colors.grey[800]! : AppColors.yellow,
-                  width: hasViewed ? 1.0 : 1.5,
+                  width: hasViewed ? 1.0 : 4.0,
                 ),
               ),
               child: ClipOval(

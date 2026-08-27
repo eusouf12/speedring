@@ -469,9 +469,19 @@ class ProfileScreen extends StatelessWidget {
                             String? imageUrl;
                             if (storyGroup.stories != null &&
                                 storyGroup.stories!.isNotEmpty) {
-                              final mediaList = storyGroup.stories!.last.media;
+                              final lastStory = storyGroup.stories!.last;
+                              final mediaList = lastStory.media;
                               if (mediaList != null && mediaList.isNotEmpty) {
-                                imageUrl = mediaList.first.url;
+                                final mediaType = mediaList.first.type?.toLowerCase() ?? '';
+                                final mediaUrl = mediaList.first.url ?? '';
+                                final isVideo = mediaType == 'video' ||
+                                    mediaType == 'mp4' ||
+                                    mediaType == 'mov' ||
+                                    mediaUrl.endsWith('.mp4') ||
+                                    mediaUrl.endsWith('.mov');
+                                if (!isVideo) {
+                                  imageUrl = mediaUrl;
+                                }
                               }
                             }
                             if (imageUrl == null || imageUrl.isEmpty) {
@@ -495,8 +505,10 @@ class ProfileScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) =>
-                                        StoryViewScreen(storyGroup: storyGroup),
+                                    builder: (_) => StoryViewScreen(
+                                      storyGroups: [storyGroup],
+                                      initialGroupIndex: 0,
+                                    ),
                                   ),
                                 );
                               },

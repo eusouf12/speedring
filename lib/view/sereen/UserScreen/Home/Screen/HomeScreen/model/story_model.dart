@@ -65,7 +65,7 @@ class Story {
   final int? v;
   final int? viewCount;
   final int? reactCount;
-  final bool? isView;
+  bool? isView;
 
   Story({
     this.id,
