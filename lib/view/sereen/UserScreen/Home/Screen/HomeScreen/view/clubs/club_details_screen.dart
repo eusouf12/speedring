@@ -23,6 +23,39 @@ class ClubDetailsScreen extends StatefulWidget {
 class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
   final HomeController controller = Get.find<HomeController>();
 
+  void _openFullScreenImage(BuildContext context, String imageUrl) {
+    if (imageUrl.isEmpty) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          body: Center(
+            child: InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.contain,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -290,24 +323,27 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                     clipBehavior: Clip.none,
                     children: [
                       /// Banner Image
-                      Container(
-                        width: double.infinity,
-                        height: 160,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(bannerUrl),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      GestureDetector(
+                        onTap: () => _openFullScreenImage(context, bannerUrl),
                         child: Container(
+                          width: double.infinity,
+                          height: 160,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withValues(alpha: 0.8),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
+                            image: DecorationImage(
+                              image: NetworkImage(bannerUrl),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withValues(alpha: 0.8),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
                             ),
                           ),
                         ),
@@ -317,34 +353,37 @@ class _ClubDetailsScreenState extends State<ClubDetailsScreen> {
                       Positioned(
                         bottom: 0,
                         left: 20,
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: AppColors.yellow,
-                              width: 2,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.6),
-                                blurRadius: 10,
-                                spreadRadius: 2,
-                                offset: const Offset(0, 4),
+                        child: GestureDetector(
+                          onTap: () => _openFullScreenImage(context, logoUrl),
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: AppColors.yellow,
+                                width: 2,
                               ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(14),
-                            child: Image.network(
-                              logoUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, _, _) => const Icon(
-                                Icons.shield,
-                                color: Colors.white,
-                                size: 40,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.6),
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.network(
+                                logoUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, _, _) => const Icon(
+                                  Icons.shield,
+                                  color: Colors.white,
+                                  size: 40,
+                                ),
                               ),
                             ),
                           ),

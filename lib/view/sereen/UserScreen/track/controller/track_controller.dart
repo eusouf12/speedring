@@ -105,10 +105,10 @@ class TrackController extends GetxController {
 
   Future<void> _loadMarkerIcons() async {
     try {
-      // Create a small yellow pin for start marker (e.g., width 50 pixels)
+      // Create a small yellow pin for start marker (width 16 pixels)
       final Uint8List startMarkerData = await _createCustomPinMarker(
         Colors.yellow,
-        50,
+        16,
       );
       startMarkerIcon = BitmapDescriptor.bytes(startMarkerData);
     } catch (e) {
@@ -119,10 +119,10 @@ class TrackController extends GetxController {
     }
 
     try {
-      // Resize the logo for finish marker to be small (e.g., width 80)
+      // Resize the logo for finish marker to be small (width 22)
       final Uint8List finishMarkerData = await _getBytesFromAsset(
         'assets/images/app_logo.png',
-        60,
+        22,
       );
       finishMarkerIcon = BitmapDescriptor.bytes(finishMarkerData);
     } catch (e) {

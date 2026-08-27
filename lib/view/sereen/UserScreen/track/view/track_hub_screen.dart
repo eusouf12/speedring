@@ -343,7 +343,12 @@ class TrackHubScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 6),
                                     Text(
-                                      "${trackController.sessionStats.value?.totalDistance ?? 0}",
+                                      () {
+                                        final dist = trackController.sessionStats.value?.totalDistance;
+                                        if (dist == null) return "0";
+                                        final double? val = double.tryParse(dist.toString());
+                                        return val != null ? val.toStringAsFixed(2) : dist.toString();
+                                      }(),
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,

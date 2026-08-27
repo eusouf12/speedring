@@ -109,7 +109,7 @@ class LiveSessionController extends GetxController {
     // Generate sleek custom directional arrow / car pointer for real-time tracking
     carMarkerIcon = await _createDirectionalArrowMarker(
       color: AppColors.yellow,
-      size: 70,
+      size: 20,
     );
 
     final trackController = Get.isRegistered<TrackController>()
@@ -312,7 +312,17 @@ class LiveSessionController extends GetxController {
       return;
     }
 
-    // Permissions granted, start tracking immediately
+    // Permissions granted, warm up/wake up GPS hardware and fetch initial location
+    try {
+      final initialPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation,
+      ).timeout(const Duration(seconds: 4));
+      _updateTracking(initialPosition);
+    } catch (e) {
+      debugPrint("GPS warm up fetch failed or timed out: $e");
+    }
+
+    // Start tracking stream
     _startSession();
   }
 
