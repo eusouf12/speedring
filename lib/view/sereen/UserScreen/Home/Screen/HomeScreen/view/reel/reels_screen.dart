@@ -392,9 +392,13 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
               if (_videoController != null &&
                   _videoController!.value.isInitialized)
                 SizedBox.expand(
-                  child: Center(
-                    child: AspectRatio(
-                      aspectRatio: _videoController!.value.aspectRatio,
+                  child: FittedBox(
+                    fit: _videoController!.value.aspectRatio > 1.0
+                        ? BoxFit.contain
+                        : BoxFit.cover,
+                    child: SizedBox(
+                      width: _videoController!.value.size.width,
+                      height: _videoController!.value.size.height,
                       child: VideoPlayer(_videoController!),
                     ),
                   ),

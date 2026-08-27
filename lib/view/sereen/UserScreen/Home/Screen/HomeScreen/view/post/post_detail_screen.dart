@@ -204,8 +204,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// ── Image Carousel ───────────────────────────────────
-                    if (imageUrls.isNotEmpty)
+                    /// ── Image Carousel or Single Image ───────────────────
+                    if (imageUrls.length == 1)
+                      CustomNetworkImage(
+                        imageUrl: imageUrls.first,
+                        width: double.infinity,
+                        fit: BoxFit.fitWidth,
+                      )
+                    else if (imageUrls.length > 1)
                       _ImageCarousel(imageUrls: imageUrls),
                     if (imageUrls.isNotEmpty) const SizedBox(height: 16),
 
@@ -532,7 +538,7 @@ class _ImageCarousel extends StatelessWidget {
     return Stack(
       children: [
         SizedBox(
-          height: 280,
+          height: 350,
           child: PageView.builder(
             itemCount: imageUrls.length,
             onPageChanged: (i) => controller.currentIndex.value = i,
@@ -540,7 +546,6 @@ class _ImageCarousel extends StatelessWidget {
               imageUrl: imageUrls[i],
               fit: BoxFit.contain,
               width: double.infinity,
-              height: 400,
             ),
           ),
         ),

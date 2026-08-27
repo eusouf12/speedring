@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:speedring/view/components/custom_netwrok_image/custom_network_image.dart';
 import '../../../../../utils/navigation_utils.dart';
 import '../../../../../helper/guest_checker.dart';
 import 'package:video_player/video_player.dart';
@@ -138,27 +139,10 @@ class PostCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 child: mediaType == 'video'
                     ? _InlineVideoPlayer(videoUrl: imageUrl)
-                    : Image.network(
-                        imageUrl,
+                    : CustomNetworkImage(
+                        imageUrl: imageUrl,
                         width: double.infinity,
-                        height: 200,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.broken_image, size: 50, color: Colors.grey),
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return SizedBox(
-                            height: 200,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes != null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        (loadingProgress.expectedTotalBytes ?? 1)
-                                    : null,
-                              ),
-                            ),
-                          );
-                        },
+                        fit: BoxFit.fitWidth,
                       ),
               ),
 
