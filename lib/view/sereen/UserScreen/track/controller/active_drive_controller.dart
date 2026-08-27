@@ -20,6 +20,8 @@ import 'package:http/http.dart' as http;
 import '../../../../../core/app_routes/app_routes.dart';
 import '../../../../../helper/shared_prefe/shared_prefe.dart';
 
+import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
+
 class ActiveDriveController extends GetxController {
   Expedition? drive;
   bool isHost = false;
@@ -28,7 +30,7 @@ class ActiveDriveController extends GetxController {
   GoogleMapController? mapController;
   RxSet<Marker> markers = <Marker>{}.obs;
   RxSet<Polyline> polylines = <Polyline>{}.obs;
-  List<LatLng> routePoints = <LatLng>[];
+  List<LatLng> hostRoutePoints = <LatLng>[];
 
   // Tracking state
   StreamSubscription<Position>? positionStream;
@@ -65,14 +67,15 @@ class ActiveDriveController extends GetxController {
   final ProfileScreenController profileController =
       Get.find<ProfileScreenController>();
   final SettingsController settings = Get.find<SettingsController>();
+  final TrackController trackController = Get.find<TrackController>();
 
   @override
   void onInit() {
     super.onInit();
     drive = Get.arguments as Expedition?;
     if (drive != null) {
-      final currentUserId = profileController.profileData.value?.id;
-      isHost = drive!.host?.id == currentUserId;
+      final currentUserId = trackController.currentUserId;
+      isHost = (drive!.host?.id != null) && (drive!.host?.id == currentUserId);
 
       // Initialize Socket connection
       _setupSocket();
@@ -229,6 +232,25 @@ class ActiveDriveController extends GetxController {
         ),
       );
     }
+    
+    if (drive?.routeTrack != null && drive?.routeTrack is Map) {
+      final routeMap = drive!.routeTrack as Map<String, dynamic>;
+      if (routeMap['finishCoordinates'] != null) {
+        final lat = (routeMap['finishCoordinates']['lat'] as num?)?.toDouble();
+        final lng = (routeMap['finishCoordinates']['lng'] as num?)?.toDouble();
+        if (lat != null && lng != null) {
+          markers.add(
+            Marker(
+              markerId: const MarkerId('finish'),
+              position: LatLng(lat, lng),
+              infoWindow: InfoWindow(title: 'finishLocation'.tr),
+              icon: trackController.finishMarkerIcon ??
+                  BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            ),
+          );
+        }
+      }
+    }
   }
 
   Future<void> _requestPermissionAndStartTracking() async {
@@ -267,8 +289,6 @@ class ActiveDriveController extends GetxController {
   }
 
   void _updateMyTelemetry(Position position) {
-    currentLocation.value = position;
-
     final speed = position.speed * 3.6;
     currentSpeedKmh.value = speed;
 
@@ -328,21 +348,28 @@ class ActiveDriveController extends GetxController {
 
     final LatLng newPoint = LatLng(position.latitude, position.longitude);
 
-    if (routePoints.isEmpty) {
+    if (hostRoutePoints.isEmpty) {
       _fetchTemperature(position.latitude, position.longitude);
     }
-    if (routePoints.isNotEmpty) {
+    
+    // Accumulate total distance for the current user
+    if (currentLocation.value != null) {
       final double distance = Geolocator.distanceBetween(
-        routePoints.last.latitude,
-        routePoints.last.longitude,
+        currentLocation.value!.latitude,
+        currentLocation.value!.longitude,
         position.latitude,
         position.longitude,
       );
       totalDistanceKm.value += (distance / 1000);
     }
 
-    routePoints.add(newPoint);
-    _updatePolyline();
+    currentLocation.value = position;
+
+    // Only accumulate route points and draw polyline if host
+    if (isHost) {
+      hostRoutePoints.add(newPoint);
+      _updatePolyline();
+    }
 
     // Update my driver marker position with my profile pic icon
     final currentUserId = profileController.profileData.value?.id ?? 'my_id';
@@ -356,13 +383,14 @@ class ActiveDriveController extends GetxController {
     );
 
     // Auto pan map and fit polyline bounds
-    if (routePoints.length > 1) {
-      double minLat = routePoints.first.latitude;
-      double maxLat = routePoints.first.latitude;
-      double minLng = routePoints.first.longitude;
-      double maxLng = routePoints.first.longitude;
+    // Auto pan map and fit polyline bounds if there are route points
+    if (hostRoutePoints.length > 1) {
+      double minLat = hostRoutePoints.first.latitude;
+      double maxLat = hostRoutePoints.first.latitude;
+      double minLng = hostRoutePoints.first.longitude;
+      double maxLng = hostRoutePoints.first.longitude;
 
-      for (var point in routePoints) {
+      for (var point in hostRoutePoints) {
         if (point.latitude < minLat) minLat = point.latitude;
         if (point.latitude > maxLat) maxLat = point.latitude;
         if (point.longitude < minLng) minLng = point.longitude;
@@ -425,16 +453,26 @@ class ActiveDriveController extends GetxController {
 
       // Update THEIR marker on the map
       _updateDriverMarker(newPoint, profilePicUrl, senderId, title);
+
+      // If the sender is the host, update the hostRoutePoints and polyline
+      if (drive?.host?.id == senderId) {
+        hostRoutePoints.add(newPoint);
+        _updatePolyline();
+      }
     });
   }
 
   void _updatePolyline() {
+    polylines.clear();
     polylines.add(
       Polyline(
-        polylineId: const PolylineId('route'),
-        points: routePoints,
+        polylineId: const PolylineId('active_route'),
+        points: List<LatLng>.from(hostRoutePoints),
         color: AppColors.yellow,
-        width: 4,
+        width: 5,
+        jointType: JointType.round,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
       ),
     );
   }
