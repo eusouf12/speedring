@@ -31,6 +31,7 @@ class ActiveDriveController extends GetxController {
   RxSet<Marker> markers = <Marker>{}.obs;
   RxSet<Polyline> polylines = <Polyline>{}.obs;
   List<LatLng> hostRoutePoints = <LatLng>[];
+  final Map<String, BitmapDescriptor> _markerCache = {};
 
   // Tracking state
   StreamSubscription<Position>? positionStream;
@@ -205,14 +206,16 @@ class ActiveDriveController extends GetxController {
     SocketApi.emit('join_expedition_room', drive!.id);
 
     SocketApi.on('expedition_ended', (data) {
-      Get.snackbar(
-        "tripEnded".tr.tr == "tripEnded" ? "Trip Ended" : "tripEnded".tr,
-        "hostEndedTrip".tr.tr == "hostEndedTrip"
-            ? "The host has ended this trip."
-            : "hostEndedTrip".tr,
-      );
-      Get.delete<ActiveDriveController>();
-      Get.offAllNamed(AppRoutes.userHomeScreen);
+      if (!isHost) {
+        Get.snackbar(
+          "tripEnded".tr.tr == "tripEnded" ? "Trip Ended" : "tripEnded".tr,
+          "hostEndedTrip".tr.tr == "hostEndedTrip"
+              ? "The host has ended this trip."
+              : "hostEndedTrip".tr,
+        );
+        Get.delete<ActiveDriveController>();
+        Get.offAllNamed(AppRoutes.userHomeScreen);
+      }
     });
   }
 
@@ -547,18 +550,21 @@ class ActiveDriveController extends GetxController {
       BitmapDescriptor.hueYellow,
     );
 
-    if (profilePicUrl != null && profilePicUrl.isNotEmpty) {
+    if (_markerCache.containsKey(markerId)) {
+      markerIcon = _markerCache[markerId]!;
+    } else if (profilePicUrl != null && profilePicUrl.isNotEmpty) {
       String fullUrl = profilePicUrl;
       if (!fullUrl.startsWith("http")) {
         fullUrl = "${ApiUrl.imageUrl}/$fullUrl";
       }
       markerIcon = await _getCircularMarkerIcon(fullUrl, const Size(50, 50));
+      _markerCache[markerId] = markerIcon;
     }
 
     markers.removeWhere((m) => m.markerId.value == markerId);
 
     // Make my own marker appear on top of others
-    final bool isMe = markerId == profileController.profileData.value?.id;
+    final bool isMe = markerId == trackController.currentUserId;
 
     markers.add(
       Marker(
@@ -569,6 +575,8 @@ class ActiveDriveController extends GetxController {
         zIndexInt: isMe ? 10 : 1,
       ),
     );
+    
+    markers.refresh();
   }
 
   Future<BitmapDescriptor> _getCircularMarkerIcon(String url, Size size) async {

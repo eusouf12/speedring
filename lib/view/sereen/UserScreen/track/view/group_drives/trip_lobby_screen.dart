@@ -55,7 +55,7 @@ class _TripLobbyScreenState extends State<TripLobbyScreen> {
 
       SocketApi.on('expedition_started', (data) {
         if (driveArg != null) {
-          Get.offNamed(AppRoutes.activeDriveScreen, arguments: driveArg);
+          Get.offNamed(AppRoutes.activeDriveScreen, arguments: trackController.currentLobbyExpedition.value ?? driveArg);
         }
       });
     }
