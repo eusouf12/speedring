@@ -303,7 +303,7 @@ class _InboxScreenState extends State<InboxScreen> {
                                                     leading: Container(
                                                       padding: const EdgeInsets.all(8),
                                                       decoration: BoxDecoration(
-                                                        color: Colors.redAccent.withOpacity(0.1),
+                                                        color: Colors.redAccent.withValues(alpha: 0.1),
                                                         shape: BoxShape.circle,
                                                       ),
                                                       child: const Icon(Icons.delete_forever, color: Colors.redAccent),
@@ -369,7 +369,7 @@ class _InboxScreenState extends State<InboxScreen> {
                                     ),
                                     child: msg.isDeletedForEveryone == true
                                         ? Text(
-                                            isMe ? "You unsent a message" : "This message was unsent",
+                                            isMe ? "youUnsentMessage".tr : "thisMessageWasUnsent".tr,
                                             style: TextStyle(
                                               color: isMe ? Colors.black54 : Colors.white54,
                                               fontSize: 14,
