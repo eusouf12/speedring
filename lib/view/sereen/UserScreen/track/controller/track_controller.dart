@@ -72,11 +72,11 @@ class TrackController extends GetxController {
     final int height = (width * 1.5).toInt();
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
-    
+
     final Paint paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
-      
+
     final Paint borderPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
@@ -84,7 +84,7 @@ class TrackController extends GetxController {
 
     final Path path = Path();
     final double radius = width / 2;
-    
+
     // Draw teardrop shape
     path.moveTo(0, radius);
     path.arcToPoint(
@@ -92,7 +92,12 @@ class TrackController extends GetxController {
       radius: Radius.circular(radius),
       clockwise: true,
     );
-    path.quadraticBezierTo(width.toDouble(), radius * 1.3, radius, height.toDouble());
+    path.quadraticBezierTo(
+      width.toDouble(),
+      radius * 1.3,
+      radius,
+      height.toDouble(),
+    );
     path.quadraticBezierTo(0, radius * 1.3, 0, radius);
     path.close();
 
@@ -287,14 +292,16 @@ class TrackController extends GetxController {
         jsonEncode(sessionData),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Fluttertoast.showToast(msg: "sessionCreated".tr);
+        getMySessionStats();
+        getMySessions();
         return true;
       } else {
-        Fluttertoast.showToast(msg: response.statusText ?? "error".tr);
+        showCustomSnackBar(response.statusText ?? "error".tr, isError: true);
         return false;
       }
     } catch (e) {
       debugPrint("Error creating session: $e");
+      showCustomSnackBar(e.toString(), isError: true);
       return false;
     } finally {
       isCreatingSession.value = false;
@@ -341,11 +348,12 @@ class TrackController extends GetxController {
         mySessionsList.removeWhere(
           (session) => session["_id"] == id || session["id"] == id,
         );
+        getMySessionStats();
       } else {
-        showCustomSnackBar(response.statusText ?? "error".tr,isError: true);
+        showCustomSnackBar(response.statusText ?? "error".tr, isError: true);
       }
     } catch (e) {
-      showCustomSnackBar(e.toString(),isError: true);
+      showCustomSnackBar(e.toString(), isError: true);
       debugPrint("Error deleting session: $e");
     }
   }

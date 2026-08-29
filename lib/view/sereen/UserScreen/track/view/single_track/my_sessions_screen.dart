@@ -199,14 +199,26 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                       Container(
                         width: 50.w,
                         height: 50.w,
+                        clipBehavior: Clip.antiAlias,
                         decoration: const BoxDecoration(
                           color: Colors.white10,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
-                          Icons.directions_car,
-                          color: AppColors.yellow,
-                        ),
+                        child: session["vehicleImage"] != null &&
+                                session["vehicleImage"].toString().isNotEmpty
+                            ? Image.network(
+                                session["vehicleImage"],
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(
+                                  Icons.directions_car,
+                                  color: AppColors.yellow,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.directions_car,
+                                color: AppColors.yellow,
+                              ),
                       ),
                       SizedBox(width: 16.w),
                       Expanded(
@@ -220,6 +232,16 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                               fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
                             ),
+                            if (session["trackName"] != null && session["trackName"].toString() != "N/A" && session["trackName"].toString().isNotEmpty) ...[
+                              SizedBox(height: 2.h),
+                              CustomText(
+                                text: session["trackName"],
+                                color: Colors.white70,
+                                fontSize: 12.sp,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                             SizedBox(height: 4.h),
                             Row(
                               children: [
@@ -370,7 +392,7 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                     category: "SESSION_POST",
                     visibility: "Public",
                     sessionDetails: sessionDetails,
-                    mediaUrl: null,
+                    mediaUrl: session['vehicleImage'],
                   );
                   if (success) {
                     Get.offAllNamed(AppRoutes.userHomeScreen);
