@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:speedring/view/sereen/AuthScreen/controller/auth_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Home/Screen/HomeScreen/controller/home_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/Home/Screen/MessageScreen/controller/message_screen_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/Screen/help_support_screen.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/settings_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/single_profile_controller.dart';
@@ -40,5 +41,6 @@ class DependencyInjection extends Bindings {
     Get.lazyPut(() => ManageWebController(), fenix: true);
     Get.lazyPut(() => HelpSupportController(), fenix: true);
     Get.lazyPut(() => ShareController(), fenix: true);
+    Get.lazyPut(() => MessageScreenController(), fenix: true);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/view/components/custom_netwrok_image/custom_network_image.dart';
 import '../../../../../../utils/navigation_utils.dart';
 import 'controller/inbox_controller.dart';
 import 'package:speedring/view/components/custom_loader/custom_loader.dart';
@@ -76,13 +77,17 @@ class _InboxScreenState extends State<InboxScreen> {
                     NavigationUtils.navigateToUserProfile(userId!);
                   }
                 },
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundImage: avatarUrl.isNotEmpty
-                      ? NetworkImage(avatarUrl)
-                      : null,
-                  backgroundColor: const Color(0xff1A1A1A),
-                ),
+                child: avatarUrl.isNotEmpty
+                    ? CustomNetworkImage(
+                        imageUrl: avatarUrl,
+                        boxShape: BoxShape.circle,
+                        height: 40,
+                        width: 40,
+                      )
+                    : const CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Color(0xff1A1A1A),
+                      ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -127,10 +132,10 @@ class _InboxScreenState extends State<InboxScreen> {
                 }
 
                 if (controller.messages.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
-                      "No messages yet. Say hi!",
-                      style: TextStyle(color: Colors.white54),
+                      "startNewChat".tr,
+                      style: const TextStyle(color: Colors.white54),
                     ),
                   );
                 }

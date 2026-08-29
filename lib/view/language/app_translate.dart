@@ -21,8 +21,10 @@ class AppTranslate extends Translations {
       'subjectDescRequired':
           'Subject and description are required to submit a ticket.',
       'ticketSubmitted': 'Ticket Submitted',
-      'failedSubmitTicket': 'Error: Failed to submit ticket. Please try again.',
       'errorOccurred': 'Error: An error occurred. Please try again.',
+      'newMessage': 'New Message',
+      'startNewChat': 'Start new chat',
+      'searchFriends': 'Search friends...',
 
       // Splash Screen
       'initializingTelemetry': 'INITIALIZING TELEMETRY',
@@ -1185,6 +1187,9 @@ class AppTranslate extends Translations {
       'sendSupport': 'SUPPORT SENDEN',
       'welcome': 'Willkommen',
       'SELECT_LANGUAGE': 'Sprache auswählen',
+      'newMessage': 'Neue Nachricht',
+      'startNewChat': 'Neuen Chat beginnen',
+      'searchFriends': 'Freunde suchen...',
 
       // Reels
       'NO_REELS_AVAILABLE_YET': 'Noch keine Reels verfügbar.',

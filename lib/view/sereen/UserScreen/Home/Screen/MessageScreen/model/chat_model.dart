@@ -44,8 +44,9 @@ class ChatUser {
   String? profileImage;
   String? role;
   String? status;
+  bool? isOnline;
 
-  ChatUser({this.id, this.name, this.userName, this.profileImage, this.role, this.status});
+  ChatUser({this.id, this.name, this.userName, this.profileImage, this.role, this.status, this.isOnline});
 
   ChatUser.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -54,6 +55,7 @@ class ChatUser {
     profileImage = json['profileImage'];
     role = json['role'];
     status = json['status'];
+    isOnline = json['isOnline'];
   }
 }
 

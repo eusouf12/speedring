@@ -7,6 +7,7 @@ import 'package:speedring/helper/shared_prefe/shared_prefe.dart';
 import 'package:speedring/service/socket_service.dart';
 import '../model/chat_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:speedring/core/app_routes/app_routes.dart';
 
 class MessageScreenController extends GetxController {
   final RxList<ChatModel> chats = <ChatModel>[].obs;
@@ -63,6 +64,41 @@ class MessageScreenController extends GetxController {
       return chat.users!.firstWhere((u) => u.id != currentUserId);
     } catch (e) {
       return null;
+    }
+  }
+
+
+  Future<void> accessOrCreateChat(Map<String, dynamic> targetUser) async {
+    try {
+      final targetUserId = targetUser['_id'];
+      if (targetUserId == null) return;
+      var response = await ApiClient.postData(
+        ApiUrl.accessChat,
+        {"targetId": targetUserId},
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final chatBody = response.body['data'];
+        if (chatBody != null) {
+          final chatId = chatBody['_id'];
+          Get.toNamed(
+            AppRoutes.inboxScreen,
+            arguments: {
+              'chatId': chatId,
+              'userName': targetUser['name'] ?? "Unknown",
+              'avatarUrl': targetUser['profileImage'] ?? "",
+              'userId': targetUserId,
+              'isOnline': targetUser['isOnline'] ?? false,
+            },
+          )?.then((_) {
+            fetchChats(); // Refresh chats when coming back
+          });
+        }
+      } else {
+        showCustomSnackBar("Failed to access chat", isError: true);
+      }
+    } catch (e) {
+      debugPrint("Error accessing chat: $e");
+      showCustomSnackBar("An error occurred", isError: true);
     }
   }
 }

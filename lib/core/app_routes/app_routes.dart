@@ -25,6 +25,7 @@ import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/clubs/club_grou
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/user_home_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/reel/reels_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/HomeScreen/view/reel/create_reel_screen.dart';
+import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/new_message_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/NotificationScreen/notification_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/message_screen.dart';
 import '../../view/sereen/UserScreen/Home/Screen/MessageScreen/inbox_screen.dart';
@@ -205,6 +206,7 @@ class AppRoutes {
   static const String clubGroupPostScreen = "/ClubGroupPostScreen";
   static const String mySessionsScreen = "/MySessionsScreen";
   static const String savedReelsScreen = "/SavedReelsScreen";
+  static const String newMessageScreen = "/NewMessageScreen";
 
   static List<GetPage> routes = [
     ///===========================Authentication==========================
@@ -233,6 +235,7 @@ class AppRoutes {
     GetPage(name: userHomeScreen, page: () => UserHomeScreen()),
     GetPage(name: notificationScreen, page: () => const NotificationScreen()),
     GetPage(name: messageScreen, page: () => const MessageScreen()),
+    GetPage(name: newMessageScreen, page: () => const NewMessageScreen()),
     GetPage(
       name: inboxScreen,
       page: () => const InboxScreen(),

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
+import 'package:speedring/view/components/share/share_controller.dart';
+import 'package:speedring/view/components/custom_netwrok_image/custom_network_image.dart';
 import '../../../../../../core/app_routes/app_routes.dart';
 import 'controller/message_screen_controller.dart';
-import 'package:speedring/view/components/custom_loader/custom_loader.dart';
 import 'package:intl/intl.dart';
 
 class MessageScreen extends StatelessWidget {
@@ -12,7 +13,8 @@ class MessageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(MessageScreenController());
+    final controller = Get.find<MessageScreenController>();
+    final ShareController shareController = Get.find<ShareController>();
 
     return CustomGradient(
       child: Scaffold(
@@ -36,7 +38,11 @@ class MessageScreen extends StatelessWidget {
           centerTitle: true,
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                await shareController.fetchFollowingList();
+                shareController.searchFriends(''); // reset search
+                Get.toNamed(AppRoutes.newMessageScreen);
+              },
               icon: const Icon(
                 Icons.edit_note,
                 color: AppColors.yellow,
@@ -93,9 +99,11 @@ class MessageScreen extends StatelessWidget {
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CustomLoader());
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.yellow),
+                  );
                 }
-                
+
                 if (controller.chats.isEmpty) {
                   return const Center(
                     child: Text(
@@ -111,34 +119,46 @@ class MessageScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final chat = controller.chats[index];
                     final otherUser = controller.getOtherUser(chat);
-                    
-                    final displayImage = chat.isGroupChat == true 
-                        ? "https://ui-avatars.com/api/?name=${chat.chatName}&background=random" 
-                        : (otherUser?.profileImage ?? "https://ui-avatars.com/api/?name=User");
-                        
-                    final displayName = chat.isGroupChat == true 
-                        ? (chat.chatName ?? "Group") 
+
+                    final displayImage = chat.isGroupChat == true
+                        ? "https://ui-avatars.com/api/?name=${chat.chatName}&background=random"
+                        : (otherUser?.profileImage ??
+                              "https://ui-avatars.com/api/?name=User");
+
+                    final displayName = chat.isGroupChat == true
+                        ? (chat.chatName ?? "Group")
                         : (otherUser?.name ?? "Unknown");
 
-                    final displayUsername = chat.isGroupChat == true 
-                        ? "" 
+                    final displayUsername = chat.isGroupChat == true
+                        ? ""
                         : "@${otherUser?.userName ?? ""}";
 
-                    final latestMessage = chat.latestMessage?.content ?? (chat.latestMessage?.imageUrl != null ? "Photo" : "");
+                    final content = chat.latestMessage?.content;
+                    final latestMessage = (content != null && content.isNotEmpty)
+                        ? content
+                        : (chat.latestMessage?.imageUrl != null ? "Sent an image" : "");
                     String latestMessageText = latestMessage;
-                    if (chat.latestMessage?.senderName != null && latestMessageText.isNotEmpty) {
-                      latestMessageText = "${chat.latestMessage!.senderName}: $latestMessageText";
+                    if (chat.latestMessage?.senderName != null &&
+                        latestMessageText.isNotEmpty) {
+                      latestMessageText =
+                          "${chat.latestMessage!.senderName}: $latestMessageText";
                     }
-                    final isOnline = chat.isGroupChat != true && otherUser?.status == 'active';
+                    final isOnline =
+                        chat.isGroupChat != true &&
+                        otherUser?.isOnline == true;
                     final isOffline = chat.isGroupChat != true && !isOnline;
 
                     String displayTime = "";
                     if (chat.createdAt != null) {
                       try {
-                        DateTime parsedTime = DateTime.parse(chat.createdAt!).toLocal();
+                        DateTime parsedTime = DateTime.parse(
+                          chat.createdAt!,
+                        ).toLocal();
                         displayTime = DateFormat('hh:mm a').format(parsedTime);
                       } catch (e) {
-                        displayTime = chat.createdAt!.length > 16 ? chat.createdAt!.substring(11, 16) : "";
+                        displayTime = chat.createdAt!.length > 16
+                            ? chat.createdAt!.substring(11, 16)
+                            : "";
                       }
                     }
 
@@ -161,9 +181,11 @@ class MessageScreen extends StatelessWidget {
                       ),
                       leading: Stack(
                         children: [
-                          CircleAvatar(
-                            radius: 24,
-                            backgroundImage: NetworkImage(displayImage),
+                          CustomNetworkImage(
+                            imageUrl: displayImage,
+                            boxShape: BoxShape.circle,
+                            height: 48,
+                            width: 48,
                           ),
                           if (isOnline || isOffline)
                             Positioned(
@@ -175,7 +197,10 @@ class MessageScreen extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: isOnline ? Colors.green : Colors.grey,
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.black, width: 2),
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
                                 ),
                               ),
                             ),
