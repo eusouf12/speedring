@@ -148,6 +148,11 @@ class MessageScreen extends StatelessWidget {
                         otherUser?.isOnline == true;
                     final isOffline = chat.isGroupChat != true && !isOnline;
 
+                    final isUnread = chat.latestMessage != null &&
+                        chat.latestMessage?.sender != controller.currentUserId &&
+                        (chat.latestMessage?.readBy == null ||
+                            !chat.latestMessage!.readBy!.contains(controller.currentUserId));
+
                     String displayTime = "";
                     if (chat.createdAt != null) {
                       try {
@@ -173,7 +178,9 @@ class MessageScreen extends StatelessWidget {
                             'isOnline': isOnline,
                             'userId': otherUser?.id,
                           },
-                        );
+                        )?.then((_) {
+                          controller.fetchChats();
+                        });
                       },
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -254,9 +261,10 @@ class MessageScreen extends StatelessWidget {
                           latestMessageText,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white70,
+                          style: TextStyle(
+                            color: isUnread ? Colors.white : Colors.white70,
                             fontSize: 13,
+                            fontWeight: isUnread ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
                       ),

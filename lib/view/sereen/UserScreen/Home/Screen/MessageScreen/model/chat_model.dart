@@ -68,8 +68,9 @@ class LatestMessage {
   String? sender;
   String? senderName;
   String? createdAt;
+  List<String>? readBy;
 
-  LatestMessage({this.id, this.content, this.imageUrl, this.videoUrl, this.audioUrl, this.sender, this.senderName, this.createdAt});
+  LatestMessage({this.id, this.content, this.imageUrl, this.videoUrl, this.audioUrl, this.sender, this.senderName, this.createdAt, this.readBy});
 
   LatestMessage.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -80,5 +81,8 @@ class LatestMessage {
     sender = json['sender'] is String ? json['sender'] : json['sender']?['_id'];
     senderName = json['sender'] is Map ? json['sender']['name'] : null;
     createdAt = json['createdAt'];
+    if (json['readBy'] != null) {
+      readBy = List<String>.from(json['readBy']);
+    }
   }
 }

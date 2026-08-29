@@ -60,8 +60,8 @@ class SocketApi {
     socket?.on(event, callback);
   }
 
-  static void off(String event) {
-    socket?.off(event);
+  static void off(String event, [Function(dynamic)? callback]) {
+    socket?.off(event, callback);
   }
 
   static void emit(String event, dynamic data) {

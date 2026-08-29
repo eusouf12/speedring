@@ -141,6 +141,7 @@ class _InboxScreenState extends State<InboxScreen> {
                 }
 
                 return ListView.builder(
+                  controller: controller.scrollController,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 8,
@@ -183,9 +184,9 @@ class _InboxScreenState extends State<InboxScreen> {
                               ],
                               Flexible(
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 12,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: msg.imageUrl != null ? 4 : 16,
+                                    vertical: msg.imageUrl != null ? 4 : 12,
                                   ),
                                   decoration: BoxDecoration(
                                     color: isMe
@@ -207,25 +208,48 @@ class _InboxScreenState extends State<InboxScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       if (msg.imageUrl != null) ...[
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          child: Image.network(
-                                            msg.imageUrl!,
-                                            fit: BoxFit.cover,
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.to(
+                                              () => Scaffold(
+                                                backgroundColor: Colors.black,
+                                                appBar: AppBar(
+                                                  backgroundColor: Colors.black,
+                                                  iconTheme: const IconThemeData(color: Colors.white),
+                                                ),
+                                                body: Center(
+                                                  child: InteractiveViewer(
+                                                    child: Image.network(msg.imageUrl!),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              isMe ? 18 : 4,
+                                            ),
+                                            child: Image.network(
+                                              msg.imageUrl!,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
-                                        const SizedBox(height: 8),
+                                        if (text.isNotEmpty) const SizedBox(height: 8),
                                       ],
                                       if (text.isNotEmpty)
-                                        Text(
-                                          text,
-                                          style: TextStyle(
-                                            color: isMe
-                                                ? Colors.black
-                                                : Colors.white,
-                                            fontSize: 14,
+                                        Padding(
+                                          padding: msg.imageUrl != null
+                                              ? const EdgeInsets.only(left: 8, right: 8, bottom: 4)
+                                              : EdgeInsets.zero,
+                                          child: Text(
+                                            text,
+                                            style: TextStyle(
+                                              color: isMe
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
                                     ],

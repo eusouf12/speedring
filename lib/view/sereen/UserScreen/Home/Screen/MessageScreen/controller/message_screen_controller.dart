@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:speedring/service/api_client.dart';
 import 'package:speedring/service/api_url.dart';
@@ -74,7 +75,7 @@ class MessageScreenController extends GetxController {
       if (targetUserId == null) return;
       var response = await ApiClient.postData(
         ApiUrl.accessChat,
-        {"targetId": targetUserId},
+        jsonEncode({"targetId": targetUserId}),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final chatBody = response.body['data'];

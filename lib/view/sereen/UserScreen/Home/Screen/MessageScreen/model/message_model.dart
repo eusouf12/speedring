@@ -9,6 +9,7 @@ class MessageModel {
   String? videoUrl;
   String? audioUrl;
   String? createdAt;
+  List<String>? readBy;
 
   MessageModel({
     this.id,
@@ -19,6 +20,7 @@ class MessageModel {
     this.videoUrl,
     this.audioUrl,
     this.createdAt,
+    this.readBy,
   });
 
   MessageModel.fromJson(Map<String, dynamic> json) {
@@ -34,5 +36,8 @@ class MessageModel {
     videoUrl = json['videoUrl'];
     audioUrl = json['audioUrl'];
     createdAt = json['createdAt'];
+    if (json['readBy'] != null) {
+      readBy = List<String>.from(json['readBy']);
+    }
   }
 }
