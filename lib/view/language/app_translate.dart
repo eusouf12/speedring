@@ -6,6 +6,8 @@ class AppTranslate extends Translations {
     'en': {
       'title': 'English',
       'welcome': 'Welcome',
+      'youUnsentMessage': 'You unsent a message',
+      'thisMessageWasUnsent': 'This message was unsent',
       'SELECT_LANGUAGE': 'Select Language',
       'systemDetails': 'SYSTEM DETAILS',
       'applicationName': 'APPLICATION NAME',
@@ -1201,6 +1203,8 @@ class AppTranslate extends Translations {
       'title': 'Deutsch',
       'sendSupport': 'SUPPORT SENDEN',
       'welcome': 'Willkommen',
+      'youUnsentMessage': 'Sie haben eine Nachricht zurückgerufen',
+      'thisMessageWasUnsent': 'Diese Nachricht wurde zurückgerufen',
       'SELECT_LANGUAGE': 'Sprache auswählen',
       'newMessage': 'Neue Nachricht',
       'startNewChat': 'Neuen Chat starten',
