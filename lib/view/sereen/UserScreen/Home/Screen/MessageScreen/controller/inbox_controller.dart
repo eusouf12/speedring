@@ -211,7 +211,15 @@ class InboxController extends GetxController {
         "deleteForEveryone": deleteForEveryone,
       }));
       if (response.statusCode == 200 || response.statusCode == 201) {
-        messages.removeWhere((m) => m.id == messageId);
+        if (deleteForEveryone) {
+          int index = messages.indexWhere((m) => m.id == messageId);
+          if (index != -1) {
+            messages[index].isDeletedForEveryone = true;
+            messages.refresh();
+          }
+        } else {
+          messages.removeWhere((m) => m.id == messageId);
+        }
         showCustomSnackBar("Message deleted", isError: false);
       } else {
         showCustomSnackBar("Failed to delete message", isError: true);

@@ -10,6 +10,7 @@ class MessageModel {
   String? audioUrl;
   String? createdAt;
   List<String>? readBy;
+  bool? isDeletedForEveryone;
 
   MessageModel({
     this.id,
@@ -21,6 +22,7 @@ class MessageModel {
     this.audioUrl,
     this.createdAt,
     this.readBy,
+    this.isDeletedForEveryone,
   });
 
   MessageModel.fromJson(Map<String, dynamic> json) {
@@ -39,5 +41,6 @@ class MessageModel {
     if (json['readBy'] != null) {
       readBy = List<String>.from(json['readBy']);
     }
+    isDeletedForEveryone = json['isDeletedForEveryone'] ?? false;
   }
 }

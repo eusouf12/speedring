@@ -248,19 +248,16 @@ class _InboxScreenState extends State<InboxScreen> {
                               ],
                               Flexible(
                                 child: GestureDetector(
-                                  onLongPress: () {
+                                  onLongPress: msg.isDeletedForEveryone == true ? null : () {
                                     Get.bottomSheet(
                                       Material(
-                                        color: Colors.transparent,
+                                        color: const Color(0xff1A1A1A),
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        ),
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xff1A1A1A),
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20),
-                                            ),
-                                          ),
                                           child: SafeArea(
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
@@ -349,8 +346,8 @@ class _InboxScreenState extends State<InboxScreen> {
                                   },
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
-                                      horizontal: (msg.imageUrl != null || msg.videoUrl != null) ? 4 : 16,
-                                      vertical: (msg.imageUrl != null || msg.videoUrl != null) ? 4 : 12,
+                                      horizontal: (msg.isDeletedForEveryone != true && (msg.imageUrl != null || msg.videoUrl != null)) ? 4 : 16,
+                                      vertical: (msg.isDeletedForEveryone != true && (msg.imageUrl != null || msg.videoUrl != null)) ? 4 : 12,
                                     ),
                                     decoration: BoxDecoration(
                                       color: isMe
@@ -366,8 +363,20 @@ class _InboxScreenState extends State<InboxScreen> {
                                           isMe ? 4 : 20,
                                         ),
                                       ),
+                                      border: msg.isDeletedForEveryone == true
+                                          ? Border.all(color: Colors.white24)
+                                          : null,
                                     ),
-                                    child: Column(
+                                    child: msg.isDeletedForEveryone == true
+                                        ? Text(
+                                            isMe ? "You unsent a message" : "This message was unsent",
+                                            style: TextStyle(
+                                              color: isMe ? Colors.black54 : Colors.white54,
+                                              fontSize: 14,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          )
+                                        : Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         if (msg.imageUrl != null || msg.videoUrl != null) ...[
@@ -535,11 +544,9 @@ class _InboxScreenState extends State<InboxScreen> {
                           onTap: () {
                             Get.bottomSheet(
                               Material(
-                                color: Colors.transparent,
-                                child: Container(
-                                  color: const Color(0xff1A1A1A),
-                                  child: SafeArea(
-                                    child: Wrap(
+                                color: const Color(0xff1A1A1A),
+                                child: SafeArea(
+                                  child: Wrap(
                                       children: [
                                         ListTile(
                                           leading: const Icon(Icons.image, color: Colors.white),
@@ -561,7 +568,6 @@ class _InboxScreenState extends State<InboxScreen> {
                                     ),
                                   ),
                                 ),
-                              ),
                             );
                           },
                           child: Container(
