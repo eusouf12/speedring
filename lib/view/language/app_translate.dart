@@ -26,6 +26,22 @@ class AppTranslate extends Translations {
       'startNewChat': 'Start new chat',
       'searchFriends': 'Search friends...',
 
+      // Message Screen
+      'deleteMessage': 'Delete Message',
+      'areYouSureDeleteMsg': 'Are you sure you want to delete this message?',
+      'deleteForEveryone': 'Delete for Everyone',
+      'deleteForMe': 'Delete for Me',
+      'blockUser': 'Block User',
+      'areYouSureBlock': 'Are you sure you want to block this user?',
+      'deleteChat': 'Delete Chat',
+      'areYouSureDeleteChat': 'Are you sure you want to delete this chat?',
+      'yes': 'Yes',
+      'no': 'No',
+      'image': 'Image',
+      'video': 'Video',
+      'typeMessage': 'Type a message...',
+      'errorLoadingVideo': 'Error loading video',
+
       // Splash Screen
       'initializingTelemetry': 'INITIALIZING TELEMETRY',
       'connectingToNetwork': 'CONNECTING TO NETWORK',
@@ -433,8 +449,6 @@ class AppTranslate extends Translations {
       'pendingRequest': 'Pending Request',
       'deleteEvent': 'Delete Event',
       'deleteEventConfirm': 'Are you sure you want to delete this event?',
-      'no': 'No',
-      'yes': 'Yes',
       'join': 'Join',
 
       // Club Creation Extra
@@ -1158,7 +1172,8 @@ class AppTranslate extends Translations {
       'mydrives': 'MY DRIVES',
       'history': 'HISTORY',
       'deleteClubQuestion': 'Delete Club?',
-      'deleteClubDesc': 'Are you sure you want to delete this club? This action cannot be undone.',
+      'deleteClubDesc':
+          'Are you sure you want to delete this club? This action cannot be undone.',
       'leaveClubQuestion': 'Leave Club?',
       'leaveClubDesc': 'Are you sure you want to leave this club?',
       'whatDoYouWantToBuy': 'What do you want to buy?',
@@ -1188,8 +1203,24 @@ class AppTranslate extends Translations {
       'welcome': 'Willkommen',
       'SELECT_LANGUAGE': 'Sprache auswählen',
       'newMessage': 'Neue Nachricht',
-      'startNewChat': 'Neuen Chat beginnen',
+      'startNewChat': 'Neuen Chat starten',
       'searchFriends': 'Freunde suchen...',
+
+      // Message Screen
+      'deleteMessage': 'Nachricht löschen',
+      'areYouSureDeleteMsg': 'Möchten Sie diese Nachricht wirklich löschen?',
+      'deleteForEveryone': 'Für alle löschen',
+      'deleteForMe': 'Für mich löschen',
+      'blockUser': 'Benutzer blockieren',
+      'areYouSureBlock': 'Möchten Sie diesen Benutzer wirklich blockieren?',
+      'deleteChat': 'Chat löschen',
+      'areYouSureDeleteChat': 'Möchten Sie diesen Chat wirklich löschen?',
+      'yes': 'Ja',
+      'no': 'Nein',
+      'image': 'Bild',
+      'video': 'Video',
+      'typeMessage': 'Nachricht eingeben...',
+      'errorLoadingVideo': 'Fehler beim Laden des Videos',
 
       // Reels
       'NO_REELS_AVAILABLE_YET': 'Noch keine Reels verfügbar.',
@@ -1622,8 +1653,7 @@ class AppTranslate extends Translations {
       'deleteEvent': 'Event löschen',
       'deleteEventConfirm':
           'Bist du sicher, dass du dieses Event löschen möchtest?',
-      'no': 'Nein',
-      'yes': 'Ja',
+
       'join': 'Beitreten',
 
       // Club Creation Extra
@@ -1794,7 +1824,8 @@ class AppTranslate extends Translations {
       'mydrives': 'MEINE FAHRTEN',
       'history': 'VERLAUF',
       'deleteClubQuestion': 'Club löschen?',
-      'deleteClubDesc': 'Möchten Sie diesen Club wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+      'deleteClubDesc':
+          'Möchten Sie diesen Club wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
       'leaveClubQuestion': 'Club verlassen?',
       'leaveClubDesc': 'Möchten Sie diesen Club wirklich verlassen?',
       'manufacturerBrand': 'Hersteller / Marke',

@@ -177,4 +177,47 @@ class InboxController extends GetxController {
       isSending.value = false;
     }
   }
+
+  Future<void> blockUser(String targetUserId) async {
+    try {
+      var response = await ApiClient.postData('/users/block/$targetUserId', "{}");
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showCustomSnackBar("User block status updated", isError: false);
+      } else {
+        showCustomSnackBar("Failed to block user", isError: true);
+      }
+    } catch (e) {
+      showCustomSnackBar("Error: $e", isError: true);
+    }
+  }
+
+  Future<void> clearChat() async {
+    try {
+      var response = await ApiClient.postData('/chats/clear-chat/$chatId', "{}");
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        messages.clear();
+        showCustomSnackBar("Chat cleared successfully", isError: false);
+      } else {
+        showCustomSnackBar("Failed to clear chat", isError: true);
+      }
+    } catch (e) {
+      showCustomSnackBar("Error: $e", isError: true);
+    }
+  }
+
+  Future<void> deleteMessage(String messageId, {bool deleteForEveryone = false}) async {
+    try {
+      var response = await ApiClient.postData('/messages/delete-message/$messageId', jsonEncode({
+        "deleteForEveryone": deleteForEveryone,
+      }));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        messages.removeWhere((m) => m.id == messageId);
+        showCustomSnackBar("Message deleted", isError: false);
+      } else {
+        showCustomSnackBar("Failed to delete message", isError: true);
+      }
+    } catch (e) {
+      showCustomSnackBar("Error: $e", isError: true);
+    }
+  }
 }

@@ -179,7 +179,7 @@ class MessageScreen extends StatelessWidget {
                             'userId': otherUser?.id,
                           },
                         )?.then((_) {
-                          controller.fetchChats();
+                          controller.fetchChats(showLoader: false);
                         });
                       },
                       contentPadding: const EdgeInsets.symmetric(

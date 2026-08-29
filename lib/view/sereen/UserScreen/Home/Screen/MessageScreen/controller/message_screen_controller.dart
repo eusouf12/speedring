@@ -19,13 +19,12 @@ class MessageScreenController extends GetxController {
   void onInit() {
     super.onInit();
     _loadUserIdAndFetchChats();
-    _setupSocketListeners();
   }
 
   void _setupSocketListeners() {
     SocketApi.on('receive_message', (data) {
       debugPrint("MessageScreenController received message: $data");
-      fetchChats(); // Quick refresh when new message arrives
+      fetchChats(showLoader: false); // Background refresh without loader
     });
   }
 
@@ -33,11 +32,12 @@ class MessageScreenController extends GetxController {
     currentUserId = await SharePrefsHelper.getString(AppConstants.userId);
     final token = await SharePrefsHelper.getString(AppConstants.bearerToken);
     SocketApi.init(ApiUrl.socketUrl, currentUserId ?? "", token: token);
+    _setupSocketListeners();
     fetchChats();
   }
 
-  Future<void> fetchChats({String query = ""}) async {
-    isLoading.value = true;
+  Future<void> fetchChats({String query = "", bool showLoader = true}) async {
+    if (showLoader) isLoading.value = true;
     try {
       final endpoint = query.isNotEmpty ? "${ApiUrl.allChats}?search=$query" : ApiUrl.allChats;
       var response = await ApiClient.getData(endpoint);
@@ -50,7 +50,7 @@ class MessageScreenController extends GetxController {
     } catch (e) {
       showCustomSnackBar("An error occurred: $e", isError: true);
     } finally {
-      isLoading.value = false;
+      if (showLoader) isLoading.value = false;
     }
   }
 

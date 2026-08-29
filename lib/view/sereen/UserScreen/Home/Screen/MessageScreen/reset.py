@@ -1,44 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:speedring/utils/app_colors/app_colors.dart';
-import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
-import 'package:speedring/view/components/custom_netwrok_image/custom_network_image.dart';
-import '../../../../../../utils/navigation_utils.dart';
-import 'controller/inbox_controller.dart';
-import 'package:speedring/view/components/custom_loader/custom_loader.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
-import 'video_player_screen.dart';
+import os
 
-class InboxScreen extends StatefulWidget {
-  const InboxScreen({super.key});
+file_path = r'c:\Users\Eusouf\Projects\Speeding\speedring\lib\view\sereen\UserScreen\Home\Screen\MessageScreen\inbox_screen.dart'
+with open(file_path, 'r', encoding='utf-8') as f:
+    content = f.read()
 
-  @override
-  State<InboxScreen> createState() => _InboxScreenState();
-}
+# 1. Imports
+content = content.replace("import 'package:image_picker/image_picker.dart';", "import 'package:image_picker/image_picker.dart';\nimport 'video_player_screen.dart';")
 
-class _InboxScreenState extends State<InboxScreen> {
-  late final InboxController controller;
-  late final String userName;
-  late final String avatarUrl;
-  late final bool isOnline;
-  late final String? userId;
-  File? _selectedFile;
-
-  @override
-  void initState() {
-    super.initState();
-    final args = Get.arguments as Map<String, dynamic>? ?? {};
-    final chatId = args['chatId'] ?? '';
-    userName = args['userName'] ?? 'Chat';
-    avatarUrl = args['avatarUrl'] ?? '';
-    isOnline = args['isOnline'] ?? false;
-    userId = args['userId'];
-
-    controller = Get.put(InboxController(chatId: chatId), tag: chatId);
-  }
-
-  Future<void> _pickMedia(bool isVideo) async {
+# 2. _selectedImage to _selectedFile & _pickMedia
+content = content.replace('File? _selectedImage;', 'File? _selectedFile;')
+content = content.replace('''  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedImage = File(image.path);
+      });
+    }
+  }''', '''  Future<void> _pickMedia(bool isVideo) async {
     final ImagePicker picker = ImagePicker();
     final XFile? file = isVideo
         ? await picker.pickVideo(source: ImageSource.gallery)
@@ -48,65 +27,83 @@ class _InboxScreenState extends State<InboxScreen> {
         _selectedFile = File(file.path);
       });
     }
-  }
+  }''')
 
-  void _sendMessage() {
-    controller.sendMessage(imageFile: _selectedFile);
-    setState(() {
-      _selectedFile = null;
-    });
-  }
+# 3. sendMessage
+content = content.replace('controller.sendMessage(imageFile: _selectedImage);', 'controller.sendMessage(imageFile: _selectedFile);')
+content = content.replace('_selectedImage = null;', '_selectedFile = null;')
+content = content.replace('if (_selectedImage != null)', 'if (_selectedFile != null)')
+content = content.replace('image: FileImage(_selectedImage!),', 'image: FileImage(_selectedFile!),')
 
-  @override
-  Widget build(BuildContext context) {
-    return CustomGradient(
-      child: Scaffold(
-        backgroundColor: Colors.black,
+# 4. Input area preview video
+content = content.replace('''                              image: DecorationImage(
+                                image: FileImage(_selectedFile!),
+                                fit: BoxFit.cover,
+                              ),''', '''                              color: Colors.grey.shade900,
+                              image: !_selectedFile!.path.endsWith('.mp4')
+                                  ? DecorationImage(
+                                      image: FileImage(_selectedFile!),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
+                            ),
+                            child: _selectedFile!.path.endsWith('.mp4')
+                                ? const Center(
+                                    child: Icon(
+                                      Icons.videocam,
+                                      color: Colors.white,
+                                      size: 40,
+                                    ),
+                                  )
+                                : null,''')
 
-        /// ── AppBar ─────────────────────────────────────────────────────────
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-          ),
-          titleSpacing: 0,
-          title: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  if (userId != null) {
-                    NavigationUtils.navigateToUserProfile(userId!);
-                  }
-                },
-                child: avatarUrl.isNotEmpty
-                    ? CustomNetworkImage(
-                        imageUrl: avatarUrl,
-                        boxShape: BoxShape.circle,
-                        height: 40,
-                        width: 40,
-                      )
-                    : const CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Color(0xff1A1A1A),
-                      ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      userName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (isOnline)
+# 5. Input area pick Media
+content = content.replace('''GestureDetector(
+                          onTap: _pickImage,''', '''GestureDetector(
+                          onTap: () {
+                            Get.bottomSheet(
+                              Material(
+                                color: Colors.transparent,
+                                child: Container(
+                                  color: const Color(0xff1A1A1A),
+                                  child: SafeArea(
+                                    child: Wrap(
+                                      children: [
+                                        ListTile(
+                                          leading: const Icon(Icons.image, color: Colors.white),
+                                          title: Text('image'.tr, style: const TextStyle(color: Colors.white)),
+                                          onTap: () {
+                                            Get.back();
+                                            _pickMedia(false);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.videocam, color: Colors.white),
+                                          title: Text('video'.tr, style: const TextStyle(color: Colors.white)),
+                                          onTap: () {
+                                            Get.back();
+                                            _pickMedia(true);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },''')
+
+content = content.replace('decoration: const InputDecoration(', 'decoration: InputDecoration(')
+content = content.replace('hintStyle: TextStyle(', 'hintStyle: const TextStyle(')
+content = content.replace('contentPadding: EdgeInsets.symmetric(', 'contentPadding: const EdgeInsets.symmetric(')
+content = content.replace('"Type a message..."', '"typeMessage".tr')
+
+# 6. Active Now
+content = content.replace('''                    if (isOnline)
+                      const Text(
+                        "Active now",
+                        style: TextStyle(color: Colors.white54, fontSize: 11),
+                      ),''', '''                    if (isOnline)
                       Row(
                         children: [
                           Container(
@@ -126,14 +123,13 @@ class _InboxScreenState extends State<InboxScreen> {
                             ),
                           ),
                         ],
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            PopupMenuButton<String>(
+                      ),''')
+
+# 7. PopupMenuButton
+content = content.replace('''            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.info_outline, color: Colors.white70),
+            ),''', '''            PopupMenuButton<String>(
               icon: const Icon(Icons.info_outline, color: Colors.white70),
               color: const Color(0xff1A1A1A),
               onSelected: (value) {
@@ -181,73 +177,83 @@ class _InboxScreenState extends State<InboxScreen> {
                   ),
                 ),
               ],
-            ),
-          ],
-        ),
+            ),''')
 
-        /// ── Body ───────────────────────────────────────────────────────────
-        body: Column(
-          children: [
-            /// Message List
-            Expanded(
-              child: Obx(() {
-                if (controller.isLoading.value) {
-                  return const Center(child: CustomLoader());
-                }
-
-                if (controller.messages.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "startNewChat".tr,
-                      style: const TextStyle(color: Colors.white54),
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  controller: controller.scrollController,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  reverse: false,
-                  itemCount: controller.messages.length,
-                  itemBuilder: (context, index) {
-                    final msg = controller.messages[index];
-                    final isMe = msg.sender?.id == controller.currentUserId;
-                    final text = msg.content ?? "";
-                    final time = msg.createdAt != null
-                        ? msg.createdAt!.substring(11, 16)
-                        : "";
-
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 24),
-                      child: Column(
-                        crossAxisAlignment: isMe
-                            ? CrossAxisAlignment.end
-                            : CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: isMe
-                                ? MainAxisAlignment.end
-                                : MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              if (!isMe) ...[
-                                CircleAvatar(
-                                  radius: 14,
-                                  backgroundImage:
-                                      msg.sender?.profileImage != null
-                                      ? NetworkImage(msg.sender!.profileImage!)
-                                      : const NetworkImage(
-                                          "https://ui-avatars.com/api/?name=User",
+# 8. Delete message bottom sheet & Video Bubble
+bubble_old = '''                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: msg.imageUrl != null ? 4 : 16,
+                                    vertical: msg.imageUrl != null ? 4 : 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isMe
+                                        ? AppColors.yellow
+                                        : const Color(0xff1A1A1A),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: const Radius.circular(20),
+                                      topRight: const Radius.circular(20),
+                                      bottomLeft: Radius.circular(
+                                        isMe ? 20 : 4,
+                                      ),
+                                      bottomRight: Radius.circular(
+                                        isMe ? 4 : 20,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (msg.imageUrl != null) ...[
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.to(
+                                              () => Scaffold(
+                                                backgroundColor: Colors.black,
+                                                appBar: AppBar(
+                                                  backgroundColor: Colors.black,
+                                                  iconTheme: const IconThemeData(color: Colors.white),
+                                                ),
+                                                body: Center(
+                                                  child: InteractiveViewer(
+                                                    child: Image.network(msg.imageUrl!),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              isMe ? 18 : 4,
+                                            ),
+                                            child: Image.network(
+                                              msg.imageUrl!,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
                                         ),
-                                  backgroundColor: const Color(0xff1A1A1A),
-                                ),
-                                const SizedBox(width: 8),
-                              ],
-                              Flexible(
-                                child: GestureDetector(
+                                        if (text.isNotEmpty) const SizedBox(height: 8),
+                                      ],
+                                      if (text.isNotEmpty)
+                                        Padding(
+                                          padding: msg.imageUrl != null
+                                              ? const EdgeInsets.only(left: 8, right: 8, bottom: 4)
+                                              : EdgeInsets.zero,
+                                          child: Text(
+                                            text,
+                                            style: TextStyle(
+                                              color: isMe
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),'''
+
+bubble_new = '''                                child: GestureDetector(
                                   onLongPress: () {
                                     Get.bottomSheet(
                                       Material(
@@ -427,17 +433,19 @@ class _InboxScreenState extends State<InboxScreen> {
                                       ],
                                     ),
                                   ),
-                                ),
+                                ),'''
+content = content.replace(bubble_old, bubble_new)
+
+# 9. Time logic
+time_old = '''                            child: Text(
+                              time,
+                              style: const TextStyle(
+                                color: Colors.white38,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: isMe ? 0 : 36,
-                              right: isMe ? 4 : 0,
-                            ),
-                            child: Row(
+                            ),'''
+time_new = '''                            child: Row(
                               mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                               children: [
                                 Text(
@@ -457,200 +465,8 @@ class _InboxScreenState extends State<InboxScreen> {
                                   ),
                                 ],
                               ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }),
-            ),
+                            ),'''
+content = content.replace(time_old, time_new)
 
-            /// Message Input Area
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                border: Border(
-                  top: BorderSide(color: Colors.white10, width: 1),
-                ),
-              ),
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    if (_selectedFile != null)
-                      Stack(
-                        children: [
-                          Container(
-                            height: 100,
-                            margin: const EdgeInsets.only(bottom: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.grey.shade900,
-                              image: !_selectedFile!.path.endsWith('.mp4')
-                                  ? DecorationImage(
-                                      image: FileImage(_selectedFile!),
-                                      fit: BoxFit.cover,
-                                    )
-                                  : null,
-                            ),
-                            child: _selectedFile!.path.endsWith('.mp4')
-                                ? const Center(
-                                    child: Icon(
-                                      Icons.videocam,
-                                      color: Colors.white,
-                                      size: 40,
-                                    ),
-                                  )
-                                : null,
-                          ),
-                          Positioned(
-                            top: 4,
-                            right: 4,
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _selectedFile = null;
-                                });
-                              },
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.black54,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Get.bottomSheet(
-                              Material(
-                                color: Colors.transparent,
-                                child: Container(
-                                  color: const Color(0xff1A1A1A),
-                                  child: SafeArea(
-                                    child: Wrap(
-                                      children: [
-                                        ListTile(
-                                          leading: const Icon(Icons.image, color: Colors.white),
-                                          title: Text('image'.tr, style: const TextStyle(color: Colors.white)),
-                                          onTap: () {
-                                            Get.back();
-                                            _pickMedia(false);
-                                          },
-                                        ),
-                                        ListTile(
-                                          leading: const Icon(Icons.videocam, color: Colors.white),
-                                          title: Text('video'.tr, style: const TextStyle(color: Colors.white)),
-                                          onTap: () {
-                                            Get.back();
-                                            _pickMedia(true);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff1A1A1A),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.white54,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff1A1A1A),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    controller: controller.messageController,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    ),
-                                    decoration: InputDecoration(
-                                      hintText: "typeMessage".tr,
-                                      hintStyle: const TextStyle(
-                                        color: Colors.white38,
-                                        fontSize: 14,
-                                      ),
-                                      border: InputBorder.none,
-                                      contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Obx(() {
-                          if (controller.isSending.value) {
-                            return const SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: AppColors.yellow,
-                                ),
-                              ),
-                            );
-                          }
-                          return GestureDetector(
-                            onTap: _sendMessage,
-                            child: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: const BoxDecoration(
-                                color: AppColors.yellow,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.send,
-                                color: Colors.black,
-                                size: 18,
-                              ),
-                            ),
-                          );
-                        }),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+with open(file_path, 'w', encoding='utf-8') as f:
+    f.write(content)
