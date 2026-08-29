@@ -17,12 +17,14 @@ import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:speedring/helper/map_snap_helper.dart';
+import 'package:speedring/view/sereen/UserScreen/Profile/model/profile_model.dart';
 
 class LiveSessionController extends GetxController {
   final Track? track;
+  final Vehicle? vehicle;
   final SettingsController settings = Get.find<SettingsController>();
 
-  LiveSessionController({this.track});
+  LiveSessionController({this.track, this.vehicle});
 
   // Map state
   GoogleMapController? mapController;
@@ -871,6 +873,7 @@ class LiveSessionController extends GetxController {
       AppRoutes.driveSummaryScreen,
       arguments: {
         'track': track,
+        'vehicle': vehicle,
         'routePoints': snappedPoints,
         'detailedSessionTrack': sessionTrackPoints,
         'elapsedSeconds': elapsedSeconds.value,

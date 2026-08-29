@@ -11,9 +11,10 @@ class LiveSessionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Track? track = Get.arguments as Track?;
+    final Map<String, dynamic>? args = Get.arguments as Map<String, dynamic>?;
+    final Track? track = args?['track'] as Track?;
     final LiveSessionController controller = Get.put(
-      LiveSessionController(track: track),
+      LiveSessionController(track: track, vehicle: args?['vehicle']),
     );
 
     return Scaffold(

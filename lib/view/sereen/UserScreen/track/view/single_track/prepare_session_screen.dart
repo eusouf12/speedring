@@ -503,7 +503,10 @@ class PrepareSessionScreen extends StatelessWidget {
                     }
                     Get.toNamed(
                       AppRoutes.liveSessionScreen,
-                      arguments: trackController.selectedTrack.value,
+                      arguments: {
+                        'track': trackController.selectedTrack.value,
+                        'vehicle': trackController.selectedVehicle.value,
+                      },
                     );
                   },
                   child: Row(

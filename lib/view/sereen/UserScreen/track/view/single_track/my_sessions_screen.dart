@@ -214,7 +214,7 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                           children: [
                             CustomText(
                               text:
-                                  "${"distance".tr}: ${distance.toStringAsFixed(1)} ${"km".tr}",
+                                  "${"distance".tr}: ${distance.toDouble().toStringAsFixed(3)} ${"km".tr}",
                               color: Colors.white,
                               fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
@@ -336,7 +336,7 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                     backgroundColor: Colors.transparent,
                     builder: (_) => ShareBottomSheet(
                       shareText:
-                          "Check out my session on Speedring! Distance: ${session['distance'] ?? '0.0'} km in ${session['time'] ?? 'N/A'}.",
+                          "Check out my session on Speedring! Distance: ${(session['distance'] as num?)?.toStringAsFixed(3) ?? '0.0'} km in ${session['time'] ?? 'N/A'}.",
                       shareSubject: "Speedring Session",
                       shareLink: "https://speedring.com",
                     ),
@@ -355,14 +355,14 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                   // Construct session details from the fetched session data
                   // Default to N/A if not available since old sessions might not have them
                   Map<String, dynamic> sessionDetails = {
-                    "vehicle": "N/A", // Not stored in session model yet
-                    "vehicleImage": "",
+                    "vehicle": session['vehicle'] ?? "N/A",
+                    "vehicleImage": session['vehicleImage'] ?? "",
                     "circuit": "N/A",
                     "trackName": "N/A",
                     "bestLapTime": session['time'] ?? "N/A",
                     "topSpeed": session['topSpeed'] ?? "0",
                     "summary":
-                        "Completed a drive of ${session['distance'] ?? '0.0'} km in ${session['time'] ?? 'N/A'}.",
+                        "Completed a drive of ${(session['distance'] as num?)?.toStringAsFixed(3) ?? '0.0'} km in ${session['time'] ?? 'N/A'}.",
                   };
 
                   bool success = await homeController.createPost(

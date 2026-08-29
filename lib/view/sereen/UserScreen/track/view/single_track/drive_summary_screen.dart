@@ -7,6 +7,7 @@ import '../../../../../../../utils/app_images/app_images.dart';
 import '../../../../../components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
 import 'package:speedring/view/sereen/UserScreen/Profile/controller/settings_controller.dart';
+import 'package:speedring/view/sereen/UserScreen/Profile/model/profile_model.dart';
 
 class DriveSummaryScreen extends StatelessWidget {
   const DriveSummaryScreen({super.key});
@@ -44,12 +45,14 @@ class DriveSummaryScreen extends StatelessWidget {
     final TrackController trackController = Get.find<TrackController>();
 
     final Map<String, dynamic> args = Get.arguments ?? {};
-    final List<LatLng> routePoints = args['routePoints'] ?? [];
+    final Vehicle? vehicle = args['vehicle'];
+    final bool isReadOnly = args['isReadOnly'] ?? false;
     final List<Map<String, dynamic>> detailedSessionTrack =
         (args['detailedSessionTrack'] as List<dynamic>?)
             ?.map((e) => Map<String, dynamic>.from(e as Map))
             .toList() ??
         [];
+    final List<LatLng> routePoints = args['routePoints'] ?? [];
     final int elapsedSeconds = args['elapsedSeconds'] ?? 0;
     final double totalDistanceKm = args['totalDistanceKm'] ?? 0.0;
     final double averageSpeedKmh = args['averageSpeedKmh'] ?? 0.0;
@@ -62,7 +65,6 @@ class DriveSummaryScreen extends StatelessWidget {
     final double best200to300Time = args['best200to300Time'] ?? 0.0;
     final double peakGForce = args['peakGForce'] ?? 0.0;
     final String temperature = args['temperature'] ?? "--";
-    final bool isReadOnly = args['isReadOnly'] ?? false;
 
     String formattedTime = _formatTime(elapsedSeconds);
 
@@ -567,7 +569,12 @@ class DriveSummaryScreen extends StatelessWidget {
                         "best200to300Time": best200to300Time,
                         "peakGForce": peakGForce,
                         "temperature": temperature,
+                        "vehicle": vehicle?.vehicleName ?? vehicle?.model ?? trackController.selectedVehicle.value?.vehicleName ?? trackController.selectedVehicle.value?.model ?? "N/A",
+                        "vehicleImage": vehicle?.vehicleImage ?? trackController.selectedVehicle.value?.vehicleImage ?? "",
                       };
+
+                      debugPrint("====> SELECTED VEHICLE TO SEND: ${sessionData['vehicle']}");
+                      debugPrint("====> VEHICLE IMAGE TO SEND: ${sessionData['vehicleImage']}");
 
                       bool success = await trackController.createSession(
                         sessionData,
