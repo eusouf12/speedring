@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:speedring/utils/ToastMsg/toast_message.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/view/components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/components/custom_text/custom_text.dart';
@@ -357,8 +358,8 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                   Map<String, dynamic> sessionDetails = {
                     "vehicle": session['vehicle'] ?? "N/A",
                     "vehicleImage": session['vehicleImage'] ?? "",
-                    "circuit": "N/A",
-                    "trackName": "N/A",
+                    "circuit": session['circuit'] ?? "N/A",
+                    "trackName": session['trackName'] ?? "N/A",
                     "bestLapTime": session['time'] ?? "N/A",
                     "topSpeed": session['topSpeed'] ?? "0",
                     "summary":
@@ -373,12 +374,8 @@ class _MySessionsScreenState extends State<MySessionsScreen> {
                   );
                   if (success) {
                     Get.offAllNamed(AppRoutes.userHomeScreen);
-                    Get.snackbar(
-                      "Success",
-                      "Post created successfully",
-                      backgroundColor: Colors.green,
-                      colorText: Colors.white,
-                    );
+                    trackController.getMySessions();
+                    showCustomSnackBar("Post created successfully",isError: false);
                   }
                 },
               ),

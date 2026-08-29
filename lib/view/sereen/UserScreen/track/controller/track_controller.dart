@@ -338,14 +338,14 @@ class TrackController extends GetxController {
     try {
       var response = await ApiClient.deleteData(ApiUrl.deleteSession(id));
       if (response.statusCode == 200) {
-        Fluttertoast.showToast(msg: "sessionDeleted".tr);
         mySessionsList.removeWhere(
           (session) => session["_id"] == id || session["id"] == id,
         );
       } else {
-        Fluttertoast.showToast(msg: response.statusText ?? "error".tr);
+        showCustomSnackBar(response.statusText ?? "error".tr,isError: true);
       }
     } catch (e) {
+      showCustomSnackBar(e.toString(),isError: true);
       debugPrint("Error deleting session: $e");
     }
   }

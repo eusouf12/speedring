@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:speedring/utils/app_colors/app_colors.dart';
 import 'package:speedring/core/app_routes/app_routes.dart';
+import 'package:speedring/view/sereen/UserScreen/track/mode/track_model.dart';
 import '../../../../../../../utils/app_images/app_images.dart';
 import '../../../../../components/custom_gradient/custom_gradient.dart';
 import 'package:speedring/view/sereen/UserScreen/track/controller/track_controller.dart';
@@ -45,6 +46,7 @@ class DriveSummaryScreen extends StatelessWidget {
     final TrackController trackController = Get.find<TrackController>();
 
     final Map<String, dynamic> args = Get.arguments ?? {};
+    final Track? track = args['track'];
     final Vehicle? vehicle = args['vehicle'];
     final bool isReadOnly = args['isReadOnly'] ?? false;
     final List<Map<String, dynamic>> detailedSessionTrack =
@@ -571,6 +573,8 @@ class DriveSummaryScreen extends StatelessWidget {
                         "temperature": temperature,
                         "vehicle": vehicle?.vehicleName ?? vehicle?.model ?? trackController.selectedVehicle.value?.vehicleName ?? trackController.selectedVehicle.value?.model ?? "N/A",
                         "vehicleImage": vehicle?.vehicleImage ?? trackController.selectedVehicle.value?.vehicleImage ?? "",
+                        "trackName": track?.name ?? "N/A",
+                        "circuit": track?.trackType ?? "N/A",
                       };
 
                       debugPrint("====> SELECTED VEHICLE TO SEND: ${sessionData['vehicle']}");
